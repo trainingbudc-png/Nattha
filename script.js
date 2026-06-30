@@ -1,5 +1,5 @@
 // ⚠️ เปลี่ยนข้อความด้านล่างเป็น Web App URL ของ Google Apps Script ที่เพิ่ง Deploy
-const API_URL = "ใส่_WEB_APP_URL_ของพี่ตรงนี้"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec"; 
 const LIFF_ID = "2010557323-PAyWhGxW"; // ใส่ LIFF ID ของพี่เรียบร้อยแล้ว
 
 async function main() {
