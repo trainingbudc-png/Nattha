@@ -1,12 +1,12 @@
-const API_URL = "https://natth-a.vercel.app/";
-const LIFF_ID = "2010557323-PAyWhGxW"; // นำ LIFF ID มาวางตรงนี้ครับ
+// ⚠️ เปลี่ยนข้อความด้านล่างเป็น Web App URL ของ Google Apps Script ที่เพิ่ง Deploy
+const API_URL = "ใส่_WEB_APP_URL_ของพี่ตรงนี้"; 
+const LIFF_ID = "2010557323-PAyWhGxW"; // ใส่ LIFF ID ของพี่เรียบร้อยแล้ว
 
-// ฟังก์ชันเปิดระบบ LINE Login ตอนเข้าหน้าเว็บ
 async function main() {
     await liff.init({ liffId: LIFF_ID });
     if (liff.isLoggedIn()) {
         const profile = await liff.getProfile();
-        const name = profile.displayName; // ดึงชื่อจาก LINE มาโดยตรง
+        const name = profile.displayName; 
         
         localStorage.setItem("userName", name);
         checkUserRole(name);
@@ -15,7 +15,7 @@ async function main() {
 
 function loginWithLine() {
     if (!liff.isLoggedIn()) {
-        liff.login(); // ถ้ายังไม่ล็อกอิน ให้เด้งไปหน้าล็อกอินของ LINE
+        liff.login(); 
     } else {
         main();
     }
@@ -35,11 +35,10 @@ async function checkUserRole(name) {
             window.location.href = "user.html";
         }
     } catch (error) {
-        alert("เกิดข้อผิดพลาดในการเช็คสิทธิ์");
+        alert("เกิดข้อผิดพลาดในการเช็คสิทธิ์ กรุณาตรวจสอบ URL ของ Apps Script");
     }
 }
 
-// ส่วนของฟังก์ชันส่งข้อมูลไป Google Sheets (เหมือนเดิม)
 async function sendData(status, note) {
     const name = localStorage.getItem("userName");
     const ipadId = document.getElementById("ipadId").value;
@@ -72,7 +71,6 @@ function logout() {
     window.location.href = "index.html";
 }
 
-// โชว์ชื่อ LINE ตอนเข้าหน้าถัดไป
 window.onload = function() {
     if (window.location.pathname.includes("index.html") || window.location.pathname === "/") {
         main();
