@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบเบิก-ยืม iPad</title>
+    <title>ระบบเบิก-ยืม iPad | LINE Login</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>iPad Management</h1>
-        <p>กรุณาระบุตัวตนเพื่อเข้าใช้งาน</p>
-        <input type="text" id="name" placeholder="พิมพ์ชื่อ-นามสกุล">
-        <button id="btn-login" onclick="login()">เข้าสู่ระบบ</button>
+        <p>กรุณาเข้าสู่ระบบด้วย LINE เพื่อยืนยันตัวตน</p>
+        
+        <button id="btn-login" onclick="loginWithLine()" style="background-color: #06C755;">
+            🟢 เข้าสู่ระบบด้วย LINE
+        </button>
     </div>
     <script src="script.js"></script>
 </body>
