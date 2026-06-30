@@ -7,15 +7,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="container relative-container">
+        <!-- ย้ายสถานะผู้ใช้งานมาไว้ตรงนี้ เพื่อให้อยู่ขวาบน -->
+        <div class="user-status-top-right">
+            <p id="showName" style="font-weight: bold; color: #dc3545; margin: 0;"></p>
+        </div>
+
         <h2>เมนูผู้ดูแล (Admin)</h2>
-        <p id="showName" style="font-weight: bold; color: #dc3545;"></p>
         
-        <input type="text" id="ipadId" placeholder="ระบุรหัส iPad (เช่น A01)">
+        <!-- ลบกล่องระบุรหัส iPad ออกไปแล้ว -->
         
         <button class="btn-admin" onclick="sendData('เตรียมเครื่อง', 'พร้อมใช้งาน')">Step 1 | เตรียม</button>
         <button class="btn-admin" onclick="sendData('ตรวจคืน', 'สภาพสมบูรณ์')">Step 5 | ตรวจ</button>
-        <button class="btn-warning" onclick="sendData('ตรวจคืน', 'เครื่องมีปัญหา')">สถานนะเครื่อง</button>
+        <button class="btn-warning" onclick="sendData('ตรวจคืน', 'เครื่องมีปัญหา')">สถานะเครื่อง</button>
 
         <button class="btn-logout" onclick="logout()">ออกจากระบบ</button>
     </div>
