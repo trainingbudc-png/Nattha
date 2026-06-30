@@ -44,28 +44,24 @@ async function checkUserRole(name) {
     }
 }
 
-// ฟังก์ชันส่งข้อมูลการบันทึกสถานะ iPad ไปยัง Google Sheets แท็บ Log
+
+// ฟังก์ชันส่งข้อมูลการบันทึกสถานะ iPad ไปยัง Google Sheets แท็บ Log (อัปเดตลบการเช็ครหัส iPad)
 async function sendData(status, note) {
     const name = localStorage.getItem("userName");
-    const ipadId = document.getElementById("ipadId").value;
     
     if(!name) {
         alert("ไม่พบชื่อผู้ใช้ กรุณาเข้าสู่ระบบใหม่");
         window.location.href = "index.html";
         return;
     }
-    if(!ipadId) {
-        alert("กรุณาระบุรหัส iPad");
-        return;
-    }
 
     try {
         await fetch(API_URL, {
             method: "POST",
-            body: JSON.stringify({ action: "saveLog", name: name, ipadId: ipadId, status: status, note: note })
+            // ตรง ipadId ผมใส่เป็น "-" ไว้ เพื่อให้ชีตไม่พังเวลารับข้อมูล
+            body: JSON.stringify({ action: "saveLog", name: name, ipadId: "-", status: status, note: note })
         });
         alert("บันทึก [" + status + "] สำเร็จ!");
-        document.getElementById("ipadId").value = ""; // ล้างตารางกรอกหลังกดส่ง
     } catch (error) {
         alert("เกิดข้อผิดพลาด: " + error);
     }

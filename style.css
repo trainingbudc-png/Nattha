@@ -11,3 +11,15 @@ button:hover { background-color: #0056b3; }
 .btn-logout { background-color: #6c757d; margin-top: 30px; }
 h1, h2 { color: #333; margin-top: 0; }
 p { color: #666; }
+/* เพิ่มคลาสนี้เพื่อใช้ดันชื่อไปไว้ขวาบนของกล่อง container */
+.relative-container {
+    position: relative;
+    padding-top: 50px; /* ดันเนื้อหาลงมาไม่ให้ทับกับชื่อที่อยู่มุมขวาบน */
+}
+
+/* จัดตำแหน่งชื่อผู้ใช้งานให้อยู่ขวาบนสุด */
+.user-status-top-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
