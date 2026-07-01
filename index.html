@@ -5,9 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบเบิก-ยืม iPad | LINE Login</title>
     <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="loader.css">
+    
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p class="loading-text">กำลังตรวจสอบข้อมูล...</p>
+    </div>
+
     <div class="container">
         <h1>iPad Management</h1>
         <p>กรุณาเข้าสู่ระบบด้วย LINE เพื่อยืนยันตัวตน</p>
@@ -16,6 +25,7 @@
             🟢 เข้าสู่ระบบด้วย LINE
         </button>
     </div>
+    
     <script src="script.js"></script>
 </body>
 </html>
