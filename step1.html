@@ -12,62 +12,23 @@
         .table th { background-color: #f8fafc; color: #475569; font-weight: 600; text-align: center; }
         .table td { vertical-align: middle; text-align: center; }
         .form-control-disabled { background-color: #f1f5f9 !important; font-weight: bold; color: #334155; border: none; }
-        
-        /* สไตล์ตารางเช็คลิสต์ */
         input[type="checkbox"].app-check { width: 22px; height: 22px; cursor: pointer; accent-color: #10b981; }
 
-        /* =========================================
-           ดีไซน์ใหม่: ปุ่มการ์ดเลือกรหัสเครื่อง iPad 
-           ========================================= */
         .ipad-grid-container {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 15px;
-            max-height: 280px; /* จำกัดความสูงให้สกอร์เลื่อนได้ จะได้ไม่กินพื้นที่ */
-            overflow-y: auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px;
+            max-height: 280px; overflow-y: auto; display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px;
         }
-
-        /* ซ่อน Checkbox จริงๆ ไว้ */
         .ipad-checkbox-wrapper input[type="checkbox"] { display: none; }
-        
-        /* สร้างกล่องการ์ดมาแสดงแทน */
         .ipad-checkbox-card {
-            border: 2px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 12px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: #ffffff;
-            font-weight: 600;
-            color: #64748b;
-            font-size: 0.9rem;
-            user-select: none;
+            border: 2px solid #cbd5e1; border-radius: 8px; padding: 12px 10px; text-align: center;
+            cursor: pointer; transition: all 0.2s ease; background: #ffffff; font-weight: 600; color: #64748b; font-size: 0.9rem; user-select: none;
         }
-
-        /* เอฟเฟกต์ตอนเอาเมาส์ชี้ */
         .ipad-checkbox-card:hover { border-color: #94a3b8; background: #f1f5f9; }
-
-        /* เอฟเฟกต์ตอนกดเลือก (Checked) */
         .ipad-checkbox-wrapper input[type="checkbox"]:checked + .ipad-checkbox-card {
-            border-color: #0ea5e9;
-            background-color: #f0f9ff;
-            color: #0284c7;
-            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
+            border-color: #0ea5e9; background-color: #f0f9ff; color: #0284c7; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
         }
-        
-        .counter-badge {
-            background-color: #0ea5e9;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
+        .counter-badge { background-color: #0ea5e9; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -102,8 +63,7 @@
                 <span class="counter-badge fw-bold">เลือกแล้ว: <span id="selectedCounter">0</span> / <span id="maxCountDisplay">0</span></span>
             </div>
             
-            <div class="ipad-grid-container" id="ipadGridContainer">
-                </div>
+            <div class="ipad-grid-container" id="ipadGridContainer"></div>
 
             <p class="fw-bold text-dark mb-2 mt-4">📋 รายการเช็คลิสต์แอปพลิเคชัน (เฉพาะเครื่องที่เลือก):</p>
             <div class="table-responsive mb-4 border rounded">
@@ -135,7 +95,6 @@
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
 
-    // 📌 ตั้งค่ารายชื่อ iPad ในสต็อกทั้งหมด (80 เครื่อง)
     const ipadStockList = [
         "iPad[01]", "iPad[02]", "iPad[03]", "iPad[04]", "iPad[05]", "iPad[06]", "iPad[07]", "iPad[08]", "iPad[09]", "iPad[10]",
         "iPad[11]", "iPad[12]", "iPad[13]", "iPad[14]", "iPad[15]", "iPad[16]", "iPad[17]", "iPad[18]", "iPad[19]", "iPad[20]",
@@ -150,13 +109,16 @@
         "iPad Air + APceil [76]", "iPad Air + APceil [77]", "iPad Air + APceil [78]", "iPad Air + APceil [79]", "iPad Air + APceil [80]"
     ];
 
-    let deviceCount = 1;      // จำนวนที่ขอเบิก
-    let currentSelected = 0;  // จำนวนที่แอดมินกดเลือกไปแล้ว
+    let deviceCount = 1;      
+    let currentSelected = 0;  
+    let currentReqId = "";
 
     window.onload = function() {
         const adminName = localStorage.getItem("userName");
         if (adminName) {
-            document.getElementById("adminNameDisplay").value = "👨‍💻 ผู้ดำเนินการบันทึก: " + adminName;
+            const urlParams = new URLSearchParams(window.location.search);
+            currentReqId = urlParams.get('reqId') || "N/A";
+            document.getElementById("adminNameDisplay").value = `👨‍💻 ผู้ดำเนินการบันทึก: ${adminName} | 🔑 เลขรายการ: ${currentReqId}`;
         } else {
             alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่ครับ");
             window.location.href = "index.html";
@@ -181,43 +143,35 @@
         renderiPadGrid();
     };
 
-    // สร้างกล่องการ์ดให้กดเลือก
     function renderiPadGrid() {
         const container = document.getElementById("ipadGridContainer");
         let html = "";
-        
         ipadStockList.forEach((idText, index) => {
             html += `
                 <label class="ipad-checkbox-wrapper">
                     <input type="checkbox" value="${index}" onchange="toggleiPadSelection(this, ${index}, '${idText}')">
-                    <div class="ipad-checkbox-card">
-                        ${idText}
-                    </div>
+                    <div class="ipad-checkbox-card">${idText}</div>
                 </label>
             `;
         });
         container.innerHTML = html;
     }
 
-    // ฟังก์ชันจัดการตอนกดการ์ด (เพิ่ม/ลบ แถวในตารางเช็คลิสต์)
     function toggleiPadSelection(checkbox, index, idText) {
         const tableBody = document.getElementById("checklistBody");
         const placeholder = document.getElementById("emptyPlaceholder");
 
         if (checkbox.checked) {
-            // เช็คว่ากดเกินจำนวนที่เบิกหรือเปล่า
             if (currentSelected >= deviceCount) {
                 alert(`❌ คุณไม่สามารถเลือกเกินจำนวน ${deviceCount} เครื่องได้ครับ!`);
-                checkbox.checked = false; // ยกเลิกการติ๊ก
+                checkbox.checked = false; 
                 return;
             }
-            
             currentSelected++;
-            if (placeholder) placeholder.style.display = "none"; // ซ่อนข้อความแจ้งเตือน
+            if (placeholder) placeholder.style.display = "none"; 
 
-            // สร้างแถวตารางของเครื่องที่เลือก
             const tr = document.createElement("tr");
-            tr.id = `row-ipad-${index}`; // ตั้ง ID ให้แถวนี้เพื่อตอนลบจะได้ลบถูกตัว
+            tr.id = `row-ipad-${index}`; 
             tr.setAttribute("data-ipad-id", idText);
             tr.innerHTML = `
                 <td class="fw-bold text-primary">${idText}</td>
@@ -227,27 +181,18 @@
                 <td><input type="checkbox" class="app-check chk-safari mx-auto d-block" checked></td>
             `;
             tableBody.appendChild(tr);
-
         } else {
             currentSelected--;
-            // ลบแถวออกจากตาราง
             const rowToRemove = document.getElementById(`row-ipad-${index}`);
             if (rowToRemove) rowToRemove.remove();
-
-            // ถ้าไม่มีเครื่องเลือกเลย ให้โชว์ข้อความแจ้งเตือนกลับมา
-            if (currentSelected === 0 && placeholder) {
-                placeholder.style.display = "table-row";
-            }
+            if (currentSelected === 0 && placeholder) placeholder.style.display = "table-row";
         }
-        
-        // อัปเดตตัวเลขเคาน์เตอร์
         document.getElementById("selectedCounter").innerText = currentSelected;
     }
 
-    // ฟังก์ชันกดส่งข้อมูล
     async function submitStep1Form() {
         if (currentSelected !== deviceCount) {
-            alert(`⚠️ กรุณาเลือกรหัสเครื่อง iPad ให้ครบจำนวน ${deviceCount} เครื่องก่อนกดบันทึกครับ\n(ตอนนี้คุณเพิ่งเลือกไป ${currentSelected} เครื่อง)`);
+            alert(`⚠️ กรุณาเลือกรหัสเครื่อง iPad ให้ครบจำนวน ${deviceCount} เครื่องก่อนกดบันทึกครับ`);
             return;
         }
 
@@ -261,7 +206,6 @@
 
         rows.forEach(row => {
             const ipadId = row.getAttribute('data-ipad-id');
-            
             const isDriveChecked = row.querySelector('.chk-drive').checked;
             const isFileChecked = row.querySelector('.chk-file').checked;
             const isImgChecked = row.querySelector('.chk-img').checked;
@@ -284,9 +228,7 @@
             if (!confirm("⚠️ พบว่าแอปบางรายการยังไม่ได้ติ๊กผ่าน ยืนยันที่จะส่งบันทึกแบบนี้ใช่หรือไม่?")) return;
         }
 
-        // เปลี่ยนปุ่มเป็นสถานะกำลังโหลด
         const submitBtn = document.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerText;
         submitBtn.innerText = "⏳ กำลังบันทึกข้อมูล...";
         submitBtn.disabled = true;
 
@@ -295,17 +237,18 @@
                 method: "POST",
                 body: JSON.stringify({
                     action: "saveStep1",
+                    reqId: currentReqId, 
                     adminName: adminName,
                     ipadData: ipadDataArray,
                     note: `เตรียมให้: ${recipientName} (${countText})`
                 })
             });
 
-            alert("🎉 บันทึกประวัติและเช็คลิสต์ลง Google Sheets เรียบร้อยแล้วครับ!");
+            alert("🎉 บันทึกประวัติพร้อมเลขรายการลง Google Sheets เรียบร้อยแล้วครับ!");
             window.location.href = "admin.html"; 
         } catch (error) {
             alert("เกิดข้อผิดพลาดในการบันทึกข้อมูลฟอร์ม: " + error);
-            submitBtn.innerText = originalText;
+            submitBtn.innerText = "💾 ส่งข้อมูลการเตรียมเครื่องเข้าระบบ";
             submitBtn.disabled = false;
         }
     }

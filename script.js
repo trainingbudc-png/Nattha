@@ -90,7 +90,7 @@ async function sendData(status, note) {
         alert("บันทึก [" + status + "] สำเร็จ!");
 
         if (window.location.pathname.includes("admin.html")) {
-            fetchStatusData();
+            fetchStat	usData();
         }
     } catch (error) {
         alert("เกิดข้อผิดพลาด: " + error);
@@ -128,15 +128,15 @@ async function fetchStatusData() {
                 }
 
                 const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${displayTime}</td>
-                    <td>${row.name || "-"}</td>
-                    <td>${row.ipadId || "-"}</td>
-                    <td><span class="badge-status" style="background-color: ${statusColor}">${row.status || "-"}</span></td>
-                    <td>${row.note || "-"}</td>
-                `;
-                tbody.appendChild(tr);
+        tr.innerHTML = `
+            <td><span class="badge" style="background-color: #495057; color: white; padding: 4px 8px; border-radius: 4px;">${row.reqId || "-"}</span></td> 
+            <td>${displayTime}</td>
+            <td>${row.name || "-"}</td>
+            <td>${row.ipadId || "-"}</td>
+            <td><span class="badge-status" style="background-color: ${statusColor}">${row.status || "-"}</span></td>
+            <td>${row.note || "-"}</td>
+        `;
+        tbody.appendChild(tr);
             });
         } else {
             tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">ยังไม่มีข้อมูลการทำรายการ</td></tr>';

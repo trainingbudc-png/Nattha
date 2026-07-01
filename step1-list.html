@@ -27,11 +27,11 @@
             <table class="table table-hover table-striped">
                 <thead>
                     <tr>
-                        <th style="width: 8%;">คิวที่</th>
-                        <th style="width: 22%;">วัน-เวลาที่ขอเบิก</th>
+                        <th style="width: 15%;">เลขรายการ</th>
+                        <th style="width: 20%;">วัน-เวลาที่ขอเบิก</th>
                         <th style="width: 25%;">ชื่อผู้ขอเบิก</th>
-                        <th style="width: 15%;">จำนวน (เครื่อง)</th>
-                        <th style="width: 15%;">สถานะ</th>
+                        <th style="width: 13%;">จำนวน (เครื่อง)</th>
+                        <th style="width: 12%;">สถานะ</th>
                         <th style="width: 15%;">การจัดการ</th>
                     </tr>
                 </thead>
@@ -60,7 +60,6 @@
             tbody.innerHTML = "";
 
             if (result.status === "success" && result.data.length > 0) {
-                // กรองเอาเฉพาะสถานะ "ขอเบิก" หรือ "รอดำเนินการ"
                 pendingRequests = result.data.filter(item => item.status === "ขอเบิก" || item.status === "รอดำเนินการ");
 
                 if (pendingRequests.length === 0) {
@@ -69,18 +68,18 @@
                 }
 
                 pendingRequests.forEach((req, idx) => {
-                    const countText = req.note ? req.note.replace(/[^0-9]/g, '') : "1"; // ดึงเฉพาะตัวเลขจำนวนเครื่อง
+                    const countText = req.note ? req.note.replace(/[^0-9]/g, '') : "1";
                     const count = parseInt(countText) || 1;
 
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
-                        <td><strong>${idx + 1}</strong></td>
+                        <td><span class="badge bg-dark fs-6">${req.reqId}</span></td> 
                         <td>${req.timestamp}</td>
                         <td class="text-start fw-bold text-primary">${req.name}</td>
                         <td><span class="badge bg-secondary fs-6">${count} เครื่อง</span></td>
                         <td><span class="status-badge">${req.status}</span></td>
                         <td>
-                            <button class="btn btn-success btn-sm px-3 fw-bold" onclick="proceedToPrepare('${encodeURIComponent(req.name)}', ${count})">
+                            <button class="btn btn-success btn-sm px-3 fw-bold" onclick="proceedToPrepare('${req.reqId}', '${encodeURIComponent(req.name)}', ${count})">
                                 🔧 เตรียมเครื่อง
                             </button>
                         </td>
@@ -96,9 +95,8 @@
         }
     };
 
-    // ส่งข้อมูลผู้เบิกข้ามหน้าผ่าน URL Parameter
-    function proceedToPrepare(name, count) {
-        window.location.href = `step1.html?name=${name}&count=${count}`;
+    function proceedToPrepare(reqId, name, count) {
+        window.location.href = `step1.html?reqId=${reqId}&name=${name}&count=${count}`;
     }
 </script>
 </body>
