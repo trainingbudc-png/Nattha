@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Step 1 | ฟอร์มเตรียมเครื่อง iPad</title>
-    <link rel="stylesheet" href="style.css"> <link rel="stylesheet" href="step1-style.css"> </head>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="step1-style.css"> 
+</head>
 <body class="dashboard-bg">
 
     <div class="form-wrapper">
@@ -16,6 +18,7 @@
             
             <hr class="form-divider">
 
+            <!-- 1. เลือกรายการที่มีอยู่ในฐานข้อมูล -->
             <div class="form-group">
                 <label class="form-label">เลือกรายการขอเบิกที่ต้องการดำเนินการ <span class="required">*</span></label>
                 <p class="label-desc">ระบบดึงข้อมูล Real-time จากรายการขอเบิกที่ยังไม่ได้เตรียมเครื่อง</p>
@@ -24,15 +27,22 @@
                 </select>
             </div>
 
-            <div id="requestDetailBox" class="data-detail-box" style="display: none;">
-                <h4>📋 ข้อมูลผู้ขอเบิกอุปกรณ์</h4>
-                <p><strong>ผู้ขอเบิก:</strong> <span id="detailUser">-</span></p>
-                <p><strong>จำนวนเครื่องที่ขอ:</strong> <span id="detailCount">-</span> เครื่อง</p>
+            <!-- 2. [เพิ่มใหม่] กล่องระบุผู้รับและจำนวนเครื่อง (ซ่อนไว้จนกว่าจะเลือกคิว) -->
+            <div id="recipientGroup" class="form-group" style="display: none;">
+                <label class="form-label">เตรียมอุปกรณ์ให้ใคร และจำนวนกี่เครื่อง <span class="required">*</span></label>
+                <p class="label-desc">ดึงข้อมูลอัตโนมัติจากระบบ (สามารถแก้ไขชื่อผู้รับได้หากมีผู้มารับแทน)</p>
+                <div style="display: flex; gap: 10px;">
+                    <!-- ช่องใส่ชื่อผู้รับ (แก้ไขได้) -->
+                    <input type="text" id="recipientName" class="form-control" placeholder="ชื่อผู้รับเครื่อง..." required style="flex: 2;">
+                    <!-- ช่องแสดงจำนวนเครื่อง (ล็อกไว้ อ่านได้อย่างเดียว) -->
+                    <input type="text" id="deviceCountDisplay" class="form-control" placeholder="จำนวน" readonly style="flex: 1; background-color: #e9ecef; text-align: center; font-weight: bold; color: #495057;">
+                </div>
             </div>
 
+            <!-- 3. เช็คลิสต์ตรวจสอบแอป -->
             <div class="form-group">
                 <label class="form-label">เช็คลิสต์ตรวจสอบแอปพลิเคชันพื้นฐาน <span class="required">*</span></label>
-                <p class="label-desc">กรุณาตรวจสอบและทำเครื่องหมายเมื่อแอปพร้อมใช้งาน</p>
+                <p class="label-desc">กรุณาระบุรหัสเครื่องและทำเครื่องหมายเมื่อแอปพร้อมใช้งาน</p>
                 
                 <div class="table-responsive">
                     <table class="checklist-table">
@@ -56,11 +66,13 @@
                 </div>
             </div>
 
+            <!-- 4. ผู้ดำเนินการ -->
             <div class="form-group">
                 <label class="form-label">ผู้จัดเตรียมเครื่อง <span class="required">*</span></label>
-                <input type="text" id="adminNameDisplay" class="form-control" readonly>
+                <input type="text" id="adminNameDisplay" class="form-control" readonly style="background-color: #e9ecef; color: #495057;">
             </div>
 
+            <!-- ส่วนปุ่มกด -->
             <div class="form-actions">
                 <button type="button" class="btn-submit-form" onclick="submitStep1Form()">ส่งข้อมูลการเตรียมเครื่อง</button>
                 <button type="button" class="btn-cancel-form" onclick="location.href='admin.html'">ย้อนกลับหน้าแดชบอร์ด</button>
