@@ -1,44 +1,116 @@
-/* --- ปรับแต่งกล่องหลักให้กว้างและเต็มหน้าจอมากขึ้น --- */
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+
+* { box-sizing: border-box; font-family: 'Kanit', 'Segoe UI', Tahoma, sans-serif; }
+
+body { background-color: #f0f2f5; margin: 0; min-height: 100vh; }
+
+/* =========================================
+   สไตล์ดั้งเดิมสำหรับหน้า Login และหน้า User
+   (จำกัดขอบเขตไม่ให้ไปกวนหน้า Admin)
+   ========================================= */
 .container { 
-    background: white; 
-    padding: 40px 35px; /* เพิ่มพื้นที่ระยะห่างขอบในกล่อง */
-    border-radius: 16px; /* ขอบมนขึ้นเล็กน้อยให้ดูโมเดิร์น */
-    box-shadow: 0 4px 25px rgba(0,0,0,0.06); 
-    width: 90%; /* ยืดตามหน้าจอมือถือ */
-    max-width: 600px; /* เพิ่มความกว้างสูงสุดให้เต็มตาขึ้นจากเดิม 400px */
-    text-align: center; 
+    background: white; padding: 30px; border-radius: 12px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; 
+    text-align: center; margin: 50px auto; 
 }
-
-/* --- ปรับแต่งปุ่มให้ใหญ่และยาวกว้างเต็มกล่อง --- */
-button { 
-    width: 100%; 
-    padding: 18px; /* เพิ่มความหนาปุ่มให้กดง่ายเต็มมือ */
-    margin: 10px 0; /* เว้นระยะห่างบนล่างของแต่ละปุ่มไม่ให้ติดกันเกินไป */
-    border: none; 
-    border-radius: 10px; 
-    font-size: 18px; /* ขยายขนาดตัวอักษรปุ่มให้ชัดเจนขึ้น */
-    font-weight: 500;
-    cursor: pointer; 
-    color: white; 
-    background-color: #007bff; 
-    transition: 0.2s ease; 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+.container input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; }
+.container button { 
+    width: 100%; padding: 14px; margin: 8px 0; border: none; border-radius: 8px; 
+    font-size: 16px; font-weight: 500; cursor: pointer; color: white; background-color: #007bff; transition: 0.2s; 
 }
+.container button:hover { filter: brightness(0.9); }
+.container .btn-admin { background-color: #dc3545; }
+.container .btn-warning { background-color: #ff9800; }
+.container .btn-logout { background-color: #6c757d; margin-top: 30px; }
+h1, h2 { color: #333; margin-top: 0; }
+p { color: #666; }
 
-button:hover { filter: brightness(0.9); }
-button:active { transform: scale(0.99); }
 
-/* --- สีปุ่มตามระบบเดิมของพี่ --- */
-.btn-admin { background-color: #dc3545; }
-.btn-warning { background-color: #ff9800; }
-.btn-logout { background-color: #6c757d; margin-top: 30px; } /* ดันปุ่มออกจากระบบลงมาแยกโซนชัดเจน */
+/* =========================================
+   สไตล์ใหม่สำหรับหน้า Admin (Dashboard Layout)
+   ========================================= */
+.dashboard-bg { background-color: #f4f6f9; }
 
-h1, h2 { color: #333; margin-top: 0; margin-bottom: 35px; font-size: 28px; }
-p { color: #666; font-size: 16px; }
-
-/* --- จัดกลุ่มปุ่มแนวตั้ง (สำหรับหน้าแอดมิน) --- */
-.button-group {
+/* Navbar ด้านบน */
+.top-navbar {
+    background-color: #ffffff;
     display: flex;
-    flex-direction: column;
-    gap: 10px; /* ระยะห่างระหว่างปุ่มกำลังดี */
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    position: sticky; top: 0; z-index: 100;
 }
+
+.nav-brand h2 { margin: 0; font-size: 20px; color: #333; }
+
+.nav-user-area { display: flex; align-items: center; gap: 20px; }
+.user-status-text { color: #dc3545; font-weight: 500; font-size: 15px; margin: 0; }
+
+.btn-logout-nav {
+    background-color: transparent;
+    color: #6c757d;
+    border: 1px solid #6c757d;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s;
+}
+.btn-logout-nav:hover { background-color: #6c757d; color: white; }
+
+/* พื้นที่คอนเทนต์หลัก */
+.dashboard-wrapper {
+    max-width: 1100px; /* ขยายให้กว้างเต็มตา */
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* หัวข้อหมวดหมู่ */
+.section-title {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+}
+.section-title h3 { margin: 0; font-size: 18px; color: #444; }
+.title-bar { width: 6px; height: 22px; border-radius: 4px; }
+.bar-red { background-color: #dc3545; }
+.bar-orange { background-color: #ff9800; }
+
+/* ระบบ Grid สำหรับเรียงปุ่มเป็นตาราง */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* ปุ่มแบบการ์ด (Card Buttons) */
+.action-card {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    text-align: left;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    transition: all 0.2s ease;
+    border-left: 6px solid #ccc; /* ขอบซ้ายเริ่มต้น */
+}
+.action-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+.action-card:active { transform: translateY(0); }
+
+/* ใช้สีธีมเดิมของพี่ที่ขอบซ้ายของการ์ด */
+.card-red { border-left-color: #dc3545; }
+.card-orange { border-left-color: #ff9800; }
+
+.card-icon {
+    font-size: 30px;
+    background-color: #f8f9fa;
+    width: 60px; height: 60px;
+    display: flex; justify-content: center; align-items: center;
+    border-radius: 10px;
+}
+
+.card-detail h4 { margin: 0 0 5px 0; font-size: 18px; color: #222; }
+.card-detail p { margin: 0; font-size: 14px; color: #777; }

@@ -6,21 +6,60 @@
     <title>ผู้ดูแลระบบ | ระบบ iPad</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    
-    <div class="user-status-floating">
-        <p id="showName"></p>
-    </div>
+<body class="dashboard-bg">
 
-    <div class="container">
-        <h2>เมนูผู้ดูแล (Admin)</h2>
-        
-        <div class="button-group">
-            <button class="btn-admin" onclick="sendData('เตรียมเครื่อง', 'พร้อมใช้งาน')">Step 1 | เตรียม</button>
-            <button class="btn-admin" onclick="sendData('ตรวจคืน', 'สภาพสมบูรณ์')">Step 5 | ตรวจ</button>
-            <button class="btn-warning" onclick="sendData('ตรวจคืน', 'เครื่องมีปัญหา')">สถานะเครื่อง</button>
-            <button class="btn-logout" onclick="logout()">ออกจากระบบ</button>
+    <nav class="top-navbar">
+        <div class="nav-brand">
+            <h2>📱 เมนูผู้ดูแล (Admin)</h2>
         </div>
+        <div class="nav-user-area">
+            <span id="showName" class="user-status-text"></span>
+            <button class="btn-logout-nav" onclick="logout()">ออกจากระบบ</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-wrapper">
+        
+        <div class="section-title">
+            <div class="title-bar bar-red"></div>
+            <h3>ระบบจัดการ iPad (เบิก-คืน)</h3>
+        </div>
+
+        <div class="card-grid">
+            <button class="action-card card-red" onclick="sendData('เตรียมเครื่อง', 'พร้อมใช้งาน')">
+                <div class="card-icon">📦</div>
+                <div class="card-detail">
+                    <h4>Step 1 | เตรียม</h4>
+                    <p>เตรียมเครื่องให้พร้อมใช้งาน</p>
+                </div>
+            </button>
+
+            <button class="action-card card-red" onclick="sendData('ตรวจคืน', 'สภาพสมบูรณ์')">
+                <div class="card-icon">🔍</div>
+                <div class="card-detail">
+                    <h4>Step 5 | ตรวจ</h4>
+                    <p>ตรวจสอบสภาพเครื่องหลังใช้งาน</p>
+                </div>
+            </button>
+        </div>
+
+        <br><br>
+
+        <div class="section-title">
+            <div class="title-bar bar-orange"></div>
+            <h3>ระบบแจ้งเตือนปัญหา</h3>
+        </div>
+
+        <div class="card-grid">
+            <button class="action-card card-orange" onclick="sendData('ตรวจคืน', 'เครื่องมีปัญหา')">
+                <div class="card-icon">⚠️</div>
+                <div class="card-detail">
+                    <h4>สถานะเครื่องมีปัญหา</h4>
+                    <p>อัปเดตสถานะกรณีพบความเสียหาย</p>
+                </div>
+            </button>
+        </div>
+
     </div>
     
     <script src="script.js"></script>
