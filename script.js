@@ -83,14 +83,19 @@ async function sendData(status, note) {
     }
 
     try {
-        await fetch(API_URL, {
+        const response = await fetch(API_URL, {
             method: "POST",
             body: JSON.stringify({ action: "saveLog", name: name, ipadId: "-", status: status, note: note })
         });
-        alert("บันทึก [" + status + "] สำเร็จ!");
-
-        if (window.location.pathname.includes("admin.html")) {
-            fetchStat	usData();
+        const result = await response.json();
+        
+        if (result.status === "success") {
+            alert("บันทึก [" + status + "] สำเร็จ! (เลขรายการ: " + (result.id || "-") + ")");
+            if (window.location.pathname.includes("admin.html")) {
+                fetchStatusData();
+            }
+        } else {
+            alert("เกิดข้อผิดพลาด: " + result.message);
         }
     } catch (error) {
         alert("เกิดข้อผิดพลาด: " + error);
@@ -98,7 +103,7 @@ async function sendData(status, note) {
 }
 
 // =========================================
-// 4. ดึงข้อมูลมาแสดงในตารางหน้า Admin 
+// 4. ดึงข้อมูลมาแสดงในตารางหน้า Admin (ปรับปรุงแสดงเลขรายการ)
 // =========================================
 async function fetchStatusData() {
     const tbody = document.getElementById("statusTableBody");
@@ -118,25 +123,27 @@ async function fetchStatusData() {
             
             data.data.forEach((row, index) => {
                 let statusColor = "#6c757d"; 
-                if (row.status === "เตรียมเครื่อง" || row.status === "พร้อมใช้งาน") statusColor = "#dc3545"; 
-                if (row.status === "รับเครื่องแล้ว" || row.status === "ตรวจคืน") statusColor = "#28a745"; 
-                if (row.status === "เครื่องมีปัญหา" || row.status === "รอดำเนินการ") statusColor = "#ff9800"; 
+                if (row.status === "ขอเบิก") statusColor = "#ffc107"; 
+                else if (row.status === "รอดำเนินการ") statusColor = "#fd7e14"; 
+                else if (row.status === "준비เครื่อง" || row.status === "เตรียมเครื่อง" || row.status === "พร้อมใช้งาน" || row.status === "Step 1") statusColor = "#17a2b8"; 
+                else if (row.status === "รับเครื่องแล้ว" || row.status === "ตรวจคืน") statusColor = "#28a745"; 
+                else if (row.status === "เครื่องมีปัญหา") statusColor = "#dc3545"; 
                 
                 let displayTime = "-";
                 if (row.timestamp) {
-                    displayTime = new Date(row.timestamp).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' });
+                    displayTime = row.timestamp; // ดึงค่าจากหลังบ้านที่ format วันที่เรียบร้อยแล้วมาแสดงผลได้เลย
                 }
 
                 const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td><span class="badge" style="background-color: #495057; color: white; padding: 4px 8px; border-radius: 4px;">${row.reqId || "-"}</span></td> 
-            <td>${displayTime}</td>
-            <td>${row.name || "-"}</td>
-            <td>${row.ipadId || "-"}</td>
-            <td><span class="badge-status" style="background-color: ${statusColor}">${row.status || "-"}</span></td>
-            <td>${row.note || "-"}</td>
-        `;
-        tbody.appendChild(tr);
+                tr.innerHTML = `
+                    <td><span class="badge" style="background-color: #495057; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;">${row.reqId || "-"}</span></td> 
+                    <td>${displayTime}</td>
+                    <td>${row.name || "-"}</td>
+                    <td>${row.ipadId || "-"}</td>
+                    <td><span class="badge-status" style="background-color: ${statusColor}; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem;">${row.status || "-"}</span></td>
+                    <td>${row.note || "-"}</td>
+                `;
+                tbody.appendChild(tr);
             });
         } else {
             tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">ยังไม่มีข้อมูลการทำรายการ</td></tr>';
