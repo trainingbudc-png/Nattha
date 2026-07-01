@@ -3,7 +3,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67n
 const LIFF_ID = "2010557323-PAyWhGxW"; 
 
 // =========================================
-// [เพิ่มใหม่] ฟังก์ชันเปิด/ปิด หน้า Loading
+// [ระบบใหม่] ฟังก์ชันเปิด/ปิด หน้า Loading
 // =========================================
 function showLoading() {
     const overlay = document.getElementById("loadingOverlay");
@@ -86,6 +86,7 @@ async function sendData(status, note) {
         });
         alert("บันทึก [" + status + "] สำเร็จ!");
 
+        // หากอยู่หน้าแอดมิน ให้รีเฟรชตารางหลังกดปุ่มเสร็จทันที
         if (window.location.pathname.includes("admin.html")) {
             fetchStatusData();
         }
@@ -95,7 +96,7 @@ async function sendData(status, note) {
 }
 
 // =========================================
-// 4. ดึงข้อมูลมาแสดงในตารางหน้า Admin 
+// 4. ดึงข้อมูลมาแสดงในตารางหน้า Admin (กดโหลดเองแบบ Manual)
 // =========================================
 async function fetchStatusData() {
     const tbody = document.getElementById("statusTableBody");
@@ -119,6 +120,7 @@ async function fetchStatusData() {
                 if (row.status === "รับเครื่องแล้ว" || row.status === "ตรวจคืน") statusColor = "#28a745"; 
                 if (row.status === "เครื่องมีปัญหา" || row.status === "รอดำเนินการ") statusColor = "#ff9800"; 
                 
+                // แปลงฟอร์แมตวันที่จากระบบเป็นภาษาไทย
                 let displayTime = "-";
                 if (row.timestamp) {
                     displayTime = new Date(row.timestamp).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' });
@@ -145,7 +147,7 @@ async function fetchStatusData() {
 }
 
 // =========================================
-// 5. ออกจากระบบ
+// 5. ออกจากระบบ (ฉบับแก้ไขบั๊กเด้งกลับหน้าเดิม)
 // =========================================
 async function logout() {
     // 1. เคลียร์ชื่อออกจากความจำบราว์เซอร์ก่อนเลย
@@ -178,6 +180,7 @@ window.onload = function() {
             document.getElementById("showName").innerText = "ผู้ใช้งาน LINE: " + userName;
         }
         
+        // ถ้าเป็นหน้า Admin ให้รันตารางแค่ 1 ครั้งตอนเปิดหน้าจอ (ไม่มีการโหลดอัตโนมัติซ้ำซ้อน)
         if (window.location.pathname.includes("admin.html")) {
             fetchStatusData();
         }
