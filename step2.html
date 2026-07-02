@@ -3,36 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ตรวจสอบและยืนยันรับเครื่อง</title>
+    <title>ยืนยันการรับอุปกรณ์</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background: #f1f5f9; font-family: 'Sarabun', sans-serif; padding: 20px; }
         .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 800px; margin: auto; }
         .btn-confirm { background: #10b981; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 20px; }
-        .btn-confirm:disabled { background: #cbd5e1; cursor: not-allowed; }
-        .table-responsive { overflow-x: auto; }
+        .btn-confirm:disabled { background: #cbd5e1; }
+        /* สไตล์ปุ่ม iPad */
+        .btn-check:checked + .btn-outline-primary { background-color: #0d6efd; color: white; }
     </style>
 </head>
 <body>
 
 <div class="confirm-card">
-    <h4 class="text-center fw-bold">📋 ตรวจสอบอุปกรณ์ก่อนรับ</h4>
+    <h4 class="text-center fw-bold">📋 ตรวจสอบและยืนยันรับเครื่อง</h4>
     <p class="text-center text-muted">รายการ: <span id="reqIdDisp" class="fw-bold text-primary">กำลังโหลด...</span></p>
 
     <div class="table-responsive">
         <table class="table table-bordered align-middle text-center">
             <thead class="table-light">
                 <tr>
-                    <th>เลือกรับ</th>
-                    <th>iPad ID</th>
-                    <th>Drive</th>
-                    <th>File</th>
-                    <th>Img</th>
-                    <th>Safari</th>
+                    <th>iPad</th>
+                    <th>Drive</th><th>File</th><th>Img</th><th>Safari</th>
                 </tr>
             </thead>
             <tbody id="itemList">
-                <tr><td colspan="6">กำลังโหลดข้อมูล...</td></tr>
+                <tr><td colspan="5">กำลังโหลดรายการเครื่องที่เตรียมไว้...</td></tr>
             </tbody>
         </table>
     </div>
@@ -44,7 +41,7 @@
 
     <div class="form-check mt-3">
         <input class="form-check-input" type="checkbox" id="checkFinal" onchange="validateForm()">
-        <label class="form-check-label small" for="checkFinal">ข้าพเจ้าตรวจสอบสภาพเครื่องและแอปพลิเคชันของเครื่องที่เลือกครบทุกข้อแล้ว</label>
+        <label class="form-check-label small" for="checkFinal">ข้าพเจ้าตรวจสอบสภาพเครื่องที่เลือกและแอปพลิเคชันครบทุกข้อแล้ว</label>
     </div>
 
     <button id="btnSubmit" class="btn btn-confirm" onclick="submitReceipt()" disabled>✅ ยืนยันการรับเครื่อง</button>
@@ -55,7 +52,6 @@
     const reqId = new URLSearchParams(window.location.search).get('reqId');
     document.getElementById('reqIdDisp').innerText = reqId || "ไม่พบรายการ";
 
-    // ดึงข้อมูลรายการจาก Step 1
     fetch(API_URL, {
         method: "POST",
         body: JSON.stringify({ action: "getStep1Data", reqId: reqId })
@@ -66,8 +62,10 @@
         tbody.innerHTML = "";
         res.data.forEach((item) => {
             tbody.innerHTML += `<tr>
-                <td><input type="checkbox" class="form-check-input select-ipad" onchange="validateForm()"></td>
-                <td class="fw-bold">${item.ipadId}</td>
+                <td>
+                    <input type="checkbox" class="btn-check select-ipad" id="btn-${item.ipadId}" onchange="validateForm()">
+                    <label class="btn btn-outline-primary w-100" for="btn-${item.ipadId}">${item.ipadId}</label>
+                </td>
                 <td><input type="checkbox" class="form-check-input check-app" onchange="validateForm()"></td>
                 <td><input type="checkbox" class="form-check-input check-app" onchange="validateForm()"></td>
                 <td><input type="checkbox" class="form-check-input check-app" onchange="validateForm()"></td>
@@ -87,7 +85,7 @@
             apps.forEach(app => { if(!app.checked) allAppsChecked = false; });
         });
 
-        // ปลดล็อกปุ่มเมื่อ: มีการเลือกเครื่องอย่างน้อย 1 เครื่อง + เครื่องที่เลือกเช็คครบทุกแอป + ติ๊กยืนยันท้ายสุด
+        // เงื่อนไข: ต้องมีการเลือกเครื่อง + ทุกเครื่องที่เลือกต้องติ๊กครบทุกแอป + ติ๊กยืนยันแล้ว
         document.getElementById('btnSubmit').disabled = !(selectedIpads.length > 0 && allAppsChecked && finalChecked);
     }
 
@@ -107,7 +105,7 @@
                 note: report ? `ปัญหา: ${report}` : "ปกติ"
             })
         });
-        alert("บันทึกการรับเครื่องเรียบร้อยครับ!");
+        alert("บันทึกข้อมูลเรียบร้อย!");
         window.close();
     }
 </script>
