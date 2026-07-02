@@ -25,7 +25,7 @@
                 <tr>
                     <th>iPad</th>
                     <th>Drive</th><th>File</th><th>Img</th><th>Safari</th>
-                    <th>ลัด</th>
+                    <th>ปุ่มลัด</th>
                 </tr>
             </thead>
             <tbody id="itemList">
@@ -41,7 +41,7 @@
 
     <div class="form-check mt-3">
         <input class="form-check-input" type="checkbox" id="checkFinal" onchange="validateForm()">
-        <label class="form-check-label small" for="checkFinal">ข้าพเจ้าตรวจสอบสภาพเครื่องที่เลือกและแอปพลิเคชันครบทุกข้อแล้ว</label>
+        <label class="form-check-label small" for="checkFinal">ข้าพเจ้าตรวจสอบสภาพเครื่องและแอปพลิเคชันครบถ้วนแล้ว</label>
     </div>
 
     <button id="btnSubmit" class="btn btn-confirm" onclick="submitReceipt()" disabled>✅ ยืนยันการรับเครื่อง</button>
@@ -70,7 +70,9 @@
                 <td><input type="checkbox" class="form-check-input check-app ${item.ipadId}-app" onchange="validateForm()"></td>
                 <td><input type="checkbox" class="form-check-input check-app ${item.ipadId}-app" onchange="validateForm()"></td>
                 <td><input type="checkbox" class="form-check-input check-app ${item.ipadId}-app" onchange="validateForm()"></td>
-                <td><button class="btn btn-success btn-sm" onclick="tickAll('${item.ipadId}')">✅</button></td>
+                <td>
+                    <button type="button" class="btn btn-success btn-sm w-100" onclick="tickAll('${item.ipadId}')">✅ ติ๊กครบ</button>
+                </td>
             </tr>`;
         });
     });
