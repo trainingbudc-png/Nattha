@@ -6,52 +6,32 @@
     <title>ยืนยันการรับอุปกรณ์</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Sarabun', sans-serif; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .card-ui { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 40px; max-width: 400px; width: 90%; text-align: center; }
-        .req-id { font-size: 2.5rem; font-weight: 800; color: #38bdf8; margin: 10px 0; }
-        .form-control { background: rgba(255,255,255,0.1); border: none; border-radius: 12px; color: white; padding: 12px; margin-bottom: 20px; }
-        .form-control::placeholder { color: #94a3b8; }
-        .btn-magic { background: linear-gradient(to right, #38bdf8, #818cf8); border: none; border-radius: 16px; padding: 15px; font-weight: 800; color: white; width: 100%; transition: 0.3s; }
-        .btn-magic:hover { transform: scale(1.02); filter: brightness(1.1); }
+        body { font-family: sans-serif; background: #0f172a; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .card-ui { background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; }
     </style>
 </head>
 <body>
-
-<div class="card-ui">
-    <div class="text-uppercase text-secondary small fw-bold mb-2">ยืนยันรับเครื่อง</div>
-    <div id="displayReqId" class="req-id">REQ-0000</div>
-    <p class="text-secondary mb-4">กรุณาระบุชื่อของท่านเพื่อยืนยันการรับอุปกรณ์</p>
-
-    <input type="text" id="recipientName" class="form-control text-center" placeholder="ชื่อ-นามสกุล ผู้รับเครื่อง" required>
-    
-    <button id="btnSubmit" class="btn-magic shadow-lg" onclick="submitStep2()">
-        ✨ ยืนยันการรับอุปกรณ์
-    </button>
-</div>
-
-<script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
-    let reqId = new URLSearchParams(window.location.search).get('reqId');
-
-    document.getElementById("displayReqId").innerText = reqId || "ERROR";
-
-    async function submitStep2() {
-        const name = document.getElementById("recipientName").value.trim();
-        if (!name) return alert("กรุณาระบุชื่อด้วยครับ");
-
-        const btn = document.getElementById("btnSubmit");
-        btn.innerText = "กำลังดำเนินการ...";
-        
-        try {
-            await fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "updateStatus", reqId: reqId, name: name, status: "รับเครื่องแล้ว", note: `ผู้รับ: ${name} (ผ่านมือถือ)` })
-            });
-            document.querySelector(".card-ui").innerHTML = `<h2 class="text-success">✅ สำเร็จ!</h2><p>บันทึกการรับเครื่องเรียบร้อย</p>`;
-        } catch (e) {
-            alert("ผิดพลาด!");
+    <div class="card-ui">
+        <h2>ยืนยันรับเครื่อง</h2>
+        <div id="displayReqId" style="font-size: 2rem; color: #38bdf8;">Loading...</div>
+        <input type="text" id="recipientName" class="form-control my-3" placeholder="ชื่อผู้รับ">
+        <button class="btn btn-primary w-100" onclick="submitStep2()">ยืนยัน</button>
+    </div>
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
+        const reqId = new URLSearchParams(window.location.search).get('reqId');
+        document.getElementById("displayReqId").innerText = reqId || "ERROR";
+        async function submitStep2() {
+            const name = document.getElementById("recipientName").value;
+            if(!name) return alert("ระบุชื่อด้วยครับ");
+            try {
+                await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "updateStatus", reqId: reqId, name: name, status: "รับเครื่องแล้ว", note: `ผู้รับ: ${name}` })
+                });
+                alert("บันทึกสำเร็จ!");
+            } catch(e) { alert("error"); }
         }
-    }
-</script>
+    </script>
 </body>
 </html>
