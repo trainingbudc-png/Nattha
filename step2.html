@@ -41,7 +41,7 @@
 
     <div class="form-check mt-3">
         <input class="form-check-input" type="checkbox" id="checkFinal" onchange="validateForm()">
-        <label class="form-check-label small" for="checkFinal">ข้าพเจ้าตรวจสอบสภาพเครื่องที่เลือกและแอปพลิเคชันครบทุกข้อแล้ว</label>
+        <label class="form-check-label small" for="checkFinal">ข้าพเจ้าตรวจสอบสภาพเครื่องที่เลือกและแอปพลิเคชันครบถ้วนแล้ว</label>
     </div>
 
     <button id="btnSubmit" class="btn btn-confirm" onclick="submitReceipt()" disabled>✅ ยืนยันการรับเครื่อง</button>
@@ -77,12 +77,14 @@
         });
     });
 
-    // ฟังก์ชันติ๊กแบบฉลาด (หาจากแถวของปุ่มที่กด)
     function tickAll(btnElement) {
-        const row = btnElement.closest('tr'); // หาแถวปัจจุบัน
-        const apps = row.querySelectorAll('.check-app'); // หา Checkbox แอปทั้งหมดในแถวนี้
-        apps.forEach(app => app.checked = true);
-        validateForm(); // สั่งรีเช็คเงื่อนไข
+        const row = btnElement.closest('tr');
+        // ติ๊กเลือก iPad (ปุ่มสีน้ำเงิน)
+        const ipadBtn = row.querySelector('.select-ipad');
+        if(ipadBtn) ipadBtn.checked = true;
+        // ติ๊กแอปทั้งหมดในแถว
+        row.querySelectorAll('.check-app').forEach(cb => cb.checked = true);
+        validateForm();
     }
 
     function validateForm() {
@@ -92,8 +94,7 @@
         let allAppsChecked = true;
         selectedIpads.forEach(ipad => {
             const row = ipad.closest('tr');
-            const apps = row.querySelectorAll('.check-app');
-            apps.forEach(app => { if(!app.checked) allAppsChecked = false; });
+            row.querySelectorAll('.check-app').forEach(app => { if(!app.checked) allAppsChecked = false; });
         });
 
         document.getElementById('btnSubmit').disabled = !(selectedIpads.length > 0 && allAppsChecked && finalChecked);
