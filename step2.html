@@ -9,7 +9,7 @@
         body { background: #f1f5f9; font-family: 'Sarabun', sans-serif; padding: 20px; }
         .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 850px; margin: auto; }
         .btn-confirm { background: #10b981; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 20px; }
-        .btn-confirm:disabled { background: #cbd5e1; }
+        .btn-confirm:disabled { background: #cbd5e1; cursor: not-allowed; }
         .btn-check:checked + .btn-outline-primary { background-color: #0d6efd; color: white; }
     </style>
 </head>
@@ -41,7 +41,7 @@
 
     <div class="form-check mt-3">
         <input class="form-check-input" type="checkbox" id="checkFinal" onchange="validateForm()">
-        <label class="form-check-label small" for="checkFinal">ข้าพเจ้าตรวจสอบสภาพเครื่องและแอปพลิเคชันครบถ้วนแล้ว</label>
+        <label class="form-check-label small" for="checkFinal">ข้าพเจ้าตรวจสอบสภาพเครื่องที่เลือกและแอปพลิเคชันครบทุกข้อแล้ว</label>
     </div>
 
     <button id="btnSubmit" class="btn btn-confirm" onclick="submitReceipt()" disabled>✅ ยืนยันการรับเครื่อง</button>
@@ -66,20 +66,23 @@
                     <input type="checkbox" class="btn-check select-ipad" id="btn-${item.ipadId}" onchange="validateForm()">
                     <label class="btn btn-outline-primary btn-sm w-100" for="btn-${item.ipadId}">${item.ipadId}</label>
                 </td>
-                <td><input type="checkbox" class="form-check-input check-app ${item.ipadId}-app" onchange="validateForm()"></td>
-                <td><input type="checkbox" class="form-check-input check-app ${item.ipadId}-app" onchange="validateForm()"></td>
-                <td><input type="checkbox" class="form-check-input check-app ${item.ipadId}-app" onchange="validateForm()"></td>
-                <td><input type="checkbox" class="form-check-input check-app ${item.ipadId}-app" onchange="validateForm()"></td>
+                <td><input type="checkbox" class="form-check-input check-app" onchange="validateForm()"></td>
+                <td><input type="checkbox" class="form-check-input check-app" onchange="validateForm()"></td>
+                <td><input type="checkbox" class="form-check-input check-app" onchange="validateForm()"></td>
+                <td><input type="checkbox" class="form-check-input check-app" onchange="validateForm()"></td>
                 <td>
-                    <button type="button" class="btn btn-success btn-sm w-100" onclick="tickAll('${item.ipadId}')">✅ ติ๊กครบ</button>
+                    <button type="button" class="btn btn-success btn-sm w-100" onclick="tickAll(this)">✅ ติ๊กครบ</button>
                 </td>
             </tr>`;
         });
     });
 
-    function tickAll(ipadId) {
-        document.querySelectorAll(`.${ipadId}-app`).forEach(cb => cb.checked = true);
-        validateForm();
+    // ฟังก์ชันติ๊กแบบฉลาด (หาจากแถวของปุ่มที่กด)
+    function tickAll(btnElement) {
+        const row = btnElement.closest('tr'); // หาแถวปัจจุบัน
+        const apps = row.querySelectorAll('.check-app'); // หา Checkbox แอปทั้งหมดในแถวนี้
+        apps.forEach(app => app.checked = true);
+        validateForm(); // สั่งรีเช็คเงื่อนไข
     }
 
     function validateForm() {
