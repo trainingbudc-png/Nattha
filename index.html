@@ -3,29 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบเบิก-ยืม iPad | LINE Login</title>
-    <link rel="stylesheet" href="style.css">
-    
-    <link rel="stylesheet" href="loader.css">
-    
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <title>เข้าสู่ระบบ | iPad Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8fafc; font-family: 'Kanit', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 400px; }
+        .logo-icon { font-size: 3.5rem; text-align: center; margin-bottom: 10px; }
+        .form-control { border-radius: 10px; padding: 12px; border: 1px solid #e2e8f0; }
+        .form-control:focus { border-color: #3b82f6; box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); }
+        .btn-primary { background: #3b82f6; border: none; border-radius: 10px; padding: 12px; font-weight: bold; font-size: 1.1rem; width: 100%; transition: 0.3s; margin-top: 10px; }
+        .btn-primary:hover { background: #2563eb; }
+        .form-label { font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 5px; }
+        .register-link { text-align: center; margin-top: 20px; font-size: 0.9rem; }
+        .register-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
+        .register-link a:hover { text-decoration: underline; color: #2563eb; }
+    </style>
 </head>
 <body>
 
-    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
-        <div class="spinner"></div>
-        <p class="loading-text">กำลังตรวจสอบข้อมูล...</p>
-    </div>
-
-    <div class="container">
-        <h1>iPad Management</h1>
-        <p>กรุณาเข้าสู่ระบบด้วย LINE เพื่อยืนยันตัวตน</p>
-        
-        <button id="btn-login" onclick="loginWithLine()" style="background-color: #06C755;">
-            🟢 เข้าสู่ระบบด้วย LINE
-        </button>
+<div class="login-card">
+    <div class="logo-icon">📱</div>
+    <h3 class="text-center fw-bold text-dark mb-4">เข้าสู่ระบบ</h3>
+    
+    <div class="mb-4">
+        <label class="form-label">ชื่อผู้ใช้งาน</label>
+        <input type="text" id="loginName" class="form-control" placeholder="กรอกชื่อที่ลงทะเบียนไว้">
     </div>
     
-    <script src="script.js"></script>
+    <button class="btn btn-primary" id="btnLogin" onclick="login()">เข้าสู่ระบบ</button>
+    
+    <div class="register-link">
+        ยังไม่มีบัญชีผู้ใช้งาน? <a href="register.html">ลงทะเบียนใหม่</a>
+    </div>
+</div>
+
+<script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
+
+    async function login() {
+        const name = document.getElementById('loginName').value.trim();
+        if (!name) return alert("⚠️ กรุณากรอกชื่อผู้ใช้งาน");
+
+        const btn = document.getElementById('btnLogin');
+        btn.innerText = "กำลังเข้าสู่ระบบ..."; btn.disabled = true;
+
+        try {
+            const res = await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "checkRole", name: name })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                localStorage.setItem("userName", name);
+                localStorage.setItem("userRole", data.role);
+                window.location.href = data.role === "Admin" ? "admin.html" : "user.html";
+            } else {
+                alert("❌ " + data.message);
+                btn.innerText = "เข้าสู่ระบบ"; btn.disabled = false;
+            }
+        } catch (error) {
+            alert("❌ เกิดข้อผิดพลาดในการเชื่อมต่อ");
+            btn.innerText = "เข้าสู่ระบบ"; btn.disabled = false;
+        }
+    }
+</script>
 </body>
 </html>
