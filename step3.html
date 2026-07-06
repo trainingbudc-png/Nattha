@@ -6,35 +6,59 @@
     <title>Step 3 | ตรวจก่อนสอบ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
-        .card { max-width: 950px; margin: auto; padding: 30px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: white; }
-        .table th { background-color: #f1f5f9; text-align: center; font-size: 0.9rem; vertical-align: middle; }
+        body { background: #f1f5f9; font-family: 'Kanit', sans-serif; padding: 20px; }
+        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 950px; margin: auto; }
+        
+        /* สไตล์กล่องข้อมูล */
+        .info-box { background-color: #fff7ed; border: 1px solid #ffedd5; border-radius: 12px; padding: 15px; margin-bottom: 25px; }
+        .info-label { font-size: 0.85rem; color: #9a3412; margin-bottom: 2px; }
+        .info-value { font-size: 1.1rem; font-weight: bold; color: #c2410c; }
+        .divider { width: 1px; background-color: #fed7aa; height: 40px; }
+
+        /* สไตล์ปุ่มและตาราง */
+        .btn-confirm { background: #f97316; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; }
+        .btn-confirm:hover { background: #ea580c; color: white; }
+        .table th { background-color: #f8fafc; text-align: center; font-size: 0.9rem; vertical-align: middle; color: #475569; }
         .table td { vertical-align: middle; text-align: center; }
-        .check-item { width: 22px; height: 22px; cursor: pointer; accent-color: #dc3545; }
+        .check-item { width: 22px; height: 22px; cursor: pointer; accent-color: #f97316; }
+        
+        .radio-group label { border-radius: 8px; font-weight: 500; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h3 class="text-center fw-bold text-danger mb-4">3. [ ก่อนสอบ ] Check List iPad ♻</h3>
+<div class="confirm-card">
+    <h4 class="text-center fw-bold text-dark mb-4">♻️ [Step3] Check List ก่อนสอบ</h4>
+    
+    <div class="info-box d-flex justify-content-around align-items-center">
+        <div class="text-center">
+            <div class="info-label">🔖 เลขรายการ:</div>
+            <div id="displayReqId" class="info-value">กำลังโหลด...</div>
+        </div>
+        <div class="divider"></div>
+        <div class="text-center">
+            <div class="info-label">👨‍💻 ผู้ตรวจสอบ:</div>
+            <div id="displayInspector" class="info-value">กำลังโหลด...</div>
+        </div>
+    </div>
     
     <div class="mb-4">
-        <label class="fw-bold mb-2">เลือกรูปแบบการสอบ:</label>
-        <div class="d-flex flex-wrap gap-2">
+        <label class="fw-bold mb-2 text-secondary">เลือกระบบการสอบ:</label>
+        <div class="d-flex flex-wrap gap-2 radio-group">
             <input type="radio" class="btn-check" name="examType" id="osce" value="OSCE" checked onclick="toggleNote(false)">
-            <label class="btn btn-outline-primary" for="osce">OSCE</label>
+            <label class="btn btn-outline-primary px-4" for="osce">OSCE</label>
             
             <input type="radio" class="btn-check" name="examType" id="exam" value="Exam+" onclick="toggleNote(false)">
-            <label class="btn btn-outline-primary" for="exam">Exam+</label>
+            <label class="btn btn-outline-primary px-4" for="exam">Exam+</label>
             
             <input type="radio" class="btn-check" name="examType" id="crq" value="CRQ" onclick="toggleNote(false)">
-            <label class="btn btn-outline-primary" for="crq">CRQ</label>
+            <label class="btn btn-outline-primary px-4" for="crq">CRQ</label>
             
             <input type="radio" class="btn-check" name="examType" id="none" value="ไม่ได้สอบ" onclick="toggleNote(true)">
-            <label class="btn btn-outline-danger" for="none">ไม่ได้สอบ</label>
+            <label class="btn btn-outline-danger px-4" for="none">ไม่ได้สอบ</label>
         </div>
         <div id="noteContainer" class="mt-3" style="display:none;">
-            <input type="text" id="reasonNote" class="form-control" placeholder="ระบุเหตุผลที่ไม่ได้สอบ...">
+            <input type="text" id="reasonNote" class="form-control border-danger" placeholder="⚠️ ระบุเหตุผลที่ไม่ได้สอบ...">
         </div>
     </div>
 
@@ -49,7 +73,8 @@
                     <th>ปิด AirDrop</th>
                     <th>โหมดเครื่องบิน</th>
                     <th>เริ่มใช้งาน</th>
-                    <th>จัดการ</th> </tr>
+                    <th>จัดการ</th>
+                </tr>
             </thead>
             <tbody id="itemList">
                 <tr><td colspan="8" class="text-muted py-4">กำลังโหลดรายการ iPad...</td></tr>
@@ -57,22 +82,28 @@
         </table>
     </div>
 
-    <button class="btn btn-danger w-100 mt-4 py-3 fw-bold fs-5" onclick="saveStep3()">💾 ยืนยันเครื่องพร้อมสอบ</button>
+    <button class="btn btn-confirm mt-4" onclick="saveStep3()">💾 ยืนยันเครื่องพร้อมสอบ</button>
 </div>
 
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
     const reqId = new URLSearchParams(window.location.search).get('reqId');
+    const currentLoggerName = localStorage.getItem("userName") || "Admin (ไม่ระบุชื่อ)";
 
     // ฟังก์ชันซ่อน/แสดง ช่องหมายเหตุ
     function toggleNote(show) {
         document.getElementById('noteContainer').style.display = show ? 'block' : 'none';
+        if(!show) document.getElementById('reasonNote').value = '';
     }
 
-    // โหลดข้อมูลเครื่องที่ยืมมาเมื่อเปิดหน้าเว็บ
+    // โหลดข้อมูลเมื่อเปิดหน้าเว็บ
     window.onload = function() {
+        // แสดงข้อมูลในกล่อง Info Box
+        document.getElementById('displayReqId').innerText = reqId || "ไม่พบข้อมูล";
+        document.getElementById('displayInspector').innerText = currentLoggerName;
+
         if(!reqId) {
-            document.getElementById('itemList').innerHTML = '<tr><td colspan="8" class="text-danger py-4">❌ ไม่พบหมายเลขรายการ (reqId) กรุณาเข้าผ่านลิงก์จาก LINE ครับ</td></tr>';
+            document.getElementById('itemList').innerHTML = '<tr><td colspan="8" class="text-danger py-4">❌ ไม่พบหมายเลขรายการ กรุณาเข้าผ่านลิงก์จาก LINE ครับ</td></tr>';
             return;
         }
 
@@ -86,13 +117,13 @@
                 res.data.forEach(item => {
                     tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
                         <td class="fw-bold text-primary">${item.ipadId}</td>
-                        <td><input type="checkbox" class="check-item chk-drive"></td>
-                        <td><input type="checkbox" class="check-item chk-wifi"></td>
-                        <td><input type="checkbox" class="check-item chk-bt"></td>
-                        <td><input type="checkbox" class="check-item chk-airdrop"></td>
-                        <td><input type="checkbox" class="check-item chk-flight"></td>
-                        <td><input type="checkbox" class="check-item chk-start"></td>
-                        <td><button type="button" class="btn btn-success btn-sm fw-bold" onclick="checkAllInRow(this)">✔ ติ๊กครบ</button></td>
+                        <td><input type="checkbox" class="check-item form-check-input"></td>
+                        <td><input type="checkbox" class="check-item form-check-input"></td>
+                        <td><input type="checkbox" class="check-item form-check-input"></td>
+                        <td><input type="checkbox" class="check-item form-check-input"></td>
+                        <td><input type="checkbox" class="check-item form-check-input"></td>
+                        <td><input type="checkbox" class="check-item form-check-input"></td>
+                        <td><button type="button" class="btn btn-success btn-sm fw-bold px-3" onclick="checkAllInRow(this)">✔ ติ๊กครบ</button></td>
                     </tr>`;
                 });
             } else {
@@ -100,7 +131,7 @@
             }
         })
         .catch(err => {
-            document.getElementById('itemList').innerHTML = `<tr><td colspan="8" class="text-danger py-4">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
+            document.getElementById('itemList').innerHTML = `<tr><td colspan="8" class="text-danger py-4">❌ เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์</td></tr>`;
         });
     };
 
@@ -114,7 +145,7 @@
 
     // ฟังก์ชันบันทึกข้อมูล
     async function saveStep3() {
-        const btn = document.querySelector('button');
+        const btn = document.querySelector('.btn-confirm');
         const originalText = btn.innerText;
         btn.innerText = "⏳ กำลังบันทึกข้อมูล..."; 
         btn.disabled = true;
@@ -144,21 +175,21 @@
                     items: items, 
                     exam: examValue, 
                     note: noteValue, 
-                    name: localStorage.getItem("userName") || "Unknown"
+                    name: currentLoggerName
                 })
             });
             
             const result = await res.json();
             if(result.status === "success") {
                 alert("✅ บันทึกข้อมูลตรวจก่อนสอบเรียบร้อยแล้วครับ!");
-                window.location.href = "admin.html"; // กลับไปหน้าแอดมินอัตโนมัติ
+                window.location.href = "admin.html"; // หรือเปลี่ยนเป็นหน้าสรุปผล
             } else {
-                alert("❌ เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: " + result.message);
+                alert("❌ เกิดข้อผิดพลาด: " + result.message);
                 btn.innerText = originalText; 
                 btn.disabled = false;
             }
         } catch (error) {
-            alert("❌ เกิดข้อผิดพลาดในการเชื่อมต่อ: " + error);
+            alert("❌ เกิดข้อผิดพลาดในการเชื่อมต่อ");
             btn.innerText = originalText; 
             btn.disabled = false;
         }
