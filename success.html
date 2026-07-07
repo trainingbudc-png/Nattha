@@ -6,37 +6,82 @@
     <title>ทำรายการสำเร็จ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #f8fafc; font-family: 'Kanit', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .success-card { background: white; padding: 40px 30px; border-radius: 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.06); width: 100%; max-width: 400px; text-align: center; border-top: 6px solid #10b981; }
-        .success-icon { width: 80px; height: 80px; background-color: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 20px; }
-        .title-text { font-size: 1.5rem; font-weight: bold; color: #1e293b; margin-bottom: 10px; }
-        .desc-text { color: #64748b; font-size: 0.95rem; margin-bottom: 30px; }
-        .btn-close-app { background: #10b981; color: white; border-radius: 12px; padding: 14px; font-weight: bold; width: 100%; font-size: 1.1rem; border: none; }
-        .btn-back { background: #f1f5f9; color: #475569; border-radius: 12px; padding: 14px; font-weight: bold; width: 100%; font-size: 1.1rem; border: none; margin-top: 12px; }
+        :root { --primary-color: #10b981; --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%); }
+        body { background: var(--bg-gradient); font-family: 'Kanit', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+        
+        .success-card { 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 40px 30px; 
+            border-radius: 28px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08); 
+            width: 100%; 
+            max-width: 420px; 
+            text-align: center; 
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        
+        .icon-wrapper {
+            width: 90px; height: 90px; background: #dcfce7; color: var(--primary-color);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 45px; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.15);
+        }
+
+        .title-text { font-size: 1.6rem; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
+        .desc-text { color: #64748b; font-size: 0.95rem; margin-bottom: 25px; }
+
+        /* ส่วนสรุปรายการ - สไตล์ Receipt */
+        #summaryArea {
+            background: #f8fafc; border-left: 4px solid var(--primary-color);
+            padding: 15px; border-radius: 8px; text-align: left; font-size: 0.9rem;
+            color: #475569; margin-bottom: 25px;
+        }
+
+        /* ปุ่มดีไซน์ใหม่ */
+        .btn-primary-custom { 
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
+            color: white; border-radius: 14px; padding: 15px; font-weight: 600; 
+            width: 100%; font-size: 1rem; border: none; transition: 0.3s;
+        }
+        .btn-primary-custom:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(16, 185, 129, 0.3); color: white; }
+        
+        .btn-secondary-custom { 
+            background: transparent; color: #64748b; border: 1px solid #e2e8f0;
+            border-radius: 14px; padding: 15px; font-weight: 600; width: 100%; 
+            font-size: 1rem; margin-top: 12px; transition: 0.3s;
+        }
+        .btn-secondary-custom:hover { background: #f1f5f9; color: #1e293b; }
     </style>
 </head>
 <body>
+
 <div class="success-card">
-    <div class="success-icon">✓</div>
+    <div class="icon-wrapper">✓</div>
     <div class="title-text" id="msgTitle">ทำรายการสำเร็จ!</div>
     <div class="desc-text" id="msgDesc">บันทึกข้อมูลเรียบร้อยแล้ว</div>
-    <div id="summaryArea" class="mb-4 p-3 bg-light rounded text-start" style="display:none; font-size: 0.9rem;">
+    
+    <div id="summaryArea" style="display:none;">
+        <div style="font-weight: 600; color: #1e293b; margin-bottom: 5px;">รายละเอียดรายการ:</div>
         <div id="summaryContent"></div>
     </div>
-    <button class="btn-close-app" onclick="closeApp()">ปิดหน้าต่างนี้</button>
-    <button class="btn-back" onclick="goHome()">กลับเมนูหลัก</button>
+
+    <button class="btn-primary-custom" onclick="closeApp()">ปิดหน้าต่างนี้</button>
+    <button class="btn-secondary-custom" onclick="goHome()">กลับเมนูหลัก</button>
 </div>
+
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script>
     const MY_LIFF_ID = "2010557323-PAyWhGxW"; 
     let homeUrl = localStorage.getItem("userRole") === "Admin" ? "admin.html" : "user.html";
+    
     window.onload = async () => {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('title')) document.getElementById('msgTitle').innerText = urlParams.get('title');
         if (urlParams.get('desc')) document.getElementById('msgDesc').innerText = urlParams.get('desc');
-        if (urlParams.get('summary')) {
+        
+        const summary = urlParams.get('summary');
+        if (summary) {
             document.getElementById('summaryArea').style.display = 'block';
-            document.getElementById('summaryContent').innerHTML = urlParams.get('summary').replace(/\n/g, '<br>');
+            document.getElementById('summaryContent').innerHTML = summary.replace(/\n/g, '<br>');
         }
         try { await liff.init({ liffId: MY_LIFF_ID }); } catch (err) {}
     };
