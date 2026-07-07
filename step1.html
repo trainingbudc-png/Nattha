@@ -116,31 +116,13 @@
 
     window.onload = function() {
         const adminName = localStorage.getItem("userName");
-        if (adminName) {
-            const urlParams = new URLSearchParams(window.location.search);
-            currentReqId = urlParams.get('reqId') || "N/A";
-            document.getElementById("adminNameDisplay").value = `👨‍💻 ผู้ดำเนินการบันทึก: ${adminName} | 🔑 เลขรายการ: ${currentReqId}`;
-        } else {
-            alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่ครับ");
-            window.location.href = "index.html";
-            return;
-        }
-
         const urlParams = new URLSearchParams(window.location.search);
-        const nameParam = urlParams.get('name');
-        const countParam = urlParams.get('count');
-
-        if (!nameParam || !countParam) {
-            alert("ไม่พบข้อมูลรายการขอเบิก กรุณาเลือกคิวจากหน้ารายการก่อนครับ");
-            window.location.href = "step1-list.html";
-            return;
-        }
-
-        document.getElementById("recipientName").value = decodeURIComponent(nameParam);
-        deviceCount = parseInt(countParam) || 1;
+        currentReqId = urlParams.get('reqId') || "N/A";
+        document.getElementById("adminNameDisplay").value = `👨‍💻 ผู้ดำเนินการบันทึก: ${adminName} | 🔑 เลขรายการ: ${currentReqId}`;
+        document.getElementById("recipientName").value = decodeURIComponent(urlParams.get('name') || "");
+        deviceCount = parseInt(urlParams.get('count')) || 1;
         document.getElementById("deviceCountDisplay").value = deviceCount + " เครื่อง";
         document.getElementById("maxCountDisplay").innerText = deviceCount;
-
         renderiPadGrid();
     };
 
@@ -245,8 +227,10 @@
                 })
             });
 
-            alert("🎉 บันทึกประวัติพร้อมเลขรายการลง Google Sheets เรียบร้อยแล้วครับ!");
-            window.location.href = "admin.html"; 
+            // ✅ ส่วนที่แก้: เด้งไปหน้าสำเร็จ พร้อมแนบข้อมูลสรุปไปโชว์
+            const summary = `เลขรายการ: ${currentReqId}\nรายการเครื่อง: ${ipadDataArray.map(i => i.id).join(', ')}`;
+            window.location.href = `success.html?title=เตรียมเครื่องสำเร็จ&desc=ระบบบันทึกข้อมูลเรียบร้อยแล้ว&summary=${encodeURIComponent(summary)}`;
+            
         } catch (error) {
             alert("เกิดข้อผิดพลาดในการบันทึกข้อมูลฟอร์ม: " + error);
             submitBtn.innerText = "💾 ส่งข้อมูลการเตรียมเครื่องเข้าระบบ";
