@@ -6,66 +6,177 @@
     <title>เข้าสู่ระบบ | iPad Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #f8fafc; font-family: 'Kanit', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 400px; }
-        .logo-icon { font-size: 3.5rem; text-align: center; margin-bottom: 10px; }
+        body { background: #f8fafc; font-family: 'Kanit', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px 0; }
+        .main-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 450px; }
+        
+        /* สไตล์หน้าโหลด LINE */
+        .loading-section { text-align: center; }
+        .line-icon { width: 80px; height: 80px; margin-bottom: 20px; }
+        .spinner-grow { color: #06C755; width: 3rem; height: 3rem; }
+        
+        /* สไตล์ฟอร์มลงทะเบียน (ซ่อนไว้ก่อน) */
+        .register-section { display: none; border-top: 5px solid #10b981; padding-top: 15px;}
         .form-control { border-radius: 10px; padding: 12px; border: 1px solid #e2e8f0; }
-        .form-control:focus { border-color: #3b82f6; box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); }
-        .btn-primary { background: #3b82f6; border: none; border-radius: 10px; padding: 12px; font-weight: bold; font-size: 1.1rem; width: 100%; transition: 0.3s; margin-top: 10px; }
-        .btn-primary:hover { background: #2563eb; }
+        .form-control:focus { border-color: #10b981; box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25); }
+        .btn-success { background: #10b981; border: none; border-radius: 10px; padding: 12px; font-weight: bold; font-size: 1.1rem; width: 100%; transition: 0.3s; margin-top: 15px; }
+        .btn-success:hover { background: #059669; }
         .form-label { font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 5px; }
-        .register-link { text-align: center; margin-top: 20px; font-size: 0.9rem; }
-        .register-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
-        .register-link a:hover { text-decoration: underline; color: #2563eb; }
     </style>
 </head>
 <body>
 
-<div class="login-card">
-    <div class="logo-icon">📱</div>
-    <h3 class="text-center fw-bold text-dark mb-4">เข้าสู่ระบบ</h3>
+<div class="main-card">
     
-    <div class="mb-4">
-        <label class="form-label">ชื่อผู้ใช้งาน</label>
-        <input type="text" id="loginName" class="form-control" placeholder="กรอกชื่อที่ลงทะเบียนไว้">
+    <div id="loadingSection" class="loading-section">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="LINE" class="line-icon">
+        <div class="spinner-grow mt-3" role="status" id="spinnerIcon">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h4 class="fw-bold text-dark mt-4" id="mainText">กำลังตรวจสอบบัญชี...</h4>
+        <p class="text-muted" id="subText">ระบบกำลังเชื่อมต่อข้อมูลกับแอป LINE</p>
     </div>
-    
-    <button class="btn btn-primary" id="btnLogin" onclick="login()">เข้าสู่ระบบ</button>
-    
-    <div class="register-link">
-        ยังไม่มีบัญชีผู้ใช้งาน? <a href="register.html">ลงทะเบียนใหม่</a>
+
+    <div id="registerSection" class="register-section">
+        <h4 class="text-center fw-bold text-dark mb-1">📝 ข้อมูลผู้ใช้งานครั้งแรก</h4>
+        <p class="text-center text-muted mb-4" style="font-size: 0.85rem;">กรุณาเติมข้อมูลให้ครบถ้วนเพื่อเปิดใช้งานระบบ</p>
+        
+        <input type="hidden" id="hiddenUserId">
+
+        <div class="mb-3">
+            <label class="form-label">ชื่อ-นามสกุล</label>
+            <input type="text" id="regName" class="form-control" placeholder="ชื่อ-นามสกุลของคุณ (แก้ไขได้)">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">ฝ่าย / แผนก</label>
+            <input type="text" id="regDept" class="form-control" placeholder="เช่น ไอที, ทันตกรรม, ศัลยกรรม">
+        </div>
+        <div class="mb-4">
+            <label class="form-label">เบอร์ติดต่อภายใน (หรือมือถือ)</label>
+            <input type="text" id="regPhone" class="form-control" placeholder="กรอกเบอร์ที่สามารถติดต่อได้">
+        </div>
+        
+        <button class="btn btn-success" id="btnRegister" onclick="submitRegistration()">✅ ยืนยันข้อมูล & เข้าใช้งาน</button>
     </div>
+
 </div>
 
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
+    
+    // ฝัง LIFF ID ของพี่
+    const MY_LIFF_ID = "2010557323-PAyWhGxW"; 
 
-    async function login() {
-        const name = document.getElementById('loginName').value.trim();
-        if (!name) return alert("⚠️ กรุณากรอกชื่อผู้ใช้งาน");
+    // 1. ฟังก์ชันเริ่มต้น (เปิดมาปุ๊บทำงานเลย)
+    window.onload = async () => {
+        try {
+            await liff.init({ liffId: MY_LIFF_ID });
+            
+            if (!liff.isLoggedIn()) {
+                liff.login();
+                return;
+            }
 
-        const btn = document.getElementById('btnLogin');
-        btn.innerText = "กำลังเข้าสู่ระบบ..."; btn.disabled = true;
+            // ดึงข้อมูลจาก LINE
+            const profile = await liff.getProfile();
+            const displayName = profile.displayName;
+            const userId = profile.userId.slice(0, 8); // ตัดเอา User ID 8 ตัว
 
+            document.getElementById('subText').innerText = `สวัสดีคุณ ${displayName} กำลังตรวจสอบสิทธิ์...`;
+            
+            // เช็คกับฐานข้อมูลว่าเคยลงทะเบียนหรือยัง
+            checkUserInDatabase(userId, displayName);
+
+        } catch (err) {
+            console.error("LIFF Error:", err);
+            showError("เกิดข้อผิดพลาดในการเชื่อมต่อ LINE", "กรุณาเปิดลิงก์ผ่านแอปพลิเคชัน LINE");
+        }
+    };
+
+    // 2. ฟังก์ชันตรวจสอบสิทธิ์
+    async function checkUserInDatabase(userId, displayName) {
         try {
             const res = await fetch(API_URL, {
                 method: "POST",
-                body: JSON.stringify({ action: "checkRole", name: name })
+                body: JSON.stringify({ action: "checkRole", userId: userId })
             });
             const data = await res.json();
 
             if (data.success) {
-                localStorage.setItem("userName", name);
+                // 🟢 กรณี: เคยมีชื่อแล้ว (เด้งเข้าหน้า User/Admin ทันที)
+                document.getElementById('mainText').innerText = "✅ ยืนยันตัวตนสำเร็จ";
+                document.getElementById('subText').innerText = "กำลังพาท่านเข้าสู่ระบบ...";
+                
+                // เซฟชื่อที่ดึงจากชีต (ที่แอดมินอาจจะแก้ให้แล้ว) ลงในเครื่อง
+                localStorage.setItem("userName", data.name);
                 localStorage.setItem("userRole", data.role);
-                window.location.href = data.role === "Admin" ? "admin.html" : "user.html";
+                
+                setTimeout(() => {
+                    window.location.href = data.role === "Admin" ? "admin.html" : "user.html";
+                }, 1000);
             } else {
-                alert("❌ " + data.message);
-                btn.innerText = "เข้าสู่ระบบ"; btn.disabled = false;
+                // 🟡 กรณี: เป็นผู้ใช้ใหม่ (ซ่อนหน้าโหลด -> เปิดฟอร์มลงทะเบียน)
+                document.getElementById('loadingSection').style.display = "none";
+                document.getElementById('registerSection').style.display = "block";
+                
+                // กรอกข้อมูลพื้นฐานให้เลย
+                document.getElementById('hiddenUserId').value = userId;
+                document.getElementById('regName').value = displayName; // ดึงชื่อไลน์มาใส่ไว้ให้ก่อน
             }
         } catch (error) {
-            alert("❌ เกิดข้อผิดพลาดในการเชื่อมต่อ");
-            btn.innerText = "เข้าสู่ระบบ"; btn.disabled = false;
+            showError("เซิร์ฟเวอร์ไม่ตอบสนอง", "ไม่สามารถตรวจสอบข้อมูลกับฐานข้อมูลได้");
         }
+    }
+
+    // 3. ฟังก์ชันบันทึกข้อมูลผู้ใช้ใหม่ (เมื่อกดปุ่มยืนยัน)
+    async function submitRegistration() {
+        const userId = document.getElementById('hiddenUserId').value;
+        const name = document.getElementById('regName').value.trim();
+        const dept = document.getElementById('regDept').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+
+        if (!name || !dept || !phone) {
+            return alert("⚠️ กรุณากรอกข้อมูลให้ครบถ้วนทุกช่องครับ");
+        }
+
+        const btn = document.getElementById('btnRegister');
+        btn.innerText = "⏳ กำลังบันทึกข้อมูล..."; btn.disabled = true;
+
+        try {
+            const res = await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({ 
+                    action: "registerUser", 
+                    userId: userId, 
+                    name: name, 
+                    role: "User", // บังคับสิทธิ์เป็น User
+                    dept: dept, 
+                    phone: phone 
+                })
+            });
+            const data = await res.json();
+
+            if (data.status === "success") {
+                alert("✅ ลงทะเบียนสำเร็จ! ระบบกำลังพาท่านเข้าสู่ระบบ...");
+                localStorage.setItem("userName", name);
+                localStorage.setItem("userRole", "User");
+                window.location.href = "user.html";
+            } else {
+                alert("❌ เกิดข้อผิดพลาดในการบันทึก");
+                btn.innerText = "✅ ยืนยันข้อมูล & เข้าใช้งาน"; btn.disabled = false;
+            }
+        } catch (error) {
+            alert("❌ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
+            btn.innerText = "✅ ยืนยันข้อมูล & เข้าใช้งาน"; btn.disabled = false;
+        }
+    }
+
+    // ฟังก์ชันแสดง Error
+    function showError(main, sub) {
+        document.getElementById('spinnerIcon').style.display = "none";
+        document.getElementById('mainText').innerText = "❌ " + main;
+        document.getElementById('mainText').classList.add("text-danger");
+        document.getElementById('subText').innerText = sub;
     }
 </script>
 </body>
