@@ -13,7 +13,7 @@
             <h2>📱 เมนูผู้ดูแล (Admin)</h2>
         </div>
         <div class="nav-user-area">
-            <span id="showName" class="user-status-text"></span>
+            <span id="showName" class="user-status-text">กำลังโหลด...</span>
             <button class="btn-logout-nav" onclick="logout()">ออกจากระบบ</button>
         </div>
     </nav>
@@ -91,6 +91,39 @@
 
     </div>
     
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="script.js"></script>
+
+    <script>
+        // โชว์ชื่อแอดมิน
+        window.onload = () => {
+            const userName = localStorage.getItem("userName");
+            if (userName) {
+                document.getElementById("showName").innerText = "แอดมิน: " + userName;
+            } else {
+                window.location.href = "index.html"; // ถ้าแอบเข้าให้ดีดกลับไปล็อกอิน
+            }
+        };
+
+        // ระบบล็อกเอาท์ปิดหน้าต่าง LINE
+        async function logout() {
+            localStorage.removeItem("userName");
+            localStorage.removeItem("userRole");
+
+            try {
+                await liff.init({ liffId: "2010557323-PAyWhGxW" }); // ใส่ LIFF ID
+                if (liff.isLoggedIn()) {
+                    liff.logout();
+                }
+                if (liff.isInClient()) {
+                    liff.closeWindow(); // ปิดหน้าต่าง LINE
+                } else {
+                    window.location.href = "index.html";
+                }
+            } catch (err) {
+                window.location.href = "index.html";
+            }
+        }
+    </script>
 </body>
 </html>
