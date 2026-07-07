@@ -10,6 +10,11 @@ window.onload = function() {
         window.location.href = "index.html";
         return;
     }
+    
+    // ดึง reqId จาก URL ไว้ใช้ตอนบันทึก
+    const urlParams = new URLSearchParams(window.location.search);
+    currentReqId = urlParams.get('reqId') || "N/A";
+    
     loadPendingRequests();
 };
 
@@ -22,28 +27,20 @@ async function loadPendingRequests() {
         const result = await res.json();
         
         const selectElement = document.getElementById("requestSelect");
-        selectElement.innerHTML = '<option value="">-- กรุณาเลือกรายการเบิกอุปกรณ์ --</option>';
-
-        if (result.status === "success" && result.data.length > 0) {
-            activeRequestsList = result.data.filter(item => item.status === "ขอเบิก" || item.status === "รอดำเนินการ");
-
-            if(activeRequestsList.length === 0) {
-                selectElement.innerHTML = '<option value="">❌ ไม่มีรายการขอเบิกค้างอยู่ในระบบ</option>';
-                return;
+        if(selectElement) {
+            selectElement.innerHTML = '<option value="">-- กรุณาเลือกรายการเบิกอุปกรณ์ --</option>';
+            if (result.status === "success" && result.data.length > 0) {
+                activeRequestsList = result.data.filter(item => item.status === "ขอเบิก" || item.status === "รอดำเนินการ");
+                activeRequestsList.forEach((req, idx) => {
+                    const opt = document.createElement("option");
+                    opt.value = idx; 
+                    opt.innerText = `คิวที่ ${idx + 1} | คุณ ${req.name} (${req.timestamp})`;
+                    selectElement.appendChild(opt);
+                });
             }
-
-            activeRequestsList.forEach((req, idx) => {
-                const opt = document.createElement("option");
-                opt.value = idx; 
-                opt.innerText = `คิวที่ ${idx + 1} | คุณ ${req.name} (${req.timestamp})`;
-                selectElement.appendChild(opt);
-            });
-        } else {
-            selectElement.innerHTML = '<option value="">❌ ไม่พบข้อมูลการเบิกจากระบบ</option>';
         }
     } catch (error) {
-        console.error("Error linking request data:", error);
-        document.getElementById("requestSelect").innerHTML = '<option value="">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</option>';
+        console.error("Error loading requests:", error);
     }
 }
 
@@ -55,21 +52,19 @@ function onSelectRequest() {
     const tableBody = document.getElementById("checklistBody");
 
     if (selectIdx === "") {
-        recipientGroup.style.display = "none";
-        recipientInput.value = "";
-        countDisplay.value = "";
-        tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;padding:20px;">กรุณาเลือกรายการขอเบิกด้านบนเพื่อสร้างรายการเครื่อง</td></tr>';
+        if(recipientGroup) recipientGroup.style.display = "none";
+        if(tableBody) tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;padding:20px;">กรุณาเลือกรายการขอเบิกด้านบนเพื่อสร้างรายการเครื่อง</td></tr>';
         return;
     }
 
     const selectedData = activeRequestsList[selectIdx];
+    currentReqId = selectedData.reqId; // อัปเดต ReqId
     const count = parseInt(selectedData.note) || 1; 
     
-    recipientGroup.style.display = "block";
+    if(recipientGroup) recipientGroup.style.display = "block";
     recipientInput.value = selectedData.name;  
     countDisplay.value = count + " เครื่อง";   
 
-    // เพิ่มคลาส (Class) ให้ checkbox แต่ละตัว เพื่อให้โค้ดดึงข้อมูลแยกช่องได้
     tableBody.innerHTML = "";
     for(let i = 1; i <= count; i++) {
         const tr = document.createElement("tr");
@@ -85,26 +80,16 @@ function onSelectRequest() {
 }
 
 async function submitStep1Form() {
-    const selectIdx = document.getElementById("requestSelect").value;
-    if (selectIdx === "") {
-        alert("กรุณาเลือกรายการที่ต้องการจัดเตรียมก่อนครับ!");
-        return;
-    }
-
+    const selectIdx = document.getElementById("requestSelect") ? document.getElementById("requestSelect").value : 0;
+    
     const adminName = localStorage.getItem("userName");
     const recipientName = document.getElementById("recipientName").value.trim();
     const countText = document.getElementById("deviceCountDisplay").value;
 
-    if (recipientName === "") {
-        alert("กรุณาระบุชื่อ 'ผู้ที่จะมารับเครื่อง' ด้วยครับ!");
-        return;
-    }
-
-    // เก็บรหัสเครื่อง และสถานะของแอปทั้ง 4 แบบรายเครื่อง
     const rows = document.querySelectorAll('#checklistBody tr');
     let ipadDataArray = [];
     let isAllFilled = true;
-    let allChecked = true; // เอาไว้เช็คว่าติ๊กครบไหม จะได้เด้งเตือน
+    let allChecked = true;
 
     rows.forEach(row => {
         const idInput = row.querySelector('.input-ipad-id');
@@ -112,17 +97,13 @@ async function submitStep1Form() {
             const ipadId = idInput.value.trim();
             if(ipadId === "") isAllFilled = false;
             
-            // ดึงสถานะติ๊กถูกของแต่ละแอป
             const isDriveChecked = row.querySelector('.chk-drive').checked;
             const isFileChecked = row.querySelector('.chk-file').checked;
             const isImgChecked = row.querySelector('.chk-img').checked;
             const isSafariChecked = row.querySelector('.chk-safari').checked;
 
-            if(!isDriveChecked || !isFileChecked || !isImgChecked || !isSafariChecked) {
-                allChecked = false;
-            }
+            if(!isDriveChecked || !isFileChecked || !isImgChecked || !isSafariChecked) allChecked = false;
 
-            // แพ็คข้อมูลรายเครื่องเตรียมส่งให้ชีต
             ipadDataArray.push({
                 id: ipadId,
                 drive: isDriveChecked ? "ผ่าน" : "ไม่ผ่าน",
@@ -133,14 +114,11 @@ async function submitStep1Form() {
         }
     });
 
-    if (!isAllFilled) {
-        alert("กรุณาระบุ 'รหัสเครื่อง' ให้ครบทุกรายการก่อนกดบันทึกครับ");
-        return;
-    }
+    if (!isAllFilled) return alert("กรุณาระบุ 'รหัสเครื่อง' ให้ครบทุกรายการก่อนกดบันทึกครับ");
+    if (!allChecked && !confirm("พบเช็คลิสต์บางรายการไม่ได้ติ๊ก ยืนยันที่จะบันทึกหรือไม่?")) return;
 
-    if (!allChecked) {
-        if (!confirm("พบเช็คลิสต์แอปบางรายการยังไม่ได้ติ๊ก ยืนยันที่จะบันทึกหรือไม่?")) return;
-    }
+    const submitBtn = document.querySelector('button[type="submit"]');
+    if(submitBtn) { submitBtn.innerText = "⏳ กำลังบันทึก..."; submitBtn.disabled = true; }
 
     try {
         await fetch(API_URL, {
@@ -148,14 +126,18 @@ async function submitStep1Form() {
             body: JSON.stringify({ 
                 action: "saveStep1", 
                 adminName: adminName, 
-                ipadData: ipadDataArray, // ส่งเป็นข้อมูลก้อนใหญ่ที่แยกแอปแล้ว
+                reqId: currentReqId,
+                ipadData: ipadDataArray, 
                 note: `เตรียมให้: ${recipientName} (${countText})` 
             })
         });
 
-        alert("บันทึกข้อมูลจัดเตรียมเครื่อง Step 1 ลงชีตเรียบร้อยแล้วครับ!");
-        window.location.href = "admin.html"; 
+        // ✅ จุดเชื่อม Success
+        const summary = `เลขรายการ: ${currentReqId}\nรายการเครื่อง: ${ipadDataArray.map(i => i.id).join(', ')}`;
+        window.location.href = `success.html?title=เตรียมเครื่องสำเร็จ&desc=บันทึกข้อมูล Step 1 เรียบร้อยแล้ว&summary=${encodeURIComponent(summary)}`;
+        
     } catch (error) {
-        alert("เกิดข้อผิดพลาดในการบันทึกข้อมูลฟอร์ม: " + error);
+        alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล: " + error);
+        if(submitBtn) { submitBtn.innerText = "💾 ส่งข้อมูลการเตรียมเครื่องเข้าระบบ"; submitBtn.disabled = false; }
     }
 }
