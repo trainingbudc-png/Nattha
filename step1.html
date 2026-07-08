@@ -61,11 +61,13 @@
             </div>
 
             <div class="d-flex justify-content-between align-items-end mb-2">
-                <p class="fw-bold text-dark mb-0">📱 เลือกรหัสเครื่องที่ต้องการจัดเตรียม:</p>
+                <p class="fw-bold text-dark mb-0">📱 เลือกรหัสเครื่องที่ต้องการจัดเตรียม (เฉพาะที่ว่าง):</p>
                 <span class="counter-badge fw-bold">เลือกแล้ว: <span id="selectedCounter">0</span> เครื่อง</span>
             </div>
             
-            <div class="ipad-grid-container" id="ipadGridContainer"></div>
+            <div class="ipad-grid-container" id="ipadGridContainer">
+                <p class="text-muted w-100 text-center my-3">กำลังโหลดรายการเครื่องจากคลัง... ⏳</p>
+            </div>
 
             <p class="fw-bold text-dark mb-2 mt-4">📋 รายการเช็คลิสต์แอปพลิเคชัน (เฉพาะเครื่องที่เลือก):</p>
             <div class="table-responsive mb-4 border rounded">
@@ -97,28 +99,16 @@
 
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
-
-    // 📌 สต็อกเครื่อง
-    const ipadStockList = [
-        "iPad[01]", "iPad[02]", "iPad[03]", "iPad[04]", "iPad[05]", "iPad[06]", "iPad[07]", "iPad[08]", "iPad[09]", "iPad[10]",
-        "iPad[11]", "iPad[12]", "iPad[13]", "iPad[14]", "iPad[15]", "iPad[16]", "iPad[17]", "iPad[18]", "iPad[19]", "iPad[20]",
-        "iPad[21]", "iPad[22]", "iPad[23]", "iPad[24]", "iPad[25]", "iPad[26]", "iPad[27]", "iPad[28]", "iPad[29]", "iPad[30]",
-        "iPad[31]", "iPad[32]", "iPad[33]", "iPad[34]", "iPad[35]", "iPad[36]", "iPad[37]", "iPad[38]", "iPad[39]", "iPad[40]",
-        "iPad[41]", "iPad[42]", "iPad[43]", "iPad[44]", "iPad[45]", "iPad[46]", "iPad[47]", "iPad[48]", "iPad[49]", "iPad[50]",
-        "iPad[51]", "iPad[52]", "iPad[53]", "iPad[54]", "iPad[55]", "iPad[56]", "iPad[57]", "iPad[58]", "iPad[59]", "iPad[60]",
-        "iPad Air + APceil [61]", "iPad Air + APceil [62]", "iPad Air + APceil [63]", "iPad Air + APceil [64]", "iPad Air + APceil [65]",
-        "iPad Air + APceil [66]", "iPad Air + APceil [67]", "iPad Air + APceil [68]", "iPad Air + APceil [69]", "iPad Air + APceil [70]",
-        "iPad Air + APceil [71]", "iPad Air + APceil [72]", "iPad Air + APceil [73]", "iPad Air + APceil [74]", "iPad Air + APceil [75]",
-        "iPad Air + APceil [76]", "iPad Air + APceil [77]", "iPad Air + APceil [78]", "iPad Air + APceil [79]", "iPad Air + APceil [80]"
-    ];
-
+    
+    // ตัวแปรเก็บรายชื่อเครื่องที่ว่าง
+    let ipadStockList = [];
     let currentSelected = 0;  
 
     window.onload = function() {
         const adminName = localStorage.getItem("userName");
         document.getElementById("adminNameDisplay").value = `👨‍💻 ผู้ดำเนินการบันทึก (แอดมิน): ${adminName}`;
-        renderiPadGrid();
         loadUserNames(); 
+        loadInventory(); // 📌 โหลดรายชื่อเครื่องที่ว่างจาก Sheet
     };
 
     function loadUserNames() {
@@ -135,11 +125,29 @@
                     select.innerHTML += `<option value="${name}">${name}</option>`;
                 });
             } else {
-                select.innerHTML = '<option value="">❌ ไม่พบข้อมูลรายชื่อ (โปรดเพิ่มใน Sheet)</option>';
+                select.innerHTML = '<option value="">❌ ไม่พบข้อมูลรายชื่อ</option>';
+            }
+        });
+    }
+
+    // 📌 ฟังก์ชันโหลดเฉพาะเครื่องที่ "ว่าง" จากคลัง
+    function loadInventory() {
+        fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "getInventory" })
+        })
+        .then(res => res.json())
+        .then(res => {
+            const container = document.getElementById("ipadGridContainer");
+            if (res.status === "success" && res.data.length > 0) {
+                ipadStockList = res.data;
+                renderiPadGrid();
+            } else {
+                container.innerHTML = "<p class='text-danger w-100 text-center fw-bold py-4'>❌ ขณะนี้ไม่มีเครื่องว่างในคลังครับ</p>";
             }
         })
         .catch(err => {
-            document.getElementById("recipientName").innerHTML = '<option value="">❌ โหลดข้อมูลล้มเหลว</option>';
+            document.getElementById("ipadGridContainer").innerHTML = "<p class='text-danger w-100 text-center py-4'>❌ เกิดข้อผิดพลาดในการโหลดคลัง</p>";
         });
     }
 
@@ -168,8 +176,7 @@
             const tr = document.createElement("tr");
             tr.id = `row-ipad-${index}`; 
             tr.setAttribute("data-ipad-id", idText);
-            tr.setAttribute("data-index", index); // ใช้เป็นตัวช่วยเรียงลำดับ
-            // เอา checked ออกจาก HTML เพื่อให้เริ่มต้นแบบไม่ติ๊ก
+            tr.setAttribute("data-index", index); 
             tr.innerHTML = `
                 <td class="fw-bold text-primary">${idText}</td>
                 <td><input type="checkbox" class="app-check chk-drive mx-auto d-block"></td>
@@ -179,7 +186,6 @@
                 <td><button type="button" class="btn btn-sm btn-outline-success fw-bold px-3 py-1" onclick="checkAllInRow(this)">✔ ติ๊กครบ</button></td>
             `;
             
-            // 📌 ระบบเรียงลำดับ: หาตำแหน่งที่ถูกต้องเพื่อแทรกแถวใหม่ตาม Index
             const existingRows = Array.from(tableBody.querySelectorAll('tr[data-index]'));
             let inserted = false;
             for (let i = 0; i < existingRows.length; i++) {
@@ -190,9 +196,7 @@
                     break;
                 }
             }
-            if (!inserted) {
-                tableBody.appendChild(tr); // ถ้าค่า index มากที่สุด ให้ต่อท้ายสุด
-            }
+            if (!inserted) { tableBody.appendChild(tr); }
 
         } else {
             currentSelected--;
@@ -204,7 +208,6 @@
         document.getElementById("deviceCountDisplay").value = currentSelected + " เครื่อง";
     }
 
-    // ฟังก์ชันสำหรับปุ่ม "ติ๊กครบ"
     function checkAllInRow(btn) {
         const row = btn.closest('tr');
         row.querySelectorAll('.app-check').forEach(cb => cb.checked = true);
@@ -212,16 +215,8 @@
 
     async function submitStep1Form() {
         const recipientName = document.getElementById("recipientName").value.trim();
-        
-        if (!recipientName) {
-            alert("⚠️ กรุณาเลือกชื่อผู้ขอเบิกอุปกรณ์ครับ");
-            return;
-        }
-
-        if (currentSelected === 0) {
-            alert("⚠️ กรุณาเลือกรหัสเครื่อง iPad อย่างน้อย 1 เครื่องครับ");
-            return;
-        }
+        if (!recipientName) return alert("⚠️ กรุณาเลือกชื่อผู้ขอเบิกอุปกรณ์ครับ");
+        if (currentSelected === 0) return alert("⚠️ กรุณาเลือกรหัสเครื่อง iPad อย่างน้อย 1 เครื่องครับ");
 
         const adminName = localStorage.getItem("userName");
         const rows = document.querySelectorAll('#checklistBody tr[data-ipad-id]');
@@ -235,16 +230,11 @@
             const isImgChecked = row.querySelector('.chk-img').checked;
             const isSafariChecked = row.querySelector('.chk-safari').checked;
 
-            if (!isDriveChecked || !isFileChecked || !isImgChecked || !isSafariChecked) {
-                allChecked = false;
-            }
+            if (!isDriveChecked || !isFileChecked || !isImgChecked || !isSafariChecked) allChecked = false;
 
             ipadDataArray.push({
-                id: ipadId,
-                drive: isDriveChecked ? "ผ่าน" : "ไม่ผ่าน",
-                file: isFileChecked ? "ผ่าน" : "ไม่ผ่าน",
-                img: isImgChecked ? "ผ่าน" : "ไม่ผ่าน",
-                safari: isSafariChecked ? "ผ่าน" : "ไม่ผ่าน"
+                id: ipadId, drive: isDriveChecked ? "ผ่าน" : "ไม่ผ่าน", file: isFileChecked ? "ผ่าน" : "ไม่ผ่าน",
+                img: isImgChecked ? "ผ่าน" : "ไม่ผ่าน", safari: isSafariChecked ? "ผ่าน" : "ไม่ผ่าน"
             });
         });
 
@@ -260,28 +250,22 @@
             const response = await fetch(API_URL, {
                 method: "POST",
                 body: JSON.stringify({
-                    action: "saveStep1",
-                    adminName: adminName,
-                    recipientName: recipientName,
-                    ipadData: ipadDataArray,
-                    note: `เตรียมให้: ${recipientName} (${currentSelected} เครื่อง)`
+                    action: "saveStep1", adminName: adminName, recipientName: recipientName,
+                    ipadData: ipadDataArray, note: `เตรียมให้: ${recipientName} (${currentSelected} เครื่อง)`
                 })
             });
             const result = await response.json();
 
             if(result.status === "success") {
-                const newReqId = result.reqId;
-                const summary = `เลขรายการ: ${newReqId}\nผู้ขอเบิก: ${recipientName}\nรายการเครื่อง: ${ipadDataArray.map(i => i.id).join(', ')}`;
+                const summary = `เลขรายการ: ${result.reqId}\nผู้ขอเบิก: ${recipientName}\nรายการเครื่อง: ${ipadDataArray.map(i => i.id).join(', ')}`;
                 window.location.href = `success.html?title=เตรียมเครื่องสำเร็จ&desc=สร้างรายการเบิกใหม่เรียบร้อยแล้ว&summary=${encodeURIComponent(summary)}`;
             } else {
                 alert("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์");
-                submitBtn.innerText = "💾 เปิดบิลและส่งข้อมูลการเตรียมเครื่อง";
-                submitBtn.disabled = false;
+                submitBtn.innerText = "💾 เปิดบิลและส่งข้อมูลการเตรียมเครื่อง"; submitBtn.disabled = false;
             }
         } catch (error) {
-            alert("เกิดข้อผิดพลาดในการบันทึกข้อมูลฟอร์ม: " + error);
-            submitBtn.innerText = "💾 เปิดบิลและส่งข้อมูลการเตรียมเครื่อง";
-            submitBtn.disabled = false;
+            alert("เกิดข้อผิดพลาดในการบันทึกข้อมูลฟอร์ม");
+            submitBtn.innerText = "💾 เปิดบิลและส่งข้อมูลการเตรียมเครื่อง"; submitBtn.disabled = false;
         }
     }
 </script>
