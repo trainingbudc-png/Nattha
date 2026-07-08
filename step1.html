@@ -36,8 +36,8 @@
 <div class="container">
     <div class="form-container">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold mb-0 text-success">⚙️ ขั้นตอนที่ 1 | จัดเตรียม iPad</h3>
-            <a href="step1-list.html" class="btn btn-outline-secondary btn-sm">↩️ เปลี่ยนรายการเบิก</a>
+            <h3 class="fw-bold mb-0 text-success">⚙️ ขั้นตอนที่ 1 | สร้างรายการ & จัดเตรียม iPad</h3>
+            <a href="admin.html" class="btn btn-outline-secondary btn-sm">↩️ กลับหน้าเมนูหลัก</a>
         </div>
         
         <div class="mb-3">
@@ -49,18 +49,18 @@
         <form id="step1Form" onsubmit="event.preventDefault(); submitStep1Form();">
             <div class="row g-3 mb-4">
                 <div class="col-md-8">
-                    <label class="form-label fw-bold text-secondary">👤 ชื่อผู้ขอเบิกอุปกรณ์</label>
-                    <input type="text" id="recipientName" class="form-control form-control-disabled" readonly>
+                    <label class="form-label fw-bold text-secondary">👤 ชื่อผู้ขอเบิกอุปกรณ์ (พิมพ์ชื่อ)</label>
+                    <input type="text" id="recipientName" class="form-control border-primary" placeholder="ระบุชื่อผู้ใช้งานที่จะรับเครื่อง" required>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label fw-bold text-secondary">📦 จำนวนที่ต้องเตรียม</label>
-                    <input type="text" id="deviceCountDisplay" class="form-control form-control-disabled text-center" readonly>
+                    <label class="form-label fw-bold text-secondary">📦 จำนวนเครื่องที่เลือก</label>
+                    <input type="text" id="deviceCountDisplay" class="form-control form-control-disabled text-center" value="0 เครื่อง" readonly>
                 </div>
             </div>
 
             <div class="d-flex justify-content-between align-items-end mb-2">
                 <p class="fw-bold text-dark mb-0">📱 เลือกรหัสเครื่องที่ต้องการจัดเตรียม:</p>
-                <span class="counter-badge fw-bold">เลือกแล้ว: <span id="selectedCounter">0</span> / <span id="maxCountDisplay">0</span></span>
+                <span class="counter-badge fw-bold">เลือกแล้ว: <span id="selectedCounter">0</span> เครื่อง</span>
             </div>
             
             <div class="ipad-grid-container" id="ipadGridContainer"></div>
@@ -86,7 +86,7 @@
             </div>
 
             <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-success btn-lg fw-bold py-3 shadow-sm">💾 ส่งข้อมูลการเตรียมเครื่องเข้าระบบ</button>
+                <button type="submit" class="btn btn-success btn-lg fw-bold py-3 shadow-sm">💾 เปิดบิลและส่งข้อมูลการเตรียมเครื่อง</button>
             </div>
         </form>
     </div>
@@ -95,7 +95,7 @@
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
 
-    // 📌 สต็อก 80 เครื่องของจริง (01-60 และ 61-80)
+    // 📌 สต็อกเครื่อง
     const ipadStockList = [
         "iPad[01]", "iPad[02]", "iPad[03]", "iPad[04]", "iPad[05]", "iPad[06]", "iPad[07]", "iPad[08]", "iPad[09]", "iPad[10]",
         "iPad[11]", "iPad[12]", "iPad[13]", "iPad[14]", "iPad[15]", "iPad[16]", "iPad[17]", "iPad[18]", "iPad[19]", "iPad[20]",
@@ -103,26 +103,17 @@
         "iPad[31]", "iPad[32]", "iPad[33]", "iPad[34]", "iPad[35]", "iPad[36]", "iPad[37]", "iPad[38]", "iPad[39]", "iPad[40]",
         "iPad[41]", "iPad[42]", "iPad[43]", "iPad[44]", "iPad[45]", "iPad[46]", "iPad[47]", "iPad[48]", "iPad[49]", "iPad[50]",
         "iPad[51]", "iPad[52]", "iPad[53]", "iPad[54]", "iPad[55]", "iPad[56]", "iPad[57]", "iPad[58]", "iPad[59]", "iPad[60]",
-        
         "iPad Air + APceil [61]", "iPad Air + APceil [62]", "iPad Air + APceil [63]", "iPad Air + APceil [64]", "iPad Air + APceil [65]",
         "iPad Air + APceil [66]", "iPad Air + APceil [67]", "iPad Air + APceil [68]", "iPad Air + APceil [69]", "iPad Air + APceil [70]",
         "iPad Air + APceil [71]", "iPad Air + APceil [72]", "iPad Air + APceil [73]", "iPad Air + APceil [74]", "iPad Air + APceil [75]",
         "iPad Air + APceil [76]", "iPad Air + APceil [77]", "iPad Air + APceil [78]", "iPad Air + APceil [79]", "iPad Air + APceil [80]"
     ];
 
-    let deviceCount = 1;      
     let currentSelected = 0;  
-    let currentReqId = "";
 
     window.onload = function() {
         const adminName = localStorage.getItem("userName");
-        const urlParams = new URLSearchParams(window.location.search);
-        currentReqId = urlParams.get('reqId') || "N/A";
-        document.getElementById("adminNameDisplay").value = `👨‍💻 ผู้ดำเนินการบันทึก: ${adminName} | 🔑 เลขรายการ: ${currentReqId}`;
-        document.getElementById("recipientName").value = decodeURIComponent(urlParams.get('name') || "");
-        deviceCount = parseInt(urlParams.get('count')) || 1;
-        document.getElementById("deviceCountDisplay").value = deviceCount + " เครื่อง";
-        document.getElementById("maxCountDisplay").innerText = deviceCount;
+        document.getElementById("adminNameDisplay").value = `👨‍💻 ผู้ดำเนินการบันทึก (แอดมิน): ${adminName}`;
         renderiPadGrid();
     };
 
@@ -145,11 +136,6 @@
         const placeholder = document.getElementById("emptyPlaceholder");
 
         if (checkbox.checked) {
-            if (currentSelected >= deviceCount) {
-                alert(`❌ คุณไม่สามารถเลือกเกินจำนวน ${deviceCount} เครื่องได้ครับ!`);
-                checkbox.checked = false; 
-                return;
-            }
             currentSelected++;
             if (placeholder) placeholder.style.display = "none"; 
 
@@ -171,18 +157,23 @@
             if (currentSelected === 0 && placeholder) placeholder.style.display = "table-row";
         }
         document.getElementById("selectedCounter").innerText = currentSelected;
+        document.getElementById("deviceCountDisplay").value = currentSelected + " เครื่อง";
     }
 
     async function submitStep1Form() {
-        if (currentSelected !== deviceCount) {
-            alert(`⚠️ กรุณาเลือกรหัสเครื่อง iPad ให้ครบจำนวน ${deviceCount} เครื่องก่อนกดบันทึกครับ`);
+        const recipientName = document.getElementById("recipientName").value.trim();
+        
+        if (!recipientName) {
+            alert("⚠️ กรุณาระบุชื่อผู้ขอเบิกอุปกรณ์ครับ");
+            return;
+        }
+
+        if (currentSelected === 0) {
+            alert("⚠️ กรุณาเลือกรหัสเครื่อง iPad อย่างน้อย 1 เครื่องครับ");
             return;
         }
 
         const adminName = localStorage.getItem("userName");
-        const recipientName = document.getElementById("recipientName").value;
-        const countText = document.getElementById("deviceCountDisplay").value;
-
         const rows = document.querySelectorAll('#checklistBody tr[data-ipad-id]');
         let ipadDataArray = [];
         let allChecked = true;
@@ -212,28 +203,34 @@
         }
 
         const submitBtn = document.querySelector('button[type="submit"]');
-        submitBtn.innerText = "⏳ กำลังบันทึกข้อมูล...";
+        submitBtn.innerText = "⏳ กำลังสร้างรายการและบันทึกข้อมูล...";
         submitBtn.disabled = true;
 
         try {
-            await fetch(API_URL, {
+            const response = await fetch(API_URL, {
                 method: "POST",
                 body: JSON.stringify({
                     action: "saveStep1",
-                    reqId: currentReqId, 
                     adminName: adminName,
+                    recipientName: recipientName,
                     ipadData: ipadDataArray,
-                    note: `เตรียมให้: ${recipientName} (${countText})`
+                    note: `เตรียมให้: ${recipientName} (${currentSelected} เครื่อง)`
                 })
             });
+            const result = await response.json();
 
-            // ✅ ส่วนที่แก้: เด้งไปหน้าสำเร็จ พร้อมแนบข้อมูลสรุปไปโชว์
-            const summary = `เลขรายการ: ${currentReqId}\nรายการเครื่อง: ${ipadDataArray.map(i => i.id).join(', ')}`;
-            window.location.href = `success.html?title=เตรียมเครื่องสำเร็จ&desc=ระบบบันทึกข้อมูลเรียบร้อยแล้ว&summary=${encodeURIComponent(summary)}`;
-            
+            if(result.status === "success") {
+                const newReqId = result.reqId; // รับเลขรันใหม่จากหลังบ้าน
+                const summary = `เลขรายการ: ${newReqId}\nผู้ขอเบิก: ${recipientName}\nรายการเครื่อง: ${ipadDataArray.map(i => i.id).join(', ')}`;
+                window.location.href = `success.html?title=เตรียมเครื่องสำเร็จ&desc=สร้างรายการเบิกใหม่เรียบร้อยแล้ว&summary=${encodeURIComponent(summary)}`;
+            } else {
+                alert("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์");
+                submitBtn.innerText = "💾 เปิดบิลและส่งข้อมูลการเตรียมเครื่อง";
+                submitBtn.disabled = false;
+            }
         } catch (error) {
             alert("เกิดข้อผิดพลาดในการบันทึกข้อมูลฟอร์ม: " + error);
-            submitBtn.innerText = "💾 ส่งข้อมูลการเตรียมเครื่องเข้าระบบ";
+            submitBtn.innerText = "💾 เปิดบิลและส่งข้อมูลการเตรียมเครื่อง";
             submitBtn.disabled = false;
         }
     }
