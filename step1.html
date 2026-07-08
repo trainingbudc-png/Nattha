@@ -49,8 +49,11 @@
         <form id="step1Form" onsubmit="event.preventDefault(); submitStep1Form();">
             <div class="row g-3 mb-4">
                 <div class="col-md-8">
-                    <label class="form-label fw-bold text-secondary">👤 ชื่อผู้ขอเบิกอุปกรณ์ (พิมพ์ชื่อ)</label>
-                    <input type="text" id="recipientName" class="form-control border-primary" placeholder="ระบุชื่อผู้ใช้งานที่จะรับเครื่อง" required>
+                    <!-- 📌 เปลี่ยนจาก input พิมพ์ข้อความ เป็น select Dropdown -->
+                    <label class="form-label fw-bold text-secondary">👤 ชื่อผู้ขอเบิกอุปกรณ์ (เลือกจากรายชื่อ)</label>
+                    <select id="recipientName" class="form-select border-primary" required>
+                        <option value="">กำลังโหลดรายชื่อ... ⏳</option>
+                    </select>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-bold text-secondary">📦 จำนวนเครื่องที่เลือก</label>
@@ -93,6 +96,7 @@
 </div>
 
 <script>
+    // ⚠️ ลิงก์ API ตัวเดิมของพี่
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
 
     // 📌 สต็อกเครื่อง
@@ -115,7 +119,31 @@
         const adminName = localStorage.getItem("userName");
         document.getElementById("adminNameDisplay").value = `👨‍💻 ผู้ดำเนินการบันทึก (แอดมิน): ${adminName}`;
         renderiPadGrid();
+        loadUserNames(); // 📌 โหลดชื่อจาก Google Sheet
     };
+
+    // 📌 ฟังก์ชันดึงรายชื่อผู้ใช้งานจาก Google Sheet
+    function loadUserNames() {
+        fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "getUserNames" })
+        })
+        .then(res => res.json())
+        .then(res => {
+            const select = document.getElementById("recipientName");
+            select.innerHTML = '<option value="">-- กรุณาเลือกชื่อผู้ขอเบิก --</option>';
+            if (res.status === "success" && res.data.length > 0) {
+                res.data.forEach(name => {
+                    select.innerHTML += `<option value="${name}">${name}</option>`;
+                });
+            } else {
+                select.innerHTML = '<option value="">❌ ไม่พบข้อมูลรายชื่อ (โปรดเพิ่มใน Sheet)</option>';
+            }
+        })
+        .catch(err => {
+            document.getElementById("recipientName").innerHTML = '<option value="">❌ โหลดข้อมูลล้มเหลว</option>';
+        });
+    }
 
     function renderiPadGrid() {
         const container = document.getElementById("ipadGridContainer");
@@ -164,7 +192,7 @@
         const recipientName = document.getElementById("recipientName").value.trim();
         
         if (!recipientName) {
-            alert("⚠️ กรุณาระบุชื่อผู้ขอเบิกอุปกรณ์ครับ");
+            alert("⚠️ กรุณาเลือกชื่อผู้ขอเบิกอุปกรณ์ครับ");
             return;
         }
 
@@ -220,7 +248,7 @@
             const result = await response.json();
 
             if(result.status === "success") {
-                const newReqId = result.reqId; // รับเลขรันใหม่จากหลังบ้าน
+                const newReqId = result.reqId;
                 const summary = `เลขรายการ: ${newReqId}\nผู้ขอเบิก: ${recipientName}\nรายการเครื่อง: ${ipadDataArray.map(i => i.id).join(', ')}`;
                 window.location.href = `success.html?title=เตรียมเครื่องสำเร็จ&desc=สร้างรายการเบิกใหม่เรียบร้อยแล้ว&summary=${encodeURIComponent(summary)}`;
             } else {
