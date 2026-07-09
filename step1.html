@@ -3,142 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Step 1 | เตรียมเครื่อง</title>
+    <title>ระบบเช็คลิสต์จัดเตรียมเครื่อง - Step 1</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { background: #f4f7f6; font-family: 'Kanit', sans-serif; color: #333; }
-        .card-custom { border-radius: 12px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .header-title { color: #dc3545; font-weight: 600; }
+        body { font-family: 'Sarabun', sans-serif; background-color: #fafbfe; padding: 20px; }
+        .form-container { background: #ffffff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); padding: 30px; max-width: 850px; margin: auto; }
+        .table th { background-color: #f8fafc; color: #475569; font-weight: 600; text-align: center; vertical-align: middle; }
+        .table td { vertical-align: middle; text-align: center; }
+        .form-control-disabled { background-color: #f1f5f9 !important; font-weight: bold; color: #334155; border: none; }
+        input[type="checkbox"].app-check { width: 22px; height: 22px; cursor: pointer; accent-color: #10b981; }
+
+        .ipad-grid-container {
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px;
+            max-height: 280px; overflow-y: auto; display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px;
+        }
+        .ipad-checkbox-wrapper input[type="checkbox"] { display: none; }
+        .ipad-checkbox-card {
+            border: 2px solid #cbd5e1; border-radius: 8px; padding: 12px 10px; text-align: center;
+            cursor: pointer; transition: all 0.2s ease; background: #ffffff; font-weight: 600; color: #64748b; font-size: 0.9rem; user-select: none;
+        }
+        .ipad-checkbox-card:hover { border-color: #94a3b8; background: #f1f5f9; }
+        .ipad-checkbox-wrapper input[type="checkbox"]:checked + .ipad-checkbox-card {
+            border-color: #0ea5e9; background-color: #f0f9ff; color: #0284c7; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
+        }
+        .counter-badge { background-color: #0ea5e9; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
-    <div class="container py-5">
-        <h3 class="header-title text-center mb-4">📦 Step 1 | เตรียมเครื่อง iPad</h3>
-        
-        <div class="card card-custom p-4 mx-auto" style="max-width: 600px;">
-            <form id="step1Form">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">เลือกผู้ขอเบิกยืม (ผู้ใช้งาน):</label>
-                    <select id="userNameSelect" class="form-select" required>
-                        <option value="">กำลังโหลดรายชื่อ...</option>
-                    </select>
-                </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">เลือกเครื่อง iPad ที่ว่าง (เลือกได้มากกว่า 1):</label>
-                    <select id="ipadSelect" class="form-select" multiple size="4" required>
-                        <option value="">กำลังโหลดคลัง iPad...</option>
-                    </select>
-                    <small class="text-muted">*กด Ctrl (Windows) หรือ Command (Mac) ค้างไว้เพื่อเลือกหลายเครื่อง</small>
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label fw-bold">สิ่งที่แอดมินต้องเตรียม (เช็คให้ครบ):</label>
-                    <div class="form-check"><input class="form-check-input check-item" type="checkbox" id="checkDrive" value="Google Drive"><label class="form-check-label" for="checkDrive">ล็อกอิน Google Drive เรียบร้อย</label></div>
-                    <div class="form-check"><input class="form-check-input check-item" type="checkbox" id="checkFile" value="ไฟล์เอกสาร"><label class="form-check-label" for="checkFile">ดาวน์โหลดไฟล์เอกสารครบถ้วน</label></div>
-                    <div class="form-check"><input class="form-check-input check-item" type="checkbox" id="checkImg" value="ไฟล์รูปภาพ"><label class="form-check-label" for="checkImg">บันทึกไฟล์รูปภาพลงเครื่อง</label></div>
-                    <div class="form-check"><input class="form-check-input check-item" type="checkbox" id="checkSafari" value="Safari"><label class="form-check-label" for="checkSafari">เคลียร์ประวัติ Safari เรียบร้อย</label></div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-bold">หมายเหตุ (ถ้ามี):</label>
-                    <input type="text" id="noteInput" class="form-control" placeholder="เช่น เตรียมให้ก่อน 10 โมง">
-                </div>
-
-                <button type="button" class="btn btn-primary w-100 fw-bold py-2" id="submitBtn" onclick="submitStep1()">✅ ยืนยันการเตรียมเครื่อง</button>
-            </form>
+<div class="container">
+    <div class="form-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold mb-0 text-success">⚙️ ขั้นตอนที่ 1 | สร้างรายการ & จัดเตรียม iPad</h3>
+            <a href="admin.html" class="btn btn-outline-secondary btn-sm">↩️ กลับหน้าเมนูหลัก</a>
         </div>
-        <div class="text-center mt-3"><a href="admin.html" class="text-secondary">⬅️ กลับหน้าเมนูผู้ดูแล</a></div>
+        
+        <div class="mb-3">
+            <input type="text" id="adminNameDisplay" class="form-control text-muted bg-light" readonly style="font-size: 0.9rem; border: none;">
+        </div>
+
+        <hr>
+
+        <form id="step1Form" onsubmit="event.preventDefault(); submitStep1Form();">
+            <div class="row g-3 mb-4">
+                <div class="col-md-8">
+                    <label class="form-label fw-bold text-secondary">👤 ชื่อผู้ขอเบิกอุปกรณ์ (เลือกจากรายชื่อ)</label>
+                    <select id="recipientName" class="form-select border-primary" required>
+                        <option value="">กำลังโหลดรายชื่อ... ⏳</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-secondary">📦 จำนวนเครื่องที่เลือก</label>
+                    <input type="text" id="deviceCountDisplay" class="form-control form-control-disabled text-center" value="0 เครื่อง" readonly>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-end mb-2">
+                <p class="fw-bold text-dark mb-0">📱 เลือกรหัสเครื่องที่ต้องการจัดเตรียม (เฉพาะที่ว่าง):</p>
+                <span class="counter-badge fw-bold">เลือกแล้ว: <span id="selectedCounter">0</span> เครื่อง</span>
+            </div>
+            
+            <div class="ipad-grid-container" id="ipadGridContainer">
+                <p class="text-muted w-100 text-center my-3">กำลังโหลดรายการเครื่องจากคลัง... ⏳</p>
+            </div>
+
+            <p class="fw-bold text-dark mb-2 mt-4">📋 รายการเช็คลิสต์แอปพลิเคชัน (เฉพาะเครื่องที่เลือก):</p>
+            <div class="table-responsive mb-4 border rounded">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">รหัสเครื่อง iPad</th>
+                            <th style="width: 15%;">Google Drive</th>
+                            <th style="width: 15%;">แอป File</th>
+                            <th style="width: 15%;">แอป รูปภาพ</th>
+                            <th style="width: 15%;">แอป Safari</th>
+                            <th style="width: 20%;">ปุ่มลัด</th>
+                        </tr>
+                    </thead>
+                    <tbody id="checklistBody">
+                        <tr id="emptyPlaceholder">
+                            <td colspan="6" class="text-muted py-4">กรุณากดเลือกเครื่อง iPad จากกล่องด้านบนครับ 👆</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-success btn-lg fw-bold py-3 shadow-sm">💾 เปิดบิลและส่งข้อมูลการเตรียมเครื่อง</button>
+            </div>
+        </form>
     </div>
+</div>
 
 <script>
-    // ⚠️ เปลี่ยนเป็นลิงก์ API ของพี่ด้วยนะครับ!
+    // ⚠️ ตรงนี้อย่าลืมเอาลิงก์ API ของพี่มาใส่นะครับ!
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
     
+    // ตัวแปรเก็บรายชื่อเครื่องที่ว่าง
+    let ipadStockList = [];
+    let currentSelected = 0;  
+
     window.onload = function() {
-        if(localStorage.getItem("userRole") !== "Admin") { alert("เฉพาะแอดมินเท่านั้น"); window.location.href="index.html"; return; }
-        loadUsersAndIpads();
+        const adminName = localStorage.getItem("userName");
+        document.getElementById("adminNameDisplay").value = `👨‍💻 ผู้ดำเนินการบันทึก (แอดมิน): ${adminName}`;
+        loadUserNames(); 
+        loadInventory(); 
     };
 
-    function loadUsersAndIpads() {
-        // โหลดรายชื่อผู้ใช้งาน
-        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getUserNames" }) })
+    function loadUserNames() {
+        fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "getUserNames" })
+        })
         .then(res => res.json())
         .then(res => {
-            const select = document.getElementById("userNameSelect");
-            select.innerHTML = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
-            if(res.status === "success" && res.data.length > 0) {
-                res.data.forEach(name => { select.innerHTML += `<option value="${name}">${name}</option>`; });
+            const select = document.getElementById("recipientName");
+            select.innerHTML = '<option value="">-- กรุณาเลือกชื่อผู้ขอเบิก --</option>';
+            if (res.status === "success" && res.data.length > 0) {
+                res.data.forEach(name => {
+                    select.innerHTML += `<option value="${name}">${name}</option>`;
+                });
+            } else {
+                select.innerHTML = '<option value="">❌ ไม่พบข้อมูลรายชื่อ</option>';
             }
-        });
-
-        // โหลด iPad ว่าง
-        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getInventory" }) })
-        .then(res => res.json())
-        .then(res => {
-            const ipadSelect = document.getElementById("ipadSelect");
-            ipadSelect.innerHTML = "";
-            if(res.status === "success" && res.data.length > 0) {
-                res.data.forEach(id => { ipadSelect.innerHTML += `<option value="${id}">${id}</option>`; });
-            } else { ipadSelect.innerHTML = '<option value="">ไม่มีเครื่องว่างในคลัง</option>'; }
         });
     }
 
-    function submitStep1() {
-        const recipientName = document.getElementById("userNameSelect").value;
-        const ipadSelect = document.getElementById("ipadSelect");
-        const note = document.getElementById("noteInput").value;
-        const adminName = localStorage.getItem("userName") || "Admin";
-        
-        let selectedIpads = Array.from(ipadSelect.selectedOptions).map(opt => opt.value);
-
-        if(!recipientName) return alert("กรุณาเลือกชื่อผู้ขอยืม");
-        if(selectedIpads.length === 0) return alert("กรุณาเลือก iPad อย่างน้อย 1 เครื่อง");
-        
-        // เช็คว่าติ๊กครบไหม
-        const checks = document.querySelectorAll('.check-item');
-        let allChecked = true;
-        checks.forEach(c => { if(!c.checked) allChecked = false; });
-        if(!allChecked) return alert("กรุณาเตรียมเครื่องและติ๊กถูกให้ครบทุกข้อครับ");
-
-        const btn = document.getElementById("submitBtn");
-        btn.innerHTML = "กำลังบันทึกข้อมูล... ⏳";
-        btn.disabled = true;
-
-        const ipadData = selectedIpads.map(id => ({
-            id: id,
-            drive: document.getElementById("checkDrive").checked,
-            file: document.getElementById("checkFile").checked,
-            img: document.getElementById("checkImg").checked,
-            safari: document.getElementById("checkSafari").checked
-        }));
-
-        // 📌 ข้อมูลที่จะส่งไป Code.gs (ต้องมี recipientName แน่นอน)
-        const payload = {
-            action: "saveStep1",
-            adminName: adminName,
-            recipientName: recipientName,
-            note: note ? `เตรียมให้: ${recipientName} (${selectedIpads.length} เครื่อง) | ` + note : `เตรียมให้: ${recipientName} (${selectedIpads.length} เครื่อง)`,
-            ipadData: ipadData
-        };
-
-        fetch(API_URL, { method: "POST", body: JSON.stringify(payload) })
+    function loadInventory() {
+        fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "getInventory" })
+        })
         .then(res => res.json())
         .then(res => {
-            if(res.status === "success") {
-                alert(`✅ บันทึกสำเร็จ! หมายเลขรายการ: ${res.reqId}\nระบบได้ส่งแจ้งเตือนไปที่ LINE ของผู้ยืมแล้ว`);
-                window.location.href = "admin.html";
+            const container = document.getElementById("ipadGridContainer");
+            if (res.status === "success" && res.data.length > 0) {
+                ipadStockList = res.data;
+                renderiPadGrid();
             } else {
-                alert("❌ เกิดข้อผิดพลาด: " + res.message);
-                btn.innerHTML = "✅ ยืนยันการเตรียมเครื่อง";
-                btn.disabled = false;
+                container.innerHTML = "<p class='text-danger w-100 text-center fw-bold py-4'>❌ ขณะนี้ไม่มีเครื่องว่างในคลังครับ</p>";
             }
-        }).catch(err => {
-            alert("❌ ระบบขัดข้อง");
-            btn.innerHTML = "✅ ยืนยันการเตรียมเครื่อง";
-            btn.disabled = false;
+        })
+        .catch(err => {
+            document.getElementById("ipadGridContainer").innerHTML = "<p class='text-danger w-100 text-center py-4'>❌ เกิดข้อผิดพลาดในการโหลดคลัง</p>";
         });
+    }
+
+    function renderiPadGrid() {
+        const container = document.getElementById("ipadGridContainer");
+        let html = "";
+        ipadStockList.forEach((idText, index) => {
+            html += `
+                <label class="ipad-checkbox-wrapper">
+                    <input type="checkbox" value="${index}" onchange="toggleiPadSelection(this, ${index}, '${idText}')">
+                    <div class="ipad-checkbox-card">${idText}</div>
+                </label>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function toggleiPadSelection(checkbox, index, idText) {
+        const tableBody = document.getElementById("checklistBody");
+        const placeholder = document.getElementById("emptyPlaceholder");
+
+        if (checkbox.checked) {
+            currentSelected++;
+            if (placeholder) placeholder.style.display = "none"; 
+
+            const tr = document.createElement("tr");
+            tr.id = `row-ipad-${index}`; 
+            tr.setAttribute("data-ipad-id", idText);
+            tr.setAttribute("data-index", index); 
+            tr.innerHTML = `
+                <td class="fw-bold text-primary">${idText}</td>
+                <td><input type="checkbox" class="app-check chk-drive mx-auto d-block"></td>
+                <td><input type="checkbox" class="app-check chk-file mx-auto d-block"></td>
+                <td><input type="checkbox" class="app-check chk-img mx-auto d-block"></td>
+                <td><input type="checkbox" class="app-check chk-safari mx-auto d-block"></td>
+                <td><button type="button" class="btn btn-sm btn-outline-success fw-bold px-3 py-1" onclick="checkAllInRow(this)">✔ ติ๊กครบ</button></td>
+            `;
+            
+            const existingRows = Array.from(tableBody.querySelectorAll('tr[data-index]'));
+            let inserted = false;
+            for (let i = 0; i < existingRows.length; i++) {
+                const rowIdx = parseInt(existingRows[i].getAttribute("data-index"));
+                if (index < rowIdx) {
+                    tableBody.insertBefore(tr, existingRows[i]);
+                    inserted = true;
+                    break;
+                }
+            }
+            if (!inserted) { tableBody.appendChild(tr); }
+
+        } else {
+            currentSelected--;
+            const rowToRemove = document.getElementById(`row-ipad-${index}`);
+            if (rowToRemove) rowToRemove.remove();
+            if (currentSelected === 0 && placeholder) placeholder.style.display = "table-row";
+        }
+        document.getElementById("selectedCounter").innerText = currentSelected;
+        document.getElementById("deviceCountDisplay").value = currentSelected + " เครื่อง";
+    }
+
+    function checkAllInRow(btn) {
+        const row = btn.closest('tr');
+        row.querySelectorAll('.app-check').forEach(cb => cb.checked = true);
+    }
+
+    async function submitStep1Form() {
+        const recipientName = document.getElementById("recipientName").value.trim();
+        if (!recipientName) return alert("⚠️ กรุณาเลือกชื่อผู้ขอเบิกอุปกรณ์ครับ");
+        if (currentSelected === 0) return alert("⚠️ กรุณาเลือกรหัสเครื่อง iPad อย่างน้อย 1 เครื่องครับ");
+
+        const adminName = localStorage.getItem("userName");
+        const rows = document.querySelectorAll('#checklistBody tr[data-ipad-id]');
+        let ipadDataArray = [];
+        let allChecked = true;
+
+        rows.forEach(row => {
+            const ipadId = row.getAttribute('data-ipad-id');
+            const isDriveChecked = row.querySelector('.chk-drive').checked;
+            const isFileChecked = row.querySelector('.chk-file').checked;
+            const isImgChecked = row.querySelector('.chk-img').checked;
+            const isSafariChecked = row.querySelector('.chk-safari').checked;
+
+            if (!isDriveChecked || !isFileChecked || !isImgChecked || !isSafariChecked) allChecked = false;
+
+            ipadDataArray.push({
+                id: ipadId, drive: isDriveChecked ? "ผ่าน" : "ไม่ผ่าน", file: isFileChecked ? "ผ่าน" : "ไม่ผ่าน",
+                img: isImgChecked ? "ผ่าน" : "ไม่ผ่าน", safari: isSafariChecked ? "ผ่าน" : "ไม่ผ่าน"
+            });
+        });
+
+        if (!allChecked) {
+            if (!confirm("⚠️ พบว่าแอปบางรายการยังไม่ได้ติ๊กผ่าน ยืนยันที่จะส่งบันทึกแบบนี้ใช่หรือไม่?")) return;
+        }
+
+        const submitBtn = document.querySelector('button[type="submit"]');
+        submitBtn.innerText = "⏳ กำลังสร้างรายการและบันทึกข้อมูล...";
+        submitBtn.disabled = true;
+
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "saveStep1", adminName: adminName, recipientName: recipientName,
+                    ipadData: ipadDataArray, note: `เตรียมให้: ${recipientName} (${currentSelected} เครื่อง)`
+                })
+            });
+            const result = await response.json();
+
+            if(result.status === "success") {
+                const summary = `เลขรายการ: ${result.reqId}\nผู้ขอเบิก: ${recipientName}\nรายการเครื่อง: ${ipadDataArray.map(i => i.id).join(', ')}`;
+                window.location.href = `success.html?title=เตรียมเครื่องสำเร็จ&desc=สร้างรายการเบิกใหม่เรียบร้อยแล้ว&summary=${encodeURIComponent(summary)}`;
+            } else {
+                alert("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์");
+                submitBtn.innerText = "💾 เปิดบิลและส่งข้อมูลการเตรียมเครื่อง"; submitBtn.disabled = false;
+            }
+        } catch (error) {
+            alert("เกิดข้อผิดพลาดในการบันทึกข้อมูลฟอร์ม");
+            submitBtn.innerText = "💾 เปิดบิลและส่งข้อมูลการเตรียมเครื่อง"; submitBtn.disabled = false;
+        }
     }
 </script>
 </body>
