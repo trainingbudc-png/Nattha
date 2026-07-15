@@ -1,13 +1,25 @@
-// ลิงก์ Google Apps Script ของพี่
+// =========================================
+// 📌 ไฟล์ script.js : แกนกลางจัดการระบบหน้าเว็บ
+// =========================================
+
 const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec"; 
 const LIFF_ID = "2010557323-PAyWhGxW"; 
 
-// =========================================
-// ฟังก์ชันเปิด/ปิด หน้า Loading
-// =========================================
-function showLoading() {
-    const overlay = document.getElementById("loadingOverlay");
-    if (overlay) overlay.style.display = "flex";
+// -----------------------------------------
+// 1. ระบบ Loading (หน้าต่างโหลด)
+// -----------------------------------------
+function showLoading(text = "กำลังโหลด...") {
+    let overlay = document.getElementById("loadingOverlay");
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = "loadingOverlay";
+        overlay.className = "loading-overlay";
+        overlay.innerHTML = `<div class="spinner"></div><div class="loading-text" id="loadingText">${text}</div>`;
+        document.body.appendChild(overlay);
+    } else {
+        document.getElementById("loadingText").innerText = text;
+    }
+    overlay.style.display = "flex";
 }
 
 function hideLoading() {
@@ -15,185 +27,55 @@ function hideLoading() {
     if (overlay) overlay.style.display = "none";
 }
 
-// =========================================
-// 1. ระบบ LINE Login (ปรับปรุงตัวเช็คระบบอัตโนมัติ)
-// =========================================
-async function initLiffOnLoad() {
-    await liff.init({ liffId: LIFF_ID }); 
-    
-    // เช็คว่าผู้ใช้เพิ่งกดปุ่มออกจากระบบมาหรือไม่
-    const isLoggedOut = localStorage.getItem("justLoggedOut");
-    
-    if (liff.isLoggedIn() && !isLoggedOut) {
-        showLoading(); // โชว์หน้าโหลดเฉพาะตอนล็อกอินค้างและผ่านเงื่อนไขดึงข้อมูล
-        const profile = await liff.getProfile();
-        const name = profile.displayName; 
-        
-        localStorage.setItem("userName", name);
-        await checkUserRole(name); 
-    } else {
-        hideLoading(); // ปิดหน้าโหลดสนิทเพื่อให้เห็นปุ่มสีเขียวแน่นอน
-    }
-}
-
-function loginWithLine() {
-    showLoading(); 
-    // เมื่อผู้ใช้ตั้งใจกดเข้าสู่ระบบด้วยตัวเอง ให้ล้างเงื่อนไขจำสถานะ Logout ออกไป
-    localStorage.removeItem("justLoggedOut");
-    
-    if (!liff.isLoggedIn()) {
-        liff.login(); 
-    } else {
-        initLiffOnLoad();
-    }
-}
-
-// =========================================
-// 2. เช็คสิทธิ์ Admin / User
-// =========================================
-async function checkUserRole(name) {
+// -----------------------------------------
+// 2. ระบบเรียกใช้ API (ใช้แทน fetch แบบเก่า)
+// -----------------------------------------
+async function callAPI(payload) {
     try {
         const res = await fetch(API_URL, {
             method: "POST",
-            body: JSON.stringify({ action: "checkRole", name: name })
+            body: JSON.stringify(payload)
         });
-        const data = await res.json();
-        
-        if (data.role === "Admin") {
-            window.location.replace("admin.html");
-        } else {
-            window.location.replace("user.html");
-        }
+        return await res.json();
     } catch (error) {
-        hideLoading(); 
-        alert("เกิดข้อผิดพลาดในการเช็คสิทธิ์ กรุณาตรวจสอบ Apps Script");
+        console.error("API Error:", error);
+        throw error;
     }
 }
 
-// =========================================
-// 3. ส่งข้อมูลบันทึกสถานะ
-// =========================================
-async function sendData(status, note) {
-    const name = localStorage.getItem("userName");
-    
-    if(!name) {
-        alert("ไม่พบชื่อผู้ใช้ กรุณาเข้าสู่ระบบใหม่");
-        window.location.href = "index.html";
-        return;
-    }
-
-    try {
-        const response = await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "saveLog", name: name, ipadId: "-", status: status, note: note })
+// -----------------------------------------
+// 3. ระบบจัดการผู้ใช้ & ออกจากระบบ
+// -----------------------------------------
+function logoutSystem() {
+    // ใช้ SweetAlert2 ทำป๊อปอัปสวยๆ แทน alert ธรรมดา (เดี๋ยวเราจะเอาใส่ในหน้า HTML)
+    if(typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: "ออกจากระบบ?",
+            text: "คุณต้องการออกจากระบบใช่หรือไม่",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#ef4444",
+            cancelButtonColor: "#64748b",
+            confirmButtonText: "ออกจากระบบ",
+            cancelButtonText: "ยกเลิก",
+            borderRadios: "16px"
+        }).then((result) => {
+            if (result.isConfirmed) executeLogout();
         });
-        const result = await response.json();
-        
-        if (result.status === "success") {
-            alert("บันทึก [" + status + "] สำเร็จ! (เลขรายการ: " + (result.id || "-") + ")");
-            if (window.location.pathname.includes("admin.html")) {
-                fetchStatusData();
-            }
-        } else {
-            alert("เกิดข้อผิดพลาด: " + result.message);
-        }
-    } catch (error) {
-        alert("เกิดข้อผิดพลาด: " + error);
+    } else {
+        if(confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) executeLogout();
     }
 }
 
-// =========================================
-// 4. ดึงข้อมูลมาแสดงในตารางหน้า Admin (ปรับปรุงแสดงเลขรายการ)
-// =========================================
-async function fetchStatusData() {
-    const tbody = document.getElementById("statusTableBody");
-    if (!tbody) return; 
-
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">กำลังโหลดข้อมูล... ⏳</td></tr>';
-
-    try {
-        const res = await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "getData" }) 
-        });
-        const data = await res.json();
-        
-        if (data.status === "success" && data.data.length > 0) {
-            tbody.innerHTML = ""; 
-            
-            data.data.forEach((row, index) => {
-                let statusColor = "#6c757d"; 
-                if (row.status === "ขอเบิก") statusColor = "#ffc107"; 
-                else if (row.status === "รอดำเนินการ") statusColor = "#fd7e14"; 
-                else if (row.status === "준비เครื่อง" || row.status === "เตรียมเครื่อง" || row.status === "พร้อมใช้งาน" || row.status === "Step 1") statusColor = "#17a2b8"; 
-                else if (row.status === "รับเครื่องแล้ว" || row.status === "ตรวจคืน") statusColor = "#28a745"; 
-                else if (row.status === "เครื่องมีปัญหา") statusColor = "#dc3545"; 
-                
-                let displayTime = "-";
-                if (row.timestamp) {
-                    displayTime = row.timestamp; // ดึงค่าจากหลังบ้านที่ format วันที่เรียบร้อยแล้วมาแสดงผลได้เลย
-                }
-
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td><span class="badge" style="background-color: #495057; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;">${row.reqId || "-"}</span></td> 
-                    <td>${displayTime}</td>
-                    <td>${row.name || "-"}</td>
-                    <td>${row.ipadId || "-"}</td>
-                    <td><span class="badge-status" style="background-color: ${statusColor}; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem;">${row.status || "-"}</span></td>
-                    <td>${row.note || "-"}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        } else {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">ยังไม่มีข้อมูลการทำรายการ</td></tr>';
-        }
-    } catch (error) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red; padding: 20px;">ไม่สามารถดึงข้อมูลได้ (โปรดตรวจสอบการตั้งค่า Code.gs)</td></tr>';
-        console.error("Error fetching data:", error);
-    }
-}
-
-// =========================================
-// 5. ออกจากระบบ (ล็อกสิทธิ์จำสถานะเพื่อแก้บั๊ก)
-// =========================================
-async function logout() {
-    showLoading(); 
-    
-    // 1. ล้างข้อมูลชื่อผู้ใช้
-    localStorage.removeItem("userName");
-    // 2. ตั้งสถานะบอกระบบหน้าบ้านไว้ว่า "เพิ่งกดปุ่มออกจากระบบมานะ"
-    localStorage.setItem("justLoggedOut", "true");
-
+async function executeLogout() {
+    showLoading("กำลังออกจากระบบ...");
+    localStorage.clear();
     try {
         await liff.init({ liffId: LIFF_ID });
-        if (liff.isLoggedIn()) {
-            liff.logout(); 
-        }
+        if (liff.isLoggedIn()) liff.logout();
+        if (liff.isInClient()) liff.closeWindow();
+        else window.location.replace("index.html");
     } catch (error) {
-        console.log("ออกระบบ LINE ไม่สำเร็จ: ", error);
+        window.location.replace("index.html");
     }
-    
-    window.location.replace("index.html");
 }
-
-// =========================================
-// 6. ตัวดักตอนโหลดหน้าเว็บ
-// =========================================
-window.onload = function() {
-    if (window.location.pathname.includes("index.html") || window.location.pathname === "/") {
-        initLiffOnLoad(); 
-    } else {
-        // เมื่อไม่ได้อยู่หน้าแรก (เข้าสู่ระบบสำเร็จจนไปหน้าอื่นแล้ว) ให้ล้างสถานะล็อกเอาท์ทิ้งไป
-        localStorage.removeItem("justLoggedOut");
-        
-        const userName = localStorage.getItem("userName");
-        if(document.getElementById("showName") && userName) {
-            document.getElementById("showName").innerText = "ผู้ใช้งาน LINE: " + userName;
-        }
-        
-        if (window.location.pathname.includes("admin.html")) {
-            fetchStatusData();
-        }
-    }
-};
