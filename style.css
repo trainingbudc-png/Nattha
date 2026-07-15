@@ -1,96 +1,62 @@
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
 
-* { box-sizing: border-box; font-family: 'Kanit', 'Segoe UI', Tahoma, sans-serif; }
-body { background-color: #f0f2f5; margin: 0; min-height: 100vh; }
+* { box-sizing: border-box; font-family: 'Kanit', sans-serif; }
+body { background-color: #f1f5f9; margin: 0; min-height: 100vh; color: #334155; }
 
 /* =========================================
-   สไตล์ดั้งเดิม (ใช้กับหน้า Login และ User)
+   1. โครงสร้างหลัก (Containers)
    ========================================= */
-.container { 
-    background: white; padding: 30px; border-radius: 12px; 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; 
-    text-align: center; margin: 50px auto; 
-}
-.container input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; }
-.container button { 
-    width: 100%; padding: 14px; margin: 8px 0; border: none; border-radius: 8px; 
-    font-size: 16px; font-weight: 500; cursor: pointer; color: white; background-color: #007bff; transition: 0.2s; 
-}
-.container button:hover { filter: brightness(0.9); }
-.container .btn-admin { background-color: #dc3545; }
-.container .btn-warning { background-color: #ff9800; }
-.container .btn-logout { background-color: #6c757d; margin-top: 30px; }
-h1, h2 { color: #333; margin-top: 0; }
-p { color: #666; }
+.container-main { width: 100%; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+.container-wide { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+.card-custom { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: none; overflow: hidden; }
 
+/* Navbar */
+.nav-header { background: white; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.nav-title { font-size: 1.2rem; font-weight: 600; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px; }
 
 /* =========================================
-   สไตล์ Dashboard ใหม่ (ใช้กับหน้า Admin)
+   2. ปุ่ม (Buttons) - แตะง่าย สไตล์โมเดิร์น
    ========================================= */
-.dashboard-bg { background-color: #f4f6f9; }
-
-/* Navbar ด้านบน */
-.top-navbar {
-    background-color: #ffffff;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 15px 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-    position: sticky; top: 0; z-index: 100;
-}
-.nav-brand h2 { margin: 0; font-size: 20px; color: #333; }
-.nav-user-area { display: flex; align-items: center; gap: 20px; }
-.user-status-text { color: #dc3545; font-weight: 500; font-size: 15px; margin: 0; }
-.btn-logout-nav {
-    background-color: transparent; color: #6c757d; border: 1px solid #6c757d;
-    padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: 0.2s;
-}
-.btn-logout-nav:hover { background-color: #6c757d; color: white; }
-
-/* พื้นที่คอนเทนต์หลัก */
-.dashboard-wrapper { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-
-/* หัวข้อหมวดหมู่ */
-.section-title { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-.section-title h3 { margin: 0; font-size: 18px; color: #444; }
-.title-bar { width: 6px; height: 22px; border-radius: 4px; }
-.bar-red { background-color: #dc3545; }
-.bar-orange { background-color: #ff9800; }
-
-/* ระบบ Grid และปุ่มการ์ด */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-.action-card {
-    background-color: #ffffff; border: none; border-radius: 12px; padding: 24px;
-    display: flex; align-items: center; gap: 16px; cursor: pointer; text-align: left;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.2s ease; border-left: 6px solid #ccc;
-}
-.action-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
-.action-card:active { transform: translateY(0); }
-.card-red { border-left-color: #dc3545; }
-.card-orange { border-left-color: #ff9800; }
-
-.card-icon {
-    font-size: 30px; background-color: #f8f9fa; width: 60px; height: 60px;
-    display: flex; justify-content: center; align-items: center; border-radius: 10px;
-}
-.card-detail h4 { margin: 0 0 5px 0; font-size: 18px; color: #222; }
-.card-detail p { margin: 0; font-size: 14px; color: #777; }
-
+.btn-custom { padding: 14px 20px; border-radius: 12px; font-weight: 600; font-size: 1rem; transition: all 0.2s; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; cursor: pointer; }
+.btn-custom:active { transform: scale(0.98); }
+.btn-primary-custom { background-color: #0ea5e9; color: white; }
+.btn-primary-custom:hover { background-color: #0284c7; color: white; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); }
+.btn-success-custom { background-color: #10b981; color: white; }
+.btn-success-custom:hover { background-color: #059669; color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+.btn-danger-custom { background-color: #ef4444; color: white; }
+.btn-danger-custom:hover { background-color: #dc2626; color: white; }
+.btn-outline-custom { background-color: white; border: 2px solid #e2e8f0; color: #64748b; }
+.btn-outline-custom:hover { background-color: #f8fafc; border-color: #cbd5e1; color: #475569; }
 
 /* =========================================
-   สไตล์ตารางสถานะ
+   3. ฟอร์มและช่องกรอกข้อมูล (Forms)
    ========================================= */
-.table-container {
-    width: 100%; overflow-x: auto; background: #ffffff; border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #e1e4e8;
-}
-.status-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-.status-table th, .status-table td { padding: 14px 16px; border-bottom: 1px solid #f0f2f5; }
-.status-table th { background-color: #f8f9fa; color: #444; font-weight: 500; white-space: nowrap; }
-.status-table tbody tr:nth-child(even) { background-color: #fafbfc; }
-.status-table tbody tr:hover { background-color: #f1f3f5; }
-.badge-status { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; color: white; display: inline-block; }
+.form-label { font-weight: 600; color: #475569; margin-bottom: 8px; display: block; font-size: 0.95rem; }
+.form-control, .form-select { border-radius: 12px; padding: 12px 15px; border: 1px solid #cbd5e1; background-color: #f8fafc; transition: all 0.2s; width: 100%; font-size: 1rem; }
+.form-control:focus, .form-select:focus { border-color: #0ea5e9; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1); background-color: white; outline: none; }
+.check-item { width: 24px; height: 24px; cursor: pointer; accent-color: #0ea5e9; border-radius: 6px; }
 
-.btn-refresh {
-    background-color: #ffffff; color: #555; border: 1px solid #ddd; padding: 6px 14px;
-    border-radius: 6px; cursor: pointer; font-size: 13px; font-family: inherit; transition: 0.2s;
-}
-.btn-refresh:hover { background-color: #f8f9fa; border-color: #bbb; }
+/* =========================================
+   4. ตาราง (Tables)
+   ========================================= */
+.table-wrapper { background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow-x: auto; border: 1px solid #e2e8f0; }
+.table { width: 100%; border-collapse: collapse; min-width: 600px; }
+.table th { background-color: #f8fafc; color: #475569; font-weight: 600; text-align: center; padding: 16px; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
+.table td { padding: 16px; text-align: center; vertical-align: middle; border-bottom: 1px solid #f1f5f9; color: #334155; }
+.table tr:hover { background-color: #f8fafc; }
+
+/* ป้ายกำกับสถานะ (Badges) */
+.badge-status { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; }
+.badge-blue { background: #e0f2fe; color: #0284c7; }
+.badge-green { background: #dcfce7; color: #16a34a; }
+.badge-yellow { background: #fef3c7; color: #d97706; }
+.badge-red { background: #fee2e2; color: #dc2626; }
+.badge-gray { background: #f1f5f9; color: #64748b; }
+
+/* =========================================
+   5. หน้าต่างโหลด (Loading Overlay)
+   ========================================= */
+.loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(4px); }
+.spinner { width: 50px; height: 50px; border: 5px solid #e2e8f0; border-top: 5px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+.loading-text { color: #475569; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.5px; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
