@@ -65,11 +65,9 @@
             color: white;
         }
 
-        /* Checkbox style สำหรับตาราง */
         .form-check-input { width: 1.2em; height: 1.2em; cursor: pointer; accent-color: #00897b; }
         .form-check-input:checked { background-color: #00897b; border-color: #00897b; }
         
-        /* สไตล์ตารางเช็คลิสต์รายเครื่อง */
         .table th { background-color: #f1f8f7; color: #00695c; font-size: 0.9rem; text-align: center; vertical-align: middle; }
         .table td { vertical-align: middle; text-align: center; border-bottom: 1px solid #e2e8f0; }
     </style>
@@ -103,7 +101,7 @@
                     </div>
                 </div>
 
-                <!-- 📌 ตารางเช็คลิสต์รายเครื่อง (ซ่อนไว้ก่อน จะแสดงเมื่อมีการเลือก iPad) -->
+                <!-- 📌 ตารางเช็คลิสต์รายเครื่อง -->
                 <div id="dynamicChecklistContainer" class="mb-4 d-none">
                     <label class="form-label text-teal fw-bold" style="color: #00695c;">✅ สิ่งที่แอดมินต้องเตรียม (เช็คให้ครบทุกเครื่อง):</label>
                     <div class="table-responsive border rounded">
@@ -119,18 +117,13 @@
                                 </tr>
                             </thead>
                             <tbody id="dynamicChecklistBody">
-                                <!-- แถวของแต่ละ iPad จะโผล่ขึ้นมาตรงนี้ -->
+                                <!-- แถวของแต่ละ iPad จะโผล่ขึ้นมาตรงนี้และถูกเรียงลำดับให้ด้วย -->
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="form-label">📝 หมายเหตุ (ถ้ามี):</label>
-                    <input type="text" id="noteInput" class="form-control" placeholder="เช่น เตรียมให้ก่อน 10 โมง">
-                </div>
-
-                <button type="button" class="btn btn-submit-custom w-100 fs-5" id="submitBtn" onclick="submitStep1()">💾 ยืนยันการเตรียมเครื่อง</button>
+                <button type="button" class="btn btn-submit-custom w-100 fs-5 mt-3" id="submitBtn" onclick="submitStep1()">💾 ยืนยันการเตรียมเครื่อง</button>
             </form>
         </div>
     </div>
@@ -178,22 +171,22 @@
         });
     }
 
-    // 📌 ฟังก์ชันจัดการเมื่อติ๊กเลือก iPad
+    // 📌 ฟังก์ชันจัดการเมื่อติ๊กเลือก iPad และเรียงลำดับ
     function handleIpadSelection(checkbox) {
         const ipadId = checkbox.value;
         const tbody = document.getElementById("dynamicChecklistBody");
         const container = document.getElementById("dynamicChecklistContainer");
-        const count = document.querySelectorAll('.ipad-checkbox:checked').length;
         
-        // อัปเดตตัวเลข "เลือกแล้ว X เครื่อง"
-        const badge = document.getElementById('selectedCount');
-        badge.innerText = `เลือกแล้ว ${count} เครื่อง`;
-        badge.className = count > 0 ? "badge bg-success" : "badge bg-secondary";
-
         if (checkbox.checked) {
-            // สร้างแถวใหม่เพิ่มเข้าไปในตาราง
+            // สร้างแถวใหม่เพิ่มเข้าไป
             const tr = document.createElement("tr");
             tr.id = `row-${ipadId}`;
+            
+            // ดึงตัวเลขจากชื่อ iPad มาเก็บไว้เพื่อใช้เรียง (เช่น IPad05 -> 5)
+            const numericValue = parseInt(ipadId.replace(/[^0-9]/g, ''), 10) || 0;
+            tr.dataset.sortval = numericValue;
+            tr.dataset.rawname = ipadId;
+
             tr.innerHTML = `
                 <td class="fw-bold text-primary">${ipadId}</td>
                 <td><input type="checkbox" class="form-check-input check-${ipadId}" value="drive"></td>
@@ -208,6 +201,24 @@
             const tr = document.getElementById(`row-${ipadId}`);
             if (tr) tr.remove();
         }
+
+        // 📌 ระบบจัดเรียงแถวจากน้อยไปมาก (Sorting)
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        rows.sort((a, b) => {
+            const valA = parseInt(a.dataset.sortval, 10);
+            const valB = parseInt(b.dataset.sortval, 10);
+            if (valA === valB) return a.dataset.rawname.localeCompare(b.dataset.rawname);
+            return valA - valB;
+        });
+        
+        // จับแถวที่จัดเรียงแล้วใส่กลับเข้าไปในตาราง (คงสถานะที่เคยติ๊กไว้)
+        rows.forEach(row => tbody.appendChild(row));
+
+        // อัปเดตตัวเลข "เลือกแล้ว X เครื่อง"
+        const count = rows.length;
+        const badge = document.getElementById('selectedCount');
+        badge.innerText = `เลือกแล้ว ${count} เครื่อง`;
+        badge.className = count > 0 ? "badge bg-success" : "badge bg-secondary";
 
         // ซ่อน/แสดง ตารางเช็คลิสต์
         if (count > 0) {
@@ -225,7 +236,6 @@
 
     function submitStep1() {
         const recipientName = document.getElementById("userNameSelect").value;
-        const note = document.getElementById("noteInput").value;
         const adminName = localStorage.getItem("userName") || "Admin";
         
         const selectedIpads = Array.from(document.querySelectorAll('.ipad-checkbox:checked')).map(cb => cb.value);
@@ -233,7 +243,7 @@
         if(!recipientName) return Swal.fire("แจ้งเตือน", "กรุณาเลือกชื่อผู้ขอยืม", "warning");
         if(selectedIpads.length === 0) return Swal.fire("แจ้งเตือน", "กรุณากดเลือก iPad อย่างน้อย 1 เครื่อง", "warning");
         
-        // 📌 เช็คว่าติ๊กครบทุกเครื่องที่เลือกหรือไม่
+        // เช็คว่าติ๊กครบทุกเครื่องที่เลือกหรือไม่
         let allChecked = true;
         const ipadData = [];
 
@@ -267,7 +277,7 @@
             action: "saveStep1",
             adminName: adminName,
             recipientName: recipientName,
-            note: note ? `เตรียมให้: ${recipientName} (${selectedIpads.length} เครื่อง) | ` + note : `เตรียมให้: ${recipientName} (${selectedIpads.length} เครื่อง)`,
+            note: `เตรียมให้: ${recipientName} (${selectedIpads.length} เครื่อง)`,
             ipadData: ipadData
         };
 
