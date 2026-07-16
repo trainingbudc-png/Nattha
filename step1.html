@@ -25,6 +25,7 @@
         
         .form-label { font-weight: 600; color: #495057; }
         
+        /* สไตล์ปุ่มกดเลือก iPad */
         .btn-outline-teal {
             color: #00897b;
             border-color: #00897b;
@@ -42,13 +43,40 @@
             box-shadow: 0 4px 10px rgba(0, 137, 123, 0.3);
         }
 
+        /* 📌 สไตล์แถบกด ยุบ/ขยาย (Collapse Header) */
+        .category-header {
+            background-color: #e0f2f1;
+            color: #00695c;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+            margin-bottom: 5px;
+            border: 1px solid #b2dfdb;
+        }
+        .category-header:hover { background-color: #b2dfdb; }
+        .category-header::after {
+            content: '▼'; /* ลูกศรชี้ลงเมื่อกางออก */
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+        .category-header.collapsed::after {
+            transform: rotate(-90deg); /* หมุนลูกศรไปทางขวาเมื่อหุบ */
+        }
+
         .ipad-container {
-            max-height: 200px;
+            max-height: 250px;
             overflow-y: auto;
             padding: 15px;
             background: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            border-radius: 0 0 8px 8px; /* ขอบมนแค่ด้านล่าง */
+            border-top: none;
+            margin-bottom: 15px;
         }
 
         .btn-submit-custom {
@@ -96,16 +124,24 @@
                         <span class="badge bg-secondary fs-6" id="selectedCount">เลือกแล้ว 0 เครื่อง</span>
                     </label>
                     
-                    <!-- 📌 หมวดหมู่ iPad ธรรมดา -->
-                    <h6 class="fw-bold" style="color: #00897b;">🔹 หมวด iPad (ปกติ)</h6>
-                    <div id="ipadNormalContainer" class="ipad-container d-flex flex-wrap gap-2 mb-3">
-                        <div class="text-muted w-100 text-center py-2">กำลังโหลด... ⏳</div>
+                    <!-- 📌 หมวดหมู่ iPad ธรรมดา (ตั้งให้เปิดกางไว้ก่อน) -->
+                    <div class="category-header" data-bs-toggle="collapse" data-bs-target="#collapseNormal" aria-expanded="true">
+                        🔹 หมวด iPad (ปกติ)
+                    </div>
+                    <div class="collapse show" id="collapseNormal">
+                        <div id="ipadNormalContainer" class="ipad-container d-flex flex-wrap gap-2">
+                            <div class="text-muted w-100 text-center py-2">กำลังโหลด... ⏳</div>
+                        </div>
                     </div>
 
-                    <!-- 📌 หมวดหมู่ iPad Air + APC -->
-                    <h6 class="fw-bold" style="color: #00897b;">🔹 หมวด iPad Air + APC</h6>
-                    <div id="ipadAirContainer" class="ipad-container d-flex flex-wrap gap-2">
-                        <div class="text-muted w-100 text-center py-2">กำลังโหลด... ⏳</div>
+                    <!-- 📌 หมวดหมู่ iPad Air + APC (ตั้งให้หุบไว้ก่อน แก้ขัดหูขัดตา) -->
+                    <div class="category-header collapsed" data-bs-toggle="collapse" data-bs-target="#collapseAir" aria-expanded="false">
+                        🔹 หมวด iPad Air + APC
+                    </div>
+                    <div class="collapse" id="collapseAir">
+                        <div id="ipadAirContainer" class="ipad-container d-flex flex-wrap gap-2">
+                            <div class="text-muted w-100 text-center py-2">กำลังโหลด... ⏳</div>
+                        </div>
                     </div>
                 </div>
 
@@ -136,6 +172,8 @@
         </div>
     </div>
 
+<!-- 📌 โหลด Bootstrap JS (จำเป็นมากสำหรับระบบปุ่มยุบ/ขยาย) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
@@ -180,7 +218,7 @@
                 let countAir = 0;
 
                 res.data.forEach(id => { 
-                    // 📌 แปลงชื่อให้ไม่มีเว้นวรรคหรือเครื่องหมายพิเศษ เพื่อใช้เป็น ID ในระบบหลังบ้าน
+                    // แปลงชื่อให้ไม่มีเว้นวรรค
                     const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
                     
                     const btnHtml = `
@@ -188,7 +226,6 @@
                         <label class="btn btn-outline-teal px-3 py-2" for="btn-${safeId}">${id}</label>
                     `;
                     
-                    // แยกหมวดหมู่จากชื่อ
                     if (id.includes("Air") || id.includes("APC")) {
                         containerAir.innerHTML += btnHtml;
                         countAir++;
@@ -208,10 +245,10 @@
         });
     }
 
-    // 📌 ฟังก์ชันจัดการเมื่อติ๊กเลือก iPad
+    // ฟังก์ชันจัดการเมื่อติ๊กเลือก iPad
     function handleIpadSelection(checkbox) {
-        const ipadId = checkbox.value; // ชื่อเต็มที่ใช้โชว์หน้าเว็บ
-        const safeId = checkbox.dataset.safeid; // รหัสปลอดภัยไร้ช่องว่างที่ใช้ผูก ID ในระบบ
+        const ipadId = checkbox.value; 
+        const safeId = checkbox.dataset.safeid; 
         const tbody = document.getElementById("dynamicChecklistBody");
         const container = document.getElementById("dynamicChecklistContainer");
         
@@ -219,7 +256,6 @@
             const tr = document.createElement("tr");
             tr.id = `row-${safeId}`;
             
-            // ดึงตัวเลขมาเก็บไว้เรียงแถว
             const numericValue = parseInt(ipadId.replace(/\D/g, ''), 10) || 0;
             tr.dataset.sortval = numericValue;
             tr.dataset.rawname = ipadId;
@@ -238,7 +274,7 @@
             if (tr) tr.remove();
         }
 
-        // 📌 ระบบเรียงแถวตารางจากน้อยไปมาก (รับประกันความเป๊ะ)
+        // ระบบเรียงแถวตารางจากน้อยไปมาก
         const rows = Array.from(tbody.querySelectorAll('tr'));
         rows.sort((a, b) => {
             const valA = parseInt(a.dataset.sortval, 10);
@@ -249,7 +285,6 @@
         
         rows.forEach(row => tbody.appendChild(row));
 
-        // อัปเดตตัวเลข
         const count = rows.length;
         const badge = document.getElementById('selectedCount');
         badge.innerText = `เลือกแล้ว ${count} เครื่อง`;
@@ -262,7 +297,7 @@
         }
     }
 
-    // 📌 ฟังก์ชันติ๊กครบทีละแถว
+    // ฟังก์ชันติ๊กครบทีละแถว
     function tickAllRow(safeId) {
         const checkboxes = document.querySelectorAll(`.check-${safeId}`);
         checkboxes.forEach(cb => cb.checked = true);
@@ -294,7 +329,7 @@
                 if (!drive || !file || !img || !safari) allChecked = false;
                 
                 ipadData.push({
-                    id: id, // ส่งชื่อเต็มกลับไปเซฟที่หลังบ้าน
+                    id: id,
                     drive: drive,
                     file: file,
                     img: img,
