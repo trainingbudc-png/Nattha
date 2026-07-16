@@ -3,57 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เมนูผู้ดูแล (Admin)</title>
+    <title>เมนูผู้ดูแล (Admin) | ระบบจัดการ iPad</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <style>
-        body { background: #f4f7f6; font-family: 'Kanit', sans-serif; color: #333; }
-        
-        .navbar-custom { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 30px; }
-        .admin-name { color: #dc3545; font-weight: 600; margin-right: 15px; }
-        
-        .section-title { font-size: 1.1rem; font-weight: 600; color: #495057; margin-top: 30px; margin-bottom: 15px; display: flex; align-items: center; }
-        .section-title::before { content: ""; display: inline-block; width: 4px; height: 20px; margin-right: 10px; border-radius: 2px; }
-        .title-red::before { background-color: #dc3545; }
-        .title-yellow::before { background-color: #ffc107; }
-        .title-green::before { background-color: #198754; }
-
-        .menu-card { 
-            background: white; border: none; border-radius: 12px; 
-            padding: 20px; display: flex; align-items: center; gap: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04); transition: 0.2s; cursor: pointer; text-decoration: none; color: inherit;
+        body { 
+            background: #f4f6f9; 
+            font-family: 'Kanit', sans-serif; 
+            color: #333; 
         }
-        .menu-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
-        .menu-card-red { border-left: 5px solid #dc3545; }
-        .menu-card-yellow { border-left: 5px solid #ffc107; }
         
-        .menu-icon { font-size: 2rem; }
+        /* 📌 Navbar */
+        .navbar-custom { 
+            background: white; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            padding: 15px 30px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100;
+        }
+        .admin-name { 
+            color: #dc3545; /* สีแดงสำหรับชื่อแอดมิน */
+            font-weight: 600; 
+            margin-right: 15px; 
+        }
+        
+        /* 📌 หัวข้อ Section */
+        .section-title { 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            color: #495057; 
+            margin-top: 30px; 
+            margin-bottom: 15px; 
+            padding-left: 10px;
+        }
+        .title-red { border-left: 4px solid #dc3545; }
+        .title-yellow { border-left: 4px solid #ffc107; }
+        .title-green { border-left: 4px solid #198754; }
+
+        /* 📌 การ์ดเมนู */
+        .menu-card { 
+            background: white; 
+            border: none; 
+            border-radius: 10px; 
+            padding: 20px 25px; 
+            display: flex; 
+            align-items: center; 
+            gap: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
+            transition: 0.2s; 
+            cursor: pointer; 
+            text-decoration: none; 
+            color: inherit; 
+            height: 100%;
+        }
+        .menu-card:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.06); 
+            color: inherit;
+        }
+        .card-red { border-left: 4px solid #dc3545; }
+        .card-yellow { border-left: 4px solid #ffc107; }
+        
+        .menu-icon { font-size: 2.2rem; }
         .menu-text h5 { font-weight: 600; margin: 0 0 5px 0; font-size: 1.1rem; color: #212529; }
         .menu-text p { margin: 0; font-size: 0.85rem; color: #6c757d; }
 
-        .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); overflow: hidden; }
+        /* 📌 ตาราง */
+        .table-card { 
+            background: white; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
+            overflow: hidden; 
+        }
         .table { margin-bottom: 0; }
-        .table th { background: #f8f9fa; font-size: 0.85rem; font-weight: 600; color: #6c757d; border-bottom: 2px solid #e9ecef; padding: 15px; text-align: center; }
-        .table td { vertical-align: middle; padding: 12px 15px; font-size: 0.9rem; text-align: center; border-bottom: 1px solid #f1f3f5; }
+        .table th { 
+            background: #f8f9fa; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            color: #6c757d; 
+            border-bottom: 2px solid #e9ecef; 
+            padding: 15px; 
+            text-align: center; 
+        }
+        .table td { 
+            vertical-align: middle; 
+            padding: 12px 15px; 
+            font-size: 0.9rem; 
+            text-align: center; 
+            border-bottom: 1px solid #f1f3f5; 
+        }
         
-        .btn-refresh { font-size: 0.85rem; font-weight: 600; border-radius: 8px; padding: 5px 15px; }
+        .btn-refresh { 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            border-radius: 8px; 
+            padding: 6px 15px; 
+        }
     </style>
 </head>
 <body>
 
+    <!-- 🟢 Navbar -->
     <nav class="navbar navbar-custom d-flex justify-content-between align-items-center">
-        <div class="fw-bold fs-5">📱 เมนูผู้ดูแล (Admin)</div>
+        <div class="fw-bold fs-5 d-flex align-items-center gap-2">
+            📱 เมนูผู้ดูแล (Admin)
+        </div>
         <div class="d-flex align-items-center">
-            <span class="admin-name">แอดมิน: <span id="adminNameDisplay">Loading...</span></span>
+            <span class="admin-name d-none d-sm-inline">แอดมิน: <span id="adminNameDisplay">Loading...</span></span>
             <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="logout()">ออกจากระบบ</button>
         </div>
     </nav>
 
-    <div class="container pb-5">
+    <div class="container pb-5" style="max-width: 1100px;">
+        
+        <!-- 🔴 ระบบจัดการ iPad -->
         <div class="section-title title-red">ระบบจัดการ iPad (เบิก-คืน)</div>
-        <div class="row g-3">
+        <div class="row g-4">
             <div class="col-md-6">
-                <a href="step1.html" class="menu-card menu-card-red">
+                <a href="step1.html" class="menu-card card-red">
                     <div class="menu-icon">📦</div>
                     <div class="menu-text">
                         <h5>Step 1 | เตรียม</h5>
@@ -62,7 +131,8 @@
                 </a>
             </div>
             <div class="col-md-6">
-                <a href="step5-list.html" class="menu-card menu-card-red">
+                <!-- ⚠️ เปลี่ยนลิงก์ไปหน้า step5 ของพี่ได้เลยครับ -->
+                <a href="step5.html" class="menu-card card-red"> 
                     <div class="menu-icon">🔍</div>
                     <div class="menu-text">
                         <h5>Step 5 | ตรวจ</h5>
@@ -72,26 +142,28 @@
             </div>
         </div>
 
+        <!-- 🟡 ระบบแจ้งเตือนปัญหา -->
         <div class="section-title title-yellow">ระบบแจ้งเตือนปัญหา</div>
-        <div class="row g-3">
+        <div class="row g-4">
             <div class="col-12">
-                <div class="menu-card menu-card-yellow">
+                <a href="report-issue.html" class="menu-card card-yellow">
                     <div class="menu-icon">⚠️</div>
                     <div class="menu-text">
                         <h5>สถานะเครื่องมีปัญหา</h5>
                         <p>อัปเดตสถานะกรณีพบความเสียหาย</p>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-5 mb-3">
+        <!-- 🟢 ตารางสถานะ iPad -->
+        <div class="d-flex justify-content-between align-items-end mt-5 mb-3">
             <div class="section-title title-green mt-0 mb-0">ตารางสถานะ iPad (อัปเดตล่าสุด)</div>
-            <button class="btn btn-outline-primary btn-refresh" onclick="loadTableData()">🔄 โหลดข้อมูลใหม่</button>
+            <button class="btn btn-outline-primary btn-refresh" onclick="loadAdminTableData()">🔄 โหลดข้อมูลใหม่</button>
         </div>
         
         <div class="table-card table-responsive">
-            <table class="table">
+            <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>เลขรายการ</th>
@@ -101,31 +173,38 @@
                         <th>สถานะ / ขั้นตอน</th>
                     </tr>
                 </thead>
-                <tbody id="logTableBody">
+                <tbody id="adminTableBody">
                     <tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
+<!-- 📌 โหลด Scripts -->
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
 
     window.onload = function() {
-        const role = localStorage.getItem("userRole");
-        if(role !== "Admin") {
-            alert("คุณไม่มีสิทธิ์เข้าถึงหน้านี้");
+        const userName = localStorage.getItem("userName");
+        const userRole = localStorage.getItem("userRole");
+
+        // ตรวจสอบสิทธิ์ (ต้องล็อกอินและเป็น Admin เท่านั้น)
+        if(!userName || userRole !== "Admin") {
             window.location.href = "index.html"; 
             return;
         }
 
-        document.getElementById("adminNameDisplay").innerText = localStorage.getItem("userName") || "Admin";
-        loadTableData();
+        document.getElementById("adminNameDisplay").innerText = userName;
+        loadAdminTableData();
     };
 
-    function loadTableData() {
-        const tbody = document.getElementById("logTableBody");
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
+    // 📌 ฟังก์ชันดึงข้อมูลตารางรวมทั้งหมด
+    function loadAdminTableData() {
+        const tbody = document.getElementById("adminTableBody");
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
         
         fetch(API_URL, {
             method: "POST",
@@ -136,39 +215,53 @@
             tbody.innerHTML = ""; 
             
             if (res.status === "success" && res.data && res.data.length > 0) {
-                res.data.forEach(item => {
-                    if (item.reqId === "ReqID" || item.reqId === "เลขรายการ" || !item.reqId) return;
-                    
+                // กรองเอาแถวที่เป็นหัวตารางทิ้งไป
+                const validData = res.data.filter(item => item.reqId !== "ReqID" && item.reqId !== "เลขรายการ");
+
+                if (validData.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">ยังไม่มีรายการในระบบ</td></tr>';
+                    return;
+                }
+
+                validData.forEach(item => {
                     let dateStr = "-";
                     if (item.timestamp) {
-                        dateStr = new Date(item.timestamp).toLocaleString("th-TH");
+                        const d = new Date(item.timestamp);
+                        dateStr = d.toLocaleDateString("th-TH") + " " + d.toLocaleTimeString("th-TH", {hour: '2-digit', minute:'2-digit', second:'2-digit'});
                     }
 
-                    // จัดการแสดงผลข้อความสถานะให้สั้นกระชับ
+                    // 📌 ตกแต่งป้ายสถานะให้สวยงาม
                     let statusTxt = item.status || "-";
                     let displayStatus = statusTxt;
-                    
-                    if(statusTxt.includes("เตรียม")) displayStatus = "Step[1]";
-                    if(statusTxt.includes("รับเครื่อง")) displayStatus = "Step[2]";
-                    if(statusTxt.includes("สอบ")) displayStatus = "Step[3]";
-                    if(statusTxt.includes("ส่งคืน")) displayStatus = "Step[4]";
-                    if(statusTxt.includes("เคลียร์") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("Step[5]")) displayStatus = "คืนแล้ว";
-
-                    // เลือกสี Badge
                     let badgeClass = "bg-secondary";
-                    if(displayStatus === "ขอเบิก") badgeClass = "bg-secondary";
-                    else if(displayStatus === "Step[1]") badgeClass = "bg-primary";
-                    else if(displayStatus === "Step[2]") badgeClass = "bg-info text-dark";
-                    else if(displayStatus === "Step[3]") badgeClass = "bg-warning text-dark";
-                    else if(displayStatus === "Step[4]") badgeClass = "bg-danger";
-                    else if(displayStatus === "คืนแล้ว") badgeClass = "bg-success";
-                    
+
+                    if(statusTxt.includes("Step[1]")) {
+                        displayStatus = "Step[1]";
+                        badgeClass = "bg-primary text-white";
+                    } else if(statusTxt.includes("Step[2]")) {
+                        displayStatus = "Step[2]";
+                        badgeClass = "bg-info text-dark";
+                    } else if(statusTxt.includes("Step[3]")) {
+                        displayStatus = "Step[3]";
+                        badgeClass = "bg-warning text-dark";
+                    } else if(statusTxt.includes("Step[4]")) {
+                        displayStatus = "Step[4]";
+                        badgeClass = "bg-danger text-white";
+                    } else if(statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์")) {
+                        displayStatus = "✔️ เสร็จสิ้น";
+                        badgeClass = "bg-success text-white";
+                    } else if(statusTxt.includes("ซ่อม") || statusTxt.includes("ชำรุด") || statusTxt.includes("ปัญหา")) {
+                        displayStatus = "⚠️ มีปัญหา";
+                        badgeClass = "bg-dark text-warning";
+                    }
+
+                    // สร้างแถวตาราง
                     tbody.innerHTML += `
                         <tr>
                             <td class="fw-bold text-dark">${item.reqId}</td>
-                            <td class="text-muted">${dateStr}</td>
-                            <td>${item.name || "-"}</td>
-                            <td class="text-primary fw-bold">${item.ipadId || "-"}</td>
+                            <td class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
+                            <td class="fw-bold" style="color: #495057;">${item.name || "-"}</td>
+                            <td class="fw-bold text-primary">${item.ipadId || "-"}</td>
                             <td><span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm">${displayStatus}</span></td>
                         </tr>
                     `;
@@ -183,9 +276,26 @@
         });
     }
 
-    function logout() {
-        localStorage.clear();
-        window.location.href = "index.html"; 
+    // 📌 ฟังก์ชันออกจากระบบ
+    async function logout() {
+        if(confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) {
+            localStorage.removeItem("userName");
+            localStorage.removeItem("userRole");
+
+            try {
+                await liff.init({ liffId: "2010557323-PAyWhGxW" }); 
+                if (liff.isLoggedIn()) {
+                    liff.logout();
+                }
+                if (liff.isInClient()) {
+                    liff.closeWindow(); 
+                } else {
+                    window.location.href = "index.html"; 
+                }
+            } catch (err) {
+                window.location.href = "index.html";
+            }
+        }
     }
 </script>
 </body>
