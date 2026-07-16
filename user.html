@@ -5,77 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>หน้าผู้ใช้งาน | ระบบ iPad</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- 📌 โหลดไฟล์ CSS กลาง (ถ้าพี่ใช้ชื่อ style_3.css ให้แก้ตรงนี้นะครับ) -->
     <link rel="stylesheet" href="style.css">
+    
     <style>
-        body { background: #f8fafc; font-family: 'Kanit', sans-serif; }
-        .user-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin: 30px auto; max-width: 500px; }
-        .greeting { font-size: 1.2rem; color: #475569; margin-bottom: 20px; }
-        .btn-custom { border-radius: 12px; padding: 12px; font-weight: bold; width: 100%; margin-bottom: 12px; transition: 0.2s; }
-        .btn-step1 { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
-        .btn-step1:hover { background: #bae6fd; }
-        .btn-step2 { background: #ccfbf1; color: #0f766e; border: 1px solid #99f6e4; }
-        .btn-step2:hover { background: #99f6e4; }
-        .btn-step3 { background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
-        .btn-step3:hover { background: #ddd6fe; }
+        /* สไตล์พิเศษเฉพาะหน้า User */
+        .issue-card { background: #fff5f5; border: 1px solid #fecaca; border-left: 5px solid #ef4444; border-radius: 12px; padding: 20px; }
+        
+        /* Responsive Table สำหรับมือถือ (แปลงตารางเป็นการ์ด) */
+        @media screen and (max-width: 768px) {
+            .table-card { background: transparent; box-shadow: none; border: none; padding: 0; }
+            .table thead { display: none; }
+            .table tbody tr {
+                display: block; background: #ffffff; border-radius: 16px; margin-bottom: 15px;
+                padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+            }
+            .table tbody td {
+                display: flex; justify-content: space-between; align-items: center;
+                text-align: right; padding: 10px 0; border-bottom: 1px dashed #f1f5f9;
+            }
+            .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
+            .table tbody td::before {
+                content: attr(data-label); font-weight: 600; color: #64748b; font-size: 0.85rem; text-align: left; margin-right: 15px;
+            }
+        }
     </style>
 </head>
 <body>
-    
-    <div class="container">
-        <div class="user-card">
-            <h3 class="fw-bold text-dark text-center mb-1">📱 เมนูผู้ใช้งาน (User)</h3>
-            <div class="text-center greeting">
-                สวัสดี, <span id="showName" style="font-weight: bold; color: #3b82f6;">กำลังโหลด...</span>
-            </div>
-            
-            <div class="mb-4">
-                <label class="form-label fw-bold text-muted">รหัสเครื่อง iPad</label>
-                <input type="text" id="ipadId" class="form-control" placeholder="ระบุรหัส iPad (เช่น A01)">
-            </div>
-            
-            <button class="btn btn-custom btn-step1" onclick="sendData('ขอเบิก', 'รอดำเนินการ')">📦 1. แจ้งขอเบิกเครื่อง</button>
-            <button class="btn btn-custom btn-step2" onclick="sendData('ยืม', 'รับเครื่องแล้ว')">✅ 2. ยืนยันรับเครื่อง</button>
-            <button class="btn btn-custom btn-step3" onclick="sendData('คืน', 'รอแอดมินตรวจ')">📝 3. ส่งคืนเครื่องหลังสอบ</button>
 
-            <hr class="my-4">
-            
-            <button class="btn btn-danger fw-bold" style="width: 100%; border-radius: 12px;" onclick="logout()">🚪 ออกจากระบบ</button>
+    <!-- 🟢 Navbar -->
+    <nav class="nav-header">
+        <div class="nav-title">📱 เมนูผู้ใช้งาน</div>
+        <div class="d-flex align-items-center">
+            <span class="text-primary fw-bold me-3 d-none d-sm-inline">สวัสดี, <span id="showName">Loading...</span></span>
+            <button class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" onclick="logoutSystem()">ออกจากระบบ</button>
         </div>
+    </nav>
+
+    <div class="container-wide pb-5">
+        
+        <!-- 🔴 หมวดหมู่: แจ้งปัญหา -->
+        <div class="d-flex align-items-center gap-2 mt-4 mb-3">
+            <div style="width: 4px; height: 20px; background-color: #ef4444; border-radius: 2px;"></div>
+            <h5 class="fw-bold m-0 text-dark">ช่วยเหลือ / แจ้งปัญหา</h5>
+        </div>
+        <div class="issue-card d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h6 class="fw-bold text-danger mb-1">อุปกรณ์มีปัญหา?</h6>
+                <p class="text-muted m-0" style="font-size: 0.85rem;">คลิกเพื่อแจ้งแอดมิน (เช่น เครื่องเปิดไม่ติด, แอปค้าง)</p>
+            </div>
+            <button class="btn btn-danger fw-bold rounded-pill px-4" onclick="reportIssue()">🚨 แจ้งปัญหา</button>
+        </div>
+
+        <!-- 🔵 หมวดหมู่: รายการของฉัน -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <div style="width: 4px; height: 20px; background-color: #0ea5e9; border-radius: 2px;"></div>
+                <h5 class="fw-bold m-0 text-dark">รายการอุปกรณ์ของฉัน</h5>
+            </div>
+            <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="loadUserTableData()">🔄 อัปเดต</button>
+        </div>
+        
+        <div class="table-card table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>เลขรายการ</th>
+                        <th>วัน-เวลาที่อัปเดต</th>
+                        <th>รหัส iPad</th>
+                        <th>สถานะปัจจุบัน</th>
+                        <th>จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูลของคุณ... ⏳</td></tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
+    <!-- 📌 โหลดไฟล์ Scripts -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- โหลดสคริปต์กลาง (ถ้าพี่ใช้ชื่อ script_3.js ให้แก้ตรงนี้นะครับ) -->
     <script src="script.js"></script>
+    
+    <!-- โหลดสคริปต์เฉพาะหน้า User (ไฟล์ในขั้นตอนที่ 2) -->
+    <script src="user.js"></script>
 
-    <script>
-        // โชว์ชื่อจากที่ระบบจำไว้
-        window.onload = () => {
-            const userName = localStorage.getItem("userName");
-            if (userName) {
-                document.getElementById("showName").innerText = userName;
-            } else {
-                window.location.href = "index.html"; // ถ้าไม่มีชื่อให้กลับไปล็อกอิน
-            }
-        };
-
-        // ระบบล็อกเอาท์ปิดหน้าต่าง LINE
-        async function logout() {
-            localStorage.removeItem("userName");
-            localStorage.removeItem("userRole");
-
-            try {
-                await liff.init({ liffId: "2010557323-PAyWhGxW" }); // ใส่ LIFF ID พี่ไว้แล้ว
-                if (liff.isLoggedIn()) {
-                    liff.logout();
-                }
-                if (liff.isInClient()) {
-                    liff.closeWindow(); // ปิดหน้าต่าง LINE
-                } else {
-                    window.location.href = "index.html"; // กลับไปหน้าแรกบนเว็บปกติ
-                }
-            } catch (err) {
-                window.location.href = "index.html";
-            }
-        }
-    </script>
 </body>
 </html>

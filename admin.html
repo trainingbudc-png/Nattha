@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เมนูผู้ดูแล (Admin)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body { background: #f4f7f6; font-family: 'Kanit', sans-serif; color: #333; }
         
-        .navbar-custom { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 30px; position: sticky; top: 0; z-index: 100; }
+        .navbar-custom { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 30px; }
         .admin-name { color: #dc3545; font-weight: 600; margin-right: 15px; }
         
         .section-title { font-size: 1.1rem; font-weight: 600; color: #495057; margin-top: 30px; margin-bottom: 15px; display: flex; align-items: center; }
@@ -32,54 +32,19 @@
         .menu-text p { margin: 0; font-size: 0.85rem; color: #6c757d; }
 
         .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); overflow: hidden; }
-        .table { margin-bottom: 0; width: 100%; border-collapse: collapse; }
-        .table th { background: #f8f9fa; font-size: 0.85rem; font-weight: 600; color: #6c757d; border-bottom: 2px solid #e9ecef; padding: 15px; text-align: center; white-space: nowrap; }
-        .table td { vertical-align: middle; padding: 12px 15px; font-size: 0.95rem; text-align: center; border-bottom: 1px solid #f1f3f5; }
+        .table { margin-bottom: 0; }
+        .table th { background: #f8f9fa; font-size: 0.85rem; font-weight: 600; color: #6c757d; border-bottom: 2px solid #e9ecef; padding: 15px; text-align: center; }
+        .table td { vertical-align: middle; padding: 12px 15px; font-size: 0.9rem; text-align: center; border-bottom: 1px solid #f1f3f5; }
         
         .btn-refresh { font-size: 0.85rem; font-weight: 600; border-radius: 8px; padding: 5px 15px; }
-
-        /* =========================================
-           ✨ Responsive สำหรับหน้าจอมือถือ (เปลี่ยนตารางเป็นการ์ด) ✨
-           ========================================= */
-        @media screen and (max-width: 768px) {
-            .table-card { background: transparent; box-shadow: none; overflow: visible; }
-            .table thead { display: none; /* ซ่อนหัวตาราง */ }
-            .table tbody tr {
-                display: block;
-                background: #ffffff;
-                border-radius: 16px;
-                margin-bottom: 15px;
-                padding: 10px 15px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-                border: 1px solid #e2e8f0;
-            }
-            .table tbody td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                text-align: right;
-                padding: 10px 0;
-                border-bottom: 1px dashed #f1f5f9;
-            }
-            .table tbody td:last-child { border-bottom: none; }
-            .table tbody td::before {
-                content: attr(data-label);
-                font-weight: 600;
-                color: #64748b;
-                font-size: 0.85rem;
-                text-align: left;
-                margin-right: 15px;
-            }
-            .table tbody td span.badge { font-size: 0.85rem; }
-        }
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-custom d-flex justify-content-between align-items-center">
-        <div class="fw-bold fs-5">📱 เมนูแอดมิน</div>
+        <div class="fw-bold fs-5">📱 เมนูผู้ดูแล (Admin)</div>
         <div class="d-flex align-items-center">
-            <span class="admin-name d-none d-md-inline">แอดมิน: <span id="adminNameDisplay">Loading...</span></span>
+            <span class="admin-name">แอดมิน: <span id="adminNameDisplay">Loading...</span></span>
             <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="logout()">ออกจากระบบ</button>
         </div>
     </nav>
@@ -87,7 +52,7 @@
     <div class="container pb-5">
         <div class="section-title title-red">ระบบจัดการ iPad (เบิก-คืน)</div>
         <div class="row g-3">
-            <div class="col-md-6 col-12">
+            <div class="col-md-6">
                 <a href="step1.html" class="menu-card menu-card-red">
                     <div class="menu-icon">📦</div>
                     <div class="menu-text">
@@ -96,7 +61,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-md-6 col-12">
+            <div class="col-md-6">
                 <a href="step5-list.html" class="menu-card menu-card-red">
                     <div class="menu-icon">🔍</div>
                     <div class="menu-text">
@@ -107,9 +72,22 @@
             </div>
         </div>
 
+        <div class="section-title title-yellow">ระบบแจ้งเตือนปัญหา</div>
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="menu-card menu-card-yellow">
+                    <div class="menu-icon">⚠️</div>
+                    <div class="menu-text">
+                        <h5>สถานะเครื่องมีปัญหา</h5>
+                        <p>อัปเดตสถานะกรณีพบความเสียหาย</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="d-flex justify-content-between align-items-center mt-5 mb-3">
-            <div class="section-title title-green mt-0 mb-0">รายการอัปเดตล่าสุด</div>
-            <button class="btn btn-outline-primary btn-refresh" onclick="loadTableData()">🔄 อัปเดต</button>
+            <div class="section-title title-green mt-0 mb-0">ตารางสถานะ iPad (อัปเดตล่าสุด)</div>
+            <button class="btn btn-outline-primary btn-refresh" onclick="loadTableData()">🔄 โหลดข้อมูลใหม่</button>
         </div>
         
         <div class="table-card table-responsive">
@@ -163,10 +141,10 @@
                     
                     let dateStr = "-";
                     if (item.timestamp) {
-                        const d = new Date(item.timestamp);
-                        dateStr = d.toLocaleDateString("th-TH") + " " + d.toLocaleTimeString("th-TH", {hour: '2-digit', minute:'2-digit'});
+                        dateStr = new Date(item.timestamp).toLocaleString("th-TH");
                     }
 
+                    // จัดการแสดงผลข้อความสถานะให้สั้นกระชับ
                     let statusTxt = item.status || "-";
                     let displayStatus = statusTxt;
                     
@@ -176,6 +154,7 @@
                     if(statusTxt.includes("ส่งคืน")) displayStatus = "Step[4]";
                     if(statusTxt.includes("เคลียร์") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("Step[5]")) displayStatus = "คืนแล้ว";
 
+                    // เลือกสี Badge
                     let badgeClass = "bg-secondary";
                     if(displayStatus === "ขอเบิก") badgeClass = "bg-secondary";
                     else if(displayStatus === "Step[1]") badgeClass = "bg-primary";
@@ -184,14 +163,13 @@
                     else if(displayStatus === "Step[4]") badgeClass = "bg-danger";
                     else if(displayStatus === "คืนแล้ว") badgeClass = "bg-success";
                     
-                    // 📌 เพิ่ม data-label ให้ CSS ดึงไปใช้แสดงบนมือถือ
                     tbody.innerHTML += `
                         <tr>
-                            <td data-label="📌 เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
-                            <td data-label="🕒 วัน/เวลา" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
-                            <td data-label="👤 ผู้ดำเนินการ" class="text-primary fw-bold">${item.name || "-"}</td>
-                            <td data-label="📱 รหัส iPad" class="fw-bold text-dark">${item.ipadId || "-"}</td>
-                            <td data-label="📊 สถานะ"><span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm">${displayStatus}</span></td>
+                            <td class="fw-bold text-dark">${item.reqId}</td>
+                            <td class="text-muted">${dateStr}</td>
+                            <td>${item.name || "-"}</td>
+                            <td class="text-primary fw-bold">${item.ipadId || "-"}</td>
+                            <td><span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm">${displayStatus}</span></td>
                         </tr>
                     `;
                 });
