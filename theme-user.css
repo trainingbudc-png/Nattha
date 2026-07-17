@@ -1,0 +1,40 @@
+/* =========================================
+   ⚫ ธีมผู้ใช้งาน (ดำตัดขาว)
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+
+body { background: #f8f9fa; font-family: 'Kanit', sans-serif; color: #212529; }
+
+/* Navbar */
+.nav-header { background: white; border-bottom: 4px solid #212529; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 15px 30px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+.nav-title { font-size: 1.25rem; font-weight: bold; color: #212529; }
+.text-primary { color: #212529 !important; }
+
+/* หัวข้อ Section */
+.section-title { font-size: 1.1rem; font-weight: 600; color: #212529; margin-top: 25px; margin-bottom: 15px; padding-left: 10px; border-left: 4px solid #212529; }
+
+/* การ์ดเมนูลัด */
+.menu-card { background: white; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.3s; cursor: pointer; height: 100%; border-left: 6px solid #212529; }
+.menu-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-left: 6px solid #495057; }
+.menu-icon { font-size: 2rem; }
+.menu-text h6 { font-weight: 600; margin: 0 0 5px 0; font-size: 1.05rem; color: #212529; }
+.menu-text p { margin: 0; font-size: 0.8rem; color: #6c757d; }
+
+/* ตาราง */
+.table-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; border: 1px solid #e9ecef; margin-top: 15px;}
+.table { margin-bottom: 0; }
+.table th { background: #212529; font-size: 0.9rem; font-weight: 600; color: white; padding: 15px; text-align: center; }
+.table td { vertical-align: middle; padding: 12px 15px; font-size: 0.95rem; text-align: center; border-bottom: 1px solid #f8f9fa; }
+
+/* ป้าย Tag iPad */
+.ipad-tag { background-color: #f8f9fa; color: #212529; border: 1px solid #dee2e6; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; display: inline-block; margin: 3px; font-weight: 500; }
+
+/* Responsive สำหรับมือถือ */
+@media screen and (max-width: 768px) {
+    .table-card { background: transparent; box-shadow: none; border: none; padding: 0; }
+    .table thead { display: none; }
+    .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 2px solid #212529; }
+    .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 10px 0; border-bottom: 1px dashed #e9ecef; }
+    .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
+    .table tbody td::before { content: attr(data-label); font-weight: 600; color: #495057; font-size: 0.85rem; text-align: left; margin-right: 15px; }
+}
