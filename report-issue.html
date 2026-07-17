@@ -15,7 +15,6 @@
             color: #333;
         }
         
-        /* ธีมสีส้ม/เหลือง สำหรับการแจ้งปัญหา */
         .card-custom { 
             background: white; 
             border: none; 
@@ -50,31 +49,59 @@
             margin-bottom: 25px;
             font-size: 0.95rem;
         }
+
+        /* สไตล์ปุ่มตัวเลือกหมวดหมู่ */
+        .btn-outline-danger, .btn-outline-primary {
+            transition: 0.2s;
+            border-width: 2px;
+            border-radius: 10px;
+        }
+        .btn-check:checked + .btn-outline-danger { background-color: #fef2f2; border-color: #dc2626; color: #dc2626; }
+        .btn-check:checked + .btn-outline-primary { background-color: #f0f9ff; border-color: #0284c7; color: #0284c7; }
+        .cat-subtitle { font-size: 0.8rem; display: block; margin-top: 5px; }
     </style>
 </head>
 <body>
     
     <div class="container my-4" style="max-width: 700px;">
-        <!-- 📌 Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="text-dark fw-bold mb-0">⚠️ แจ้งสถานะเครื่องมีปัญหา</h3>
             <a href="admin.html" class="btn btn-secondary px-4 fw-bold rounded-pill">🔙 กลับหน้าแอดมิน</a>
         </div>
         
-        <!-- 📌 Main Card -->
         <div class="card card-custom p-4 p-md-5 mx-auto">
             
             <div class="alert-box">
-                <strong>คำแนะนำ:</strong> ใช้ฟอร์มนี้เพื่ออัปเดตสถานะกรณีพบความเสียหาย, เครื่องสูญหาย, หรือต้องการส่งซ่อม ระบบจะเปลี่ยนสถานะเครื่องนี้ไม่ให้ถูกนำไปเบิก-ยืมได้
+                <strong>คำแนะนำ:</strong> ใช้ฟอร์มนี้เพื่ออัปเดตสถานะกรณีพบความเสียหาย หรือต้องการบันทึกประวัติเครื่อง
             </div>
 
             <form id="issueForm">
                 
+                <!-- 📌 เพิ่มระบบเลือกหมวดหมู่การแจ้ง -->
+                <div class="mb-4">
+                    <label class="form-label">📌 เลือกหมวดหมู่การแจ้ง:</label>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <input type="radio" class="btn-check" name="reportCategory" id="catRepair" value="repair" checked>
+                            <label class="btn btn-outline-danger w-100 text-start p-3 fw-bold" for="catRepair">
+                                🛠️ แจ้งส่งซ่อม
+                                <span class="cat-subtitle text-muted fw-normal">ระบบจะระงับการยืมเครื่องนี้ และตัดออกจากหน้าเตรียมเครื่อง</span>
+                            </label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="radio" class="btn-check" name="reportCategory" id="catReport" value="report">
+                            <label class="btn btn-outline-primary w-100 text-start p-3 fw-bold" for="catReport">
+                                📝 รายงานเฉยๆ
+                                <span class="cat-subtitle text-muted fw-normal">แค่จดประวัติไว้ เครื่องนี้ยังสามารถให้คนอื่นเบิกยืมได้ปกติ</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="mb-4">
                     <label class="form-label">📱 เลือกรหัส iPad ที่มีปัญหา:</label>
                     <select id="ipadIdSelect" class="form-select form-select-lg" required>
                         <option value="">-- กรุณาเลือกรหัส iPad --</option>
-                        <!-- ตัวเลือกจะถูกสร้างอัตโนมัติด้วย JavaScript -->
                     </select>
                 </div>
 
@@ -95,7 +122,7 @@
                     <textarea id="issueNote" class="form-control" rows="4" placeholder="เช่น รอยร้าวที่มุมขวาล่าง, ชาร์จแบตไม่เข้า, หรือชื่อผู้ใช้งานทำหล่น..."></textarea>
                 </div>
 
-                <button type="button" class="btn btn-submit-custom w-100 fs-5 mt-2" id="submitBtn" onclick="submitIssue()">💾 บันทึกและอัปเดตสถานะ</button>
+                <button type="button" class="btn btn-submit-custom w-100 fs-5 mt-2" id="submitBtn" onclick="submitIssue()">💾 บันทึกข้อมูล</button>
             </form>
         </div>
     </div>
@@ -103,7 +130,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // ตั้งค่า URL ของ Google Apps Script ของพี่
+    // ตั้งค่า URL ของ Google Apps Script
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
     
     window.onload = function() {
@@ -114,11 +141,9 @@
         generateIpadList();
     };
 
-    // 📌 ฟังก์ชันสร้างรายชื่อ iPad ใส่ใน Dropdown ให้อัตโนมัติ (1-80)
     function generateIpadList() {
         const select = document.getElementById("ipadIdSelect");
         
-        // หมวดหมู่ปกติ (IPad01 - IPad60)
         const optgroupNormal = document.createElement("optgroup");
         optgroupNormal.label = "🔹 หมวด iPad (ปกติ)";
         for (let i = 1; i <= 60; i++) {
@@ -130,7 +155,6 @@
         }
         select.appendChild(optgroupNormal);
 
-        // หมวดหมู่ Air + APC (IPad Air + APC 61 - 80)
         const optgroupAir = document.createElement("optgroup");
         optgroupAir.label = "🔹 หมวด iPad Air + APC";
         for (let i = 61; i <= 80; i++) {
@@ -142,8 +166,8 @@
         select.appendChild(optgroupAir);
     }
 
-    // 📌 ฟังก์ชันบันทึกข้อมูล
     function submitIssue() {
+        const reportCategory = document.querySelector('input[name="reportCategory"]:checked').value;
         const ipadId = document.getElementById("ipadIdSelect").value;
         const issueType = document.getElementById("issueType").value;
         const note = document.getElementById("issueNote").value;
@@ -156,13 +180,13 @@
         btn.innerHTML = "กำลังบันทึกข้อมูล... ⏳";
         btn.disabled = true;
 
-        // เตรียม Payload ส่งไปหลังบ้าน (สร้าง Action ใหม่ชื่อ 'reportIssue')
         const payload = {
             action: "reportIssue",
             adminName: adminName,
             ipadId: ipadId,
             issueType: issueType,
-            note: note
+            note: note,
+            reportCategory: reportCategory // 📌 ส่งค่าหมวดหมู่ไปให้หลังบ้าน
         };
 
         fetch(API_URL, { 
@@ -174,7 +198,7 @@
             if(res.status === "success") {
                 Swal.fire({
                     title: "บันทึกสำเร็จ!",
-                    text: `อัปเดตสถานะเครื่อง ${ipadId} เป็น "ส่งซ่อม/มีปัญหา" เรียบร้อยแล้ว`,
+                    text: res.message,
                     icon: "success",
                     confirmButtonColor: "#00897b"
                 }).then(() => {
@@ -182,12 +206,12 @@
                 });
             } else {
                 Swal.fire("ข้อผิดพลาด", res.message || "ไม่สามารถบันทึกข้อมูลได้", "error");
-                btn.innerHTML = "💾 บันทึกและอัปเดตสถานะ";
+                btn.innerHTML = "💾 บันทึกข้อมูล";
                 btn.disabled = false;
             }
         }).catch(err => {
             Swal.fire("ขัดข้อง", "ระบบขัดข้องในการเชื่อมต่อเซิร์ฟเวอร์", "error");
-            btn.innerHTML = "💾 บันทึกและอัปเดตสถานะ";
+            btn.innerHTML = "💾 บันทึกข้อมูล";
             btn.disabled = false;
         });
     }
