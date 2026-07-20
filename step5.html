@@ -7,42 +7,43 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { background: #e0f2f1; font-family: 'Kanit', sans-serif; padding: 20px; }
+        body { background: #fdf2f2; font-family: 'Kanit', sans-serif; padding: 20px; }
         
-        .main-header-card { background: white; padding: 20px 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin: auto; max-width: 900px; margin-bottom: 20px; }
-        .main-header-card h3 { color: #1e293b; font-weight: 600; margin: 0; font-size: 1.6rem; }
+        .main-header-card { background: white; padding: 20px 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(220,53,69,0.05); margin: auto; max-width: 900px; margin-bottom: 20px; border-left: 6px solid #dc3545; }
+        .main-header-card h3 { color: #dc3545; font-weight: 600; margin: 0; font-size: 1.6rem; }
         
-        .confirm-card { background: white; padding: 0; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); max-width: 900px; margin: auto; overflow: hidden; }
+        .confirm-card { background: white; padding: 0; border-radius: 12px; box-shadow: 0 10px 25px rgba(220,53,69,0.08); max-width: 900px; margin: auto; overflow: hidden; }
         
-        .teal-header { background-color: #00897b; color: white; padding: 15px 20px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
+        .red-header { background-color: #dc3545; color: white; padding: 15px 20px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
         .req-id-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 8px; font-size: 0.9rem; }
         
-        .info-panel { padding: 15px 20px; background: #f1f8f7; border-bottom: 1px solid #b2dfdb; display: flex; justify-content: space-around; align-items: center; }
-        .info-label { font-size: 0.85rem; color: #00695c; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
-        .info-value { font-size: 1.1rem; font-weight: bold; color: #004d40; }
-        .divider { width: 1px; background-color: #b2dfdb; height: 40px; }
+        .info-panel { padding: 15px 20px; background: #fef2f2; border-bottom: 1px solid #fca5a5; display: flex; justify-content: space-around; align-items: center; }
+        .info-label { font-size: 0.85rem; color: #b91c1c; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+        .info-value { font-size: 1.1rem; font-weight: bold; color: #7f1d1d; }
+        .divider { width: 1px; background-color: #fca5a5; height: 40px; }
 
         .table { margin-bottom: 0 !important; border-collapse: collapse; }
-        .table th { font-size: 0.9rem; vertical-align: middle; text-align: center; color: #4b5563; background: white; padding: 15px 10px; border-bottom: 2px solid #e2e8f0; font-weight: normal; }
-        .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid #f1f5f9; }
+        .table th { font-size: 0.9rem; vertical-align: middle; text-align: center; color: #b91c1c; background: white; padding: 15px 10px; border-bottom: 2px solid #fca5a5; font-weight: 600; }
+        .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid #fee2e2; }
         
-        .check-item { width: 22px; height: 22px; cursor: pointer; accent-color: #00897b; }
+        .check-item { width: 22px; height: 22px; cursor: pointer; accent-color: #dc3545; }
         
-        .btn-shortcut { background: #e0f2f1; color: #00695c; border: none; font-size: 0.8rem; font-weight: bold; padding: 6px 12px; border-radius: 6px; transition: 0.2s; }
-        .btn-shortcut:hover { background: #b2dfdb; }
+        .btn-shortcut { background: #fdf2f2; color: #dc3545; border: 1px solid #fca5a5; font-size: 0.8rem; font-weight: bold; padding: 6px 12px; border-radius: 6px; transition: 0.2s; }
+        .btn-shortcut:hover { background: #fca5a5; color: #7f1d1d; }
         
-        .btn-confirm { background: #00897b; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: calc(100% - 40px); margin: 20px; border: none; transition: 0.3s; font-size: 1.1rem; }
-        .btn-confirm:hover { background: #00695c; }
+        .btn-confirm { background: #dc3545; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: calc(100% - 40px); margin: 20px; border: none; transition: 0.3s; font-size: 1.1rem; }
+        .btn-confirm:hover { background: #b91c1c; }
     </style>
 </head>
 <body>
 
-<div class="main-header-card">
+<div class="main-header-card d-flex justify-content-between align-items-center">
     <h3>5. [ ผู้ตรวจสอบ ] Check List iPad</h3>
+    <a href="admin.html" class="btn btn-outline-secondary px-3 fw-bold rounded-pill btn-sm">🔙 กลับหน้าแอดมิน</a>
 </div>
 
 <div class="confirm-card">
-    <div class="teal-header">
+    <div class="red-header">
         <span>iPad ที่ยืม</span>
         <span class="req-id-badge" id="headerReqId">รายการ: Loading...</span>
     </div>
@@ -80,12 +81,13 @@
     <button class="btn btn-confirm" onclick="submitCheck()">💾 ยืนยันการตรวจสอบเครื่องเสร็จสมบูรณ์</button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
     const reqId = new URLSearchParams(window.location.search).get('reqId');
 
     window.onload = function() {
-        if(!reqId) { alert("ไม่พบเลขรายการ"); return; }
+        if(!reqId) { Swal.fire("แจ้งเตือน","ไม่พบเลขรายการ","warning"); return; }
         document.getElementById('headerReqId').innerText = "รายการ: " + reqId;
 
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep1Data", reqId: reqId }) })
@@ -121,6 +123,7 @@
 
     async function submitCheck() {
         const btn = document.querySelector('.btn-confirm');
+        const originalText = btn.innerText;
         btn.innerText = "⏳ กำลังบันทึกข้อมูล...";
         btn.disabled = true;
 
@@ -130,7 +133,6 @@
             items.push({ ipadId: row.dataset.ipad, checks: checks });
         });
         
-        // 📌 ดึงชื่อผู้เบิกยืมที่แสดงอยู่บนหน้าจอมาเก็บไว้
         const borrowerName = document.getElementById('displayUserName').innerText;
 
         try {
@@ -141,7 +143,7 @@
                     reqId: reqId, 
                     items: items,
                     name: localStorage.getItem("userName") || "Admin", 
-                    borrowerName: borrowerName // 📌 ส่งชื่อผู้ยืมไปให้ Google Sheet ด้วย
+                    borrowerName: borrowerName 
                 })
             });
 
@@ -149,8 +151,8 @@
             window.location.href = `success.html?title=ตรวจสอบเสร็จสิ้น&desc=บันทึกผลการตรวจสอบลงระบบเรียบร้อยแล้ว&summary=${encodeURIComponent(summary)}`;
             
         } catch (error) {
-            alert("❌ เกิดข้อผิดพลาดในการบันทึก");
-            btn.innerText = "💾 ยืนยันการตรวจสอบเครื่องเสร็จสมบูรณ์";
+            Swal.fire("❌ เกิดข้อผิดพลาด", "ในการบันทึก กรุณาลองใหม่", "error");
+            btn.innerText = originalText;
             btn.disabled = false;
         }
     }
