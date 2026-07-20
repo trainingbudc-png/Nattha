@@ -70,10 +70,20 @@
                     const countText = req.note ? req.note.replace(/[^0-9]/g, '') : "1";
                     const count = parseInt(countText) || 1;
 
+                    // 🛠️ จุดที่แก้ไข: แปลงรูปแบบเวลาดิบให้เป็นรูปแบบที่อ่านง่ายขึ้น
+                    let displayTime = req.timestamp ? new Date(req.timestamp).toLocaleString("th-TH", {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) : "-";
+
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
                         <td><span class="badge bg-dark fs-6">${req.reqId}</span></td> 
-                        <td>${req.timestamp}</td>
+                        <!-- 🛠️ จุดที่แก้ไข: เปลี่ยนจาก req.timestamp เป็น displayTime -->
+                        <td>${displayTime}</td>
                         <td class="text-start fw-bold text-danger">${req.name}</td>
                         <td><span class="badge bg-secondary fs-6">${count} เครื่อง</span></td>
                         <td><span class="status-badge">${req.status}</span></td>
