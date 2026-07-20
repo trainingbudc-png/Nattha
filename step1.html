@@ -22,6 +22,29 @@
         .category-header.collapsed::after { transform: rotate(-90deg); }
 
         .ipad-container { max-height: 250px; overflow-y: auto; padding: 15px; background: white; border: 1px solid #fecaca; border-radius: 0 0 8px 8px; border-top: none; margin-bottom: 15px; }
+        
+        /* 📌 ระบบ Grid จัดแถวให้เป๊ะ */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+        .grid-layout .btn {
+            width: 100%;
+            margin: 0 !important;
+            padding: 10px 5px !important;
+            font-size: 0.95rem;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .grid-full-width {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 10px 0;
+        }
+
         .btn-submit-custom { background-color: #dc3545; color: white; font-weight: bold; border: none; border-radius: 8px; padding: 12px; transition: 0.3s; }
         .btn-submit-custom:hover { background-color: #b91c1c; color: white; }
 
@@ -70,8 +93,9 @@
                         🔹 หมวด iPad (ปกติ)
                     </div>
                     <div class="collapse show" id="collapseNormal">
-                        <div id="ipadNormalContainer" class="ipad-container d-flex flex-wrap gap-2">
-                            <div class="text-muted w-100 text-center py-2">กำลังโหลด... ⏳</div>
+                        <!-- 📌 เปลี่ยนเป็น class grid-layout แทน flex-wrap -->
+                        <div id="ipadNormalContainer" class="ipad-container grid-layout">
+                            <div class="grid-full-width text-muted py-2">กำลังโหลด... ⏳</div>
                         </div>
                     </div>
 
@@ -79,8 +103,9 @@
                         🔹 หมวด iPad Air + APC
                     </div>
                     <div class="collapse" id="collapseAir">
-                        <div id="ipadAirContainer" class="ipad-container d-flex flex-wrap gap-2">
-                            <div class="text-muted w-100 text-center py-2">กำลังโหลด... ⏳</div>
+                        <!-- 📌 เปลี่ยนเป็น class grid-layout แทน flex-wrap -->
+                        <div id="ipadAirContainer" class="ipad-container grid-layout">
+                            <div class="grid-full-width text-muted py-2">กำลังโหลด... ⏳</div>
                         </div>
                     </div>
                 </div>
@@ -155,18 +180,18 @@
                     const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
                     const btnHtml = `
                         <input type="checkbox" class="btn-check ipad-checkbox" id="btn-${safeId}" value="${id}" data-safeid="${safeId}" onchange="handleIpadSelection(this)">
-                        <label class="btn btn-outline-red px-3 py-2 shadow-sm" for="btn-${safeId}">${id}</label>
+                        <label class="btn btn-outline-red shadow-sm" for="btn-${safeId}" title="${id}">${id}</label>
                     `;
                     
                     if (id.includes("Air") || id.includes("APC")) { containerAir.innerHTML += btnHtml; countAir++; } 
                     else { containerNormal.innerHTML += btnHtml; countNormal++; }
                 });
 
-                if(countNormal === 0) containerNormal.innerHTML = '<div class="text-muted text-center w-100">-- ไม่มีเครื่องว่าง --</div>';
-                if(countAir === 0) containerAir.innerHTML = '<div class="text-muted text-center w-100">-- ไม่มีเครื่องว่าง --</div>';
+                if(countNormal === 0) containerNormal.innerHTML = '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
+                if(countAir === 0) containerAir.innerHTML = '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
             } else { 
-                containerNormal.innerHTML = '<div class="text-danger w-100 text-center py-2 fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
-                containerAir.innerHTML = '<div class="text-danger w-100 text-center py-2 fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
+                containerNormal.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
+                containerAir.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
             }
         });
     }
@@ -257,7 +282,16 @@
         .then(res => res.json())
         .then(res => {
             if(res.status === "success") {
-                Swal.fire({ title: "บันทึกสำเร็จ!", html: `หมายเลขรายการ: <b>${res.reqId}</b><br>ระบบบันทึกสถานะรอยืนยันแล้ว`, icon: "success", confirmButtonColor: "#dc3545" }).then(() => { window.location.href = "admin.html"; });
+                Swal.fire({
+                    title: "บันทึกสำเร็จ!",
+                    html: `หมายเลขรายการ: <b>${res.reqId}</b><br>ระบบบันทึกสถานะรอยืนยันแล้ว`,
+                    icon: "success",
+                    confirmButtonColor: "#dc3545",
+                    confirmButtonText: "OK",
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.href = "admin.html";
+                });
             } else {
                 Swal.fire("ข้อผิดพลาด", res.message, "error");
                 btn.innerHTML = "💾 ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
