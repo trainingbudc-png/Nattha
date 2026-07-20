@@ -15,6 +15,7 @@
         .btn-check-ipad { background-color: #dc3545; color: white; border: none; font-weight: bold; }
         .btn-check-ipad:hover { background-color: #b91c1c; color: white; }
 
+        /* 📱 รองรับมือถือ: เปลี่ยนตารางเป็นการ์ดเรียงต่อกัน */
         @media screen and (max-width: 768px) {
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
             .table thead { display: none; }
@@ -28,9 +29,9 @@
 </head>
 <body>
 
-<div class="container my-4">
+<div class="container my-4" style="max-width: 1000px;">
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-        <h3 class="text-danger fw-bold mb-0">📋 รายการรอตรวจสอบคืน</h3>
+        <h3 class="text-danger fw-bold mb-0">📋 Step 5 | ตรวจสอบคืน (ค้างดำเนินการ)</h3>
         <a href="admin.html" class="btn btn-outline-danger px-4 fw-bold rounded-pill border-2">🔙 กลับหน้าแอดมิน</a>
     </div>
 
@@ -61,6 +62,23 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
     let pendingRequests = [];
 
+    // ฟังก์ชันช่วยแปลงเวลาดิบ ให้เป็นเวลาไทยอ่านง่าย
+    function formatThaiDate(isoString) {
+        if (!isoString || isoString === "-" || isoString.includes("Z") === false) return isoString; 
+        try {
+            const dateObj = new Date(isoString);
+            return dateObj.toLocaleString('th-TH', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            }) + ' น.';
+        } catch(e) {
+            return isoString; // ถ้าแปลงพัง ให้แสดงค่าเดิม
+        }
+    }
+
     window.onload = async function() {
         try {
             const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) });
@@ -80,12 +98,14 @@
                     const countText = req.note ? req.note.replace(/[^0-9]/g, '') : "1";
                     const count = parseInt(countText) || 1;
 
-                    // 📌 เพิ่ม data-label ให้รองรับจอมือถือ
+                    // 🛠️ เรียกใช้ฟังก์ชันแปลงเวลา
+                    const displayTime = formatThaiDate(req.timestamp);
+
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
                         <td data-label="เลขรายการ"><span class="badge bg-dark fs-6">${req.reqId}</span></td> 
-                        <td data-label="วัน-เวลา">${req.timestamp}</td>
-                        <td data-label="ผู้ส่งคืน" class="fw-bold text-danger">${req.name}</td>
+                        <td data-label="วัน-เวลา">${displayTime}</td>
+                        <td data-label="ผู้ส่งคืน" class="fw-bold text-danger text-md-center text-end">${req.name}</td>
                         <td data-label="จำนวน"><span class="badge bg-secondary fs-6">${count} เครื่อง</span></td>
                         <td data-label="สถานะ"><span class="status-badge">${req.status}</span></td>
                         <td data-label="จัดการ">
