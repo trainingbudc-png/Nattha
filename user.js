@@ -75,12 +75,12 @@ async function loadUserTableData() {
                 
                 } else if (statusTxt.includes("Step[2]")) {
                     displayStatus = "Step[2]";
-                    badgeClass = "bg-danger text-dark";
+                    badgeClass = "bg-danger text-White";
                     actionBtn = `<button class="btn btn-warning btn-sm fw-bold rounded-pill px-3 shadow-sm w-100 text-dark" onclick="window.location.href='step3.html?reqId=${item.reqId}'">➡️ ก่อนสอบ</button>`;
                 
                 } else if (statusTxt.includes("Step[3]")) {
                     displayStatus = "Step[3]";
-                    badgeClass = "bg-danger text-dark";
+                    badgeClass = "bg-danger text-White";
                     actionBtn = `<button class="btn btn-sm fw-bold rounded-pill px-3 shadow-sm w-100 text-white" style="background-color: #8b5cf6;" onclick="window.location.href='step4.html?reqId=${item.reqId}'">📥 ส่งคืน</button>`;
                 
                 } else if (statusTxt.includes("Step[4]") || statusTxt.includes("เคลียร์") || statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น")) {
