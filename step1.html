@@ -25,24 +25,34 @@
         .btn-submit-custom { background-color: #dc3545; color: white; font-weight: bold; border: none; border-radius: 8px; padding: 12px; transition: 0.3s; }
         .btn-submit-custom:hover { background-color: #b91c1c; color: white; }
 
-        .form-check-input { width: 1.2em; height: 1.2em; cursor: pointer; accent-color: #dc3545; }
-        .form-check-input:checked { background-color: #dc3545; border-color: #dc3545; }
-        
         .table th { background-color: #fef2f2; color: #b91c1c; font-size: 0.9rem; text-align: center; vertical-align: middle; border-bottom: 2px solid #fca5a5; }
         .table td { vertical-align: middle; text-align: center; border-bottom: 1px solid #fee2e2; }
+
+        /* 📱 รองรับมือถือ & ขยายปุ่มจิ้มง่าย */
+        .form-check-input { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #dc3545; }
+        .form-check-input:checked { background-color: #dc3545; border-color: #dc3545; }
+        
+        @media screen and (max-width: 768px) {
+            .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
+            .table thead { display: none; }
+            .table tbody tr { display: block; background: white; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #e9ecef; }
+            .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
+            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; }
+            .btn-sm { padding: 10px !important; margin-top: 5px; }
+        }
     </style>
 </head>
 <body>
     
     <div class="container my-4" style="max-width: 900px;">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="text-dark fw-bold mb-0">📦 Step 1 | เตรียมเครื่อง iPad</h3>
+            <h3 class="text-dark fw-bold mb-0">📦 Step 1 | เตรียมเครื่อง</h3>
             <a href="admin.html" class="btn btn-outline-secondary px-4 fw-bold rounded-pill border-2">🔙 กลับหน้าแอดมิน</a>
         </div>
         
         <div class="card card-custom p-4 p-md-5 mx-auto">
             <form id="step1Form">
-                
                 <div class="mb-4">
                     <label class="form-label">👤 เลือกผู้ขอเบิกยืม (ผู้ใช้งาน):</label>
                     <select id="userNameSelect" class="form-select form-select-lg" required>
@@ -130,8 +140,7 @@
         .then(res => {
             const containerNormal = document.getElementById("ipadNormalContainer");
             const containerAir = document.getElementById("ipadAirContainer");
-            containerNormal.innerHTML = "";
-            containerAir.innerHTML = "";
+            containerNormal.innerHTML = ""; containerAir.innerHTML = "";
             
             if(res.status === "success" && res.data.length > 0) {
                 res.data.sort((a, b) => {
@@ -149,11 +158,8 @@
                         <label class="btn btn-outline-red px-3 py-2 shadow-sm" for="btn-${safeId}">${id}</label>
                     `;
                     
-                    if (id.includes("Air") || id.includes("APC")) {
-                        containerAir.innerHTML += btnHtml; countAir++;
-                    } else {
-                        containerNormal.innerHTML += btnHtml; countNormal++;
-                    }
+                    if (id.includes("Air") || id.includes("APC")) { containerAir.innerHTML += btnHtml; countAir++; } 
+                    else { containerNormal.innerHTML += btnHtml; countNormal++; }
                 });
 
                 if(countNormal === 0) containerNormal.innerHTML = '<div class="text-muted text-center w-100">-- ไม่มีเครื่องว่าง --</div>';
@@ -179,12 +185,12 @@
             tr.dataset.rawname = ipadId;
 
             tr.innerHTML = `
-                <td class="fw-bold text-danger">${ipadId}</td>
-                <td><input type="checkbox" class="form-check-input check-${safeId}" value="drive"></td>
-                <td><input type="checkbox" class="form-check-input check-${safeId}" value="file"></td>
-                <td><input type="checkbox" class="form-check-input check-${safeId}" value="img"></td>
-                <td><input type="checkbox" class="form-check-input check-${safeId}" value="safari"></td>
-                <td><button type="button" class="btn btn-sm btn-outline-danger fw-bold rounded-pill" onclick="tickAllRow('${safeId}')">✔ ติ๊กครบ</button></td>
+                <td data-label="📱 รหัส iPad" class="fw-bold text-danger">${ipadId}</td>
+                <td data-label="📁 G-Drive"><input type="checkbox" class="form-check-input check-${safeId}" value="drive"></td>
+                <td data-label="📄 ไฟล์เอกสาร"><input type="checkbox" class="form-check-input check-${safeId}" value="file"></td>
+                <td data-label="🖼️ ไฟล์รูปภาพ"><input type="checkbox" class="form-check-input check-${safeId}" value="img"></td>
+                <td data-label="🌐 Safari"><input type="checkbox" class="form-check-input check-${safeId}" value="safari"></td>
+                <td data-label="⚡ ปุ่มลัด"><button type="button" class="btn btn-sm btn-outline-danger fw-bold rounded-pill w-100" onclick="tickAllRow('${safeId}')">✔ ติ๊กครบ</button></td>
             `;
             tbody.appendChild(tr);
         } else {
@@ -245,24 +251,13 @@
         btn.innerHTML = "กำลังบันทึกข้อมูล... ⏳";
         btn.disabled = true;
 
-        const payload = {
-            action: "saveStep1",
-            adminName: adminName,
-            recipientName: recipientName,
-            note: `เตรียมให้: ${recipientName} (${selectedIpads.length} เครื่อง)`,
-            ipadData: ipadData
-        };
+        const payload = { action: "saveStep1", adminName: adminName, recipientName: recipientName, note: `เตรียมให้: ${recipientName} (${selectedIpads.length} เครื่อง)`, ipadData: ipadData };
 
         fetch(API_URL, { method: "POST", body: JSON.stringify(payload) })
         .then(res => res.json())
         .then(res => {
             if(res.status === "success") {
-                Swal.fire({
-                    title: "บันทึกสำเร็จ!",
-                    html: `หมายเลขรายการ: <b>${res.reqId}</b><br>ระบบได้ส่งแจ้งเตือนไปที่ LINE ของผู้ยืมแล้ว`,
-                    icon: "success",
-                    confirmButtonColor: "#dc3545"
-                }).then(() => { window.location.href = "admin.html"; });
+                Swal.fire({ title: "บันทึกสำเร็จ!", html: `หมายเลขรายการ: <b>${res.reqId}</b><br>ระบบบันทึกสถานะรอยืนยันแล้ว`, icon: "success", confirmButtonColor: "#dc3545" }).then(() => { window.location.href = "admin.html"; });
             } else {
                 Swal.fire("ข้อผิดพลาด", res.message, "error");
                 btn.innerHTML = "💾 ยืนยันการเตรียมเครื่อง"; btn.disabled = false;

@@ -26,20 +26,30 @@
         .table th { font-size: 0.9rem; vertical-align: middle; text-align: center; color: #b91c1c; background: white; padding: 15px 10px; border-bottom: 2px solid #fca5a5; font-weight: 600; }
         .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid #fee2e2; }
         
-        .check-item { width: 22px; height: 22px; cursor: pointer; accent-color: #dc3545; }
-        
-        .btn-shortcut { background: #fdf2f2; color: #dc3545; border: 1px solid #fca5a5; font-size: 0.8rem; font-weight: bold; padding: 6px 12px; border-radius: 6px; transition: 0.2s; }
+        .btn-shortcut { background: #fdf2f2; color: #dc3545; border: 1px solid #fca5a5; font-size: 0.8rem; font-weight: bold; padding: 8px 12px; border-radius: 6px; transition: 0.2s; }
         .btn-shortcut:hover { background: #fca5a5; color: #7f1d1d; }
         
         .btn-confirm { background: #dc3545; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: calc(100% - 40px); margin: 20px; border: none; transition: 0.3s; font-size: 1.1rem; }
         .btn-confirm:hover { background: #b91c1c; }
+
+        /* 📱 รองรับมือถือ & ขยายปุ่มจิ้มง่าย */
+        .check-item { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #dc3545; }
+        @media screen and (max-width: 768px) {
+            .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
+            .table thead { display: none; }
+            .table tbody tr { display: block; background: white; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #e9ecef; }
+            .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
+            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; }
+            .btn-shortcut { width: 100% !important; margin-top: 5px; padding: 10px !important; border-radius: 50rem !important;}
+        }
     </style>
 </head>
 <body>
 
 <div class="main-header-card d-flex justify-content-between align-items-center">
-    <h3>5. [ ผู้ตรวจสอบ ] Check List iPad</h3>
-    <a href="admin.html" class="btn btn-outline-secondary px-3 fw-bold rounded-pill btn-sm">🔙 กลับหน้าแอดมิน</a>
+    <h3>5. [ ผู้ตรวจสอบ ] Check List</h3>
+    <a href="step5-list.html" class="btn btn-outline-secondary px-3 fw-bold rounded-pill btn-sm">🔙 กลับ</a>
 </div>
 
 <div class="confirm-card">
@@ -102,17 +112,15 @@
             if(res.data && res.data.length > 0) {
                 res.data.forEach((item) => {
                     tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
-                        <td class="fw-bold text-dark" style="text-align: left; padding-left: 20px;">${item.ipadId}</td>
-                        <td><input type="checkbox" class="check-item form-check-input"></td>
-                        <td><input type="checkbox" class="check-item form-check-input"></td>
-                        <td><input type="checkbox" class="check-item form-check-input"></td>
-                        <td><input type="checkbox" class="check-item form-check-input"></td>
-                        <td><button type="button" class="btn btn-shortcut" onclick="checkAllInRow(this)">✔ ติ๊กครบ</button></td>
+                        <td data-label="📱 เครื่องที่" class="fw-bold text-dark text-start ps-3 fs-5">${item.ipadId}</td>
+                        <td data-label="📁 เช็ค G-Drive"><input type="checkbox" class="check-item form-check-input"></td>
+                        <td data-label="📄 เช็คแอพ File"><input type="checkbox" class="check-item form-check-input"></td>
+                        <td data-label="🖼️ เช็คแอพ รูปภาพ"><input type="checkbox" class="check-item form-check-input"></td>
+                        <td data-label="🌐 เช็คแอพ Safari"><input type="checkbox" class="check-item form-check-input"></td>
+                        <td data-label="⚡ ปุ่มลัด"><button type="button" class="btn btn-shortcut w-100 rounded-pill" onclick="checkAllInRow(this)">✔ ติ๊กครบ</button></td>
                     </tr>`;
                 });
-            } else {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</td></tr>';
-            }
+            } else { tbody.innerHTML = '<tr><td colspan="6" class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</td></tr>'; }
         });
     };
 
@@ -123,9 +131,7 @@
 
     async function submitCheck() {
         const btn = document.querySelector('.btn-confirm');
-        const originalText = btn.innerText;
-        btn.innerText = "⏳ กำลังบันทึกข้อมูล...";
-        btn.disabled = true;
+        const originalText = btn.innerText; btn.innerText = "⏳ กำลังบันทึกข้อมูล..."; btn.disabled = true;
 
         let items = [];
         document.querySelectorAll('#itemList tr[data-ipad]').forEach(row => {
@@ -136,24 +142,10 @@
         const borrowerName = document.getElementById('displayUserName').innerText;
 
         try {
-            await fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify({ 
-                    action: "saveStep5", 
-                    reqId: reqId, 
-                    items: items,
-                    name: localStorage.getItem("userName") || "Admin", 
-                    borrowerName: borrowerName 
-                })
-            });
-
-            const summary = `เลขรายการ: ${reqId}\nสถานะ: ตรวจสอบและเคลียร์เครื่องเสร็จสิ้น\nจำนวนเครื่อง: ${items.length} เครื่อง`;
-            window.location.href = `success.html?title=ตรวจสอบเสร็จสิ้น&desc=บันทึกผลการตรวจสอบลงระบบเรียบร้อยแล้ว&summary=${encodeURIComponent(summary)}`;
-            
+            await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "saveStep5", reqId: reqId, items: items, name: localStorage.getItem("userName") || "Admin", borrowerName: borrowerName }) });
+            window.location.href = `success.html?title=ตรวจสอบเสร็จสิ้น&desc=บันทึกผลการตรวจสอบลงระบบเรียบร้อยแล้ว&summary=${encodeURIComponent(`เลขรายการ: ${reqId}\nจำนวนเครื่อง: ${items.length} เครื่อง`)}`;
         } catch (error) {
-            Swal.fire("❌ เกิดข้อผิดพลาด", "ในการบันทึก กรุณาลองใหม่", "error");
-            btn.innerText = originalText;
-            btn.disabled = false;
+            Swal.fire("❌ เกิดข้อผิดพลาด", "ในการบันทึก กรุณาลองใหม่", "error"); btn.innerText = originalText; btn.disabled = false;
         }
     }
 </script>

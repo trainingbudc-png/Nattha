@@ -6,34 +6,41 @@
     <title>Step 3 | ตรวจก่อนสอบ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #f1f5f9; font-family: 'Kanit', sans-serif; padding: 20px; }
+        body { background: #f8fafc; font-family: 'Kanit', sans-serif; padding: 20px; }
         .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 950px; margin: auto; }
-        
-        /* สไตล์กล่องข้อมูล */
         .info-box { background-color: #fff7ed; border: 1px solid #ffedd5; border-radius: 12px; padding: 15px; margin-bottom: 25px; }
         .info-label { font-size: 0.85rem; color: #9a3412; margin-bottom: 2px; }
         .info-value { font-size: 1.1rem; font-weight: bold; color: #c2410c; }
         .divider { width: 1px; background-color: #fed7aa; height: 40px; }
-
-        /* สไตล์ช่องกรอกชื่อแอดมิน */
         .input-admin-name { font-size: 1.1rem; font-weight: bold; color: #c2410c; border: 1px dashed #fdba74; background: transparent; text-align: center; border-radius: 6px; width: 150px; padding: 2px; }
         .input-admin-name:focus { outline: none; border-color: #f97316; background: white; }
-
-        /* สไตล์ปุ่มและตาราง */
         .btn-confirm { background: #f97316; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; }
         .btn-confirm:hover { background: #ea580c; color: white; }
         .table th { background-color: #f8fafc; text-align: center; font-size: 0.9rem; vertical-align: middle; color: #475569; }
         .table td { vertical-align: middle; text-align: center; }
-        .check-item { width: 22px; height: 22px; cursor: pointer; accent-color: #f97316; }
-        
         .radio-group label { border-radius: 8px; font-weight: 500; }
         .hint-box { border-radius: 8px; font-size: 0.95rem; display: none; }
+
+        /* 📱 รองรับมือถือ & ขยายปุ่มจิ้มง่าย */
+        .check-item, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #f97316; }
+        @media screen and (max-width: 768px) {
+            .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
+            .table thead { display: none; }
+            .table tbody tr { display: block; background: white; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #e9ecef; }
+            .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
+            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; }
+            .btn-sm { padding: 10px !important; margin-top: 5px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="confirm-card">
-    <h4 class="text-center fw-bold text-dark mb-4">♻️ [Step3] Check List ก่อนสอบ</h4>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold text-dark mb-0">♻️ [Step3] ก่อนสอบ</h4>
+        <a href="step3-list.html" class="btn btn-outline-secondary px-3 fw-bold rounded-pill btn-sm">🔙 กลับ</a>
+    </div>
     
     <div class="info-box d-flex justify-content-around align-items-center">
         <div class="text-center">
@@ -52,39 +59,21 @@
         <div class="d-flex flex-wrap gap-2 radio-group">
             <input type="radio" class="btn-check" name="examType" id="osce" value="OSCE" checked onclick="handleExamChange(this.value)">
             <label class="btn btn-outline-primary px-4" for="osce">OSCE</label>
-            
             <input type="radio" class="btn-check" name="examType" id="exam" value="Exam+" onclick="handleExamChange(this.value)">
             <label class="btn btn-outline-primary px-4" for="exam">Exam+</label>
-            
             <input type="radio" class="btn-check" name="examType" id="crq" value="CRQ" onclick="handleExamChange(this.value)">
             <label class="btn btn-outline-primary px-4" for="crq">CRQ</label>
-            
             <input type="radio" class="btn-check" name="examType" id="none" value="ไม่ได้สอบ" onclick="handleExamChange(this.value)">
             <label class="btn btn-outline-danger px-4" for="none">ไม่ได้สอบ</label>
         </div>
-        
-        <div id="examHint" class="alert alert-info hint-box mt-3 py-2 px-3 border-info text-dark">
-            <strong>💡 คำแนะนำ [Exam+]:</strong> ไม่ต้องปิด Bluetooth เนื่องจากปากกาต้องใช้ Bluetooth
-        </div>
-
-        <div id="noteContainer" class="mt-3" style="display:none;">
-            <input type="text" id="reasonNote" class="form-control border-danger" placeholder="⚠️ ระบุเหตุผลที่ไม่ได้สอบ...">
-        </div>
+        <div id="examHint" class="alert alert-info hint-box mt-3 py-2 px-3 border-info text-dark"><strong>💡 คำแนะนำ [Exam+]:</strong> ไม่ต้องปิด Bluetooth เนื่องจากปากกาต้องใช้ Bluetooth</div>
+        <div id="noteContainer" class="mt-3" style="display:none;"><input type="text" id="reasonNote" class="form-control border-danger" placeholder="⚠️ ระบุเหตุผลที่ไม่ได้สอบ..."></div>
     </div>
 
     <div class="table-responsive">
         <table class="table table-bordered align-middle text-center">
             <thead>
-                <tr>
-                    <th>iPad</th>
-                    <th>Logout Drive</th>
-                    <th>ปิด Wi-Fi</th>
-                    <th>ปิด Bluetooth</th>
-                    <th>ปิด AirDrop</th>
-                    <th>โหมดเครื่องบิน</th>
-                    <th>เริ่มใช้งาน</th>
-                    <th>จัดการ</th>
-                </tr>
+                <tr><th>iPad</th><th>Logout Drive</th><th>ปิด Wi-Fi</th><th>ปิด Bluetooth</th><th>ปิด AirDrop</th><th>โหมดเครื่องบิน</th><th>เริ่มใช้งาน</th><th>จัดการ</th></tr>
             </thead>
             <tbody id="itemList">
                 <tr><td colspan="8" class="text-muted py-4">กำลังโหลดรายการ iPad... ⏳</td></tr>
@@ -95,9 +84,7 @@
     <button class="btn btn-confirm mt-4" onclick="saveStep3()">💾 ยืนยันเครื่องพร้อมสอบ</button>
 </div>
 
-<!-- 📌 เพิ่ม SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
     const reqId = new URLSearchParams(window.location.search).get('reqId');
@@ -106,121 +93,84 @@
         const hintBox = document.getElementById('examHint');
         const noteContainer = document.getElementById('noteContainer');
         const reasonNote = document.getElementById('reasonNote');
-
-        hintBox.style.display = 'none';
-        noteContainer.style.display = 'none';
-
-        if (examType === 'Exam+') {
-            hintBox.style.display = 'block';
-            reasonNote.value = '';
-        } else if (examType === 'ไม่ได้สอบ') {
-            noteContainer.style.display = 'block';
-        } else {
-            reasonNote.value = '';
-        }
+        hintBox.style.display = 'none'; noteContainer.style.display = 'none';
+        if (examType === 'Exam+') { hintBox.style.display = 'block'; reasonNote.value = ''; } 
+        else if (examType === 'ไม่ได้สอบ') { noteContainer.style.display = 'block'; } 
+        else { reasonNote.value = ''; }
     }
 
     window.onload = function() {
         document.getElementById('displayReqId').innerText = reqId || "ไม่พบข้อมูล";
-        
         const savedName = localStorage.getItem("userName");
-        if(savedName) {
-            document.getElementById('inspectorName').value = savedName;
-        }
+        if(savedName) document.getElementById('inspectorName').value = savedName;
 
-        if(!reqId) {
-            document.getElementById('itemList').innerHTML = '<tr><td colspan="8" class="text-danger py-4">❌ ไม่พบหมายเลขรายการ กรุณาเข้าผ่านลิงก์จาก LINE ครับ</td></tr>';
-            return;
-        }
+        if(!reqId) { document.getElementById('itemList').innerHTML = '<tr><td colspan="8" class="text-danger py-4">❌ ไม่พบหมายเลขรายการ</td></tr>'; return; }
 
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep2Data", reqId: reqId }) })
         .then(res => res.json())
         .then(res => {
             const tbody = document.getElementById('itemList');
             tbody.innerHTML = "";
-            
             if(res.data && res.data.length > 0) {
                 res.data.forEach(item => {
                     tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
-                        <td class="fw-bold text-primary">${item.ipadId}</td>
-                        <td><input type="checkbox" class="check-item form-check-input"></td>
-                        <td><input type="checkbox" class="check-item form-check-input"></td>
-                        <td><input type="checkbox" class="check-item form-check-input"></td>
-                        <td><input type="checkbox" class="check-item form-check-input"></td>
-                        <td><input type="checkbox" class="check-item form-check-input"></td>
-                        <td><input type="checkbox" class="check-item form-check-input"></td>
-                        <td><button type="button" class="btn btn-success btn-sm fw-bold px-3" onclick="checkAllInRow(this)">✔ ติ๊กครบ</button></td>
+                        <td data-label="📱 เลือกเครื่อง" class="fw-bold text-primary text-start">
+                            <div class="d-flex align-items-center">
+                                <input type="checkbox" class="select-ipad form-check-input me-2" id="btn-${item.ipadId}" onchange="toggleRow(this)">
+                                <label for="btn-${item.ipadId}" style="cursor:pointer;" class="fs-5">${item.ipadId}</label>
+                            </div>
+                        </td>
+                        <td data-label="🚪 Logout Drive"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        <td data-label="📶 ปิด Wi-Fi"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        <td data-label="🛜 ปิด Bluetooth"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        <td data-label="📡 ปิด AirDrop"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        <td data-label="✈️ โหมดเครื่องบิน"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        <td data-label="▶️ เริ่มใช้งาน"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        <td data-label="⚡ จัดการ"><button type="button" class="btn btn-success btn-sm fw-bold px-3 rounded-pill w-100" onclick="checkAllInRow(this)">✔ ติ๊กครบ</button></td>
                     </tr>`;
                 });
-            } else {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-danger py-4">❌ ไม่พบข้อมูล iPad สำหรับรายการนี้</td></tr>`;
-            }
-        })
-        .catch(err => {
-            document.getElementById('itemList').innerHTML = `<tr><td colspan="8" class="text-danger py-4">❌ เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์</td></tr>`;
+            } else { tbody.innerHTML = `<tr><td colspan="8" class="text-danger py-4">❌ ไม่พบข้อมูล iPad</td></tr>`; }
         });
     };
 
+    function toggleRow(checkbox) {
+        const row = checkbox.closest('tr');
+        row.querySelectorAll('.check-item').forEach(cb => { cb.disabled = !checkbox.checked; if (!checkbox.checked) cb.checked = false; });
+    }
+
     function checkAllInRow(btn) {
         const row = btn.closest('tr');
-        row.querySelectorAll('.check-item').forEach(cb => {
-            cb.checked = true;
-        });
+        const mainCheck = row.querySelector('.select-ipad');
+        mainCheck.checked = true;
+        row.querySelectorAll('.check-item').forEach(cb => { cb.disabled = false; cb.checked = true; });
     }
 
     async function saveStep3() {
         let items = [];
-        document.querySelectorAll('#itemList tr[data-ipad]').forEach(row => {
+        document.querySelectorAll('.select-ipad:checked').forEach(checkbox => {
+            const row = checkbox.closest('tr');
             const checks = Array.from(row.querySelectorAll('.check-item')).map(c => c.checked ? "☑" : "☐");
             items.push({ ipadId: row.dataset.ipad, checks: checks });
         });
 
-        // 🚨 ดักจับ: กันผู้ใช้ใจร้อนกดส่งตอนที่ iPad ยังโหลดไม่เสร็จ
         if(items.length === 0) {
-            Swal.fire({
-                title: "⚠️ ข้อมูลไม่ครบถ้วน",
-                text: "ไม่พบข้อมูล iPad หรือรายชื่อยังโหลดไม่เสร็จ กรุณารอสักครู่ครับ!",
-                icon: "warning",
-                confirmButtonColor: "#f97316"
-            });
+            Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาติ๊กเลือกหน้าชื่อ iPad ที่พร้อมสอบ อย่างน้อย 1 เครื่องครับ!", icon: "warning", confirmButtonColor: "#f97316" });
             return;
         }
 
         const btn = document.querySelector('.btn-confirm');
-        const originalText = btn.innerText;
-        btn.innerText = "⏳ กำลังบันทึกข้อมูล..."; 
-        btn.disabled = true;
-        
-        let inspector = document.getElementById('inspectorName').value.trim();
-        if(inspector === "") { inspector = "Admin (ไม่ระบุชื่อ)"; }
-
+        const originalText = btn.innerText; btn.innerText = "⏳ กำลังบันทึกข้อมูล..."; btn.disabled = true;
+        let inspector = document.getElementById('inspectorName').value.trim() || "Admin (ไม่ระบุชื่อ)";
         const examValue = document.querySelector('input[name="examType"]:checked').value;
         const noteValue = document.getElementById('reasonNote').value;
         
         try {
-            const res = await fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify({ 
-                    action: "saveStep3", 
-                    reqId: reqId, 
-                    items: items, 
-                    exam: examValue, 
-                    note: noteValue, 
-                    name: inspector 
-                })
-            });
-            
+            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "saveStep3", reqId: reqId, items: items, exam: examValue, note: noteValue, name: inspector }) });
             const result = await res.json();
-            if(result.status === "success") {
-                const summary = `เลขรายการ: ${reqId}`;
-                window.location.href = `success.html?title=ตรวจก่อนสอบสำเร็จ&desc=บันทึกข้อมูล Check List เรียบร้อยแล้ว&summary=${encodeURIComponent(summary)}`;
-            } else {
-                Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error");
-                btn.innerText = originalText; btn.disabled = false;
-            }
+            if(result.status === "success") window.location.href = `success.html?title=ตรวจก่อนสอบสำเร็จ&desc=บันทึกข้อมูล Check List เรียบร้อยแล้ว&summary=${encodeURIComponent(`เลขรายการ: ${reqId}\nจำนวนเครื่อง: ${items.length}`)}`;
+            else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); btn.innerText = originalText; btn.disabled = false; }
         } catch (error) {
-            Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
-            btn.innerText = originalText; btn.disabled = false;
+            Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); btn.innerText = originalText; btn.disabled = false;
         }
     }
 </script>
