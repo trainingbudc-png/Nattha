@@ -5,27 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Step 2 | ตรวจสอบและรับเครื่อง</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme-user.css">
     <style>
-        body { background: #f8fafc; font-family: 'Kanit', sans-serif; padding: 20px; }
-        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 850px; margin: auto; }
-        .btn-confirm { background: #10b981; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 20px; transition: 0.3s; }
-        .btn-confirm:hover { background: #059669; color: white; }
-        .info-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
-        .info-label { font-size: 0.85rem; color: #64748b; margin-bottom: 2px; }
-        .info-value { font-size: 1.1rem; font-weight: bold; }
-        .divider { width: 1px; background-color: #cbd5e1; height: 40px; }
+        body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
+        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 850px; margin: auto; border: 1px solid #e9ecef; }
+        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 20px; transition: 0.3s; border: none; font-size: 1.1rem; }
+        .btn-confirm:hover { background: #495057; color: white; }
+        .info-box { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .info-label { font-size: 0.85rem; color: #6c757d; margin-bottom: 2px; }
+        .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
+        .divider { width: 1px; background-color: #dee2e6; height: 40px; }
         
         .check-app:disabled { cursor: not-allowed; opacity: 0.5; }
 
-        /* 📱 ปรับแต่งสำหรับมือถือ (Mobile Responsive) */
-        .check-app, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #10b981; }
+        /* 📱 รองรับมือถือ & ขยายปุ่มจิ้มง่าย */
+        .check-app, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
         @media screen and (max-width: 768px) {
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
             .table thead { display: none; }
-            .table tbody tr { display: block; background: white; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #e9ecef; }
+            .table tbody tr { display: block; background: white; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #e9ecef; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #dee2e6; }
             .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
-            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; }
+            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #495057; font-size: 0.95rem; text-align: left; margin-right: 15px; }
             .btn-sm { padding: 10px !important; margin-top: 5px; }
         }
     </style>
@@ -34,18 +36,18 @@
 <div class="confirm-card">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold text-dark mb-0">📋 [Step2] รับเครื่อง</h4>
-        <a href="step2-list.html" class="btn btn-outline-secondary px-3 fw-bold rounded-pill btn-sm">🔙 กลับ</a>
+        <a href="step2-list.html" class="btn btn-outline-dark px-3 fw-bold rounded-pill btn-sm border-2">🔙 กลับ</a>
     </div>
     
     <div class="info-box d-flex justify-content-around align-items-center">
         <div class="text-center">
             <div class="info-label">👤 ผู้ขอเบิกยืม:</div>
-            <div id="displayUserName" class="info-value text-primary">กำลังโหลด...</div>
+            <div id="displayUserName" class="info-value">กำลังโหลด...</div>
         </div>
         <div class="divider"></div>
         <div class="text-center">
             <div class="info-label">👨‍💻 แอดมินผู้เตรียม:</div>
-            <div id="displayAdminName" class="info-value text-success">กำลังโหลด...</div>
+            <div id="displayAdminName" class="info-value">กำลังโหลด...</div>
         </div>
     </div>
 
@@ -59,8 +61,9 @@
             </tbody>
         </table>
     </div>
-    <textarea id="reportNote" class="form-control mt-3" rows="2" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)..."></textarea>
-    <button id="btnSubmit" class="btn btn-confirm" onclick="submitReceipt()">✅ ยืนยันการรับเครื่อง</button>
+    
+    <!-- ลบ textarea กล่องหมายเหตุออกแล้ว -->
+    <button id="btnSubmit" class="btn btn-confirm shadow-sm" onclick="submitReceipt()">✅ ยืนยันการรับเครื่อง</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -84,14 +87,14 @@
                     <td data-label="📱 เลือกรับเครื่อง" class="fw-bold text-start">
                         <div class="d-flex align-items-center">
                             <input type="checkbox" class="select-ipad form-check-input me-2" id="btn-${item.ipadId}" onchange="toggleRow(this)"> 
-                            <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-primary fs-5">${item.ipadId}</label>
+                            <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-dark fs-5">${item.ipadId}</label>
                         </div>
                     </td>
                     <td data-label="📁 Drive"><input type="checkbox" class="check-app form-check-input" disabled></td>
                     <td data-label="📄 File"><input type="checkbox" class="check-app form-check-input" disabled></td>
                     <td data-label="🖼️ Img"><input type="checkbox" class="check-app form-check-input" disabled></td>
                     <td data-label="🌐 Safari"><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td data-label="⚡ ปุ่มลัด"><button type="button" class="btn btn-success btn-sm fw-bold w-100 rounded-pill" onclick="tickAll(this)">✔ ติ๊กครบ</button></td>
+                    <td data-label="⚡ ปุ่มลัด"><button type="button" class="btn btn-dark btn-sm fw-bold w-100 rounded-pill" onclick="tickAll(this)">✔ ติ๊กครบ</button></td>
                 </tr>`;
             });
         } else {
@@ -123,7 +126,7 @@
         });
 
         if (items.length === 0) {
-            Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาติ๊กเลือกหน้าชื่อ iPad อย่างน้อย 1 เครื่องก่อนกดยืนยันครับ!", icon: "warning", confirmButtonColor: "#10b981" });
+            Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาติ๊กเลือกหน้าชื่อ iPad อย่างน้อย 1 เครื่องก่อนกดยืนยันครับ!", icon: "warning", confirmButtonColor: "#212529" });
             return;
         }
 
@@ -131,7 +134,8 @@
         btn.innerText = "กำลังบันทึกข้อมูล... ⏳"; btn.disabled = true;
 
         try {
-            const response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "updateStatus", reqId: reqId, items: items, note: document.getElementById('reportNote').value, name: currentLoggerName }) });
+            // ส่งค่า note เป็นค่าว่างไปเลยเพราะเอา textarea ออกแล้ว
+            const response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "updateStatus", reqId: reqId, items: items, note: "", name: currentLoggerName }) });
             const result = await response.json();
             if (result.status === "success") window.location.href = `success.html?reqId=${reqId}&status=รับเครื่องเรียบร้อย&count=${items.length}`;
             else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message || "ในการบันทึกข้อมูล", "error"); btn.innerText = "✅ ยืนยันการรับเครื่อง"; btn.disabled = false; }

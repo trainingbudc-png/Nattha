@@ -6,31 +6,32 @@
     <title>Step 4 | ส่งคืนเครื่อง</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme-user.css">
     <style>
-        body { background: #f8fafc; font-family: 'Kanit', sans-serif; padding: 20px; }
-        .confirm-card { background: white; padding: 0; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); max-width: 1000px; margin: auto; overflow: hidden; }
-        .purple-header { background-color: #7c3aed; color: white; padding: 15px 20px; font-weight: 600; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
-        .info-panel { padding: 15px 20px; background: #f5f3ff; border-bottom: 1px solid #ddd6fe; display: flex; justify-content: space-around; align-items: center; }
-        .info-label { font-size: 0.85rem; color: #6d28d9; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
-        .info-value { font-size: 1.1rem; font-weight: bold; color: #4c1d95; }
-        .divider { width: 1px; background-color: #ddd6fe; height: 40px; }
+        body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
+        .confirm-card { background: white; padding: 0; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 1000px; margin: auto; overflow: hidden; border: 1px solid #e9ecef;}
+        .dark-header { background-color: #212529; color: white; padding: 15px 20px; font-weight: 600; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        .info-panel { padding: 15px 20px; background: #f8f9fa; border-bottom: 1px solid #dee2e6; display: flex; justify-content: space-around; align-items: center; }
+        .info-label { font-size: 0.85rem; color: #6c757d; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+        .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
+        .divider { width: 1px; background-color: #dee2e6; height: 40px; }
         .table { margin-bottom: 0 !important; }
-        .table th { font-size: 0.85rem; vertical-align: middle; text-align: center; color: #4b5563; background: #f9fafb; padding: 12px; }
-        .table td { vertical-align: middle; text-align: center; padding: 12px; }
-        .btn-shortcut { background: #ede9fe; color: #6d28d9; border: none; font-size: 0.85rem; font-weight: bold; padding: 8px 12px; border-radius: 6px; transition: 0.2s; }
-        .btn-shortcut:hover { background: #ddd6fe; }
-        .btn-confirm { background: #7c3aed; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: calc(100% - 40px); margin: 20px; border: none; transition: 0.3s; font-size: 1.1rem;}
-        .btn-confirm:hover { background: #6d28d9; }
+        .table th { font-size: 0.85rem; vertical-align: middle; text-align: center; color: #495057; background: #f8f9fa; padding: 12px; border-bottom: 2px solid #dee2e6;}
+        .table td { vertical-align: middle; text-align: center; padding: 12px; border-bottom: 1px solid #e9ecef; }
+        .btn-shortcut { background: #e9ecef; color: #495057; border: none; font-size: 0.85rem; font-weight: bold; padding: 8px 12px; border-radius: 6px; transition: 0.2s; }
+        .btn-shortcut:hover { background: #ced4da; }
+        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: calc(100% - 40px); margin: 20px; border: none; transition: 0.3s; font-size: 1.1rem;}
+        .btn-confirm:hover { background: #495057; }
 
         /* 📱 รองรับมือถือ & ขยายปุ่มจิ้มง่าย */
-        .check-item, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #7c3aed; }
+        .check-item, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
         @media screen and (max-width: 768px) {
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
             .table thead { display: none; }
-            .table tbody tr { display: block; background: white; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #e9ecef; }
+            .table tbody tr { display: block; background: white; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #e9ecef; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #dee2e6; }
             .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
-            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; }
+            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #495057; font-size: 0.95rem; text-align: left; margin-right: 15px; }
             .btn-shortcut { width: 100% !important; margin-top: 5px; padding: 10px !important; border-radius: 50rem !important;}
         }
     </style>
@@ -38,9 +39,9 @@
 <body>
 
 <div class="confirm-card">
-    <div class="purple-header">
+    <div class="dark-header">
         <span>📥 [Step4] ส่งคืนเครื่อง</span>
-        <a href="step4-list.html" class="btn btn-outline-light px-3 fw-bold rounded-pill btn-sm">🔙 กลับ</a>
+        <a href="step4-list.html" class="btn btn-outline-light px-3 fw-bold rounded-pill btn-sm border-2">🔙 กลับ</a>
     </div>
     
     <div class="info-panel">
@@ -56,7 +57,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-bordered align-middle">
+        <table class="table align-middle">
             <thead>
                 <tr><th>เครื่องที่</th><th>แอพ File</th><th>แอพ รูปภาพ</th><th>แอพ Safari</th><th>เช็ค Wi-Fi</th><th>เช็ค Bluetooth</th><th>เช็ค AirDrop</th><th>G-Drive</th><th>ลบ WI-FI</th><th>ปุ่มลัด</th></tr>
             </thead>
@@ -66,7 +67,7 @@
         </table>
     </div>
 
-    <button class="btn btn-confirm" onclick="submitReturn()">💾 ยืนยันการส่งคืนเครื่องทั้งหมด</button>
+    <button class="btn btn-confirm shadow-sm" onclick="submitReturn()">💾 ยืนยันการส่งคืนเครื่องทั้งหมด</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -88,10 +89,10 @@
             if(res.data && res.data.length > 0) {
                 res.data.forEach((item) => {
                     tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
-                        <td data-label="📱 เลือกส่งคืน" class="fw-bold text-primary text-start">
+                        <td data-label="📱 เลือกส่งคืน" class="fw-bold text-start">
                             <div class="d-flex align-items-center">
                                 <input type="checkbox" class="select-ipad form-check-input me-2" id="btn-${item.ipadId}" onchange="toggleRow(this)">
-                                <label for="btn-${item.ipadId}" style="cursor:pointer;" class="fs-5">${item.ipadId}</label>
+                                <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-dark fs-5">${item.ipadId}</label>
                             </div>
                         </td>
                         <td data-label="📄 เช็คแอพ File"><input type="checkbox" class="check-item form-check-input" disabled></td>
@@ -102,7 +103,7 @@
                         <td data-label="📡 เช็ค AirDrop"><input type="checkbox" class="check-item form-check-input" disabled></td>
                         <td data-label="📁 เช็ค G-Drive"><input type="checkbox" class="check-item form-check-input" disabled></td>
                         <td data-label="🗑️ ลบ WI-FI"><input type="checkbox" class="check-item form-check-input" disabled></td>
-                        <td data-label="⚡ ปุ่มลัด"><button type="button" class="btn btn-shortcut w-100" onclick="checkAllInRow(this)">✔ ติ๊กครบ</button></td>
+                        <td data-label="⚡ ปุ่มลัด"><button type="button" class="btn btn-shortcut w-100 rounded-pill" onclick="checkAllInRow(this)">✔ ติ๊กครบ</button></td>
                     </tr>`;
                 });
             } else { tbody.innerHTML = '<tr><td colspan="10" class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</td></tr>'; }
@@ -130,7 +131,7 @@
         });
 
         if(items.length === 0) {
-            Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาติ๊กเลือกหน้าชื่ออุปกรณ์ที่ต้องการส่งคืน อย่างน้อย 1 รายการครับ!", icon: "warning", confirmButtonColor: "#7c3aed" });
+            Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาติ๊กเลือกหน้าชื่ออุปกรณ์ที่ต้องการส่งคืน อย่างน้อย 1 รายการครับ!", icon: "warning", confirmButtonColor: "#212529" });
             return;
         }
 
