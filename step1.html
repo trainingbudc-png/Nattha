@@ -23,21 +23,25 @@
 
         .ipad-container { max-height: 250px; overflow-y: auto; padding: 15px; background: white; border: 1px solid #fecaca; border-radius: 0 0 8px 8px; border-top: none; margin-bottom: 15px; }
         
-        /* 📌 ระบบ Grid จัดแถวให้เป๊ะ */
+        /* 📌 ระบบ Grid จัดแถวให้เป๊ะ และแก้ปัญหาข้อความหาย */
         .grid-layout {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); /* ขยายขนาดปุ่มขั้นต่ำ */
             gap: 10px;
         }
         .grid-layout .btn {
             width: 100%;
             margin: 0 !important;
-            padding: 10px 5px !important;
-            font-size: 0.95rem;
+            padding: 8px 5px !important;
+            font-size: 0.9rem;
             text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: normal; /* 📌 ปลดล็อกให้ปัดบรรทัดได้ ไม่ตัดข้อความทิ้ง */
+            word-wrap: break-word;
+            line-height: 1.2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px; /* บังคับให้ปุ่มสูงเท่ากันหมด */
         }
         .grid-full-width {
             grid-column: 1 / -1;
@@ -93,7 +97,6 @@
                         🔹 หมวด iPad (ปกติ)
                     </div>
                     <div class="collapse show" id="collapseNormal">
-                        <!-- 📌 เปลี่ยนเป็น class grid-layout แทน flex-wrap -->
                         <div id="ipadNormalContainer" class="ipad-container grid-layout">
                             <div class="grid-full-width text-muted py-2">กำลังโหลด... ⏳</div>
                         </div>
@@ -103,7 +106,6 @@
                         🔹 หมวด iPad Air + APC
                     </div>
                     <div class="collapse" id="collapseAir">
-                        <!-- 📌 เปลี่ยนเป็น class grid-layout แทน flex-wrap -->
                         <div id="ipadAirContainer" class="ipad-container grid-layout">
                             <div class="grid-full-width text-muted py-2">กำลังโหลด... ⏳</div>
                         </div>
