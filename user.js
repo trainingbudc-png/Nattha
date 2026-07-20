@@ -53,7 +53,7 @@ async function loadUserTableData() {
 
                     let displayGroups = [];
                     if (normalIds.length > 0) {
-                        displayGroups.push(`<span class="text-primary fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
+                        displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
                     }
                     if (airIds.length > 0) {
                         // ⚙️ จุดที่ 1: เปลี่ยนสีฟอนต์ [Air+APC] จาก text-success เป็น text-danger (สีแดง)
