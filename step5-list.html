@@ -14,17 +14,27 @@
         .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; background-color: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; }
         .btn-check-ipad { background-color: #dc3545; color: white; border: none; font-weight: bold; }
         .btn-check-ipad:hover { background-color: #b91c1c; color: white; }
+
+        @media screen and (max-width: 768px) {
+            .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
+            .table thead { display: none; }
+            .table tbody tr { display: block; background: white; border-radius: 12px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(220,53,69,0.1); border: 1px solid #fecaca; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: flex-start; text-align: right; padding: 10px 0; border-bottom: 1px dashed #fee2e2; }
+            .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
+            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #b91c1c; font-size: 0.95rem; text-align: left; margin-right: 15px; flex-shrink: 0; }
+            .btn-sm { padding: 10px !important; margin-top: 5px; width: 100%; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container my-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-danger fw-bold mb-0">📋 รายการรอตรวจสอบคืน (ค้างดำเนินการ)</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h3 class="text-danger fw-bold mb-0">📋 รายการรอตรวจสอบคืน</h3>
         <a href="admin.html" class="btn btn-outline-danger px-4 fw-bold rounded-pill border-2">🔙 กลับหน้าแอดมิน</a>
     </div>
 
-    <div class="card p-4 border border-danger border-opacity-25">
+    <div class="card p-3 p-md-4 border border-danger border-opacity-25">
         <div class="table-responsive">
             <table class="table table-hover table-striped">
                 <thead>
@@ -32,7 +42,7 @@
                         <th style="width: 15%; border-top-left-radius: 8px;">เลขรายการ</th>
                         <th style="width: 20%;">วัน-เวลาที่ส่งคืน</th>
                         <th style="width: 25%;">ชื่อผู้ส่งคืน</th>
-                        <th style="width: 13%;">จำนวน (เครื่อง)</th>
+                        <th style="width: 13%;">จำนวน</th>
                         <th style="width: 12%;">สถานะ</th>
                         <th style="width: 15%; border-top-right-radius: 8px;">การจัดการ</th>
                     </tr>
@@ -70,24 +80,15 @@
                     const countText = req.note ? req.note.replace(/[^0-9]/g, '') : "1";
                     const count = parseInt(countText) || 1;
 
-                    // 🛠️ จุดที่แก้ไข: แปลงรูปแบบเวลาดิบให้เป็นรูปแบบที่อ่านง่ายขึ้น
-                    let displayTime = req.timestamp ? new Date(req.timestamp).toLocaleString("th-TH", {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    }) : "-";
-
+                    // 📌 เพิ่ม data-label ให้รองรับจอมือถือ
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
-                        <td><span class="badge bg-dark fs-6">${req.reqId}</span></td> 
-                        <!-- 🛠️ จุดที่แก้ไข: เปลี่ยนจาก req.timestamp เป็น displayTime -->
-                        <td>${displayTime}</td>
-                        <td class="text-start fw-bold text-dark">${req.name}</td>
-                        <td><span class="badge bg-secondary fs-6">${count} เครื่อง</span></td>
-                        <td><span class="status-badge">${req.status}</span></td>
-                        <td>
+                        <td data-label="เลขรายการ"><span class="badge bg-dark fs-6">${req.reqId}</span></td> 
+                        <td data-label="วัน-เวลา">${req.timestamp}</td>
+                        <td data-label="ผู้ส่งคืน" class="fw-bold text-danger">${req.name}</td>
+                        <td data-label="จำนวน"><span class="badge bg-secondary fs-6">${count} เครื่อง</span></td>
+                        <td data-label="สถานะ"><span class="status-badge">${req.status}</span></td>
+                        <td data-label="จัดการ">
                             <button class="btn btn-check-ipad btn-sm px-3 shadow-sm rounded-pill w-100" onclick="proceedToCheck('${req.reqId}')">
                                 🔍 ตรวจสอบเครื่อง
                             </button>

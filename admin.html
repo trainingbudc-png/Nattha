@@ -7,6 +7,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-admin.css">
+    
+    <!-- 📌 เพิ่ม Style สำหรับเปลี่ยนตารางเป็นการ์ดบนมือถือ -->
+    <style>
+        @media screen and (max-width: 768px) {
+            .navbar-custom { flex-direction: column; gap: 15px; text-align: center; }
+            .navbar-custom > div { justify-content: center; width: 100%; flex-wrap: wrap; }
+            
+            .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
+            .table thead { display: none; }
+            .table tbody tr { display: block; background: white; border-radius: 12px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(220,53,69,0.1); border: 1px solid #fecaca; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: flex-start; text-align: right; padding: 10px 0; border-bottom: 1px dashed #fee2e2; }
+            .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
+            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #b91c1c; font-size: 0.95rem; text-align: left; margin-right: 15px; flex-shrink: 0; }
+        }
+    </style>
 </head>
 <body>
 
@@ -14,13 +29,12 @@
     <nav class="navbar navbar-custom d-flex justify-content-between align-items-center">
         <div class="fw-bold fs-5 d-flex align-items-center gap-2">
             📱 เมนูผู้ดูแล (Admin)
-            <!-- 📌 เพิ่มปุ่มจัดการตรงนี้ตามที่พี่ต้องการ -->
             <a href="admin-manage.html" class="btn btn-danger btn-sm rounded-pill fw-bold px-3 ms-2 shadow-sm d-flex align-items-center gap-1">
                 ⚙️ จัดการรอยืนยัน
             </a>
         </div>
-        <div class="d-flex align-items-center">
-            <span class="admin-name d-none d-sm-inline">แอดมิน: <span id="adminNameDisplay">Loading...</span></span>
+        <div class="d-flex align-items-center gap-2">
+            <span class="admin-name d-none d-md-inline">แอดมิน: <span id="adminNameDisplay">Loading...</span></span>
             <button class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" onclick="logout()">ออกจากระบบ</button>
         </div>
     </nav>
@@ -28,54 +42,54 @@
     <div class="container pb-5" style="max-width: 1100px;">
         
         <div class="section-title">ระบบจัดการ iPad (เบิก-คืน)</div>
-        <div class="row g-4">
-            <div class="col-md-6">
-                <a href="step1.html" class="menu-card">
+        <div class="row g-3">
+            <div class="col-6 col-md-6">
+                <a href="step1.html" class="menu-card h-100">
                     <div class="menu-icon">📦</div>
                     <div class="menu-text">
-                        <h5>Step 1 | เตรียม</h5>
-                        <p>เตรียมเครื่องให้พร้อมใช้งาน</p>
+                        <h5>Step 1</h5>
+                        <p class="mb-0">เตรียมเครื่อง</p>
                     </div>
                 </a>
             </div>
-            <div class="col-md-6">
-                <a href="step5-list.html" class="menu-card"> 
+            <div class="col-6 col-md-6">
+                <a href="step5-list.html" class="menu-card h-100"> 
                     <div class="menu-icon">🔍</div>
                     <div class="menu-text">
-                        <h5>Step 5 | ตรวจ</h5>
-                        <p>ตรวจสอบสภาพเครื่องหลังใช้งาน</p>
+                        <h5>Step 5</h5>
+                        <p class="mb-0">ตรวจรับคืน</p>
                     </div>
                 </a>
             </div>
         </div>
 
-        <div class="section-title mt-5">ระบบแจ้งเตือนปัญหา</div>
-        <div class="row g-4">
+        <div class="section-title mt-4">ระบบแจ้งเตือนปัญหา</div>
+        <div class="row g-3">
             <div class="col-12">
                 <a href="report-issue.html" class="menu-card">
                     <div class="menu-icon">⚠️</div>
                     <div class="menu-text">
-                        <h5>สถานะเครื่องมีปัญหา</h5>
-                        <p>อัปเดตสถานะกรณีพบความเสียหาย</p>
+                        <h5>แจ้งสถานะเครื่องมีปัญหา</h5>
+                        <p class="mb-0">อัปเดตประวัติ / ส่งซ่อม</p>
                     </div>
                 </a>
             </div>
         </div>
 
         <div class="d-flex justify-content-between align-items-end mt-5 mb-3">
-            <div class="section-title mt-0 mb-0">ตารางสถานะ iPad (อัปเดตล่าสุด)</div>
-            <button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3" onclick="loadAdminTableData()">🔄 โหลดข้อมูลใหม่</button>
+            <div class="section-title mt-0 mb-0">ตารางสถานะล่าสุด</div>
+            <button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3" onclick="loadAdminTableData()">🔄 โหลดใหม่</button>
         </div>
         
         <div class="table-card table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover align-middle">
                 <thead>
                     <tr>
                         <th style="width: 15%;">เลขรายการ</th>
-                        <th style="width: 15%;">วัน-เวลาที่บันทึก</th>
+                        <th style="width: 15%;">วัน-เวลา</th>
                         <th style="width: 20%;">ผู้ดำเนินการ</th>
                         <th style="width: 35%;">รหัส iPad</th>
-                        <th style="width: 15%;">สถานะ / ขั้นตอน</th>
+                        <th style="width: 15%;">สถานะ</th>
                     </tr>
                 </thead>
                 <tbody id="adminTableBody">
@@ -136,7 +150,7 @@
                         });
                         let displayGroups = [];
                         if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-                        if (airIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
+                        if (airIds.length > 0) displayGroups.push(`<span class="text-dark fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
                         formattedIpads = displayGroups.join('<br>');
                     }
 
@@ -144,7 +158,6 @@
                     let displayStatus = statusTxt;
                     let badgeClass = "bg-secondary";
 
-                    // 📌 เพิ่มสีป้ายกำกับสำหรับสถานะใหม่
                     if(statusTxt.includes("รอแอดมินยืนยัน")) {
                         displayStatus = "⏳ รอยืนยัน"; badgeClass = "bg-secondary text-white";
                     } else if(statusTxt.includes("ยกเลิกรายการ")) {
@@ -163,13 +176,14 @@
                         displayStatus = "⚠️ มีปัญหา"; badgeClass = "bg-dark text-warning";
                     }
 
+                    // 📌 เพิ่ม data-label ให้แสดงผลสวยงามบนมือถือ
                     tbody.innerHTML += `
                         <tr>
-                            <td class="fw-bold text-dark">${item.reqId}</td>
-                            <td class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
-                            <td class="fw-bold" style="color: #495057;">${item.name || "-"}</td>
-                            <td style="max-width: 350px; line-height: 1.6;">${formattedIpads}</td>
-                            <td><span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm">${displayStatus}</span></td>
+                            <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
+                            <td data-label="วัน-เวลา" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
+                            <td data-label="ผู้ดำเนินการ" class="fw-bold" style="color: #495057;">${item.name || "-"}</td>
+                            <td data-label="รหัส iPad" style="max-width: 100%; line-height: 1.6;">${formattedIpads}</td>
+                            <td data-label="สถานะ"><span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm">${displayStatus}</span></td>
                         </tr>
                     `;
                 });
