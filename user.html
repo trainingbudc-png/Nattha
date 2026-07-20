@@ -26,18 +26,17 @@
         <!-- 🔵 หมวดหมู่: เมนูลัดแบบการ์ด -->
         <div class="section-title title-blue">เมนูลัด (ทำรายการด่วน)</div>
         <div class="row g-3 mb-5">
-            <!-- 📌 เปลี่ยนเป็น col-md-4 เพื่อให้ 3 ปุ่มเรียงแถวหน้ากระดานพอดี -->
             <div class="col-md-4 col-12">
-                <div class="menu-card card-step2" onclick="promptForStep(2)">
+                <div class="menu-card card-step2" onclick="window.location.href='step2-list.html'">
                     <div class="menu-icon">✅</div>
                     <div class="menu-text">
                         <h6>Step 2 | รับเครื่อง</h6>
-                        <p>ตรวจสอบและยืนยันรับ iPad (ใช้เลข REQ)</p>
+                        <p>ตรวจสอบและยืนยันรับ iPad</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 col-12">
-                <div class="menu-card card-step3" onclick="promptForStep(3)">
+                <div class="menu-card card-step3" onclick="window.location.href='step3-list.html'">
                     <div class="menu-icon">📝</div>
                     <div class="menu-text">
                         <h6>Step 3 | ก่อนสอบ</h6>
@@ -46,7 +45,7 @@
                 </div>
             </div>
             <div class="col-md-4 col-12">
-                <div class="menu-card card-step4" onclick="promptForStep(4)">
+                <div class="menu-card card-step4" onclick="window.location.href='step4-list.html'">
                     <div class="menu-icon">📥</div>
                     <div class="menu-text">
                         <h6>Step 4 | ส่งคืน</h6>
@@ -59,25 +58,24 @@
         <!-- 🔵 หมวดหมู่: รายการของฉัน -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="d-flex align-items-center gap-2">
-                <div style="width: 4px; height: 20px; background-color: #0ea5e9; border-radius: 2px;"></div>
-                <h5 class="fw-bold m-0 text-dark">รายการอุปกรณ์ของฉัน</h5>
+                <div style="width: 4px; height: 20px; background-color: #212529; border-radius: 2px;"></div>
+                <h5 class="fw-bold m-0 text-dark">ประวัติอุปกรณ์ของฉัน</h5>
             </div>
-            <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="loadUserTableData()">🔄 อัปเดต</button>
+            <button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold" onclick="loadUserTableData()">🔄 อัปเดต</button>
         </div>
         
         <div class="table-card table-responsive">
             <table class="table table-hover align-middle">
                 <thead>
                     <tr>
-                        <th style="width: 15%;">เลขรายการ</th>
-                        <th style="width: 15%;">วัน-เวลาที่อัปเดต</th>
-                        <th style="width: 40%;">รหัส iPad</th>
+                        <th style="width: 20%;">เลขรายการ</th>
+                        <th style="width: 45%;">รหัส iPad</th>
                         <th style="width: 15%;">สถานะปัจจุบัน</th>
-                        <th style="width: 15%;">จัดการ</th>
+                        <th style="width: 20%;">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody id="userTableBody">
-                    <tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูลของคุณ... ⏳</td></tr>
+                    <tr><td colspan="4" class="text-center py-5 text-muted">กำลังโหลดข้อมูลของคุณ... ⏳</td></tr>
                 </tbody>
             </table>
         </div>

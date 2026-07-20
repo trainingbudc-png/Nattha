@@ -13,14 +13,11 @@
         .info-label { font-size: 0.85rem; color: #64748b; margin-bottom: 2px; }
         .info-value { font-size: 1.1rem; font-weight: bold; }
         .divider { width: 1px; background-color: #cbd5e1; height: 40px; }
-        
-        /* สไตล์ตอน Checkbox โดนล็อก */
-        .check-app:disabled { cursor: not-allowed; opacity: 0.5; }
     </style>
 </head>
 <body>
 <div class="confirm-card">
-    <h4 class="text-center fw-bold text-dark mb-4">📋 [Step2] ตรวจสอบอุปกรณ์ก่อนรับ</h4>
+    <h4 class="text-center fw-bold text-dark mb-4">📋 [Step2] ตรวจสอบอุปกรณ์ก่อนรับ 📋</h4>
     
     <!-- กล่องแสดงข้อมูลผู้เบิกและแอดมิน -->
     <div class="info-box d-flex justify-content-around align-items-center">
@@ -49,12 +46,13 @@
     <button id="btnSubmit" class="btn btn-confirm" onclick="submitReceipt()">✅ ยืนยันการรับเครื่อง</button>
 </div>
 
-<!-- 📌 โหลด SweetAlert2 -->
+<!-- 📌 เพิ่ม SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
     const reqId = new URLSearchParams(window.location.search).get('reqId');
+
     const currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
 
     fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep1Data", reqId: reqId }) })
@@ -68,17 +66,13 @@
 
         if(res.data && res.data.length > 0) {
             res.data.forEach(item => {
-                // 📌 สังเกตที่ class check-app จะมี disabled อยู่ (ถูกล็อกตั้งแต่แรก)
                 tbody.innerHTML += `<tr>
-                    <td class="fw-bold text-start">
-                        <input type="checkbox" class="select-ipad form-check-input me-2" id="btn-${item.ipadId}" onchange="toggleRow(this)"> 
-                        <label for="btn-${item.ipadId}" style="cursor:pointer;">${item.ipadId}</label>
-                    </td>
-                    <td><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td><button type="button" class="btn btn-success btn-sm fw-bold w-100" onclick="tickAll(this)">✔ ติ๊กครบ</button></td>
+                    <td class="fw-bold"><input type="checkbox" class="select-ipad me-2" id="btn-${item.ipadId}"> <label for="btn-${item.ipadId}" style="cursor:pointer;">${item.ipadId}</label></td>
+                    <td><input type="checkbox" class="check-app form-check-input"></td>
+                    <td><input type="checkbox" class="check-app form-check-input"></td>
+                    <td><input type="checkbox" class="check-app form-check-input"></td>
+                    <td><input type="checkbox" class="check-app form-check-input"></td>
+                    <td><button type="button" class="btn btn-success btn-sm fw-bold" onclick="tickAll(this)">✔ ติ๊กครบ</button></td>
                 </tr>`;
             });
         } else {
@@ -86,25 +80,10 @@
         }
     });
 
-    // 📌 ฟังก์ชันปลดล็อก/ล็อก Checkbox ของแถวนั้นๆ
-    function toggleRow(checkbox) {
-        const row = checkbox.closest('tr');
-        row.querySelectorAll('.check-app').forEach(app => {
-            app.disabled = !checkbox.checked; // ถ้าติ๊ก iPad จะปลดล็อก, ถ้าไม่ติ๊ก จะล็อก
-            if (!checkbox.checked) app.checked = false; // ถ้าเอาติ๊กหน้า iPad ออก ให้เคลียร์ check list ด้วย
-        });
-    }
-
-    // 📌 ฟังก์ชันปุ่มลัด (ถ้ากดปุ่มลัด จะติ๊กหน้า iPad และปลดล็อกให้เลยอัตโนมัติ)
     function tickAll(btn) {
         const row = btn.closest('tr');
-        const mainCheck = row.querySelector('.select-ipad');
-        
-        mainCheck.checked = true; // ติ๊กหน้าชื่อ iPad
-        row.querySelectorAll('.check-app').forEach(cb => {
-            cb.disabled = false; // ปลดล็อก
-            cb.checked = true;   // ติ๊กถูก
-        });
+        row.querySelector('.select-ipad').checked = true;
+        row.querySelectorAll('.check-app').forEach(cb => cb.checked = true);
     }
 
     async function submitReceipt() {
@@ -121,7 +100,7 @@
                 title: "⚠️ ข้อมูลไม่ครบถ้วน",
                 text: "กรุณาติ๊กเลือกหน้าชื่อ iPad อย่างน้อย 1 เครื่องก่อนกดยืนยันครับ!",
                 icon: "warning",
-                confirmButtonColor: "#10b981"
+                confirmButtonColor: "#f59e0b"
             });
             return;
         }
@@ -144,7 +123,9 @@
             
             const result = await response.json();
             if (result.status === "success") {
-                window.location.href = `success.html?reqId=${reqId}&status=รับเครื่องเรียบร้อย&count=${items.length}`;
+                Swal.fire("สำเร็จ!", "✅ บันทึกข้อมูลรับเครื่องเรียบร้อยแล้ว!", "success").then(() => {
+                    window.location.href = "user.html"; 
+                });
             } else {
                 Swal.fire("❌ เกิดข้อผิดพลาด", result.message || "ในการบันทึกข้อมูล", "error");
                 btn.innerText = "✅ ยืนยันการรับเครื่อง";

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายการรอส่งคืนเครื่อง | Step 4</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme-user.css">
+    <style>
+        .btn-action { background-color: #212529; color: white; border: none; font-weight: 600; border-radius: 8px; transition: 0.2s; }
+        .btn-action:hover { background-color: #495057; color: white; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <nav class="nav-header">
+        <div class="nav-title">📱 รายการรอส่งคืนเครื่อง [Step 4]</div>
+        <div class="d-flex align-items-center">
+            <a href="user.html" class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold">🔙 กลับเมนูหลัก</a>
+        </div>
+    </nav>
+
+    <div class="container-wide pb-5">
+        <div class="section-title">รายการที่รอคุณส่งคืน</div>
+        <div class="table-card table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">เลขรายการ</th>
+                        <th style="width: 20%;">วันที่และเวลา</th>
+                        <th style="width: 35%;">รหัส iPad</th>
+                        <th style="width: 15%;">สถานะ</th>
+                        <th style="width: 15%;">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="requestListBody">
+                    <tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
+    const currentUser = localStorage.getItem("userName");
+
+    window.onload = async function() {
+        if(!currentUser) { window.location.href = "index.html"; return; }
+        
+        try {
+            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) });
+            const result = await res.json();
+            const tbody = document.getElementById("requestListBody");
+            tbody.innerHTML = "";
+
+            if (result.status === "success" && result.data.length > 0) {
+                // 📌 กรอง: ของตัวเอง + รอส่งคืน (ผ่าน Step 3 มาแล้ว)
+                const pendingRequests = result.data.filter(item => item.name === currentUser && item.status && item.status.includes("Step[3]"));
+
+                if (pendingRequests.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center fw-bold py-5 text-muted">🎉 ไม่มีรายการค้างดำเนินการในขณะนี้</td></tr>';
+                    return;
+                }
+
+                pendingRequests.forEach(req => {
+                    let dateStr = req.timestamp ? new Date(req.timestamp).toLocaleString("th-TH") : "-";
+                    let formattedIpads = formatIpadText(req.ipadId);
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td data-label="📌 เลขรายการ" class="fw-bold text-dark">${req.reqId}</td>
+                            <td data-label="🕒 วันที่">${dateStr}</td>
+                            <td data-label="📱 รหัส iPad" style="max-width: 300px;">${formattedIpads}</td>
+                            <td data-label="📊 สถานะ"><span class="badge bg-warning text-dark px-3 py-2 rounded-pill">${req.status}</span></td>
+                            <td data-label="⚙️ จัดการ">
+                                <button class="btn btn-action btn-sm px-3 shadow-sm w-100" onclick="window.location.href='step4.html?reqId=${req.reqId}'">➡️ ดำเนินการ</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ ไม่พบข้อมูลในระบบ</td></tr>';
+            }
+        } catch (error) {
+            document.getElementById("requestListBody").innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
+        }
+    };
+
+    function formatIpadText(ipadText) {
+        if (!ipadText || ipadText.trim() === "") return "-";
+        let rawIpads = ipadText.split(',').map(id => id.trim());
+        let normalIds = [], airIds = [];
+        rawIpads.forEach(id => {
+            let numMatch = id.match(/\d+/); 
+            let num = numMatch ? numMatch[0] : id; 
+            if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num);
+            else normalIds.push(num);
+        });
+        let displayGroups = [];
+        if (normalIds.length > 0) displayGroups.push(`<span class="text-dark fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
+        if (airIds.length > 0) displayGroups.push(`<span class="text-secondary fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
+        return displayGroups.join('<br>');
+    }
+</script>
+</body>
+</html>
