@@ -141,7 +141,18 @@
         try {
             const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "saveStep4", reqId: reqId, items: items, name: currentLoggerName }) });
             const result = await res.json();
-            if (result.status === "success") window.location.href = `success.html?title=ส่งคืนเครื่องสำเร็จ&desc=ระบบได้รับข้อมูลการคืนเครื่องแล้ว&summary=${encodeURIComponent(`เลขรายการ: ${reqId}\nจำนวนเครื่องที่คืน: ${items.length}`)}`;
+            if (result.status === "success") {
+                Swal.fire({
+                    title: "ส่งคืนเครื่องสำเร็จ!",
+                    html: `หมายเลขรายการ: <b>${reqId}</b><br>ระบบได้รับข้อมูลการคืนเครื่องจำนวน ${items.length} เครื่องแล้ว`,
+                    icon: "success",
+                    confirmButtonColor: "#212529",
+                    confirmButtonText: "OK",
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.href = "user.html";
+                });
+            }
             else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); btn.innerText = originalText; btn.disabled = false; }
         } catch (error) {
             Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อระบบได้", "error"); btn.innerText = originalText; btn.disabled = false;

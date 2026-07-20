@@ -169,7 +169,18 @@
         try {
             const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "saveStep3", reqId: reqId, items: items, exam: examValue, note: noteValue, name: inspector }) });
             const result = await res.json();
-            if(result.status === "success") window.location.href = `success.html?title=ตรวจก่อนสอบสำเร็จ&desc=บันทึกข้อมูล Check List เรียบร้อยแล้ว&summary=${encodeURIComponent(`เลขรายการ: ${reqId}\nจำนวนเครื่อง: ${items.length}`)}`;
+            if(result.status === "success") {
+                Swal.fire({
+                    title: "ตรวจก่อนสอบสำเร็จ!",
+                    html: `หมายเลขรายการ: <b>${reqId}</b><br>บันทึกข้อมูล Check List จำนวน ${items.length} เครื่องเรียบร้อยแล้ว`,
+                    icon: "success",
+                    confirmButtonColor: "#212529",
+                    confirmButtonText: "OK",
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.href = "user.html";
+                });
+            }
             else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); btn.innerText = originalText; btn.disabled = false; }
         } catch (error) {
             Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); btn.innerText = originalText; btn.disabled = false;

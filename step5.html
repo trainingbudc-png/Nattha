@@ -6,6 +6,7 @@
     <title>Step 5 | ตรวจสอบคืนเครื่อง</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme-admin.css">
     <style>
         body { background: #fdf2f2; font-family: 'Kanit', sans-serif; padding: 20px; }
         
@@ -49,7 +50,7 @@
 
 <div class="main-header-card d-flex justify-content-between align-items-center">
     <h3>5. [ ผู้ตรวจสอบ ] Check List</h3>
-    <a href="step5-list.html" class="btn btn-outline-secondary px-3 fw-bold rounded-pill btn-sm">🔙 กลับ</a>
+    <a href="step5-list.html" class="btn btn-outline-secondary px-3 fw-bold rounded-pill btn-sm border-2">🔙 กลับ</a>
 </div>
 
 <div class="confirm-card">
@@ -143,7 +144,18 @@
 
         try {
             await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "saveStep5", reqId: reqId, items: items, name: localStorage.getItem("userName") || "Admin", borrowerName: borrowerName }) });
-            window.location.href = `success.html?title=ตรวจสอบเสร็จสิ้น&desc=บันทึกผลการตรวจสอบลงระบบเรียบร้อยแล้ว&summary=${encodeURIComponent(`เลขรายการ: ${reqId}\nจำนวนเครื่อง: ${items.length} เครื่อง`)}`;
+            
+            Swal.fire({
+                title: "ตรวจสอบเสร็จสิ้น!",
+                html: `หมายเลขรายการ: <b>${reqId}</b><br>บันทึกผลการตรวจสอบ ${items.length} เครื่องลงระบบเรียบร้อยแล้ว`,
+                icon: "success",
+                confirmButtonColor: "#dc3545",
+                confirmButtonText: "OK",
+                allowOutsideClick: false
+            }).then(() => {
+                window.location.href = "admin.html";
+            });
+
         } catch (error) {
             Swal.fire("❌ เกิดข้อผิดพลาด", "ในการบันทึก กรุณาลองใหม่", "error"); btn.innerText = originalText; btn.disabled = false;
         }

@@ -62,7 +62,6 @@
         </table>
     </div>
     
-    <!-- ลบ textarea กล่องหมายเหตุออกแล้ว -->
     <button id="btnSubmit" class="btn btn-confirm shadow-sm" onclick="submitReceipt()">✅ ยืนยันการรับเครื่อง</button>
 </div>
 
@@ -134,10 +133,20 @@
         btn.innerText = "กำลังบันทึกข้อมูล... ⏳"; btn.disabled = true;
 
         try {
-            // ส่งค่า note เป็นค่าว่างไปเลยเพราะเอา textarea ออกแล้ว
             const response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "updateStatus", reqId: reqId, items: items, note: "", name: currentLoggerName }) });
             const result = await response.json();
-            if (result.status === "success") window.location.href = `success.html?reqId=${reqId}&status=รับเครื่องเรียบร้อย&count=${items.length}`;
+            if (result.status === "success") {
+                Swal.fire({
+                    title: "รับเครื่องเรียบร้อย!",
+                    html: `หมายเลขรายการ: <b>${reqId}</b><br>ระบบบันทึกการรับเครื่องจำนวน ${items.length} เครื่องแล้ว`,
+                    icon: "success",
+                    confirmButtonColor: "#212529",
+                    confirmButtonText: "OK",
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.href = "user.html";
+                });
+            }
             else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message || "ในการบันทึกข้อมูล", "error"); btn.innerText = "✅ ยืนยันการรับเครื่อง"; btn.disabled = false; }
         } catch (error) {
             Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); btn.innerText = "✅ ยืนยันการรับเครื่อง"; btn.disabled = false;
