@@ -65,7 +65,7 @@
             max-width: 60%;
         }
         .btn-primary-custom {
-            background-color: #059669; /* สีเขียวเข้มแบบในรูป */
+            background-color: #059669;
             border: none;
             color: white;
             font-weight: 600;
@@ -107,24 +107,20 @@
             </div>
         </div>
 
-        <!-- 📌 ปุ่มกลับเมนูหลัก (ปุ่มเดียวจบ) -->
         <button class="btn btn-primary-custom" onclick="goHome()">กลับเมนูหลัก</button>
     </div>
 
     <script>
         window.onload = function() {
-            // ดึงค่าพารามิเตอร์ที่ส่งมาจากหน้า Step ต่างๆ ผ่าน URL
             const urlParams = new URLSearchParams(window.location.search);
             const reqId = urlParams.get('reqId') || '-';
             const status = urlParams.get('status') || 'อัปเดตสถานะสำเร็จ';
             const count = urlParams.get('count') || '-';
             
-            // นำข้อมูลมาแสดงบนการ์ด
             document.getElementById('reqIdText').innerText = reqId;
             document.getElementById('statusText').innerText = status;
             document.getElementById('countText').innerText = count !== '-' ? count + " เครื่อง" : "-";
             
-            // เปลี่ยนหัวข้อตามสถานะ
             if(status.includes('ตรวจ')) {
                 document.getElementById('titleText').innerText = "ตรวจสอบเสร็จสิ้น";
             } else if (status.includes('เตรียม')) {
@@ -132,7 +128,6 @@
             }
         };
 
-        // ฟังก์ชันพากลับหน้าหลักแบบแยกตาม Role
         function goHome() {
             const role = localStorage.getItem("userRole");
             if (role === "Admin") {
