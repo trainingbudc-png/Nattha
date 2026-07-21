@@ -56,6 +56,7 @@ async function loadUserTableData() {
                         displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
                     }
                     if (airIds.length > 0) {
+                        // ⚙️ จุดที่ 1: เปลี่ยนสีฟอนต์ [Air+APC] จาก text-success เป็น text-danger (สีแดง)
                         displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
                     }
                     formattedIpads = displayGroups.join('<br>');
@@ -68,6 +69,7 @@ async function loadUserTableData() {
 
                 if (statusTxt.includes("Step[1]")) {
                     displayStatus = "Step[1]";
+                    // ⚙️ จุดที่ 2: เปลี่ยนสีพื้นหลังกรอบสถานะจาก bg-primary เป็น bg-danger (สีแดง)
                     badgeClass = "bg-danger text-white";
                     actionBtn = `<button class="btn btn-success btn-sm fw-bold rounded-pill px-3 shadow-sm w-100" onclick="window.location.href='step2.html?reqId=${item.reqId}'">➡️ รับเครื่อง</button>`;
                 
@@ -86,6 +88,7 @@ async function loadUserTableData() {
                     badgeClass = statusTxt.includes("Step[4]") ? "bg-danger text-white" : "bg-success text-white";
                     actionBtn = `<button class="btn btn-secondary btn-sm fw-bold rounded-pill px-3 w-100" disabled>✔️ เสร็จสิ้น</button>`;
                 } else {
+                    // 📌 เปลี่ยนกล่อง รอดำเนินการ ให้เป็นสีเทา (bg-secondary)
                     displayStatus = "รอดำเนินการ";
                     badgeClass = "bg-secondary text-white"; 
                     actionBtn = `<span class="text-muted">-</span>`;
@@ -145,14 +148,15 @@ async function openProfileModal() {
     }
 }
 
-// 2. บันทึกข้อมูลที่แก้ไขกลับลงไป
+// 2. บันทึกข้อมูลที่แก้ไขกลับลงไป (พร้อมอัปเดตชื่อใหม่)
 async function saveProfileData() {
-    const currentUser = localStorage.getItem("userName");
+    const currentName = localStorage.getItem("userName"); 
+    const newName = document.getElementById("editProfileName").value.trim(); 
     const dept = document.getElementById("editProfileDept").value.trim();
     const phone = document.getElementById("editProfilePhone").value.trim();
 
-    if (!dept || !phone) {
-        Swal.fire("แจ้งเตือน", "กรุณากรอกข้อมูล แผนก และ เบอร์โทรศัพท์ ให้ครบถ้วนครับ", "warning");
+    if (!newName || !dept || !phone) {
+        Swal.fire("แจ้งเตือน", "กรุณากรอกข้อมูลให้ครบทุกช่องครับ", "warning");
         return;
     }
 
@@ -162,15 +166,27 @@ async function saveProfileData() {
     btn.disabled = true;
 
     try {
-        const res = await callAPI({ action: "updateUserProfile", name: currentUser, dept: dept, phone: phone });
+        const res = await callAPI({ 
+            action: "updateUserProfile", 
+            name: currentName, 
+            newName: newName, 
+            dept: dept, 
+            phone: phone 
+        });
 
         if (res.status === "success") {
+            // อัปเดตชื่อในระบบเครื่องให้ตรงกับชื่อใหม่
+            localStorage.setItem("userName", newName);
+            document.getElementById("showName").innerText = newName;
+            
             profileModal.hide();
             Swal.fire({
                 title: "บันทึกสำเร็จ!",
                 text: "อัปเดตข้อมูลส่วนตัวของคุณเรียบร้อยแล้ว",
                 icon: "success",
                 confirmButtonColor: "#212529"
+            }).then(() => {
+                loadUserTableData(); // โหลดตารางใหม่
             });
         } else {
             Swal.fire("ข้อผิดพลาด", "ไม่สามารถอัปเดตข้อมูลได้", "error");

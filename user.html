@@ -22,7 +22,7 @@
             <button class="btn btn-light btn-sm rounded-circle shadow-sm border" onclick="openProfileModal()" title="แก้ไขข้อมูลส่วนตัว" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
                 ⚙️
             </button>
-
+            
             <button class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" onclick="logoutSystem()">ออกจากระบบ</button>
         </div>
     </nav>
@@ -98,8 +98,10 @@
                 </div>
                 <div class="modal-body pb-4 pt-3">
                     <div class="mb-3">
-                        <label class="form-label text-muted small mb-1">ชื่อ-นามสกุล (ไม่สามารถเปลี่ยนเองได้)</label>
-                        <input type="text" id="editProfileName" class="form-control bg-light text-muted" readonly>
+                        <!-- 📌 ปลดล็อกช่องชื่อ และเพิ่มคำเตือน -->
+                        <label class="form-label fw-bold mb-1">ชื่อ-นามสกุล</label>
+                        <input type="text" id="editProfileName" class="form-control" placeholder="ระบุชื่อ-นามสกุลของคุณ">
+                        <small class="text-danger mt-1 d-block" style="font-size: 0.8rem;">*คำเตือน: หากเปลี่ยนชื่อ ประวัติรายการเดิมอาจไม่แสดงในหน้านี้</small>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold mb-1">ฝ่าย / แผนก</label>
