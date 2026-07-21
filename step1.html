@@ -17,7 +17,8 @@
         .btn-outline-red:hover { background-color: #fdf2f2; color: #000; }
         .btn-check:checked + .btn-outline-red { background-color: #dc3545; color: white; border-color: #dc3545; box-shadow: 0 4px 10px rgba(220,53,69,0.3); }
 
-        .category-header { background-color: #fef2f2; color: #b91c1c; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s; margin-bottom: 5px; border: 1px solid #fca5a5; }
+        /* 📌 เปลี่ยนสีตัวหนังสือหัวข้อหมวดหมู่เป็นสีดำเข้ม (#212529) */
+        .category-header { background-color: #fef2f2; color: #212529; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s; margin-bottom: 5px; border: 1px solid #fca5a5; }
         .category-header:hover { background-color: #fecaca; }
         .category-header::after { content: '▼'; font-size: 0.8rem; transition: transform 0.3s ease; }
         .category-header.collapsed::after { transform: rotate(-90deg); }
@@ -53,7 +54,8 @@
         .btn-submit-custom { background-color: #dc3545; color: white; font-weight: bold; border: none; border-radius: 8px; padding: 12px; transition: 0.3s; }
         .btn-submit-custom:hover { background-color: #b91c1c; color: white; }
 
-        .table th { background-color: #fef2f2; color: #b91c1c; font-size: 0.9rem; text-align: center; vertical-align: middle; border-bottom: 2px solid #fca5a5; }
+        /* 📌 เปลี่ยนสีตัวหนังสือหัวตารางเป็นสีดำเข้ม (#212529) */
+        .table th { background-color: #fef2f2; color: #212529; font-size: 0.9rem; text-align: center; vertical-align: middle; border-bottom: 2px solid #fca5a5; }
         .table td { vertical-align: middle; text-align: center; border-bottom: 1px solid #fee2e2; }
 
         /* 📱 รองรับมือถือ & ขยายปุ่มจิ้มง่าย */
@@ -114,7 +116,8 @@
                 </div>
 
                 <div id="dynamicChecklistContainer" class="mb-4 d-none">
-                    <label class="form-label text-danger fw-bold">✅ สิ่งที่แอดมินต้องเตรียม (เช็คให้ครบทุกเครื่อง):</label>
+                    <!-- 📌 เปลี่ยนสีตัวหนังสือหัวตารางเป็น text-dark -->
+                    <label class="form-label text-dark fw-bold">✅ สิ่งที่แอดมินต้องเตรียม (เช็คให้ครบทุกเครื่อง):</label>
                     <div class="table-responsive border rounded bg-white" style="border-color: #fecaca !important;">
                         <table class="table table-borderless mb-0">
                             <thead>
@@ -212,13 +215,14 @@
             tr.dataset.sortval = numericValue;
             tr.dataset.rawname = ipadId;
 
+            // 📌 เปลี่ยนสีชื่อ iPad ในตารางเป็นสีดำ (text-dark) และปุ่มเป็นสีดำ (btn-outline-dark) ให้เข้ากัน
             tr.innerHTML = `
-                <td data-label="📱 รหัส iPad" class="fw-bold text-danger">${ipadId}</td>
+                <td data-label="📱 รหัส iPad" class="fw-bold text-dark">${ipadId}</td>
                 <td data-label="📁 G-Drive"><input type="checkbox" class="form-check-input check-${safeId}" value="drive"></td>
                 <td data-label="📄 ไฟล์เอกสาร"><input type="checkbox" class="form-check-input check-${safeId}" value="file"></td>
                 <td data-label="🖼️ ไฟล์รูปภาพ"><input type="checkbox" class="form-check-input check-${safeId}" value="img"></td>
                 <td data-label="🌐 Safari"><input type="checkbox" class="form-check-input check-${safeId}" value="safari"></td>
-                <td data-label="⚡ ปุ่มลัด"><button type="button" class="btn btn-sm btn-outline-danger fw-bold rounded-pill w-100" onclick="tickAllRow('${safeId}')">✔ ติ๊กครบ</button></td>
+                <td data-label="⚡ ปุ่มลัด"><button type="button" class="btn btn-sm btn-outline-dark fw-bold rounded-pill w-100" onclick="tickAllRow('${safeId}')">✔ ติ๊กครบ</button></td>
             `;
             tbody.appendChild(tr);
         } else {
