@@ -97,7 +97,7 @@
             else normalIds.push(num);
         });
         let displayGroups = [];
-        if (normalIds.length > 0) displayGroups.push(`<span class="text-dark fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
+        if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
         if (airIds.length > 0) displayGroups.push(`<span class="text-secondary fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
         return displayGroups.join('<br>');
     }
