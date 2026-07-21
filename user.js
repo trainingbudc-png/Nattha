@@ -56,7 +56,6 @@ async function loadUserTableData() {
                         displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
                     }
                     if (airIds.length > 0) {
-                        // ⚙️ จุดที่ 1: เปลี่ยนสีฟอนต์ [Air+APC] จาก text-success เป็น text-danger (สีแดง)
                         displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
                     }
                     formattedIpads = displayGroups.join('<br>');
@@ -69,7 +68,6 @@ async function loadUserTableData() {
 
                 if (statusTxt.includes("Step[1]")) {
                     displayStatus = "Step[1]";
-                    // ⚙️ จุดที่ 2: เปลี่ยนสีพื้นหลังกรอบสถานะจาก bg-primary เป็น bg-danger (สีแดง)
                     badgeClass = "bg-danger text-white";
                     actionBtn = `<button class="btn btn-success btn-sm fw-bold rounded-pill px-3 shadow-sm w-100" onclick="window.location.href='step2.html?reqId=${item.reqId}'">➡️ รับเครื่อง</button>`;
                 
@@ -88,7 +86,6 @@ async function loadUserTableData() {
                     badgeClass = statusTxt.includes("Step[4]") ? "bg-danger text-white" : "bg-success text-white";
                     actionBtn = `<button class="btn btn-secondary btn-sm fw-bold rounded-pill px-3 w-100" disabled>✔️ เสร็จสิ้น</button>`;
                 } else {
-                    // 📌 เปลี่ยนกล่อง รอดำเนินการ ให้เป็นสีเทา (bg-secondary)
                     displayStatus = "รอดำเนินการ";
                     badgeClass = "bg-secondary text-white"; 
                     actionBtn = `<span class="text-muted">-</span>`;
@@ -109,5 +106,79 @@ async function loadUserTableData() {
     } catch (err) {
         console.error(err);
         tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
+    }
+}
+
+// =========================================
+// ⚙️ ฟังก์ชันสำหรับแก้ไขโปรไฟล์ (Profile Modal)
+// =========================================
+
+let profileModal;
+
+// 1. เปิดหน้าต่าง Modal และดึงข้อมูลเดิมมาแสดง
+async function openProfileModal() {
+    const currentUser = localStorage.getItem("userName");
+    document.getElementById("editProfileName").value = currentUser;
+    document.getElementById("editProfileDept").value = "กำลังโหลด...";
+    document.getElementById("editProfilePhone").value = "กำลังโหลด...";
+
+    // เปิด Modal
+    if (!profileModal) {
+        profileModal = new bootstrap.Modal(document.getElementById('profileModal'));
+    }
+    profileModal.show();
+
+    // ดึงข้อมูลจากฐานข้อมูลมาเติมในช่อง
+    try {
+        const res = await callAPI({ action: "getUserProfile", name: currentUser });
+        if (res.status === "success") {
+            document.getElementById("editProfileDept").value = res.dept || "";
+            document.getElementById("editProfilePhone").value = res.phone || "";
+        } else {
+            document.getElementById("editProfileDept").value = "";
+            document.getElementById("editProfilePhone").value = "";
+        }
+    } catch (error) {
+        console.error("Error loading profile:", error);
+        document.getElementById("editProfileDept").value = "";
+        document.getElementById("editProfilePhone").value = "";
+    }
+}
+
+// 2. บันทึกข้อมูลที่แก้ไขกลับลงไป
+async function saveProfileData() {
+    const currentUser = localStorage.getItem("userName");
+    const dept = document.getElementById("editProfileDept").value.trim();
+    const phone = document.getElementById("editProfilePhone").value.trim();
+
+    if (!dept || !phone) {
+        Swal.fire("แจ้งเตือน", "กรุณากรอกข้อมูล แผนก และ เบอร์โทรศัพท์ ให้ครบถ้วนครับ", "warning");
+        return;
+    }
+
+    const btn = document.getElementById("btnSaveProfile");
+    const originalText = btn.innerText;
+    btn.innerText = "กำลังบันทึก... ⏳";
+    btn.disabled = true;
+
+    try {
+        const res = await callAPI({ action: "updateUserProfile", name: currentUser, dept: dept, phone: phone });
+
+        if (res.status === "success") {
+            profileModal.hide();
+            Swal.fire({
+                title: "บันทึกสำเร็จ!",
+                text: "อัปเดตข้อมูลส่วนตัวของคุณเรียบร้อยแล้ว",
+                icon: "success",
+                confirmButtonColor: "#212529"
+            });
+        } else {
+            Swal.fire("ข้อผิดพลาด", "ไม่สามารถอัปเดตข้อมูลได้", "error");
+        }
+    } catch (error) {
+        Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
     }
 }
