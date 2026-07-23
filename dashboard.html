@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard ภาพรวม</title>
+    
+    <link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme-admin.css">
+    
+    <style>
+        body { background-color: #f8f9fa; }
+        .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        
+        .table-dashboard { white-space: nowrap; border-collapse: collapse; }
+        .table-dashboard th { 
+            font-size: 0.85rem; 
+            padding: 12px; 
+            text-align: center; 
+            vertical-align: middle;
+            border: 1px solid #dee2e6;
+            color: #212529;
+        }
+        .table-dashboard td { 
+            font-size: 0.85rem; 
+            padding: 10px; 
+            text-align: center; 
+            vertical-align: middle; 
+            border: 1px solid #dee2e6;
+            background-color: white;
+        }
+
+        .step-cell { color: #0284c7; min-width: 110px; line-height: 1.4; font-weight: 500;}
+        .step-cell-empty { background-color: #fce7f3 !important; } 
+        
+        .status-badge { padding: 5px 12px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; display: inline-block; }
+        .status-green { background-color: #dcfce7; color: #16a34a; }
+        .status-yellow { background-color: #fef9c3; color: #d97706; }
+        
+        .cell-note { text-align: left !important; white-space: normal; min-width: 150px; max-width: 250px; color: #dc3545; font-weight: 500;}
+        .name-cell { color: #16a34a; font-weight: 600; }
+        .name-cell-blue { color: #0284c7; font-weight: 600; }
+
+        @media screen and (max-width: 768px) {
+            .dashboard-container { padding: 10px; }
+            .navbar-custom { flex-direction: column; gap: 15px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-custom d-flex justify-content-between align-items-center" style="border-bottom-color: #0dcaf0;">
+        <div class="fw-bold fs-5 d-flex align-items-center gap-2" style="color: #0dcaf0 !important;">
+            📊 Dashboard (ภาพรวมระบบทั้งหมด)
+        </div>
+        <a href="admin.html" class="btn btn-outline-info btn-sm rounded-pill fw-bold px-4 border-2 text-dark">🔙 กลับหน้าแอดมิน</a>
+    </nav>
+
+    <div class="dashboard-container pb-5 mt-4">
+        
+        <div class="d-flex justify-content-between align-items-end mb-3">
+            <h5 class="fw-bold text-dark m-0">ตารางข้อมูลรายการเบิก-ยืม</h5>
+            <button class="btn btn-dark btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="loadDashboardData()">🔄 อัปเดตข้อมูล</button>
+        </div>
+        
+        <div class="table-responsive shadow-sm border rounded">
+            <table class="table table-dashboard m-0">
+                <thead>
+                    <tr>
+                        <th style="background-color: #f8f9fa; width: 5%;">#</th>
+                        <th style="background-color: #f8f9fa;">Step 1 | เตรียม</th>
+                        <th style="background-color: #f8f9fa;">Step 2 | ยืม</th>
+                        <th style="background-color: #f8f9fa;">Step 3 | ก่อน<br>สอบ</th>
+                        <th style="background-color: #f8f9fa;">Step 4 | คืน</th>
+                        <th style="background-color: #f8f9fa;">Step 5 | ตรวจ</th>
+                        <th style="background-color: #f8f9fa; border-left: 2px solid #dee2e6;">สถานะรวม</th>
+                        <th style="background-color: #f8f9fa;">ผู้เตรียม<br>เครื่อง</th>
+                        <th style="background-color: #f8f9fa;">ผู้ที่จะมารับ<br>เครื่อง</th>
+                        <th style="background-color: #f8f9fa; width: 15%;">หมายเหตุ</th>
+                        <th style="background-color: #fdf2f2; color: #dc3545;">ยืมฉุกเฉิน<br><span style="font-size:0.7rem; font-weight:normal;">(72 ชม.) ก่อนใช้</span></th>
+                    </tr>
+                </thead>
+                <tbody id="dashboardBody">
+                    <tr><td colspan="11" class="text-center py-5 text-muted">กำลังดึงและประกอบข้อมูล... ⏳</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
+
+    window.onload = function() {
+        if(localStorage.getItem("userRole") !== "Admin") {
+            window.location.href = "index.html"; 
+            return;
+        }
+        loadDashboardData();
+    };
+
+    function formatStepCell(text) {
+        if (!text || text.trim() === "") return '<td class="step-cell-empty"></td>';
+        let formatted = text.replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
+        formatted = formatted.replace(/☑/g, '<span style="color:#7c3aed; font-size:1rem;">☑</span>');
+        return `<td class="step-cell">${formatted}</td>`;
+    }
+
+    function formatStatus(statusText) {
+        if (statusText === "จบขั้นตอน") {
+            return `<span class="status-badge status-green">☑ ${statusText}</span>`;
+        } else {
+            return `<span class="status-badge status-yellow">⚠️ ${statusText}</span>`;
+        }
+    }
+
+    function formatEmergency(emText) {
+        if (!emText || emText.trim() === "" || emText === "☐") return '<span style="color:#dc3545; font-size:1.2rem;">☐</span>';
+        return `<span style="color:#dc3545; font-size:1.2rem; font-weight:bold;">☑</span>`;
+    }
+
+    function loadDashboardData() {
+        const tbody = document.getElementById("dashboardBody");
+        tbody.innerHTML = '<tr><td colspan="11" class="text-center py-5 text-muted">กำลังประมวลผลข้อมูล... ⏳</td></tr>';
+        
+        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getDashboardData" }) })
+        .then(res => res.json())
+        .then(res => {
+            tbody.innerHTML = ""; 
+            
+            if (res.status === "success" && res.data && res.data.length > 0) {
+                res.data.forEach(item => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="fw-bold text-primary fs-6 bg-light">${item.reqId.replace("REQ-", "")}</td>
+                            ${formatStepCell(item.step1)}
+                            ${formatStepCell(item.step2)}
+                            ${formatStepCell(item.step3)}
+                            ${formatStepCell(item.step4)}
+                            ${formatStepCell(item.step5)}
+                            <td style="border-left: 2px solid #dee2e6;">${formatStatus(item.status)}</td>
+                            <td class="name-cell">${item.preparer}</td>
+                            <td class="name-cell-blue">${item.receiver}</td>
+                            <td class="cell-note">${item.note || ""}</td>
+                            <td>${formatEmergency(item.emergency)}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="11" class="text-center text-muted py-5">ยังไม่มีข้อมูลรายการ</td></tr>';
+            }
+        }).catch(err => {
+            tbody.innerHTML = '<tr><td colspan="11" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
+        });
+    }
+</script>
+</body>
+</html>
