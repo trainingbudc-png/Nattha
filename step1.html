@@ -316,7 +316,7 @@
         // 🚨 สร้างข้อความบันทึกลงคอลัมน์ "หมายเหตุ"
         let finalNote = `เตรียมให้: ${recipientName} (${selectedIpads.length} เครื่อง)`;
         if(isEmergency) {
-            finalNote = `🚨 [ยืมฉุกเฉิน] เหตุผล: ${emergencyNote}`;
+            finalNote = `🚨 [หมายเหตุ]: ${emergencyNote}`;
         }
 
         const payload = { 
@@ -333,7 +333,7 @@
             if(res.status === "success") {
                 Swal.fire({
                     title: "บันทึกสำเร็จ!",
-                    html: `หมายเลขรายการ: <b>${res.reqId}</b><br>ระบบบันทึกสถานะรอยืนยันแล้ว`,
+                    html: `หมายเลขรายการ : <b>${res.reqId}</b><br>ระบบบันทึกสถานะ : รอยืนยันแล้ว`,
                     icon: "success",
                     confirmButtonColor: "#dc3545",
                     confirmButtonText: "OK",
