@@ -7,7 +7,7 @@
     
     <link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
@@ -15,14 +15,18 @@
         .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
         
         .table-dashboard { white-space: nowrap; border-collapse: collapse; }
+        
+        /* 📌 ปรับหัวตารางให้ ตัวใหญ่ขึ้น และ หนาขึ้น */
         .table-dashboard th { 
-            font-size: 0.85rem; 
-            padding: 12px; 
+            font-size: 1.05rem; /* เปลี่ยนจาก 0.85rem เป็น 1.05rem */
+            font-weight: 700; /* ทำให้ตัวหนามาก (Bold) */
+            padding: 14px 12px; /* เพิ่มพื้นที่บน-ล่างให้ดูโปร่งขึ้น */
             text-align: center; 
             vertical-align: middle;
             border: 1px solid #dee2e6;
             color: #212529;
         }
+        
         .table-dashboard td { 
             font-size: 0.85rem; 
             padding: 10px; 
@@ -79,14 +83,15 @@
                         <th style="background-color: #f8f9fa; width: 5%;">#</th>
                         <th style="background-color: #f8f9fa;">Step 1 | เตรียม</th>
                         <th style="background-color: #f8f9fa;">Step 2 | ยืม</th>
-                        <th style="background-color: #f8f9fa;">Step 3 | ก่อน<br>สอบ</th>
+                        <th style="background-color: #f8f9fa;">Step 3 | ก่อนสอบ</th>
                         <th style="background-color: #f8f9fa;">Step 4 | คืน</th>
                         <th style="background-color: #f8f9fa;">Step 5 | ตรวจ</th>
                         <th style="background-color: #f8f9fa; border-left: 2px solid #dee2e6;">สถานะรวม</th>
-                        <th style="background-color: #f8f9fa;">ผู้เตรียม<br>เครื่อง</th>
-                        <th style="background-color: #f8f9fa;">ผู้ที่จะมารับ<br>เครื่อง</th>
+                        <th style="background-color: #f8f9fa;">ผู้เตรียมเครื่อง</th>
+                        <th style="background-color: #f8f9fa;">ผู้ที่จะมารับเครื่อง</th>
                         <th style="background-color: #f8f9fa; width: 15%;">หมายเหตุ</th>
-                        <th style="background-color: #fdf2f2; color: #dc3545;">ยืมฉุกเฉิน<br><span style="font-size:0.7rem; font-weight:normal;">(72 ชม.) ก่อนใช้</span></th>
+                        <!-- 📌 ปรับขนาดข้อความรองให้สมส่วนกับหัวข้อหลักที่ใหญ่ขึ้น -->
+                        <th style="background-color: #fdf2f2; color: #dc3545;">ยืมฉุกเฉิน<br><span style="font-size:0.85rem; font-weight:normal;">(72 ชม.) ก่อนใช้</span></th>
                     </tr>
                 </thead>
                 <tbody id="dashboardBody">
@@ -113,7 +118,7 @@
     // ตัวแปรสำหรับ Pagination
     let allDashboardData = [];
     let currentPage = 1;
-    const itemsPerPage = 20; // 📌 กำหนดหน้าละ 20 รายการ
+    const itemsPerPage = 20; 
 
     window.onload = function() {
         if(localStorage.getItem("userRole") !== "Admin") {
@@ -155,7 +160,7 @@
         .then(res => {
             if (res.status === "success" && res.data) {
                 allDashboardData = res.data;
-                currentPage = 1; // กลับไปหน้าแรกเสมอเมื่อโหลดข้อมูลใหม่
+                currentPage = 1; 
                 renderTable();
             } else {
                 tbody.innerHTML = '<tr><td colspan="11" class="text-center text-muted py-5">ยังไม่มีข้อมูลรายการ</td></tr>';
@@ -179,7 +184,6 @@
 
         const totalPages = Math.ceil(allDashboardData.length / itemsPerPage);
         
-        // ตัดอาร์เรย์เอาแค่ 20 แถวของหน้านั้นๆ
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = Math.min(startIndex + itemsPerPage, allDashboardData.length);
         const pageData = allDashboardData.slice(startIndex, endIndex);
@@ -202,7 +206,6 @@
             `;
         });
 
-        // อัปเดตข้อความบอกจำนวน
         document.getElementById("pageInfo").innerHTML = `แสดงรายการ <span class="text-info">${startIndex + 1}</span> ถึง <span class="text-info">${endIndex}</span> จากทั้งหมด <span class="text-info">${allDashboardData.length}</span> รายการ`;
 
         renderPaginationControls(totalPages);
@@ -213,12 +216,10 @@
         const paginationEl = document.getElementById("paginationControls");
         let html = '';
 
-        // ปุ่มย้อนกลับ
         html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
                     <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})">« ย้อนกลับ</a>
                  </li>`;
 
-        // สร้างตัวเลขหน้า (แสดงแบบง่ายๆ ±2 หน้าจากหน้าปัจจุบัน)
         let startPage = Math.max(1, currentPage - 2);
         let endPage = Math.min(totalPages, currentPage + 2);
         
@@ -232,7 +233,6 @@
 
         if(endPage < totalPages) html += `<li class="page-item disabled"><a class="page-link" href="#">...</a></li>`;
 
-        // ปุ่มถัดไป
         html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
                     <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})">ถัดไป »</a>
                  </li>`;
@@ -240,7 +240,6 @@
         paginationEl.innerHTML = html;
     }
 
-    // ฟังก์ชันเปลี่ยนหน้า
     function changePage(page) {
         const totalPages = Math.ceil(allDashboardData.length / itemsPerPage);
         if (page < 1 || page > totalPages) return;
