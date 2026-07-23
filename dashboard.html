@@ -43,9 +43,16 @@
         .name-cell { color: #16a34a; font-weight: 600; }
         .name-cell-blue { color: #0284c7; font-weight: 600; }
 
+        /* ปรับแต่งปุ่มเปลี่ยนหน้า */
+        .pagination .page-link { color: #0dcaf0; border-color: #dee2e6; font-weight: 500; }
+        .pagination .page-item.active .page-link { background-color: #0dcaf0; border-color: #0dcaf0; color: white; }
+        .pagination .page-link:hover { background-color: #cff4fc; color: #055160; }
+        .pagination .page-item.disabled .page-link { color: #6c757d; background-color: #f8f9fa; }
+
         @media screen and (max-width: 768px) {
             .dashboard-container { padding: 10px; }
             .navbar-custom { flex-direction: column; gap: 15px; text-align: center; }
+            .pagination-container { flex-direction: column; gap: 15px; }
         }
     </style>
 </head>
@@ -62,7 +69,7 @@
         
         <div class="d-flex justify-content-between align-items-end mb-3">
             <h5 class="fw-bold text-dark m-0">ตารางข้อมูลรายการเบิก-ยืม</h5>
-            <button class="btn btn-dark btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="loadDashboardData()">🔄 อัปเดตข้อมูล</button>
+            <button class="btn btn-dark btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="fetchData()">🔄 อัปเดตข้อมูล</button>
         </div>
         
         <div class="table-responsive shadow-sm border rounded">
@@ -87,17 +94,33 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- 📌 ส่วนควบคุมการแบ่งหน้า (Pagination) -->
+        <div class="d-flex justify-content-between align-items-center mt-3 pagination-container">
+            <span id="pageInfo" class="text-muted small fw-bold">กำลังประมวลผล...</span>
+            <nav>
+                <ul class="pagination pagination-sm m-0 shadow-sm" id="paginationControls">
+                    <!-- ปุ่มเปลี่ยนหน้าจะโผล่ตรงนี้ -->
+                </ul>
+            </nav>
+        </div>
+
     </div>
 
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
+    
+    // ตัวแปรสำหรับ Pagination
+    let allDashboardData = [];
+    let currentPage = 1;
+    const itemsPerPage = 20; // 📌 กำหนดหน้าละ 20 รายการ
 
     window.onload = function() {
         if(localStorage.getItem("userRole") !== "Admin") {
             window.location.href = "index.html"; 
             return;
         }
-        loadDashboardData();
+        fetchData();
     };
 
     function formatStepCell(text) {
@@ -120,39 +143,109 @@
         return `<span style="color:#dc3545; font-size:1.2rem; font-weight:bold;">☑</span>`;
     }
 
-    function loadDashboardData() {
+    // ฟังก์ชันดึงข้อมูลจากเซิร์ฟเวอร์แค่รอบเดียว
+    function fetchData() {
         const tbody = document.getElementById("dashboardBody");
         tbody.innerHTML = '<tr><td colspan="11" class="text-center py-5 text-muted">กำลังประมวลผลข้อมูล... ⏳</td></tr>';
+        document.getElementById("pageInfo").innerText = "กำลังประมวลผล...";
+        document.getElementById("paginationControls").innerHTML = "";
         
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getDashboardData" }) })
         .then(res => res.json())
         .then(res => {
-            tbody.innerHTML = ""; 
-            
-            if (res.status === "success" && res.data && res.data.length > 0) {
-                res.data.forEach(item => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td class="fw-bold text-primary fs-6 bg-light">${item.reqId.replace("REQ-", "")}</td>
-                            ${formatStepCell(item.step1)}
-                            ${formatStepCell(item.step2)}
-                            ${formatStepCell(item.step3)}
-                            ${formatStepCell(item.step4)}
-                            ${formatStepCell(item.step5)}
-                            <td style="border-left: 2px solid #dee2e6;">${formatStatus(item.status)}</td>
-                            <td class="name-cell">${item.preparer}</td>
-                            <td class="name-cell-blue">${item.receiver}</td>
-                            <td class="cell-note">${item.note || ""}</td>
-                            <td>${formatEmergency(item.emergency)}</td>
-                        </tr>
-                    `;
-                });
+            if (res.status === "success" && res.data) {
+                allDashboardData = res.data;
+                currentPage = 1; // กลับไปหน้าแรกเสมอเมื่อโหลดข้อมูลใหม่
+                renderTable();
             } else {
                 tbody.innerHTML = '<tr><td colspan="11" class="text-center text-muted py-5">ยังไม่มีข้อมูลรายการ</td></tr>';
+                document.getElementById("pageInfo").innerText = "ไม่พบข้อมูล";
             }
         }).catch(err => {
             tbody.innerHTML = '<tr><td colspan="11" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
+            document.getElementById("pageInfo").innerText = "ข้อผิดพลาดการเชื่อมต่อ";
         });
+    }
+
+    // ฟังก์ชันวาดตารางตามหน้าปัจจุบัน
+    function renderTable() {
+        const tbody = document.getElementById("dashboardBody");
+        tbody.innerHTML = "";
+
+        if (allDashboardData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="11" class="text-center text-muted py-5">ไม่มีข้อมูล</td></tr>';
+            return;
+        }
+
+        const totalPages = Math.ceil(allDashboardData.length / itemsPerPage);
+        
+        // ตัดอาร์เรย์เอาแค่ 20 แถวของหน้านั้นๆ
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, allDashboardData.length);
+        const pageData = allDashboardData.slice(startIndex, endIndex);
+
+        pageData.forEach(item => {
+            tbody.innerHTML += `
+                <tr>
+                    <td class="fw-bold text-primary fs-6 bg-light">${item.reqId.replace("REQ-", "")}</td>
+                    ${formatStepCell(item.step1)}
+                    ${formatStepCell(item.step2)}
+                    ${formatStepCell(item.step3)}
+                    ${formatStepCell(item.step4)}
+                    ${formatStepCell(item.step5)}
+                    <td style="border-left: 2px solid #dee2e6;">${formatStatus(item.status)}</td>
+                    <td class="name-cell">${item.preparer}</td>
+                    <td class="name-cell-blue">${item.receiver}</td>
+                    <td class="cell-note">${item.note || ""}</td>
+                    <td>${formatEmergency(item.emergency)}</td>
+                </tr>
+            `;
+        });
+
+        // อัปเดตข้อความบอกจำนวน
+        document.getElementById("pageInfo").innerHTML = `แสดงรายการ <span class="text-info">${startIndex + 1}</span> ถึง <span class="text-info">${endIndex}</span> จากทั้งหมด <span class="text-info">${allDashboardData.length}</span> รายการ`;
+
+        renderPaginationControls(totalPages);
+    }
+
+    // ฟังก์ชันวาดปุ่มกดเปลี่ยนหน้า
+    function renderPaginationControls(totalPages) {
+        const paginationEl = document.getElementById("paginationControls");
+        let html = '';
+
+        // ปุ่มย้อนกลับ
+        html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})">« ย้อนกลับ</a>
+                 </li>`;
+
+        // สร้างตัวเลขหน้า (แสดงแบบง่ายๆ ±2 หน้าจากหน้าปัจจุบัน)
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+        
+        if(startPage > 1) html += `<li class="page-item disabled"><a class="page-link" href="#">...</a></li>`;
+
+        for (let i = startPage; i <= endPage; i++) {
+            html += `<li class="page-item ${currentPage === i ? 'active' : ''}">
+                        <a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>
+                     </li>`;
+        }
+
+        if(endPage < totalPages) html += `<li class="page-item disabled"><a class="page-link" href="#">...</a></li>`;
+
+        // ปุ่มถัดไป
+        html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})">ถัดไป »</a>
+                 </li>`;
+
+        paginationEl.innerHTML = html;
+    }
+
+    // ฟังก์ชันเปลี่ยนหน้า
+    function changePage(page) {
+        const totalPages = Math.ceil(allDashboardData.length / itemsPerPage);
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        renderTable();
     }
 </script>
 </body>
