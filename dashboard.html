@@ -14,13 +14,23 @@
         body { background-color: #f8f9fa; }
         .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
         
+        /* 📌 สไตล์ส่วนของกล่อง Filter */
+        .filter-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #dee2e6;
+            border-left: 5px solid #0dcaf0;
+        }
+
         .table-dashboard { white-space: nowrap; border-collapse: collapse; }
         
-        /* 📌 ปรับหัวตารางให้ ตัวใหญ่ขึ้น และ หนาขึ้น */
         .table-dashboard th { 
-            font-size: 1.05rem; /* เปลี่ยนจาก 0.85rem เป็น 1.05rem */
-            font-weight: 700; /* ทำให้ตัวหนามาก (Bold) */
-            padding: 14px 12px; /* เพิ่มพื้นที่บน-ล่างให้ดูโปร่งขึ้น */
+            font-size: 1.05rem; 
+            font-weight: 700; 
+            padding: 14px 12px; 
             text-align: center; 
             vertical-align: middle;
             border: 1px solid #dee2e6;
@@ -47,7 +57,6 @@
         .name-cell { color: #16a34a; font-weight: 600; }
         .name-cell-blue { color: #0284c7; font-weight: 600; }
 
-        /* ปรับแต่งปุ่มเปลี่ยนหน้า */
         .pagination .page-link { color: #0dcaf0; border-color: #dee2e6; font-weight: 500; }
         .pagination .page-item.active .page-link { background-color: #0dcaf0; border-color: #0dcaf0; color: white; }
         .pagination .page-link:hover { background-color: #cff4fc; color: #055160; }
@@ -75,7 +84,37 @@
             <h5 class="fw-bold text-dark m-0">ตารางข้อมูลรายการเบิก-ยืม</h5>
             <button class="btn btn-dark btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="fetchData()">🔄 อัปเดตข้อมูล</button>
         </div>
+
+        <!-- 📌 ส่วนของ Filter (ตัวกรอง) 3 จุด -->
+        <div class="filter-card">
+            <div class="row g-3 align-items-end">
+                <!-- 1. ค้นหาแบบพิมพ์ข้อความ -->
+                <div class="col-md-5 col-12">
+                    <label class="form-label text-muted fw-bold mb-1" style="font-size: 0.85rem;">🔍 ค้นหา (เลขรายการ / ชื่อผู้ทำ / ผู้รับ)</label>
+                    <input type="text" id="searchInput" class="form-control" placeholder="พิมพ์ข้อความที่ต้องการหา..." onkeyup="applyFilters()">
+                </div>
+                
+                <!-- 2. ดรอปดาวน์เลือกสถานะรวม -->
+                <div class="col-md-4 col-12">
+                    <label class="form-label text-muted fw-bold mb-1" style="font-size: 0.85rem;">📊 กรองตามสถานะระบบ</label>
+                    <select id="statusFilter" class="form-select fw-bold" style="color: #495057;" onchange="applyFilters()">
+                        <option value="all"> โชว์ทุกสถานะ (ทั้งหมด)</option>
+                        <option value="ไม่ครบ">⚠️ ค้างดำเนินการ (ไม่ครบ)</option>
+                        <option value="จบขั้นตอน">✅ เสร็จสมบูรณ์ (จบขั้นตอน)</option>
+                    </select>
+                </div>
+                
+                <!-- 3. ปุ่มสวิตช์ ยืมฉุกเฉิน -->
+                <div class="col-md-3 col-12">
+                    <div class="form-check form-switch d-flex align-items-center gap-2 pb-2">
+                        <input class="form-check-input" type="checkbox" id="emergencyFilter" style="width: 40px; height: 20px; cursor: pointer;" onchange="applyFilters()">
+                        <label class="form-check-label fw-bold text-danger mb-0" for="emergencyFilter" style="font-size: 1rem; cursor: pointer; padding-top: 2px;">🚨 เฉพาะเคสฉุกเฉิน</label>
+                    </div>
+                </div>
+            </div>
+        </div>
         
+        <!-- ตารางข้อมูล -->
         <div class="table-responsive shadow-sm border rounded">
             <table class="table table-dashboard m-0">
                 <thead>
@@ -90,7 +129,6 @@
                         <th style="background-color: #f8f9fa;">ผู้เตรียมเครื่อง</th>
                         <th style="background-color: #f8f9fa;">ผู้ที่จะมารับเครื่อง</th>
                         <th style="background-color: #f8f9fa; width: 15%;">หมายเหตุ</th>
-                        <!-- 📌 ปรับขนาดข้อความรองให้สมส่วนกับหัวข้อหลักที่ใหญ่ขึ้น -->
                         <th style="background-color: #fdf2f2; color: #dc3545;">ยืมฉุกเฉิน<br><span style="font-size:0.85rem; font-weight:normal;">(72 ชม.) ก่อนใช้</span></th>
                     </tr>
                 </thead>
@@ -100,12 +138,10 @@
             </table>
         </div>
 
-        <!-- 📌 ส่วนควบคุมการแบ่งหน้า (Pagination) -->
         <div class="d-flex justify-content-between align-items-center mt-3 pagination-container">
             <span id="pageInfo" class="text-muted small fw-bold">กำลังประมวลผล...</span>
             <nav>
                 <ul class="pagination pagination-sm m-0 shadow-sm" id="paginationControls">
-                    <!-- ปุ่มเปลี่ยนหน้าจะโผล่ตรงนี้ -->
                 </ul>
             </nav>
         </div>
@@ -115,8 +151,10 @@
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
     
-    // ตัวแปรสำหรับ Pagination
+    // ตัวแปรสำหรับเก็บข้อมูลต้นฉบับและข้อมูลที่ถูกกรอง
     let allDashboardData = [];
+    let filteredData = []; // เพิ่มตัวแปรสำหรับเก็บงานที่ถูกกรองแล้ว
+    
     let currentPage = 1;
     const itemsPerPage = 20; 
 
@@ -148,7 +186,7 @@
         return `<span style="color:#dc3545; font-size:1.2rem; font-weight:bold;">☑</span>`;
     }
 
-    // ฟังก์ชันดึงข้อมูลจากเซิร์ฟเวอร์แค่รอบเดียว
+    // 📌 ดึงข้อมูลจากเซิร์ฟเวอร์
     function fetchData() {
         const tbody = document.getElementById("dashboardBody");
         tbody.innerHTML = '<tr><td colspan="11" class="text-center py-5 text-muted">กำลังประมวลผลข้อมูล... ⏳</td></tr>';
@@ -160,8 +198,7 @@
         .then(res => {
             if (res.status === "success" && res.data) {
                 allDashboardData = res.data;
-                currentPage = 1; 
-                renderTable();
+                applyFilters(); // โหลดเสร็จให้วิ่งเข้าท่อกรองข้อมูลก่อนวาดตารางทันที
             } else {
                 tbody.innerHTML = '<tr><td colspan="11" class="text-center text-muted py-5">ยังไม่มีข้อมูลรายการ</td></tr>';
                 document.getElementById("pageInfo").innerText = "ไม่พบข้อมูล";
@@ -172,21 +209,62 @@
         });
     }
 
-    // ฟังก์ชันวาดตารางตามหน้าปัจจุบัน
+    // 📌 ระบบฟิลเตอร์ (ตัวกรองข้อมูลแบบ Real-time)
+    function applyFilters() {
+        const searchText = document.getElementById("searchInput").value.toLowerCase();
+        const statusVal = document.getElementById("statusFilter").value;
+        const emCheck = document.getElementById("emergencyFilter").checked;
+
+        // วนลูปกรองข้อมูลจากข้อมูลต้นฉบับ
+        filteredData = allDashboardData.filter(item => {
+            
+            // 1. กรองคำค้นหา (ค้นหาจาก เลขรายการ, ผู้เตรียม, ผู้รับ)
+            let matchSearch = true;
+            if (searchText !== "") {
+                const reqMatch = item.reqId ? item.reqId.toLowerCase().includes(searchText) : false;
+                const prepMatch = item.preparer ? item.preparer.toLowerCase().includes(searchText) : false;
+                const recMatch = item.receiver ? item.receiver.toLowerCase().includes(searchText) : false;
+                matchSearch = reqMatch || prepMatch || recMatch;
+            }
+
+            // 2. กรองสถานะ
+            let matchStatus = true;
+            if (statusVal !== "all") {
+                matchStatus = item.status && item.status.includes(statusVal);
+            }
+
+            // 3. กรองฉุกเฉิน
+            let matchEm = true;
+            if (emCheck) {
+                matchEm = item.emergency === "☑";
+            }
+
+            // ผ่านทั้ง 3 ด่านถึงจะเก็บไว้
+            return matchSearch && matchStatus && matchEm;
+        });
+
+        // พอข้อมูลเปลี่ยน ให้กลับไปหน้า 1 เสมอ แล้ววาดตารางใหม่
+        currentPage = 1;
+        renderTable();
+    }
+
+    // 📌 วาดตาราง (ใช้ตัวแปร filteredData แทน allDashboardData)
     function renderTable() {
         const tbody = document.getElementById("dashboardBody");
         tbody.innerHTML = "";
 
-        if (allDashboardData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="11" class="text-center text-muted py-5">ไม่มีข้อมูล</td></tr>';
+        if (filteredData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="11" class="text-center text-danger fw-bold py-5">❌ ไม่พบรายการที่ตรงกับเงื่อนไข</td></tr>';
+            document.getElementById("pageInfo").innerText = "ไม่พบข้อมูลที่ค้นหา";
+            document.getElementById("paginationControls").innerHTML = "";
             return;
         }
 
-        const totalPages = Math.ceil(allDashboardData.length / itemsPerPage);
+        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
         
         const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = Math.min(startIndex + itemsPerPage, allDashboardData.length);
-        const pageData = allDashboardData.slice(startIndex, endIndex);
+        const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+        const pageData = filteredData.slice(startIndex, endIndex);
 
         pageData.forEach(item => {
             tbody.innerHTML += `
@@ -206,12 +284,12 @@
             `;
         });
 
-        document.getElementById("pageInfo").innerHTML = `แสดงรายการ <span class="text-info">${startIndex + 1}</span> ถึง <span class="text-info">${endIndex}</span> จากทั้งหมด <span class="text-info">${allDashboardData.length}</span> รายการ`;
+        document.getElementById("pageInfo").innerHTML = `แสดงรายการ <span class="text-info">${startIndex + 1}</span> ถึง <span class="text-info">${endIndex}</span> จากงานที่พบ <span class="text-info">${filteredData.length}</span> รายการ`;
 
         renderPaginationControls(totalPages);
     }
 
-    // ฟังก์ชันวาดปุ่มกดเปลี่ยนหน้า
+    // 📌 วาดปุ่มกดเปลี่ยนหน้า
     function renderPaginationControls(totalPages) {
         const paginationEl = document.getElementById("paginationControls");
         let html = '';
@@ -240,8 +318,9 @@
         paginationEl.innerHTML = html;
     }
 
+    // 📌 เปลี่ยนหน้า
     function changePage(page) {
-        const totalPages = Math.ceil(allDashboardData.length / itemsPerPage);
+        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
         if (page < 1 || page > totalPages) return;
         currentPage = page;
         renderTable();
