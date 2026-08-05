@@ -89,9 +89,19 @@
         
         <input type="hidden" id="hiddenUserId">
 
+        <div class="row mb-3 g-2">
+            <div class="col-6">
+                <label class="form-label">ชื่อ</label>
+                <input type="text" id="regFirstName" class="form-control" placeholder="ชื่อจริง">
+            </div>
+            <div class="col-6">
+                <label class="form-label">นามสกุล</label>
+                <input type="text" id="regLastName" class="form-control" placeholder="นามสกุล">
+            </div>
+        </div>
         <div class="mb-3">
-            <label class="form-label">ชื่อ-นามสกุล</label>
-            <input type="text" id="regName" class="form-control" placeholder="ชื่อ-นามสกุลของคุณ (แก้ไขได้)">
+            <label class="form-label">ชื่อเล่น <span class="text-muted fw-normal" style="font-size: 0.8rem;">(เปลี่ยนได้ ไม่มีผลกับระบบ)</span></label>
+            <input type="text" id="regNickname" class="form-control" placeholder="ชื่อเล่น (ไม่บังคับ)">
         </div>
         <div class="mb-3">
             <label class="form-label">ฝ่าย / แผนก</label>
@@ -165,7 +175,10 @@
                 document.getElementById('registerSection').style.display = "block";
                 
                 document.getElementById('hiddenUserId').value = userId;
-                document.getElementById('regName').value = displayName; 
+               // แยกชื่อ LINE ด้วยการเว้นวรรค (เผื่อตั้งเป็น ชื่อ นามสกุล)
+                let nameParts = displayName.split(" ");
+                document.getElementById('regFirstName').value = nameParts[0] || "";
+                document.getElementById('regLastName').value = nameParts.slice(1).join(" ") || ""; 
 				
 				loadDepartments(); // <--- เพิ่มบรรทัดนี้ครับ
             }
@@ -176,13 +189,18 @@
 
     async function submitRegistration() {
         const userId = document.getElementById('hiddenUserId').value;
-        const name = document.getElementById('regName').value.trim();
+        const firstName = document.getElementById('regFirstName').value.trim();
+        const lastName = document.getElementById('regLastName').value.trim();
+        const nickname = document.getElementById('regNickname').value.trim();
         const dept = document.getElementById('regDept').value.trim();
         const phone = document.getElementById('regPhone').value.trim();
 
-        if (!name || !dept || !phone) {
-            return alert("⚠️ กรุณากรอกข้อมูลให้ครบถ้วนทุกช่องครับ");
+        if (!firstName || !lastName || !dept || !phone) {
+            return alert("⚠️ กรุณากรอก ชื่อ, นามสกุล, แผนก และเบอร์โทร ให้ครบถ้วนครับ");
         }
+
+        // นำชื่อและนามสกุลมาต่อกัน เพื่อใช้เป็นชื่อหลักให้ระบบจดจำ
+        const fullName = firstName + " " + lastName;
 
         const btn = document.getElementById('btnRegister');
         btn.innerText = "⏳ กำลังบันทึกข้อมูล..."; btn.disabled = true;
@@ -193,7 +211,8 @@
                 body: JSON.stringify({ 
                     action: "registerUser", 
                     userId: userId, 
-                    name: name, 
+                    name: fullName, 
+                    nickname: nickname, // ส่งชื่อเล่นแนบไปหลังบ้าน
                     role: "User", 
                     dept: dept, 
                     phone: phone 
