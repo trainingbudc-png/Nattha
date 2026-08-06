@@ -47,7 +47,6 @@ async function callAPI(payload) {
 // 3. ระบบจัดการผู้ใช้ & ออกจากระบบ
 // -----------------------------------------
 function logoutSystem() {
-    // ใช้ SweetAlert2 ทำป๊อปอัปสวยๆ แทน alert ธรรมดา (เดี๋ยวเราจะเอาใส่ในหน้า HTML)
     if(typeof Swal !== 'undefined') {
         Swal.fire({
             title: "ออกจากระบบ?",
@@ -69,6 +68,7 @@ function logoutSystem() {
 
 async function executeLogout() {
     showLoading("กำลังออกจากระบบ...");
+    // 📌 เคลียร์ค่าทั้งหมดตอนล็อคเอาท์
     localStorage.clear();
     try {
         await liff.init({ liffId: LIFF_ID });
