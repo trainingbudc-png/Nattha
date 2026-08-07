@@ -25,7 +25,6 @@
         .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: calc(100% - 40px); margin: 20px; border: none; transition: 0.3s; font-size: 1.1rem;}
         .btn-confirm:hover { background: #495057; }
 
-        /* 📱 รองรับมือถือ & ขยายปุ่มจิ้มง่าย */
         .check-item, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
         @media screen and (max-width: 768px) {
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
@@ -152,7 +151,13 @@
                     confirmButtonText: "OK",
                     allowOutsideClick: false
                 }).then(() => {
-                    window.location.href = "user.html";
+                    // 📌 เงื่อนไขแยก Admin กับ User
+                    const userRole = localStorage.getItem("userRole");
+                    if (userRole === "Admin") {
+                        window.location.href = "admin.html";
+                    } else {
+                        window.location.href = "user.html";
+                    }
                 });
             }
             else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); btn.innerText = originalText; btn.disabled = false; }

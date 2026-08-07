@@ -20,7 +20,6 @@
         
         .check-app:disabled { cursor: not-allowed; opacity: 0.5; }
 
-        /* 📱 รองรับมือถือ & ขยายปุ่มจิ้มง่าย */
         .check-app, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
         @media screen and (max-width: 768px) {
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
@@ -145,7 +144,13 @@
                     confirmButtonText: "OK",
                     allowOutsideClick: false
                 }).then(() => {
-                    window.location.href = "user.html";
+                    // 📌 เงื่อนไขแยก Admin กับ User
+                    const userRole = localStorage.getItem("userRole");
+                    if (userRole === "Admin") {
+                        window.location.href = "admin.html";
+                    } else {
+                        window.location.href = "user.html";
+                    }
                 });
             }
             else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message || "ในการบันทึกข้อมูล", "error"); btn.innerText = "✅ ยืนยันการรับเครื่อง"; btn.disabled = false; }

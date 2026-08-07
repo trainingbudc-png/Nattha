@@ -24,7 +24,6 @@
         .radio-group label { border-radius: 8px; font-weight: 500; }
         .hint-box { border-radius: 8px; font-size: 0.95rem; display: none; background-color: #f8f9fa; border-color: #dee2e6; color: #495057; }
 
-        /* 📱 รองรับมือถือ & ขยายปุ่มจิ้มง่าย */
         .check-item, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
         @media screen and (max-width: 768px) {
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
@@ -179,7 +178,13 @@
                     confirmButtonText: "OK",
                     allowOutsideClick: false
                 }).then(() => {
-                    window.location.href = "user.html";
+                    // 📌 เงื่อนไขแยก Admin กับ User
+                    const userRole = localStorage.getItem("userRole");
+                    if (userRole === "Admin") {
+                        window.location.href = "admin.html";
+                    } else {
+                        window.location.href = "user.html";
+                    }
                 });
             }
             else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); btn.innerText = originalText; btn.disabled = false; }
