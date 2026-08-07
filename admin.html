@@ -18,6 +18,15 @@
             font-size: 1.35rem !important; 
             font-weight: 700 !important; 
         }
+        
+        .filter-card {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 20px;
+        }
 
         @media screen and (max-width: 768px) {
             .navbar-custom { flex-direction: column; gap: 15px; text-align: center; }
@@ -51,7 +60,7 @@
 
     <div class="container pb-5" style="max-width: 1100px;">
         
-        <!-- 🚨 ภาพรวมระบบ -->
+        <!-- ภาพรวมระบบ -->
         <div class="section-title">ภาพรวมระบบ</div>
         <div class="row g-3">
             <div class="col-12">
@@ -100,11 +109,38 @@
             </div>
         </div>
 
+        <!-- 📌 ส่วนตาราง Log (เพิ่มตัวกรองและค้นหา) -->
         <div class="d-flex justify-content-between align-items-end mt-5 mb-3">
-            <div class="section-title mt-0 mb-0">ตารางสถานะล่าสุด </div>
+            <div class="section-title mt-0 mb-0">ตารางสถานะล่าสุด (Log)</div>
             <button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3" onclick="loadAdminTableData()">🔄 โหลดใหม่</button>
         </div>
         
+        <!-- 🎯 แถบค้นหาและตัวกรอง (Filter Bar) -->
+        <div class="filter-card">
+            <div class="row align-items-end g-3">
+                <div class="col-md-5">
+                    <label class="form-label fw-bold text-dark" style="font-size: 0.9rem;">🔍 ค้นหาชื่อ / เลขรายการ</label>
+                    <input type="text" id="searchInput" class="form-control form-control-sm border-2" placeholder="พิมพ์ชื่อเพื่อค้นหา..." onkeyup="filterTable()">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-dark" style="font-size: 0.9rem;">📌 กรองตามสถานะ</label>
+                    <select id="statusFilter" class="form-select form-select-sm border-2" onchange="filterTable()">
+                        <option value="all">แสดงทุกสถานะ (ทั้งหมด)</option>
+                        <option value="รอแอดมินยืนยัน">⏳ รอยืนยันเตรียมเครื่อง</option>
+                        <option value="Step[1]">Step [1] รอผู้ใช้รับเครื่อง</option>
+                        <option value="Step[2]">Step [2] ผู้ใช้รับไปแล้ว (รอก่อนสอบ)</option>
+                        <option value="Step[3]">Step [3] เข้าสอบแล้ว (รอส่งคืน)</option>
+                        <option value="Step[4]">Step [4] คืนแล้ว (รอแอดมินตรวจ)</option>
+                        <option value="เสร็จสิ้น">✔️ ปิดรายการสมบูรณ์แล้ว</option>
+                        <option value="ยกเลิก">❌ ยกเลิกรายการ</option>
+                    </select>
+                </div>
+                <div class="col-md-3 text-md-end text-center mt-3 mt-md-0">
+                    <span class="badge bg-danger fs-6 px-4 py-2 rounded-pill shadow-sm" id="resultCountLabel">พบ 0 รายการ</span>
+                </div>
+            </div>
+        </div>
+
         <div class="table-card table-responsive">
             <table class="table table-hover align-middle">
                 <thead>
@@ -128,6 +164,8 @@
 
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
+    
+    let globalLogData = []; // 📌 เก็บข้อมูลที่โหลดมาทั้งหมดไว้กรอง
 
     window.onload = function() {
         const userName = localStorage.getItem("userName");
@@ -142,6 +180,7 @@
         loadAdminTableData();
     };
 
+    // 1. โหลดข้อมูลจากเซิร์ฟเวอร์
     function loadAdminTableData() {
         const tbody = document.getElementById("adminTableBody");
         tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
@@ -149,72 +188,116 @@
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
         .then(res => res.json())
         .then(res => {
-            tbody.innerHTML = ""; 
-            
             if (res.status === "success" && res.data && res.data.length > 0) {
-                const validData = res.data.filter(item => item.reqId !== "ReqID" && item.reqId !== "เลขรายการ");
-
-                if (validData.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">ยังไม่มีรายการในระบบ</td></tr>';
-                    return;
-                }
-
-                validData.forEach(item => {
-                    let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
-
-                    let formattedIpads = '<span class="text-muted">-</span>';
-                    if (item.ipadId && item.ipadId.trim() !== "") {
-                        let rawIpads = item.ipadId.split(',').map(id => id.trim());
-                        let normalIds = [], airIds = [];
-                        rawIpads.forEach(id => {
-                            let numMatch = id.match(/\d+/); 
-                            let num = numMatch ? numMatch[0] : id; 
-                            if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num);
-                            else normalIds.push(num);
-                        });
-                        let displayGroups = [];
-                        if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-                        if (airIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
-                        formattedIpads = displayGroups.join('<br>');
-                    }
-
-                    let statusTxt = item.status || "-";
-                    let statusHtml = "";
-
-                    // 📌 ระบบ Super Admin: แปลงสถานะเป็นปุ่มกดข้ามไปยัง Step ต่างๆ ได้ทันที
-                    if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
-                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 2">Step[1] </button>`;
-                    } else if(statusTxt.includes("Step[2]")) {
-                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 3">Step[2] </button>`;
-                    } else if(statusTxt.includes("Step[3]")) {
-                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 4">Step[3] </button>`;
-                    } else if(statusTxt.includes("Step[4]")) {
-                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'" title="ตรวจสอบรับคืน: Step 5">Step[4] </button>`;
-                    } else if(statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์")) {
-                        statusHtml = `<span class="badge bg-success px-3 py-2 rounded-pill shadow-sm">✔️ เสร็จสิ้น</span>`;
-                    } else if(statusTxt.includes("ยกเลิกรายการ")) {
-                        statusHtml = `<span class="badge bg-dark px-3 py-2 rounded-pill shadow-sm">❌ ยกเลิก</span>`;
-                    } else if(statusTxt.includes("ซ่อม") || statusTxt.includes("ชำรุด") || statusTxt.includes("ปัญหา")) {
-                        statusHtml = `<span class="badge bg-dark text-warning px-3 py-2 rounded-pill shadow-sm">⚠️ มีปัญหา</span>`;
-                    } else {
-                        statusHtml = `<span class="badge bg-secondary px-3 py-2 rounded-pill shadow-sm">${statusTxt}</span>`;
-                    }
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
-                            <td data-label="วัน-เวลา" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
-                            <td data-label="ผู้ดำเนินการ" class="fw-bold" style="color: #495057;">${item.name || "-"}</td>
-                            <td data-label="รหัส iPad" style="max-width: 100%; line-height: 1.6;">${formattedIpads}</td>
-                            <td data-label="สถานะ">${statusHtml}</td>
-                        </tr>
-                    `;
-                });
+                // กรองเอาแถวหัวตารางออก
+                globalLogData = res.data.filter(item => item.reqId !== "ReqID" && item.reqId !== "เลขรายการ");
+                filterTable(); // เรียกใช้ฟังก์ชันกรองและสร้างตาราง
             } else {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">ยังไม่มีข้อมูลในระบบ</td></tr>';
+                globalLogData = [];
+                filterTable();
             }
         }).catch(err => {
             tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
+        });
+    }
+
+    // 2. ฟังก์ชันกรองข้อมูล
+    function filterTable() {
+        const searchText = document.getElementById("searchInput").value.toLowerCase().trim();
+        const statusValue = document.getElementById("statusFilter").value;
+
+        // คัดกรองข้อมูล
+        const filteredData = globalLogData.filter(item => {
+            // เช็คชื่อ หรือ เลขรายการ
+            const nameMatch = item.name ? item.name.toLowerCase().includes(searchText) : false;
+            const reqMatch = item.reqId ? item.reqId.toLowerCase().includes(searchText) : false;
+            const isTextMatch = nameMatch || reqMatch;
+
+            // เช็คสถานะ
+            let statusTxt = item.status || "";
+            let isStatusMatch = false;
+
+            if (statusValue === "all") {
+                isStatusMatch = true;
+            } else if (statusValue === "เสร็จสิ้น") {
+                isStatusMatch = statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์");
+            } else {
+                isStatusMatch = statusTxt.includes(statusValue);
+            }
+
+            return isTextMatch && isStatusMatch;
+        });
+
+        // ส่งข้อมูลที่กรองแล้วไปสร้างตาราง
+        renderTable(filteredData);
+    }
+
+    // 3. ฟังก์ชันสร้างตาราง (HTML)
+    function renderTable(data) {
+        const tbody = document.getElementById("adminTableBody");
+        const countLabel = document.getElementById("resultCountLabel");
+        
+        // อัปเดตตัวนับ
+        countLabel.innerText = `พบ ${data.length} รายการ`;
+
+        tbody.innerHTML = ""; 
+        
+        if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">🔍 ไม่พบข้อมูลที่ตรงกับเงื่อนไขการค้นหา</td></tr>';
+            return;
+        }
+
+        data.forEach(item => {
+            let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
+
+            // จัดการสีและข้อความ iPad
+            let formattedIpads = '<span class="text-muted">-</span>';
+            if (item.ipadId && item.ipadId.trim() !== "") {
+                let rawIpads = item.ipadId.split(',').map(id => id.trim());
+                let normalIds = [], airIds = [];
+                rawIpads.forEach(id => {
+                    let numMatch = id.match(/\d+/); 
+                    let num = numMatch ? numMatch[0] : id; 
+                    if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num);
+                    else normalIds.push(num);
+                });
+                let displayGroups = [];
+                if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
+                if (airIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
+                formattedIpads = displayGroups.join('<br>');
+            }
+
+            // จัดการป้ายสถานะ + ปุ่มกดข้าม Step (Super Admin)
+            let statusTxt = item.status || "-";
+            let statusHtml = "";
+
+            if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
+                statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 2">Step[1] 👆</button>`;
+            } else if(statusTxt.includes("Step[2]")) {
+                statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 3">Step[2] 👆</button>`;
+            } else if(statusTxt.includes("Step[3]")) {
+                statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 4">Step[3] 👆</button>`;
+            } else if(statusTxt.includes("Step[4]")) {
+                statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'" title="ตรวจสอบรับคืน: Step 5">Step[4] 👆</button>`;
+            } else if(statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์")) {
+                statusHtml = `<span class="badge bg-success px-3 py-2 rounded-pill shadow-sm">✔️ เสร็จสิ้น</span>`;
+            } else if(statusTxt.includes("ยกเลิกรายการ")) {
+                statusHtml = `<span class="badge bg-dark px-3 py-2 rounded-pill shadow-sm">❌ ยกเลิก</span>`;
+            } else if(statusTxt.includes("ซ่อม") || statusTxt.includes("ชำรุด") || statusTxt.includes("ปัญหา")) {
+                statusHtml = `<span class="badge bg-dark text-warning px-3 py-2 rounded-pill shadow-sm">⚠️ มีปัญหา</span>`;
+            } else {
+                statusHtml = `<span class="badge bg-secondary px-3 py-2 rounded-pill shadow-sm">${statusTxt}</span>`;
+            }
+
+            tbody.innerHTML += `
+                <tr>
+                    <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
+                    <td data-label="วัน-เวลา" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
+                    <td data-label="ผู้ดำเนินการ" class="fw-bold" style="color: #495057;">${item.name || "-"}</td>
+                    <td data-label="รหัส iPad" style="max-width: 100%; line-height: 1.6;">${formattedIpads}</td>
+                    <td data-label="สถานะ">${statusHtml}</td>
+                </tr>
+            `;
         });
     }
 
