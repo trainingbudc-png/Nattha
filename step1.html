@@ -79,6 +79,13 @@
         
         <div class="card card-custom p-4 p-md-5 mx-auto">
             <form id="step1Form">
+                
+                <!-- 📌 ช่องใหม่: เลขรายการ (รับค่าจาก URL) -->
+                <div class="mb-4">
+                    <label class="form-label">📌 เลขรายการ (ID อ้างอิงจากระบบหลัก):</label>
+                    <input type="text" id="reqIdInput" class="form-control form-control-lg bg-light text-danger fw-bold" readonly placeholder="ระบบจะสร้างให้อัตโนมัติหากไม่มีการระบุมา">
+                </div>
+
                 <div class="mb-4">
                     <label class="form-label">👤 เลือกผู้ขอเบิกยืม (ผู้ใช้งาน):</label>
                     <select id="userNameSelect" class="form-select form-select-lg" required>
@@ -131,7 +138,7 @@
                     </div>
                 </div>
 
-                <!-- 🚨 องค์ประกอบใหม่: หมวดยืมฉุกเฉิน -->
+                <!-- 🚨 หมวดยืมฉุกเฉิน -->
                 <div class="mb-4 p-3 rounded" style="background-color: #fff5f5; border: 1px dashed #fca5a5;">
                     <div class="form-check form-switch d-flex align-items-center gap-2">
                         <input class="form-check-input" type="checkbox" id="emergencyCheck" style="width: 45px; height: 24px; cursor: pointer;" onchange="toggleEmergencyNote()">
@@ -155,11 +162,30 @@
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
     
+    let maxLimit = 0; // 📌 ตัวแปรเก็บจำนวนโควต้าสูงสุด (รับจาก URL)
+
     window.onload = function() {
         if(localStorage.getItem("userRole") !== "Admin") { 
             Swal.fire("ปฏิเสธการเข้าถึง", "เฉพาะแอดมินเท่านั้น", "error").then(() => window.location.href="index.html"); 
             return; 
         }
+
+        // 📌 1. ตรวจสอบพารามิเตอร์ URL 
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlReqId = urlParams.get('id') || "";
+        const extAmount = parseInt(urlParams.get('amount'), 10) || 0;
+
+        // ถ้ามี id จาก URL ให้ใส่ในช่อง
+        if (urlReqId !== "") {
+            document.getElementById('reqIdInput').value = urlReqId;
+        }
+
+        // ถ้ามี amount ให้ตั้งเป็น maxLimit แล้วอัปเดตป้ายโชว์
+        if (extAmount > 0) {
+            maxLimit = extAmount;
+            document.getElementById('selectedCount').innerText = `เลือกแล้ว 0/${maxLimit} เครื่อง`;
+        }
+
         loadUsersAndIpads();
     };
 
@@ -171,6 +197,18 @@
             select.innerHTML = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
             if(res.status === "success" && res.data.length > 0) {
                 res.data.forEach(name => { select.innerHTML += `<option value="${name}">${name}</option>`; });
+                
+                // 📌 2. นำ borrower จาก URL มาค้นหาและเลือกอัตโนมัติ
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlBorrower = urlParams.get('borrower') || "";
+                if(urlBorrower !== "") {
+                    for(let i = 0; i < select.options.length; i++) {
+                        if(select.options[i].text.includes(urlBorrower)) {
+                            select.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
             }
         });
 
@@ -211,6 +249,15 @@
     }
 
     function handleIpadSelection(checkbox) {
+        // 📌 3. ตรวจสอบจำนวนก่อนให้เลือกลงตาราง (ดัก Limit โควต้า)
+        const currentSelectedCount = document.querySelectorAll('.ipad-checkbox:checked').length;
+
+        if (checkbox.checked && maxLimit > 0 && currentSelectedCount > maxLimit) {
+            checkbox.checked = false; // บังคับติ๊กออก
+            Swal.fire("เต็มโควต้า!", `รายการนี้ระบุจำนวนการยืมไว้สูงสุดที่ ${maxLimit} เครื่องครับ`, "warning");
+            return;
+        }
+
         const ipadId = checkbox.value; 
         const safeId = checkbox.dataset.safeid; 
         const tbody = document.getElementById("dynamicChecklistBody");
@@ -246,10 +293,24 @@
         });
         rows.forEach(row => tbody.appendChild(row));
 
+        // 📌 4. อัปเดตป้ายตัวเลขด้านบน
         const count = rows.length;
         const badge = document.getElementById('selectedCount');
-        badge.innerText = `เลือกแล้ว ${count} เครื่อง`;
-        badge.className = count > 0 ? "badge bg-danger" : "badge bg-secondary";
+        
+        if (maxLimit > 0) {
+            badge.innerText = `เลือกแล้ว ${count}/${maxLimit} เครื่อง`;
+            if (count === maxLimit) {
+                badge.className = "badge bg-success fs-6"; // ถ้าเลือกครบเปลี่ยนเป็นสีเขียว
+            } else if (count > 0) {
+                badge.className = "badge bg-danger fs-6";
+            } else {
+                badge.className = "badge bg-secondary fs-6";
+            }
+        } else {
+            badge.innerText = `เลือกแล้ว ${count} เครื่อง`;
+            badge.className = count > 0 ? "badge bg-danger fs-6" : "badge bg-secondary fs-6";
+        }
+        
         if (count > 0) container.classList.remove('d-none');
         else container.classList.add('d-none');
     }
@@ -259,7 +320,6 @@
         checkboxes.forEach(cb => cb.checked = true);
     }
 
-    // 🚨 ฟังก์ชันซ่อน/โชว์ กล่องเหตุผลฉุกเฉิน
     function toggleEmergencyNote() {
         const isChecked = document.getElementById("emergencyCheck").checked;
         const noteContainer = document.getElementById("emergencyNoteContainer");
@@ -270,26 +330,21 @@
             noteInput.focus();
         } else {
             noteContainer.style.display = "none";
-            noteInput.value = ""; // ล้างค่าทิ้งถ้ากดยกเลิก
+            noteInput.value = ""; 
         }
     }
 
     function submitStep1() {
+        const reqIdValue = document.getElementById("reqIdInput").value.trim(); // 📌 ดึงเลขรายการ
         const recipientName = document.getElementById("userNameSelect").value;
         const adminName = localStorage.getItem("userName") || "Admin";
         const selectedIpads = document.querySelectorAll('.ipad-checkbox:checked');
-
-        // 🚨 ดึงค่าการยืมฉุกเฉิน
         const isEmergency = document.getElementById("emergencyCheck").checked;
         const emergencyNote = document.getElementById("emergencyNote").value.trim();
 
         if(!recipientName) return Swal.fire("แจ้งเตือน", "กรุณาเลือกชื่อผู้ขอยืม", "warning");
         if(selectedIpads.length === 0) return Swal.fire("แจ้งเตือน", "กรุณากดเลือก iPad อย่างน้อย 1 เครื่อง", "warning");
-        
-        // 🚨 เช็คว่าถ้าติ๊กฉุกเฉิน ต้องใส่เหตุผลด้วย
-        if(isEmergency && !emergencyNote) {
-            return Swal.fire("แจ้งเตือน", "กรุณาระบุเหตุผลการยืมฉุกเฉินด้วยครับ", "warning");
-        }
+        if(isEmergency && !emergencyNote) return Swal.fire("แจ้งเตือน", "กรุณาระบุเหตุผลการยืมฉุกเฉินด้วยครับ", "warning");
         
         let allChecked = true;
         const ipadData = [];
@@ -314,14 +369,15 @@
         btn.innerHTML = "กำลังบันทึกข้อมูล... ⏳";
         btn.disabled = true;
 
-        // 🚨 สร้างข้อความบันทึกลงคอลัมน์ "หมายเหตุ"
         let finalNote = `เตรียมให้: ${recipientName} (${selectedIpads.length} เครื่อง)`;
         if(isEmergency) {
             finalNote = `🚨 [หมายเหตุ]: ${emergencyNote}`;
         }
 
+        // 📌 5. ส่ง reqId แนบไปใน payload ด้วย
         const payload = { 
             action: "saveStep1", 
+            reqId: reqIdValue !== "" ? reqIdValue : null, // ส่งเลขไป ถ้าไม่มีส่ง null ให้หลังบ้าน gen เอง
             adminName: adminName, 
             recipientName: recipientName, 
             note: finalNote, 
