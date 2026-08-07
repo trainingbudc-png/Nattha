@@ -122,15 +122,25 @@
         if (!ipadText || ipadText.trim() === "") return "-";
         let rawIpads = ipadText.split(',').map(id => id.trim());
         let normalIds = [], airIds = [];
+        
         rawIpads.forEach(id => {
             let numMatch = id.match(/\d+/); 
             let num = numMatch ? numMatch[0] : id; 
             if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num);
             else normalIds.push(num);
         });
+        
         let displayGroups = [];
-        if (normalIds.length > 0) displayGroups.push(`<span class="text-dark fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-        if (airIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
+        
+        // 📌 เปลี่ยนคลาสตรงนี้เป็น text-danger เพื่อให้คำว่า [iPad] เป็นสีแดง
+        if (normalIds.length > 0) {
+            displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
+        }
+        
+        if (airIds.length > 0) {
+            displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
+        }
+        
         return displayGroups.join('<br>');
     }
 </script>
