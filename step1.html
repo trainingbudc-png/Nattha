@@ -175,9 +175,13 @@
         const urlReqId = urlParams.get('id') || "";
         const extAmount = parseInt(urlParams.get('amount'), 10) || 0;
 
-        // ถ้ามี id จาก URL ให้ใส่ในช่อง
+       // 📌 ถ้ามี id จาก URL ให้เช็คว่ามี REQ- หรือยัง ถ้ายังไม่มีให้เติมเข้าไป
         if (urlReqId !== "") {
-            document.getElementById('reqIdInput').value = urlReqId;
+            let formattedReqId = urlReqId;
+            if (!formattedReqId.toUpperCase().startsWith("REQ-")) {
+                formattedReqId = "REQ-" + formattedReqId;
+            }
+            document.getElementById('reqIdInput').value = formattedReqId;
         }
 
         // ถ้ามี amount ให้ตั้งเป็น maxLimit แล้วอัปเดตป้ายโชว์
