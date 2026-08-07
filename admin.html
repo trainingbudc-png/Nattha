@@ -183,13 +183,13 @@
 
                     // 📌 ระบบ Super Admin: แปลงสถานะเป็นปุ่มกดข้ามไปยัง Step ต่างๆ ได้ทันที
                     if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
-                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 2">Step[1] 👆</button>`;
+                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 2">Step[1] </button>`;
                     } else if(statusTxt.includes("Step[2]")) {
-                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 3">Step[2] 👆</button>`;
+                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 3">Step[2] </button>`;
                     } else if(statusTxt.includes("Step[3]")) {
-                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 4">Step[3] 👆</button>`;
+                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 4">Step[3] </button>`;
                     } else if(statusTxt.includes("Step[4]")) {
-                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'" title="ตรวจสอบรับคืน: Step 5">Step[4] 👆</button>`;
+                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'" title="ตรวจสอบรับคืน: Step 5">Step[4] </button>`;
                     } else if(statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์")) {
                         statusHtml = `<span class="badge bg-success px-3 py-2 rounded-pill shadow-sm">✔️ เสร็จสิ้น</span>`;
                     } else if(statusTxt.includes("ยกเลิกรายการ")) {
