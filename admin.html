@@ -51,7 +51,7 @@
 
     <div class="container pb-5" style="max-width: 1100px;">
         
-        <!-- 🚨 เพิ่มปุ่มเข้าหน้า Dashboard ตรงนี้ครับ 🚨 -->
+        <!-- 🚨 ภาพรวมระบบ -->
         <div class="section-title">ภาพรวมระบบ</div>
         <div class="row g-3">
             <div class="col-12">
@@ -127,7 +127,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // 🚨 ตรวจสอบให้แน่ใจว่าใช้ API_URL ของโดเมนตัวเองนะครับ 
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
 
     window.onload = function() {
@@ -180,27 +179,25 @@
                     }
 
                     let statusTxt = item.status || "-";
-                    let displayStatus = statusTxt;
-                    let badgeClass = "bg-secondary";
+                    let statusHtml = "";
 
-                    if(statusTxt.includes("รอแอดมินยืนยัน")) {
-                        displayStatus = "⏳ รอยืนยัน"; badgeClass = "bg-secondary text-white";
-                    } else if(statusTxt.includes("ยกเลิกรายการ")) {
-                        displayStatus = "❌ ยกเลิก"; badgeClass = "bg-dark text-white";
-                    } else if(statusTxt.includes("Step[1]")) {
-                        displayStatus = "Step[1]"; badgeClass = "bg-danger text-white";
+                    // 📌 ระบบ Super Admin: แปลงสถานะเป็นปุ่มกดข้ามไปยัง Step ต่างๆ ได้ทันที
+                    if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
+                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 2">Step[1] 👆</button>`;
                     } else if(statusTxt.includes("Step[2]")) {
-                        displayStatus = "Step[2]"; badgeClass = "bg-danger text-white";
+                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 3">Step[2] 👆</button>`;
                     } else if(statusTxt.includes("Step[3]")) {
-                        displayStatus = "Step[3]"; badgeClass = "bg-danger text-white";
+                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 4">Step[3] 👆</button>`;
                     } else if(statusTxt.includes("Step[4]")) {
-                        displayStatus = "Step[4]"; badgeClass = "bg-danger text-white";
-                    } else if(statusTxt.includes("Step[5]")) {
-                        displayStatus = "Step[5]"; badgeClass = "bg-danger text-white";
+                        statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'" title="ตรวจสอบรับคืน: Step 5">Step[4] 👆</button>`;
                     } else if(statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์")) {
-                        displayStatus = "✔️ เสร็จสิ้น"; badgeClass = "bg-success text-white";
+                        statusHtml = `<span class="badge bg-success px-3 py-2 rounded-pill shadow-sm">✔️ เสร็จสิ้น</span>`;
+                    } else if(statusTxt.includes("ยกเลิกรายการ")) {
+                        statusHtml = `<span class="badge bg-dark px-3 py-2 rounded-pill shadow-sm">❌ ยกเลิก</span>`;
                     } else if(statusTxt.includes("ซ่อม") || statusTxt.includes("ชำรุด") || statusTxt.includes("ปัญหา")) {
-                        displayStatus = "⚠️ มีปัญหา"; badgeClass = "bg-dark text-warning";
+                        statusHtml = `<span class="badge bg-dark text-warning px-3 py-2 rounded-pill shadow-sm">⚠️ มีปัญหา</span>`;
+                    } else {
+                        statusHtml = `<span class="badge bg-secondary px-3 py-2 rounded-pill shadow-sm">${statusTxt}</span>`;
                     }
 
                     tbody.innerHTML += `
@@ -209,7 +206,7 @@
                             <td data-label="วัน-เวลา" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
                             <td data-label="ผู้ดำเนินการ" class="fw-bold" style="color: #495057;">${item.name || "-"}</td>
                             <td data-label="รหัส iPad" style="max-width: 100%; line-height: 1.6;">${formattedIpads}</td>
-                            <td data-label="สถานะ"><span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm">${displayStatus}</span></td>
+                            <td data-label="สถานะ">${statusHtml}</td>
                         </tr>
                     `;
                 });
