@@ -19,7 +19,7 @@ async function loadUserTableData() {
     const tbody = document.getElementById("userTableBody");
     tbody.innerHTML = '<tr><td colspan="4" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
     
-    const currentUser = localStorage.getItem("userName");
+    const currentUserId = localStorage.getItem("userId");
 
     try {
         const res = await callAPI({ action: "getData" });
@@ -27,7 +27,8 @@ async function loadUserTableData() {
         if (res.status === "success" && res.data && res.data.length > 0) {
             tbody.innerHTML = ""; 
             
-            const myData = res.data.filter(item => item.name === currentUser && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ");
+            // 📌 กรองข้อมูลด้วย userId แทนชื่อ
+            const myData = res.data.filter(item => item.userId === currentUserId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ");
 
             if (myData.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-5">คุณยังไม่มีรายการเบิก-ยืมในขณะนี้</td></tr>';
@@ -109,26 +110,19 @@ async function loadUserTableData() {
     }
 }
 
-// =========================================
-// ⚙️ ฟังก์ชันสำหรับแก้ไขโปรไฟล์ (Profile Modal)
-// =========================================
-
 let profileModal;
 
-// 1. เปิดหน้าต่าง Modal และดึงข้อมูลเดิมมาแสดง
 async function openProfileModal() {
     const currentUser = localStorage.getItem("userName");
     document.getElementById("editProfileName").value = currentUser;
     document.getElementById("editProfileDept").value = "กำลังโหลด...";
     document.getElementById("editProfilePhone").value = "กำลังโหลด...";
 
-    // เปิด Modal
     if (!profileModal) {
         profileModal = new bootstrap.Modal(document.getElementById('profileModal'));
     }
     profileModal.show();
 
-    // ดึงข้อมูลจากฐานข้อมูลมาเติมในช่อง
     try {
         const res = await callAPI({ action: "getUserProfile", name: currentUser });
         if (res.status === "success") {
@@ -139,13 +133,11 @@ async function openProfileModal() {
             document.getElementById("editProfilePhone").value = "";
         }
     } catch (error) {
-        console.error("Error loading profile:", error);
         document.getElementById("editProfileDept").value = "";
         document.getElementById("editProfilePhone").value = "";
     }
 }
 
-// 2. บันทึกข้อมูลที่แก้ไขกลับลงไป
 async function saveProfileData() {
     const currentUser = localStorage.getItem("userName");
     const dept = document.getElementById("editProfileDept").value.trim();

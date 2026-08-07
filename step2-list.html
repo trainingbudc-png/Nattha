@@ -11,16 +11,8 @@
     <style>
         .btn-action { background-color: #212529; color: white; border: none; font-weight: 600; border-radius: 8px; transition: 0.2s; }
         .btn-action:hover { background-color: #495057; color: white; transform: translateY(-2px); }
-        
-        /* 📌 จัดระเบียบขอบหน้าจอไม่ให้ชิดขอบ */
-        .container-wide, .nav-header {
-            max-width: 1280px !important;
-            margin: 0 auto !important;
-        }
-        .container-wide {
-            padding-left: 20px !important;
-            padding-right: 20px !important;
-        }
+        .container-wide, .nav-header { max-width: 1280px !important; margin: 0 auto !important; }
+        .container-wide { padding-left: 20px !important; padding-right: 20px !important; }
     </style>
 </head>
 <body>
@@ -53,10 +45,10 @@
 
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec";
-    const currentUser = localStorage.getItem("userName");
+    const currentUserId = localStorage.getItem("userId");
 
     window.onload = async function() {
-        if(!currentUser) { window.location.href = "index.html"; return; }
+        if(!currentUserId) { window.location.href = "index.html"; return; }
         
         try {
             const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) });
@@ -65,7 +57,8 @@
             tbody.innerHTML = "";
 
             if (result.status === "success" && result.data.length > 0) {
-                const pendingRequests = result.data.filter(item => item.name === currentUser && item.status && item.status.includes("Step[1]"));
+                // 📌 กรองด้วย userId
+                const pendingRequests = result.data.filter(item => item.userId === currentUserId && item.status && item.status.includes("Step[1]"));
 
                 if (pendingRequests.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="5" class="text-center fw-bold py-5 text-muted">🎉 ไม่มีรายการค้างดำเนินการในขณะนี้</td></tr>';
@@ -81,7 +74,6 @@
                             <td data-label="📌 เลขรายการ" class="fw-bold text-dark">${req.reqId}</td>
                             <td data-label="🕒 วันที่">${dateStr}</td>
                             <td data-label="📱 รหัส iPad" style="max-width: 300px;">${formattedIpads}</td>
-                            <!-- 📌 ปรับป้ายสถานะเป็นสีแดง -->
                             <td data-label="📊 สถานะ"><span class="badge bg-danger text-white px-3 py-2 rounded-pill">${req.status}</span></td>
                             <td data-label="⚙️ จัดการ">
                                 <button class="btn btn-action btn-sm px-3 shadow-sm w-100" onclick="window.location.href='step2.html?reqId=${req.reqId}'">➡️ ดำเนินการ</button>
@@ -110,7 +102,6 @@
         let displayGroups = [];
         if (normalIds.length > 0) displayGroups.push(`<span class="text-dark fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
         if (airIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
-        
         return displayGroups.join('<br>');
     }
 </script>
