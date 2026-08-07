@@ -116,29 +116,55 @@
 
     </div>
 
-    <!-- 📝 Modal หน้าต่างสำหรับแก้ไขโปรไฟล์ -->
+<!-- Modal แก้ไขข้อมูลส่วนตัว -->
     <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px;">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold text-dark">⚙️ แก้ไขข้อมูลส่วนตัว</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div class="modal-header border-0 pb-0 mt-3 d-flex flex-column align-items-center position-relative">
+                    <button type="button" class="btn-close position-absolute top-0 end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title fw-bold text-dark">⚙️ แก้ไขข้อมูลส่วนตัว</h4>
+                    <p class="text-muted mb-0" style="font-size: 0.9rem;">อัปเดตข้อมูลของคุณให้เป็นปัจจุบัน</p>
                 </div>
-                <div class="modal-body pb-4 pt-3">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold mb-1">ชื่อ-นามสกุล</label>
-                        <input type="text" id="editProfileName" class="form-control" placeholder="ระบุชื่อ-นามสกุลของคุณ">
-                        <small class="text-danger mt-1 d-block" style="font-size: 0.8rem;">*คำเตือน: หากเปลี่ยนชื่อ ประวัติรายการเดิมอาจไม่แสดงในหน้านี้</small>
+                <div class="modal-body p-4 pt-3">
+                    
+                    <!-- แยกชื่อและนามสกุล (Readonly) -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">ชื่อจริง</label>
+                            <input type="text" id="editProfileFirstName" class="form-control bg-light text-muted" readonly style="border-radius: 8px; cursor: not-allowed;">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">นามสกุล</label>
+                            <input type="text" id="editProfileLastName" class="form-control bg-light text-muted" readonly style="border-radius: 8px; cursor: not-allowed;">
+                        </div>
                     </div>
+
+                    <!-- ช่องชื่อเล่น -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold mb-1">ฝ่าย / แผนก</label>
-                        <input type="text" id="editProfileDept" class="form-control" placeholder="ระบุแผนกของคุณ">
+                        <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">
+                            ชื่อเล่น <span class="fw-normal text-muted" style="font-size: 0.8rem;">(เปลี่ยนได้ ไม่มีผลกับระบบ)</span>
+                        </label>
+                        <input type="text" id="editProfileNickname" class="form-control" placeholder="เช่น นัท, เฟธ" style="border-radius: 8px;">
                     </div>
+
+                    <!-- ช่องแผนก (Dropdown) -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">ฝ่าย / แผนก</label>
+                        <select id="editProfileDept" class="form-select" style="border-radius: 8px;">
+                            <option value="">-- กรุณาเลือกแผนกของคุณ --</option>
+                        </select>
+                    </div>
+
+                    <!-- ช่องเบอร์โทรศัพท์ -->
                     <div class="mb-4">
-                        <label class="form-label fw-bold mb-1">เบอร์ติดต่อ</label>
-                        <input type="text" id="editProfilePhone" class="form-control" placeholder="ระบุเบอร์โทรศัพท์ที่ติดต่อได้">
+                        <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">เบอร์ติดต่อภายใน (หรือมือถือ)</label>
+                        <input type="tel" id="editProfilePhone" class="form-control" placeholder="กรอกเบอร์ที่สามารถติดต่อได้" style="border-radius: 8px;">
                     </div>
-                    <button type="button" id="btnSaveProfile" class="btn btn-dark w-100 fw-bold rounded-pill py-2" onclick="saveProfileData()">💾 บันทึกการเปลี่ยนแปลง</button>
+
+                    <!-- ปุ่มบันทึกแบบใหม่ สีเขียว -->
+                    <button type="button" class="btn w-100 fw-bold py-2 shadow-sm" id="btnSaveProfile" onclick="saveProfileData()" style="background-color: #10b981; color: white; border-radius: 8px; font-size: 1.05rem; transition: 0.2s;">
+                        ✅ บันทึกการเปลี่ยนแปลง
+                    </button>
                 </div>
             </div>
         </div>

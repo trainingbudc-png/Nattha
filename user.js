@@ -110,12 +110,28 @@ async function loadUserTableData() {
     }
 }
 
+// ==========================================
+// 📌 ระบบจัดการข้อมูลส่วนตัว (Modal)
+// ==========================================
 let profileModal;
+let isDeptLoaded = false; // ตัวแปรเช็คว่าโหลดแผนกมาหรือยัง
 
 async function openProfileModal() {
     const currentUser = localStorage.getItem("userName");
-    document.getElementById("editProfileName").value = currentUser;
-    document.getElementById("editProfileDept").value = "กำลังโหลด...";
+    
+    // หั่นชื่อและนามสกุลออกจากกัน (อิงจากการเว้นวรรค)
+    let firstName = currentUser;
+    let lastName = "";
+    if (currentUser && currentUser.includes(" ")) {
+        const nameParts = currentUser.split(" ");
+        firstName = nameParts[0];
+        lastName = nameParts.slice(1).join(" ");
+    }
+    
+    // ตั้งค่า Default ใส่ในช่องใหม่
+    document.getElementById("editProfileFirstName").value = firstName;
+    document.getElementById("editProfileLastName").value = lastName;
+    document.getElementById("editProfileNickname").value = "กำลังโหลด..."; 
     document.getElementById("editProfilePhone").value = "กำลังโหลด...";
 
     if (!profileModal) {
@@ -123,16 +139,48 @@ async function openProfileModal() {
     }
     profileModal.show();
 
+    // 1. โหลดรายชื่อแผนกมาใส่ Dropdown (ถ้ายังไม่เคยโหลด)
+    if (!isDeptLoaded) {
+        try {
+            const deptRes = await callAPI({ action: "getDepartments" });
+            if (deptRes.status === "success") {
+                const deptSelect = document.getElementById("editProfileDept");
+                deptSelect.innerHTML = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>';
+                deptRes.data.forEach(d => {
+                    deptSelect.innerHTML += `<option value="${d}">${d}</option>`;
+                });
+                isDeptLoaded = true;
+            }
+        } catch (error) {
+            console.error("โหลดแผนกไม่สำเร็จ", error);
+        }
+    }
+
+    // 2. ดึงข้อมูลโปรไฟล์ของผู้ใช้มาแสดง
     try {
         const res = await callAPI({ action: "getUserProfile", name: currentUser });
         if (res.status === "success") {
-            document.getElementById("editProfileDept").value = res.dept || "";
+            document.getElementById("editProfileNickname").value = res.nickname || "";
             document.getElementById("editProfilePhone").value = res.phone || "";
+            
+            const deptSelect = document.getElementById("editProfileDept");
+            if (res.dept) {
+                // ถ้าแผนกของ User ไม่มีใน Dropdown ให้เพิ่มเข้าไปชั่วคราว
+                let optionExists = Array.from(deptSelect.options).some(opt => opt.value === res.dept);
+                if (!optionExists && res.dept !== "") {
+                    deptSelect.innerHTML += `<option value="${res.dept}">${res.dept}</option>`;
+                }
+                deptSelect.value = res.dept;
+            } else {
+                deptSelect.value = "";
+            }
         } else {
+            document.getElementById("editProfileNickname").value = "";
             document.getElementById("editProfileDept").value = "";
             document.getElementById("editProfilePhone").value = "";
         }
     } catch (error) {
+        document.getElementById("editProfileNickname").value = "";
         document.getElementById("editProfileDept").value = "";
         document.getElementById("editProfilePhone").value = "";
     }
@@ -140,21 +188,28 @@ async function openProfileModal() {
 
 async function saveProfileData() {
     const currentUser = localStorage.getItem("userName");
+    const nickname = document.getElementById("editProfileNickname").value.trim(); 
     const dept = document.getElementById("editProfileDept").value.trim();
     const phone = document.getElementById("editProfilePhone").value.trim();
 
     if (!dept || !phone) {
-        Swal.fire("แจ้งเตือน", "กรุณากรอกข้อมูล แผนก และ เบอร์โทรศัพท์ ให้ครบถ้วนครับ", "warning");
+        Swal.fire("แจ้งเตือน", "กรุณากรอกข้อมูล ฝ่าย/แผนก และ เบอร์โทรศัพท์ ให้ครบถ้วนครับ", "warning");
         return;
     }
 
     const btn = document.getElementById("btnSaveProfile");
-    const originalText = btn.innerText;
-    btn.innerText = "กำลังบันทึก... ⏳";
+    const originalText = btn.innerHTML;
+    btn.innerHTML = "กำลังบันทึก... ⏳";
     btn.disabled = true;
 
     try {
-        const res = await callAPI({ action: "updateUserProfile", name: currentUser, dept: dept, phone: phone });
+        const res = await callAPI({ 
+            action: "updateUserProfile", 
+            name: currentUser, 
+            nickname: nickname, 
+            dept: dept, 
+            phone: phone 
+        });
 
         if (res.status === "success") {
             profileModal.hide();
@@ -162,7 +217,7 @@ async function saveProfileData() {
                 title: "บันทึกสำเร็จ!",
                 text: "อัปเดตข้อมูลส่วนตัวของคุณเรียบร้อยแล้ว",
                 icon: "success",
-                confirmButtonColor: "#212529"
+                confirmButtonColor: "#10b981"
             });
         } else {
             Swal.fire("ข้อผิดพลาด", "ไม่สามารถอัปเดตข้อมูลได้", "error");
@@ -170,7 +225,7 @@ async function saveProfileData() {
     } catch (error) {
         Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
     } finally {
-        btn.innerText = originalText;
+        btn.innerHTML = originalText;
         btn.disabled = false;
     }
 }
