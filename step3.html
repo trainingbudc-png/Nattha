@@ -15,8 +15,9 @@
         .info-label { font-size: 0.85rem; color: #6c757d; margin-bottom: 2px; }
         .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
         .divider { width: 1px; background-color: #dee2e6; height: 40px; }
-        .input-admin-name { font-size: 1.1rem; font-weight: bold; color: #212529; border: 1px dashed #ced4da; background: transparent; text-align: center; border-radius: 6px; width: 150px; padding: 2px; transition: 0.3s;}
-        .input-admin-name:focus { outline: none; border-color: #212529; background: white; }
+        
+        /* 📌 ลบ CSS input-admin-name ออกเพราะไม่ได้ใช้แท็ก input แล้ว */
+        
         .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; border: none; }
         .btn-confirm:hover { background: #495057; color: white; }
         .table th { background-color: #f8f9fa; text-align: center; font-size: 0.9rem; vertical-align: middle; color: #495057; border-bottom: 2px solid #dee2e6;}
@@ -52,7 +53,8 @@
         <div class="divider"></div>
         <div class="text-center">
             <div class="info-label">👨‍💻 ผู้ตรวจสอบ:</div>
-            <input type="text" id="inspectorName" class="input-admin-name" placeholder="พิมพ์ชื่อผู้ตรวจ">
+            <!-- 📌 เปลี่ยนจากแท็ก input เป็นแท็ก div แบบล็อกข้อมูลแก้ไขไม่ได้ -->
+            <div id="inspectorName" class="info-value">กำลังโหลด...</div>
         </div>
     </div>
     
@@ -104,7 +106,9 @@
     window.onload = function() {
         document.getElementById('displayReqId').innerText = reqId || "ไม่พบข้อมูล";
         const savedName = localStorage.getItem("userName");
-        if(savedName) document.getElementById('inspectorName').value = savedName;
+        
+        // 📌 เปลี่ยนการดึงข้อมูลจาก .value มาใช้ .innerText เพื่อเขียนลงใน div
+        if(savedName) document.getElementById('inspectorName').innerText = savedName;
 
         if(!reqId) { document.getElementById('itemList').innerHTML = '<tr><td colspan="8" class="text-danger py-4">❌ ไม่พบหมายเลขรายการ</td></tr>'; return; }
 
@@ -162,7 +166,9 @@
 
         const btn = document.querySelector('.btn-confirm');
         const originalText = btn.innerText; btn.innerText = "⏳ กำลังบันทึกข้อมูล..."; btn.disabled = true;
-        let inspector = document.getElementById('inspectorName').value.trim() || "User (ไม่ระบุชื่อ)";
+        
+        // 📌 เปลี่ยนตอนกดดึงข้อมูลมาเป็น .innerText ด้วย
+        let inspector = document.getElementById('inspectorName').innerText.trim() || "User (ไม่ระบุชื่อ)";
         const examValue = document.querySelector('input[name="examType"]:checked').value;
         const noteValue = document.getElementById('reasonNote').value;
         
