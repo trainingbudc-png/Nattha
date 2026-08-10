@@ -113,6 +113,23 @@
     const MY_LIFF_ID = "2010557323-PAyWhGxW"; 
 
     window.onload = async () => {
+        // ⚡ ระบบ Fast Login
+        const savedUserId = localStorage.getItem("userId");
+        const savedRole = localStorage.getItem("userRole");
+        const savedName = localStorage.getItem("userName");
+
+        if (savedUserId && savedRole && savedName) {
+            document.getElementById('mainText').innerText = "✅ ยืนยันตัวตนสำเร็จ";
+            document.getElementById('subText').innerText = `สวัสดีคุณ ${savedName} กำลังพาท่านเข้าสู่ระบบ...`;
+            document.getElementById('spinnerIcon').style.display = "none";
+            document.getElementById('pulseRing').style.display = "none";
+            
+            setTimeout(() => {
+                window.location.replace(savedRole === "Admin" ? "admin.html" : "user.html");
+            }, 600);
+            return;
+        }
+
         try {
             await liff.init({ liffId: MY_LIFF_ID });
             
@@ -126,7 +143,6 @@
             const userId = profile.userId; 
 
             document.getElementById('subText').innerText = `สวัสดีคุณ ${displayName} กำลังตรวจสอบสิทธิ์...`;
-            
             checkUserInDatabase(userId, displayName);
 
         } catch (err) {
@@ -149,13 +165,12 @@
                 document.getElementById('spinnerIcon').style.display = "none";
                 document.getElementById('pulseRing').style.display = "none";
                 
-                // 📌 บันทึกข้อมูลให้ครบถ้วนเพื่อใช้ในหน้าอื่นๆ
                 localStorage.setItem("userName", data.name);
                 localStorage.setItem("userRole", data.role);
                 localStorage.setItem("userId", userId); 
                 
                 setTimeout(() => {
-                    window.location.href = data.role === "Admin" ? "admin.html" : "user.html";
+                    window.location.replace(data.role === "Admin" ? "admin.html" : "user.html");
                 }, 1000);
             } else {
                 document.getElementById('loadingSection').style.display = "none";
@@ -202,10 +217,18 @@
         const lastName = document.getElementById('regLastName').value.trim();
         const nickname = document.getElementById('regNickname').value.trim();
         const dept = document.getElementById('regDept').value.trim();
-        const phone = document.getElementById('regPhone').value.trim();
+        let phone = document.getElementById('regPhone').value.trim();
 
         if (!firstName || !lastName || !dept || !phone) {
             return alert("⚠️ กรุณากรอก ชื่อ, นามสกุล, แผนก และเบอร์โทร ให้ครบถ้วนครับ");
+        }
+
+        // 🚀 ท่าไม้ตายสับขาหลอก: บังคับเติมขีดกลางให้เบอร์โทร
+        phone = phone.replace(/-/g, ""); // ลบขีดเก่าออกก่อน
+        if (phone.length === 10) {
+            phone = phone.substring(0, 3) + "-" + phone.substring(3, 6) + "-" + phone.substring(6);
+        } else {
+            phone = "Tel. " + phone; 
         }
 
         const fullName = firstName + " " + lastName;
@@ -229,12 +252,11 @@
 
             if (data.status === "success") {
                 alert("✅ ลงทะเบียนสำเร็จ! ระบบกำลังพาท่านเข้าสู่ระบบ...");
-                
                 localStorage.setItem("userName", fullName);
                 localStorage.setItem("userRole", "User");
                 localStorage.setItem("userId", userId); 
 
-                window.location.href = "user.html";
+                window.location.replace("user.html");
             } else {
                 alert("❌ เกิดข้อผิดพลาดในการบันทึก");
                 btn.innerText = "✅ ยืนยันข้อมูล & เข้าใช้งาน"; btn.disabled = false;

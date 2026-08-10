@@ -114,12 +114,11 @@ async function loadUserTableData() {
 // 📌 ระบบจัดการข้อมูลส่วนตัว (Modal)
 // ==========================================
 let profileModal;
-let isDeptLoaded = false; // ตัวแปรเช็คว่าโหลดแผนกมาหรือยัง
+let isDeptLoaded = false; 
 
 async function openProfileModal() {
     const currentUser = localStorage.getItem("userName");
     
-    // หั่นชื่อและนามสกุลออกจากกัน (อิงจากการเว้นวรรค)
     let firstName = currentUser;
     let lastName = "";
     if (currentUser && currentUser.includes(" ")) {
@@ -128,7 +127,6 @@ async function openProfileModal() {
         lastName = nameParts.slice(1).join(" ");
     }
     
-    // ตั้งค่า Default ใส่ในช่องใหม่
     document.getElementById("editProfileFirstName").value = firstName;
     document.getElementById("editProfileLastName").value = lastName;
     document.getElementById("editProfileNickname").value = "กำลังโหลด..."; 
@@ -139,7 +137,6 @@ async function openProfileModal() {
     }
     profileModal.show();
 
-    // 1. โหลดรายชื่อแผนกมาใส่ Dropdown (ถ้ายังไม่เคยโหลด)
     if (!isDeptLoaded) {
         try {
             const deptRes = await callAPI({ action: "getDepartments" });
@@ -156,7 +153,6 @@ async function openProfileModal() {
         }
     }
 
-    // 2. ดึงข้อมูลโปรไฟล์ของผู้ใช้มาแสดง
     try {
         const res = await callAPI({ action: "getUserProfile", name: currentUser });
         if (res.status === "success") {
@@ -165,7 +161,6 @@ async function openProfileModal() {
             
             const deptSelect = document.getElementById("editProfileDept");
             if (res.dept) {
-                // ถ้าแผนกของ User ไม่มีใน Dropdown ให้เพิ่มเข้าไปชั่วคราว
                 let optionExists = Array.from(deptSelect.options).some(opt => opt.value === res.dept);
                 if (!optionExists && res.dept !== "") {
                     deptSelect.innerHTML += `<option value="${res.dept}">${res.dept}</option>`;
@@ -190,11 +185,19 @@ async function saveProfileData() {
     const currentUser = localStorage.getItem("userName");
     const nickname = document.getElementById("editProfileNickname").value.trim(); 
     const dept = document.getElementById("editProfileDept").value.trim();
-    const phone = document.getElementById("editProfilePhone").value.trim();
+    let phone = document.getElementById("editProfilePhone").value.trim();
 
     if (!dept || !phone) {
         Swal.fire("แจ้งเตือน", "กรุณากรอกข้อมูล ฝ่าย/แผนก และ เบอร์โทรศัพท์ ให้ครบถ้วนครับ", "warning");
         return;
+    }
+
+    // 🚀 ท่าไม้ตายสับขาหลอก: บังคับเติมขีดกลางให้เบอร์โทร
+    phone = phone.replace(/-/g, ""); 
+    if (phone.length === 10) {
+        phone = phone.substring(0, 3) + "-" + phone.substring(3, 6) + "-" + phone.substring(6);
+    } else {
+        phone = "Tel. " + phone; 
     }
 
     const btn = document.getElementById("btnSaveProfile");
