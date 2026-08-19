@@ -17,7 +17,7 @@
 </head>
 <body>
     <nav class="nav-header">
-        <div class="nav-title">✅Step 2 | รับเครื่อง (ค้างดำเนินการ)</div>
+        <div class="nav-title">Step 2 | รับเครื่อง (ค้างดำเนินการ)</div>
         <div class="d-flex align-items-center">
             <a href="user.html" class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold">🔙 กลับเมนูหลัก</a>
         </div>
@@ -71,11 +71,11 @@
 
                     tbody.innerHTML += `
                         <tr>
-                            <td data-label="📌 เลขรายการ" class="fw-bold text-dark">${req.reqId}</td>
-                            <td data-label="🕒 วันที่">${dateStr}</td>
-                            <td data-label="📱 รหัส iPad" style="max-width: 300px;">${formattedIpads}</td>
-                            <td data-label="📊 สถานะ"><span class="badge bg-danger text-white px-3 py-2 rounded-pill">${req.status}</span></td>
-                            <td data-label="⚙️ จัดการ">
+                            <td data-label="เลขรายการ" class="fw-bold text-dark">${req.reqId}</td>
+                            <td data-label="วันที่">${dateStr}</td>
+                            <td data-label="รหัส iPad" style="max-width: 300px;">${formattedIpads}</td>
+                            <td data-label="สถานะ"><span class="badge bg-danger text-white px-3 py-2 rounded-pill">${req.status}</span></td>
+                            <td data-label="จัดการ">
                                 <button class="btn btn-action btn-sm px-3 shadow-sm w-100" onclick="window.location.href='step2.html?reqId=${req.reqId}'">➡️ ดำเนินการ</button>
                             </td>
                         </tr>

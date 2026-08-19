@@ -275,12 +275,12 @@
             tr.dataset.rawname = ipadId;
 
             tr.innerHTML = `
-                <td data-label="📱 รหัส iPad" class="fw-bold text-dark">${ipadId}</td>
-                <td data-label="📁 G-Drive"><input type="checkbox" class="form-check-input check-${safeId}" value="drive"></td>
-                <td data-label="📄 ไฟล์เอกสาร"><input type="checkbox" class="form-check-input check-${safeId}" value="file"></td>
-                <td data-label="🖼️ ไฟล์รูปภาพ"><input type="checkbox" class="form-check-input check-${safeId}" value="img"></td>
-                <td data-label="🌐 Safari"><input type="checkbox" class="form-check-input check-${safeId}" value="safari"></td>
-                <td data-label="⚡ ปุ่มลัด"><button type="button" class="btn btn-sm btn-outline-dark fw-bold rounded-pill w-100" onclick="tickAllRow('${safeId}')">✔ ติ๊กครบ</button></td>
+                <td data-label="รหัส iPad" class="fw-bold text-dark">${ipadId}</td>
+                <td data-label="G-Drive"><input type="checkbox" class="form-check-input check-${safeId}" value="drive"></td>
+                <td data-label="ไฟล์เอกสาร"><input type="checkbox" class="form-check-input check-${safeId}" value="file"></td>
+                <td data-label="ไฟล์รูปภาพ"><input type="checkbox" class="form-check-input check-${safeId}" value="img"></td>
+                <td data-label="Safari"><input type="checkbox" class="form-check-input check-${safeId}" value="safari"></td>
+                <td data-label="ปุ่มลัด"><button type="button" class="btn btn-sm btn-outline-dark fw-bold rounded-pill w-100" onclick="tickAllRow('${safeId}')">✔ ติ๊กครบ</button></td>
             `;
             tbody.appendChild(tr);
         } else {
