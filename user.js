@@ -67,20 +67,21 @@ async function loadUserTableData() {
                 let badgeClass = "badge-gray";
                 let actionBtn = "";
 
+                // 📌 ปรับสีปุ่มให้เป็น Dark Theme ทั้งหมดให้ดูคลีนๆ เข้ากับเว็บ
                 if (statusTxt.includes("Step[1]")) {
                     displayStatus = "Step[1]";
                     badgeClass = "bg-danger text-white";
-                    actionBtn = `<button class="btn btn-success btn-sm fw-bold rounded-pill px-3 shadow-sm w-100" onclick="window.location.href='step2.html?reqId=${item.reqId}'">➡️ รับเครื่อง</button>`;
+                    actionBtn = `<button class="btn btn-dark btn-sm fw-bold rounded-pill px-3 shadow-sm w-100" onclick="window.location.href='step2.html?reqId=${item.reqId}'">➡️ รับเครื่อง</button>`;
                 
                 } else if (statusTxt.includes("Step[2]")) {
                     displayStatus = "Step[2]";
-                    badgeClass = "bg-danger text-White";
-                    actionBtn = `<button class="btn btn-warning btn-sm fw-bold rounded-pill px-3 shadow-sm w-100 text-dark" onclick="window.location.href='step3.html?reqId=${item.reqId}'">➡️ ก่อนสอบ</button>`;
+                    badgeClass = "bg-danger text-white";
+                    actionBtn = `<button class="btn btn-dark btn-sm fw-bold rounded-pill px-3 shadow-sm w-100" onclick="window.location.href='step3.html?reqId=${item.reqId}'">➡️ ก่อนสอบ</button>`;
                 
                 } else if (statusTxt.includes("Step[3]")) {
                     displayStatus = "Step[3]";
-                    badgeClass = "bg-danger text-White";
-                    actionBtn = `<button class="btn btn-sm fw-bold rounded-pill px-3 shadow-sm w-100 text-white" style="background-color: #8b5cf6;" onclick="window.location.href='step4.html?reqId=${item.reqId}'">📥 ส่งคืน</button>`;
+                    badgeClass = "bg-danger text-white";
+                    actionBtn = `<button class="btn btn-dark btn-sm fw-bold rounded-pill px-3 shadow-sm w-100" onclick="window.location.href='step4.html?reqId=${item.reqId}'">📥 ส่งคืน</button>`;
                 
                 } else if (statusTxt.includes("Step[4]") || statusTxt.includes("เคลียร์") || statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น")) {
                     displayStatus = statusTxt.includes("Step[4]") ? "รอตรวจคืน" : "คืนเรียบร้อย";
