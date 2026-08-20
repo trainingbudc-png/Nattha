@@ -120,19 +120,19 @@
             if(res.data && res.data.length > 0) {
                 res.data.forEach(item => {
                     tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
-                        <td data-label="📱 เลือกเครื่อง" class="fw-bold text-dark text-start">
+                        <td data-label="เลือกเครื่อง" class="fw-bold text-dark text-start">
                             <div class="d-flex align-items-center">
                                 <input type="checkbox" class="select-ipad form-check-input me-2" id="btn-${item.ipadId}" onchange="toggleRow(this)">
                                 <label for="btn-${item.ipadId}" style="cursor:pointer;" class="fs-5">${item.ipadId}</label>
                             </div>
                         </td>
-                        <td data-label="📂 Logout Drive"><input type="checkbox" class="check-item form-check-input" disabled></td>
-                        <td data-label="📶 ปิด Wi-Fi"><input type="checkbox" class="check-item form-check-input" disabled></td>
-                        <td data-label="🛜 ปิด Bluetooth"><input type="checkbox" class="check-item form-check-input" disabled></td>
-                        <td data-label="📡 ปิด AirDrop"><input type="checkbox" class="check-item form-check-input" disabled></td>
-                        <td data-label="✈️ โหมดเครื่องบิน"><input type="checkbox" class="check-item form-check-input" disabled></td>
-                        <td data-label="▶️ เริ่มใช้งาน"><input type="checkbox" class="check-item form-check-input" disabled></td>
-                        <td data-label="⚡ จัดการ"><button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill w-100" onclick="checkAllInRow(this)">✔ ติ๊กครบ</button></td>
+                        <td data-label="Logout Drive"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        <td data-label="ปิด Wi-Fi"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        <td data-label="ปิด Bluetooth"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        <td data-label="ปิด AirDrop"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        <td data-label="โหมดเครื่องบิน"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        <td data-label="เริ่มใช้งาน"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        <td data-label="จัดการ"><button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill w-100" onclick="checkAllInRow(this)">ติ๊กครบ</button></td>
                     </tr>`;
                 });
             } else { tbody.innerHTML = `<tr><td colspan="8" class="text-danger py-4">❌ ไม่พบข้อมูล iPad</td></tr>`; }
