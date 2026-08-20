@@ -2,7 +2,7 @@
 // 📌 ไฟล์ script.js : แกนกลางจัดการระบบหน้าเว็บ
 // =========================================
 
-const API_URL = "https://script.google.com/macros/s/AKfycbyw2y3tAd1h-krTwcdjX67nxIWEH6ySWvKoErnJbjrxIvouq5cG8_smLZqrvJlcLvbE/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbwv7qtsMDLxaXD3RbGB8Q0Nq1U0Q91cRL7rhe0Ge4OWEC41cvtajsI-JlFwjPmRrPCu/exec"; 
 const LIFF_ID = "2010557323-PAyWhGxW"; 
 
 // -----------------------------------------
