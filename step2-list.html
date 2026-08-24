@@ -14,7 +14,12 @@
         .container-wide, .nav-header { max-width: 1280px !important; margin: 0 auto !important; }
         .container-wide { padding-left: 20px !important; padding-right: 20px !important; }
 
-        /* 📱 ปรับ UI/UX การ์ดบนมือถือให้ดูคลีน (ไม่มีเส้นประ) */
+        /* 💻 จัดระเบียบกล่อง iPad สำหรับจอคอมพิวเตอร์ (ให้อยู่กึ่งกลาง) */
+        @media (min-width: 769px) {
+            .ipad-box { text-align: center; width: 100%; }
+        }
+
+        /* 📱 ปรับ UI/UX การ์ดบนหน้าจอมือถือ (ให้อ่านง่าย ชิดขวา) */
         @media (max-width: 768px) {
             .table-card { background: transparent; box-shadow: none; border: none; padding: 0; margin-top: 10px; }
             .table thead { display: none; }
@@ -33,21 +38,35 @@
                 align-items: center; 
                 text-align: right; 
                 padding: 12px 0; 
-                border-bottom: 1px solid #f1f5f9 !important; /* เส้นทึบสีอ่อน */
+                border-bottom: 1px solid #f1f5f9 !important;
             }
             .table tbody td::before { 
                 content: attr(data-label); 
                 font-weight: 500; 
-                color: #64748b; /* ทำสีหัวข้อให้อ่อนลง เน้นข้อมูล */
+                color: #64748b; 
                 font-size: 0.9rem; 
                 text-align: left; 
                 margin-right: 15px; 
                 flex-shrink: 0; 
             }
             
-            /* กรณีรหัส iPad มีหลายเครื่อง ให้เริ่มจากด้านบน */
-            .table tbody td[data-label="รหัส iPad"] { align-items: flex-start; }
-            .table tbody td[data-label="รหัส iPad"]::before { margin-top: 2px; }
+            /* 📌 จัดการช่อง "รหัส iPad" ให้ปัดลงบรรทัดใหม่ และชิดขวาสุด */
+            .table tbody td[data-label="รหัส iPad"] { 
+                flex-direction: column; 
+                align-items: flex-start; 
+            }
+            .table tbody td[data-label="รหัส iPad"]::before { 
+                margin-bottom: 8px; 
+                margin-top: 0; 
+            }
+            .ipad-box { 
+                width: 100%; 
+                text-align: right; 
+                background-color: #f8fafc; 
+                padding: 10px 12px;
+                border-radius: 8px;
+                border: 1px solid #f1f5f9;
+            }
             
             /* 📌 ซ่อนคำว่า 'จัดการ' และขยายปุ่มให้เต็มหน้าจอ */
             .table tbody td:last-child { 
@@ -117,15 +136,14 @@
                     let dateStr = req.timestamp ? new Date(req.timestamp).toLocaleString("th-TH") : "-";
                     let formattedIpads = formatIpadText(req.ipadId);
 
-                    // 📌 ใส่แท็ก <div> หุ้มข้อมูลแต่ละช่อง เพื่อป้องกัน Flexbox ทำให้ข้อความฉีกออกจากกัน
                     tbody.innerHTML += `
                         <tr>
                             <td data-label="เลขรายการ"><div class="fw-bold text-dark">${req.reqId}</div></td>
                             <td data-label="วันที่"><div>${dateStr}</div></td>
-                            <td data-label="รหัส iPad" style="max-width: 300px;"><div class="text-end">${formattedIpads}</div></td>
+                            <td data-label="รหัส iPad"><div class="ipad-box">${formattedIpads}</div></td>
                             <td data-label="สถานะ"><div><span class="badge bg-danger text-white px-3 py-2 rounded-pill">${req.status}</span></div></td>
                             <td data-label="จัดการ">
-                                <button class="btn btn-action btn-sm px-3 shadow-sm w-100" onclick="window.location.href='step2.html?reqId=${req.reqId}'">ดำเนินการ</button>
+                                <button class="btn btn-action btn-sm px-3 shadow-sm w-100" onclick="window.location.href='step2.html?reqId=${req.reqId}'">➡️ ดำเนินการ</button>
                             </td>
                         </tr>
                     `;
@@ -149,7 +167,6 @@
             else normalIds.push(num);
         });
         let displayGroups = [];
-        // 📌 เปลี่ยนกลับมาใช้ text-danger เพื่อให้ [iPad] เป็นสีแดงเหมือนเดิม
         if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
         if (airIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
         return displayGroups.join('<br>');
