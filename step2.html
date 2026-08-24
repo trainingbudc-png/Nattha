@@ -83,17 +83,17 @@
         if(res.data && res.data.length > 0) {
             res.data.forEach(item => {
                 tbody.innerHTML += `<tr>
-                    <td data-label="เลือกรับเครื่อง" class="fw-bold text-start">
+                    <td data-label=" เลือกรับเครื่อง" class="fw-bold text-start">
                         <div class="d-flex align-items-center">
                             <input type="checkbox" class="select-ipad form-check-input me-2" id="btn-${item.ipadId}" onchange="toggleRow(this)"> 
                             <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-dark fs-5">${item.ipadId}</label>
                         </div>
                     </td>
-                    <td data-label="Drive"><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td data-label="File"><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td data-label="Img"><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td data-label="Safari"><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td data-label="ปุ่มลัด"><button type="button" class="btn btn-dark btn-sm fw-bold w-100 rounded-pill" onclick="tickAll(this)">ติ๊กครบ</button></td>
+                    <td data-label=" Drive"><input type="checkbox" class="check-app form-check-input" disabled></td>
+                    <td data-label=" File"><input type="checkbox" class="check-app form-check-input" disabled></td>
+                    <td data-label=" Img"><input type="checkbox" class="check-app form-check-input" disabled></td>
+                    <td data-label=" Safari"><input type="checkbox" class="check-app form-check-input" disabled></td>
+                    <td data-label=" ปุ่มลัด"><button type="button" class="btn btn-dark btn-sm fw-bold w-100 rounded-pill" onclick="tickAll(this)">ติ๊กครบ</button></td>
                 </tr>`;
             });
         } else {
