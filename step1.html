@@ -13,6 +13,7 @@
         .card-custom { background: white; border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(220,53,69,0.05); border-top: 6px solid #dc3545; }
         .form-label { font-weight: 600; color: #495057; }
         
+        /* 📌 สไตล์ส่วนของการเลือก iPad */
         .btn-outline-red { color: #212529; border-color: #dc3545; font-weight: 600; border-radius: 8px; }
         .btn-outline-red:hover { background-color: #fdf2f2; color: #000; }
         .btn-check:checked + .btn-outline-red { background-color: #dc3545; color: white; border-color: #dc3545; box-shadow: 0 4px 10px rgba(220,53,69,0.3); }
@@ -24,48 +25,38 @@
 
         .ipad-container { max-height: 250px; overflow-y: auto; padding: 15px; background: white; border: 1px solid #fecaca; border-radius: 0 0 8px 8px; border-top: none; margin-bottom: 15px; }
         
-        .grid-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); 
-            gap: 10px;
-        }
-        .grid-layout .btn {
-            width: 100%;
-            margin: 0 !important;
-            padding: 8px 5px !important;
-            font-size: 0.9rem;
-            text-align: center;
-            white-space: normal; 
-            word-wrap: break-word;
-            line-height: 1.2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 50px; 
-        }
-        .grid-full-width {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 10px 0;
-        }
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 10px; }
+        .grid-layout .btn { width: 100%; margin: 0 !important; padding: 8px 5px !important; font-size: 0.9rem; text-align: center; white-space: normal; word-wrap: break-word; line-height: 1.2; display: flex; align-items: center; justify-content: center; min-height: 50px; }
+        .grid-full-width { grid-column: 1 / -1; text-align: center; padding: 10px 0; }
 
-        .btn-submit-custom { background-color: #dc3545; color: white; font-weight: bold; border: none; border-radius: 8px; padding: 12px; transition: 0.3s; }
+        .btn-submit-custom { background-color: #dc3545; color: white; font-weight: bold; border: none; border-radius: 12px; padding: 15px; transition: 0.3s; }
         .btn-submit-custom:hover { background-color: #b91c1c; color: white; }
 
-        .table th { background-color: #fef2f2; color: #212529; font-size: 0.9rem; text-align: center; vertical-align: middle; border-bottom: 2px solid #fca5a5; }
-        .table td { vertical-align: middle; text-align: center; border-bottom: 1px solid #fee2e2; }
+        /* 💻 สไตล์ตารางสำหรับจอคอม (Desktop) มาตรฐานเดียวกับ Step 5 */
+        .table-responsive { border-radius: 12px; border: 1px solid #fca5a5; overflow: hidden; }
+        .table { margin-bottom: 0; }
+        .table th { background-color: #fef2f2; color: #212529; font-weight: 600; text-align: center; padding: 15px; border-bottom: 2px solid #fca5a5; font-size: 0.95rem; white-space: nowrap; }
+        .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid #fee2e2; color: #1e293b; font-weight: 500; font-size: 0.95rem; }
+        .table tbody tr:hover { background-color: #fff9f9; }
 
-        .form-check-input { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #dc3545; }
-        .form-check-input:checked { background-color: #dc3545; border-color: #dc3545; }
+        /* 📌 ปุ่ม Checkbox และปุ่มยืนยัน */
+        .form-check-input { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: #dc3545; }
+        .btn-shortcut { background: white; color: #dc3545; border: 2px solid #dc3545; transition: 0.2s; }
+        .btn-shortcut:hover { background: #dc3545; color: white; }
         
+        /* 📱 ปรับการ์ดบนหน้าจอมือถือ (Mobile) ให้เป็นดีไซน์เดียวกันทั้งหมด */
         @media screen and (max-width: 768px) {
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
             .table thead { display: none; }
-            .table tbody tr { display: block; background: white; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #e9ecef; }
-            .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
-            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; }
-            .btn-sm { padding: 10px !important; margin-top: 5px; }
+            .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(220,53,69,0.06); border: 1px solid #fecaca; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px solid #fee2e2; }
+            .table tbody td::before { content: attr(data-label); font-weight: 500; color: #64748b; font-size: 0.95rem; text-align: left; margin-right: 15px; flex-shrink: 0; }
+            
+            /* แยกเส้นแบ่งระหว่าง หัวข้อการ์ด กับ เช็คลิสต์ ให้ชัดเจน */
+            .table tbody td:first-child { border-bottom: 2px solid #fca5a5 !important; padding-bottom: 16px; margin-bottom: 8px; }
+            .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 16px; display: block; }
+            .table tbody td:last-child::before { display: none; } 
+            .table tbody td:last-child .btn { padding: 12px !important; font-size: 1.05rem; }
         }
     </style>
 </head>
@@ -120,11 +111,13 @@
 
                 <div id="dynamicChecklistContainer" class="mb-4 d-none">
                     <label class="form-label text-dark fw-bold">✅ สิ่งที่แอดมินต้องเตรียม (เช็คให้ครบทุกเครื่อง):</label>
-                    <div class="table-responsive border rounded bg-white" style="border-color: #fecaca !important;">
-                        <table class="table table-borderless mb-0">
+                    
+                    <!-- 📌 ตารางที่ถูกอัปเกรดเป็น Unified UI -->
+                    <div class="table-responsive bg-white">
+                        <table class="table mb-0">
                             <thead>
                                 <tr>
-                                    <th>รหัส iPad</th>
+                                    <th class="text-start ps-4">รหัส iPad</th>
                                     <th>G-Drive</th>
                                     <th>ไฟล์เอกสาร</th>
                                     <th>ไฟล์รูปภาพ</th>
@@ -141,7 +134,7 @@
                 <!-- 🚨 หมวดยืมฉุกเฉิน -->
                 <div class="mb-4 p-3 rounded" style="background-color: #fff5f5; border: 1px dashed #fca5a5;">
                     <div class="form-check form-switch d-flex align-items-center gap-2">
-                        <input class="form-check-input" type="checkbox" id="emergencyCheck" style="width: 45px; height: 24px; cursor: pointer;" onchange="toggleEmergencyNote()">
+                        <input class="form-check-input" type="checkbox" id="emergencyCheck" style="width: 45px !important; height: 24px !important; cursor: pointer;" onchange="toggleEmergencyNote()">
                         <label class="form-check-label fw-bold text-danger mb-0" for="emergencyCheck" style="font-size: 1.1rem; cursor: pointer; padding-top: 2px;">🚨 กรณีเบิกยืมฉุกเฉิน</label>
                     </div>
                     
@@ -162,7 +155,7 @@
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwv7qtsMDLxaXD3RbGB8Q0Nq1U0Q91cRL7rhe0Ge4OWEC41cvtajsI-JlFwjPmRrPCu/exec";
     
-    let maxLimit = 0; // 📌 ตัวแปรเก็บจำนวนโควต้าสูงสุด (รับจาก URL)
+    let maxLimit = 0;
 
     window.onload = function() {
         if(localStorage.getItem("userRole") !== "Admin") { 
@@ -170,12 +163,10 @@
             return; 
         }
 
-        // 📌 1. ตรวจสอบพารามิเตอร์ URL 
         const urlParams = new URLSearchParams(window.location.search);
         const urlReqId = urlParams.get('id') || "";
         const extAmount = parseInt(urlParams.get('amount'), 10) || 0;
 
-       // 📌 ถ้ามี id จาก URL ให้เช็คว่ามี REQ- หรือยัง ถ้ายังไม่มีให้เติมเข้าไป
         if (urlReqId !== "") {
             let formattedReqId = urlReqId;
             if (!formattedReqId.toUpperCase().startsWith("REQ-")) {
@@ -184,7 +175,6 @@
             document.getElementById('reqIdInput').value = formattedReqId;
         }
 
-        // ถ้ามี amount ให้ตั้งเป็น maxLimit แล้วอัปเดตป้ายโชว์
         if (extAmount > 0) {
             maxLimit = extAmount;
             document.getElementById('selectedCount').innerText = `เลือกแล้ว 0/${maxLimit} เครื่อง`;
@@ -202,7 +192,6 @@
             if(res.status === "success" && res.data.length > 0) {
                 res.data.forEach(name => { select.innerHTML += `<option value="${name}">${name}</option>`; });
                 
-                // 📌 2. นำ borrower จาก URL มาค้นหาและเลือกอัตโนมัติ
                 const urlParams = new URLSearchParams(window.location.search);
                 const urlBorrower = urlParams.get('borrower') || "";
                 if(urlBorrower !== "") {
@@ -253,11 +242,10 @@
     }
 
     function handleIpadSelection(checkbox) {
-        // 📌 3. ตรวจสอบจำนวนก่อนให้เลือกลงตาราง (ดัก Limit โควต้า)
         const currentSelectedCount = document.querySelectorAll('.ipad-checkbox:checked').length;
 
         if (checkbox.checked && maxLimit > 0 && currentSelectedCount > maxLimit) {
-            checkbox.checked = false; // บังคับติ๊กออก
+            checkbox.checked = false; 
             Swal.fire("เต็มโควต้า!", `รายการนี้ระบุจำนวนการยืมไว้สูงสุดที่ ${maxLimit} เครื่องครับ`, "warning");
             return;
         }
@@ -274,13 +262,16 @@
             tr.dataset.sortval = numericValue;
             tr.dataset.rawname = ipadId;
 
+            // 📌 อัปเดต HTML ของแต่ละแถวให้ตรงกับ Unified UI
             tr.innerHTML = `
-                <td data-label="รหัส iPad" class="fw-bold text-dark">${ipadId}</td>
+                <td data-label="รหัส iPad" class="text-start ps-4">
+                    <div class="fw-bold text-dark fs-6 m-0">${ipadId}</div>
+                </td>
                 <td data-label="G-Drive"><input type="checkbox" class="form-check-input check-${safeId}" value="drive"></td>
                 <td data-label="ไฟล์เอกสาร"><input type="checkbox" class="form-check-input check-${safeId}" value="file"></td>
                 <td data-label="ไฟล์รูปภาพ"><input type="checkbox" class="form-check-input check-${safeId}" value="img"></td>
                 <td data-label="Safari"><input type="checkbox" class="form-check-input check-${safeId}" value="safari"></td>
-                <td data-label="ปุ่มลัด"><button type="button" class="btn btn-sm btn-outline-dark fw-bold rounded-pill w-100" onclick="tickAllRow('${safeId}')">ติ๊กครบ</button></td>
+                <td data-label="ปุ่มลัด"><button type="button" class="btn btn-shortcut btn-sm fw-bold px-3 rounded-pill w-100" onclick="tickAllRow('${safeId}')">ติ๊กครบ</button></td>
             `;
             tbody.appendChild(tr);
         } else {
@@ -297,14 +288,13 @@
         });
         rows.forEach(row => tbody.appendChild(row));
 
-        // 📌 4. อัปเดตป้ายตัวเลขด้านบน
         const count = rows.length;
         const badge = document.getElementById('selectedCount');
         
         if (maxLimit > 0) {
             badge.innerText = `เลือกแล้ว ${count}/${maxLimit} เครื่อง`;
             if (count === maxLimit) {
-                badge.className = "badge bg-success fs-6"; // ถ้าเลือกครบเปลี่ยนเป็นสีเขียว
+                badge.className = "badge bg-success fs-6"; 
             } else if (count > 0) {
                 badge.className = "badge bg-danger fs-6";
             } else {
@@ -339,7 +329,7 @@
     }
 
     function submitStep1() {
-        const reqIdValue = document.getElementById("reqIdInput").value.trim(); // 📌 ดึงเลขรายการ
+        const reqIdValue = document.getElementById("reqIdInput").value.trim(); 
         const recipientName = document.getElementById("userNameSelect").value;
         const adminName = localStorage.getItem("userName") || "Admin";
         const selectedIpads = document.querySelectorAll('.ipad-checkbox:checked');
@@ -378,10 +368,9 @@
             finalNote = `🚨 [หมายเหตุ]: ${emergencyNote}`;
         }
 
-        // 📌 5. ส่ง reqId แนบไปใน payload ด้วย
         const payload = { 
             action: "saveStep1", 
-            reqId: reqIdValue !== "" ? reqIdValue : null, // ส่งเลขไป ถ้าไม่มีส่ง null ให้หลังบ้าน gen เอง
+            reqId: reqIdValue !== "" ? reqIdValue : null, 
             adminName: adminName, 
             recipientName: recipientName, 
             note: finalNote, 
