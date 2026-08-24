@@ -153,7 +153,7 @@
     
     // ตัวแปรสำหรับเก็บข้อมูลต้นฉบับและข้อมูลที่ถูกกรอง
     let allDashboardData = [];
-    let filteredData = []; // เพิ่มตัวแปรสำหรับเก็บงานที่ถูกกรองแล้ว
+    let filteredData = []; 
     
     let currentPage = 1;
     const itemsPerPage = 20; 
@@ -166,11 +166,16 @@
         fetchData();
     };
 
+    // 📌 ปรับปรุงฟังก์ชันนี้ให้รองรับข้อมูลจาก API ตัวใหม่ที่เพิ่งแก้ไป
     function formatStepCell(text) {
         if (!text || text.trim() === "") return '<td class="step-cell-empty"></td>';
-        let formatted = text.replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
-        formatted = formatted.replace(/☑/g, '<span style="color:#7c3aed; font-size:1rem;">☑</span>');
-        return `<td class="step-cell">${formatted}</td>`;
+        
+        // ข้อมูลจะมาเป็นรูปแบบ "✅ [1/1]<br>24/08/2026, 13:05:39" เราจะจับแยกสีตัวอักษรให้สวยขึ้น
+        let parts = text.split("<br>");
+        if(parts.length === 2) {
+            return `<td class="step-cell"><span style="color:#16a34a; font-size:1rem; font-weight:bold;">${parts[0]}</span><br><span style="font-size:0.8rem; color:#6c757d; font-weight:normal;">${parts[1]}</span></td>`;
+        }
+        return `<td class="step-cell">${text}</td>`;
     }
 
     function formatStatus(statusText) {
@@ -181,9 +186,10 @@
         }
     }
 
+    // 📌 ปรับให้ตรวจสอบสถานะจากเครื่องหมาย ✅
     function formatEmergency(emText) {
         if (!emText || emText.trim() === "" || emText === "☐") return '<span style="color:#dc3545; font-size:1.2rem;">☐</span>';
-        return `<span style="color:#dc3545; font-size:1.2rem; font-weight:bold;">☑</span>`;
+        return `<span style="color:#dc3545; font-size:1.2rem; font-weight:bold;">✅</span>`;
     }
 
     // 📌 ดึงข้อมูลจากเซิร์ฟเวอร์
@@ -233,10 +239,10 @@
                 matchStatus = item.status && item.status.includes(statusVal);
             }
 
-            // 3. กรองฉุกเฉิน
+            // 3. กรองฉุกเฉิน (เปลี่ยนมาเช็คเครื่องหมาย ✅ แทน ☑)
             let matchEm = true;
             if (emCheck) {
-                matchEm = item.emergency === "☑";
+                matchEm = item.emergency === "✅";
             }
 
             // ผ่านทั้ง 3 ด่านถึงจะเก็บไว้
