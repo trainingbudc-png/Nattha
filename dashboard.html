@@ -82,7 +82,10 @@
         
         <div class="d-flex justify-content-between align-items-end mb-3">
             <h5 class="fw-bold text-dark m-0">ตารางข้อมูลรายการเบิก-ยืม</h5>
-            <button class="btn btn-dark btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="fetchData()">🔄 อัปเดตข้อมูล</button>
+            <div>
+                <button class="btn btn-dark btn-sm rounded-pill fw-bold px-4 shadow-sm me-2" onclick="fetchData()">🔄 อัปเดตข้อมูล</button>
+                <button class="btn btn-success btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="exportToCSV()">📥 ส่งออก (Excel)</button>
+            </div>
         </div>
 
         <!-- 📌 ส่วนของ Filter (ตัวกรอง) 3 จุด -->
@@ -166,11 +169,8 @@
         fetchData();
     };
 
-    // 📌 ปรับปรุงฟังก์ชันนี้ให้รองรับข้อมูลจาก API ตัวใหม่ที่เพิ่งแก้ไป
     function formatStepCell(text) {
         if (!text || text.trim() === "") return '<td class="step-cell-empty"></td>';
-        
-        // ข้อมูลจะมาเป็นรูปแบบ "✅ [1/1]<br>24/08/2026, 13:05:39" เราจะจับแยกสีตัวอักษรให้สวยขึ้น
         let parts = text.split("<br>");
         if(parts.length === 2) {
             return `<td class="step-cell"><span style="color:#16a34a; font-size:1rem; font-weight:bold;">${parts[0]}</span><br><span style="font-size:0.8rem; color:#6c757d; font-weight:normal;">${parts[1]}</span></td>`;
@@ -186,7 +186,6 @@
         }
     }
 
-    // 📌 ปรับให้ตรวจสอบสถานะจากเครื่องหมาย ✅
     function formatEmergency(emText) {
         if (!emText || emText.trim() === "" || emText === "☐") return '<span style="color:#dc3545; font-size:1.2rem;">☐</span>';
         return `<span style="color:#dc3545; font-size:1.2rem; font-weight:bold;">✅</span>`;
@@ -224,13 +223,14 @@
         // วนลูปกรองข้อมูลจากข้อมูลต้นฉบับ
         filteredData = allDashboardData.filter(item => {
             
-            // 1. กรองคำค้นหา (ค้นหาจาก เลขรายการ, ผู้เตรียม, ผู้รับ)
+            // 1. กรองคำค้นหา (ค้นหาจาก เลขรายการ, ผู้เตรียม, ผู้รับ, หมายเหตุ)
             let matchSearch = true;
             if (searchText !== "") {
                 const reqMatch = item.reqId ? item.reqId.toLowerCase().includes(searchText) : false;
                 const prepMatch = item.preparer ? item.preparer.toLowerCase().includes(searchText) : false;
                 const recMatch = item.receiver ? item.receiver.toLowerCase().includes(searchText) : false;
-                matchSearch = reqMatch || prepMatch || recMatch;
+                const noteMatch = item.note ? item.note.toLowerCase().includes(searchText) : false;
+                matchSearch = reqMatch || prepMatch || recMatch || noteMatch;
             }
 
             // 2. กรองสถานะ
@@ -239,7 +239,7 @@
                 matchStatus = item.status && item.status.includes(statusVal);
             }
 
-            // 3. กรองฉุกเฉิน (เปลี่ยนมาเช็คเครื่องหมาย ✅ แทน ☑)
+            // 3. กรองฉุกเฉิน
             let matchEm = true;
             if (emCheck) {
                 matchEm = item.emergency === "✅";
@@ -254,7 +254,7 @@
         renderTable();
     }
 
-    // 📌 วาดตาราง (ใช้ตัวแปร filteredData แทน allDashboardData)
+    // 📌 วาดตาราง
     function renderTable() {
         const tbody = document.getElementById("dashboardBody");
         tbody.innerHTML = "";
@@ -330,6 +330,54 @@
         if (page < 1 || page > totalPages) return;
         currentPage = page;
         renderTable();
+    }
+
+    // 📌 ฟังก์ชันส่งออกข้อมูลเป็นไฟล์ CSV (เปิดใน Excel ได้)
+    function exportToCSV() {
+        if (filteredData.length === 0) {
+            alert("⚠️ ไม่มีข้อมูลให้ส่งออกครับ (ลองเช็คตัวกรองข้อมูลดูนะ)");
+            return;
+        }
+
+        let csvContent = "\uFEFF"; 
+        csvContent += "เลขรายการ,Step 1 | เตรียม,Step 2 | ยืม,Step 3 | ก่อนสอบ,Step 4 | คืน,Step 5 | ตรวจ,สถานะรวม,ผู้เตรียมเครื่อง,ผู้ที่จะมารับเครื่อง,หมายเหตุ,ยืมฉุกเฉิน\n";
+
+        const stripHTML = (html) => {
+            let tmp = document.createElement("DIV");
+            tmp.innerHTML = html;
+            let text = tmp.textContent || tmp.innerText || "";
+            return text.replace(/\n/g, " ").trim(); 
+        };
+
+        filteredData.forEach(item => {
+            let reqId = item.reqId.replace("REQ-", "");
+            let s1 = stripHTML(item.step1);
+            let s2 = stripHTML(item.step2);
+            let s3 = stripHTML(item.step3);
+            let s4 = stripHTML(item.step4);
+            let s5 = stripHTML(item.step5);
+            let status = item.status;
+            let preparer = item.preparer;
+            let receiver = item.receiver;
+            let note = item.note.replace(/"/g, '""'); 
+            let emergency = item.emergency === "✅" ? "ใช่" : "-";
+
+            let row = `"${reqId}","${s1}","${s2}","${s3}","${s4}","${s5}","${status}","${preparer}","${receiver}","${note}","${emergency}"`;
+            csvContent += row + "\n";
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        
+        let today = new Date();
+        let dateStr = today.toISOString().split('T')[0];
+        link.setAttribute("download", `รายงานเบิกยืม_iPad_${dateStr}.csv`);
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 </script>
 </body>
