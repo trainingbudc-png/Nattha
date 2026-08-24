@@ -7,32 +7,35 @@
 	<link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme-admin.css">
     
     <style>
-        body { font-family: 'Kanit', sans-serif; background-color: #fdf2f2; padding: 20px; color: #333; }
-        .card-custom { background: white; border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(220,53,69,0.05); border-top: 6px solid #dc3545; }
-        .form-label { font-weight: 600; color: #495057; }
+        body { background: #fdf2f2; font-family: 'Kanit', sans-serif; padding: 20px; }
+        
+        /* 📌 กรอบการ์ดหลัก (มาตรฐานเดียวกับ Step 5) */
+        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(220,53,69,0.05); max-width: 950px; margin: auto; border: 1px solid #fecaca; }
+        
+        .form-label { font-weight: 600; color: #495057; font-size: 0.95rem; }
+        .form-control, .form-select { border-radius: 10px; border: 1px solid #fca5a5; padding: 12px 15px; }
+        .form-control:focus, .form-select:focus { border-color: #dc3545; box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25); }
         
         /* 📌 สไตล์ส่วนของการเลือก iPad */
-        .btn-outline-red { color: #212529; border-color: #dc3545; font-weight: 600; border-radius: 8px; }
-        .btn-outline-red:hover { background-color: #fdf2f2; color: #000; }
-        .btn-check:checked + .btn-outline-red { background-color: #dc3545; color: white; border-color: #dc3545; box-shadow: 0 4px 10px rgba(220,53,69,0.3); }
-
-        .category-header { background-color: #fef2f2; color: #212529; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s; margin-bottom: 5px; border: 1px solid #fca5a5; }
+        .category-header { background-color: #fef2f2; color: #212529; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; margin-bottom: 5px; border: 1px solid #fca5a5; }
         .category-header:hover { background-color: #fecaca; }
         .category-header::after { content: '▼'; font-size: 0.8rem; transition: transform 0.3s ease; }
         .category-header.collapsed::after { transform: rotate(-90deg); }
 
-        .ipad-container { max-height: 250px; overflow-y: auto; padding: 15px; background: white; border: 1px solid #fecaca; border-radius: 0 0 8px 8px; border-top: none; margin-bottom: 15px; }
-        
-        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 10px; }
-        .grid-layout .btn { width: 100%; margin: 0 !important; padding: 8px 5px !important; font-size: 0.9rem; text-align: center; white-space: normal; word-wrap: break-word; line-height: 1.2; display: flex; align-items: center; justify-content: center; min-height: 50px; }
+        .ipad-container { max-height: 250px; overflow-y: auto; padding: 15px; background: #fffafa; border: 1px solid #fecaca; border-radius: 0 0 8px 8px; border-top: none; margin-bottom: 15px; }
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+        .grid-layout .btn { width: 100%; margin: 0 !important; padding: 8px 5px !important; font-size: 0.95rem; text-align: center; white-space: normal; line-height: 1.2; display: flex; align-items: center; justify-content: center; min-height: 45px; border-radius: 8px; }
         .grid-full-width { grid-column: 1 / -1; text-align: center; padding: 10px 0; }
 
-        .btn-submit-custom { background-color: #dc3545; color: white; font-weight: bold; border: none; border-radius: 12px; padding: 15px; transition: 0.3s; }
-        .btn-submit-custom:hover { background-color: #b91c1c; color: white; }
+        /* 🔘 ปุ่มกดเลือก iPad */
+        .btn-outline-red { color: #212529; border-color: #fca5a5; font-weight: 600; background-color: white; }
+        .btn-outline-red:hover { background-color: #fef2f2; border-color: #dc3545; color: #dc3545; }
+        .btn-check:checked + .btn-outline-red { background-color: #dc3545; color: white; border-color: #dc3545; box-shadow: 0 4px 10px rgba(220,53,69,0.3); }
 
-        /* 💻 สไตล์ตารางสำหรับจอคอม (Desktop) มาตรฐานเดียวกับ Step 5 */
+        /* 💻 สไตล์ตารางสำหรับจอคอม (Desktop) */
         .table-responsive { border-radius: 12px; border: 1px solid #fca5a5; overflow: hidden; }
         .table { margin-bottom: 0; }
         .table th { background-color: #fef2f2; color: #212529; font-weight: 600; text-align: center; padding: 15px; border-bottom: 2px solid #fca5a5; font-size: 0.95rem; white-space: nowrap; }
@@ -41,18 +44,20 @@
 
         /* 📌 ปุ่ม Checkbox และปุ่มยืนยัน */
         .form-check-input { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: #dc3545; }
-        .btn-shortcut { background: white; color: #dc3545; border: 2px solid #dc3545; transition: 0.2s; }
+        .btn-shortcut { background: white; color: #dc3545; border: 2px solid #dc3545; transition: 0.2s; border-radius: 50rem; font-size: 0.85rem;}
         .btn-shortcut:hover { background: #dc3545; color: white; }
-        
-        /* 📱 ปรับการ์ดบนหน้าจอมือถือ (Mobile) ให้เป็นดีไซน์เดียวกันทั้งหมด */
-        @media screen and (max-width: 768px) {
-            .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
+        .btn-submit-custom { background-color: #dc3545; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 25px; transition: 0.3s; border: none; font-size: 1.1rem; }
+        .btn-submit-custom:hover { background-color: #b91c1c; color: white; }
+
+        /* 📱 ปรับการ์ดบนหน้าจอมือถือ (Mobile) */
+        @media (max-width: 768px) {
+            .confirm-card { padding: 20px; border-radius: 16px; margin-top: 10px; }
+            .table-responsive { border: none; }
             .table thead { display: none; }
             .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(220,53,69,0.06); border: 1px solid #fecaca; }
             .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px solid #fee2e2; }
-            .table tbody td::before { content: attr(data-label); font-weight: 500; color: #64748b; font-size: 0.95rem; text-align: left; margin-right: 15px; flex-shrink: 0; }
-            
-            /* แยกเส้นแบ่งระหว่าง หัวข้อการ์ด กับ เช็คลิสต์ ให้ชัดเจน */
+            .table tbody td::before { content: attr(data-label); font-weight: 500; color: #64748b; font-size: 0.95rem; text-align: left; margin-right: 15px; }
+
             .table tbody td:first-child { border-bottom: 2px solid #fca5a5 !important; padding-bottom: 16px; margin-bottom: 8px; }
             .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 16px; display: block; }
             .table tbody td:last-child::before { display: none; } 
@@ -62,96 +67,91 @@
 </head>
 <body>
     
-<div class="container my-4" style="max-width: 900px;">
-        <div class="card card-custom p-4 p-md-5 mx-auto">
-            
-            <!-- 📌 ย้าย Header เข้ามาไว้ในกรอบสีขาว ให้เหมือน Step 2, 3, 4, 5 -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="text-dark fw-bold mb-0">📦 Step 1 | เตรียมเครื่อง</h4>
-                <a href="admin.html" class="btn btn-outline-secondary px-4 fw-bold rounded-pill border-2">🔙 กลับหน้าแอดมิน</a>
-            </div>
-            
-            <form id="step1Form">
+    <div class="confirm-card my-3 mb-5">
         
-        <div class="card card-custom p-4 p-md-5 mx-auto">
-            <form id="step1Form">
-                
-                <!-- 📌 ช่องใหม่: เลขรายการ (รับค่าจาก URL) -->
-                <div class="mb-4">
-                    <label class="form-label">📌 เลขรายการ (ID อ้างอิงจากระบบหลัก):</label>
-                    <input type="text" id="reqIdInput" class="form-control form-control-lg bg-light text-danger fw-bold" readonly placeholder="ระบบจะสร้างให้อัตโนมัติหากไม่มีการระบุมา">
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label">👤 เลือกผู้ขอเบิกยืม (ผู้ใช้งาน):</label>
-                    <select id="userNameSelect" class="form-select form-select-lg" required>
-                        <option value="">กำลังโหลดรายชื่อ... ⏳</option>
-                    </select>
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label d-flex justify-content-between align-items-end mb-3">
-                        <span>📱 เลือกเครื่องที่ว่าง (กดเลือกได้หลายเครื่อง):</span>
-                        <span class="badge bg-secondary fs-6" id="selectedCount">เลือกแล้ว 0 เครื่อง</span>
-                    </label>
-                    
-                    <div class="category-header" data-bs-toggle="collapse" data-bs-target="#collapseNormal" aria-expanded="true">
-                        🔹 หมวด iPad (ปกติ)
-                    </div>
-                    <div class="collapse show" id="collapseNormal">
-                        <div id="ipadNormalContainer" class="ipad-container grid-layout">
-                            <div class="grid-full-width text-muted py-2">กำลังโหลด... ⏳</div>
-                        </div>
-                    </div>
-
-                    <div class="category-header collapsed" data-bs-toggle="collapse" data-bs-target="#collapseAir" aria-expanded="false">
-                        🔹 หมวด iPad Air + APC
-                    </div>
-                    <div class="collapse" id="collapseAir">
-                        <div id="ipadAirContainer" class="ipad-container grid-layout">
-                            <div class="grid-full-width text-muted py-2">กำลังโหลด... ⏳</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="dynamicChecklistContainer" class="mb-4 d-none">
-                    <label class="form-label text-dark fw-bold">✅ สิ่งที่แอดมินต้องเตรียม (เช็คให้ครบทุกเครื่อง):</label>
-                    
-                    <!-- 📌 ตารางที่ถูกอัปเกรดเป็น Unified UI -->
-                    <div class="table-responsive bg-white">
-                        <table class="table mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="text-start ps-4">รหัส iPad</th>
-                                    <th>G-Drive</th>
-                                    <th>ไฟล์เอกสาร</th>
-                                    <th>ไฟล์รูปภาพ</th>
-                                    <th>Safari</th>
-                                    <th>ปุ่มลัด</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dynamicChecklistBody">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 🚨 หมวดยืมฉุกเฉิน -->
-                <div class="mb-4 p-3 rounded" style="background-color: #fff5f5; border: 1px dashed #fca5a5;">
-                    <div class="form-check form-switch d-flex align-items-center gap-2">
-                        <input class="form-check-input" type="checkbox" id="emergencyCheck" style="width: 45px !important; height: 24px !important; cursor: pointer;" onchange="toggleEmergencyNote()">
-                        <label class="form-check-label fw-bold text-danger mb-0" for="emergencyCheck" style="font-size: 1.1rem; cursor: pointer; padding-top: 2px;">🚨 กรณีเบิกยืมฉุกเฉิน</label>
-                    </div>
-                    
-                    <div id="emergencyNoteContainer" class="mt-3" style="display: none;">
-                        <label class="form-label text-danger fw-bold fs-6 mb-1">ระบุเหตุผลการยืมฉุกเฉิน <span class="text-muted fw-normal" style="font-size: 0.85rem;">(บังคับกรอก)</span></label>
-                        <input type="text" id="emergencyNote" class="form-control border-danger" placeholder="เช่น เครื่องเดิมชำรุดกะทันหัน, อาจารย์ขอเพิ่มด่วน...">
-                    </div>
-                </div>
-
-                <button type="button" class="btn btn-submit-custom w-100 fs-5 mt-2" id="submitBtn" onclick="submitStep1()">💾 ยืนยันการเตรียมเครื่อง</button>
-            </form>
+        <!-- 📌 ส่วนหัวของเพจ (อยู่ในกรอบการ์ด) -->
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-danger border-opacity-25">
+            <h4 class="text-danger fw-bold mb-0">📦 Step 1 | เตรียมเครื่อง</h4>
+            <a href="admin.html" class="btn btn-outline-danger px-4 fw-bold rounded-pill border-2 btn-sm">🔙 กลับเมนูแอดมิน</a>
         </div>
+        
+        <form id="step1Form">
+            <!-- 📌 ช่อง: เลขรายการ -->
+            <div class="mb-4">
+                <label class="form-label">📌 เลขรายการ <span class="text-muted fw-normal">(ID อ้างอิงจากระบบหลัก)</span></label>
+                <input type="text" id="reqIdInput" class="form-control form-control-lg bg-light text-danger fw-bold" readonly placeholder="ระบบจะสร้างให้อัตโนมัติหากไม่มีการระบุมา">
+            </div>
+
+            <!-- 📌 ช่อง: เลือกผู้ยืม -->
+            <div class="mb-4">
+                <label class="form-label">👤 เลือกผู้ขอเบิกยืม <span class="text-muted fw-normal">(ผู้ใช้งาน)</span></label>
+                <select id="userNameSelect" class="form-select form-select-lg" required>
+                    <option value="">กำลังโหลดรายชื่อ... ⏳</option>
+                </select>
+            </div>
+
+            <!-- 📌 ช่อง: เลือก iPad -->
+            <div class="mb-4">
+                <label class="form-label d-flex justify-content-between align-items-end mb-3">
+                    <span>📱 เลือกเครื่องที่ว่าง <span class="text-muted fw-normal">(กดเลือกได้หลายเครื่อง)</span></span>
+                    <span class="badge bg-secondary fs-6" id="selectedCount">เลือกแล้ว 0 เครื่อง</span>
+                </label>
+                
+                <div class="category-header" data-bs-toggle="collapse" data-bs-target="#collapseNormal" aria-expanded="true">
+                    🔹 หมวด iPad (ปกติ)
+                </div>
+                <div class="collapse show" id="collapseNormal">
+                    <div id="ipadNormalContainer" class="ipad-container grid-layout">
+                        <div class="grid-full-width text-muted py-2">กำลังโหลด... ⏳</div>
+                    </div>
+                </div>
+
+                <div class="category-header collapsed" data-bs-toggle="collapse" data-bs-target="#collapseAir" aria-expanded="false">
+                    🔹 หมวด iPad Air + APC
+                </div>
+                <div class="collapse" id="collapseAir">
+                    <div id="ipadAirContainer" class="ipad-container grid-layout">
+                        <div class="grid-full-width text-muted py-2">กำลังโหลด... ⏳</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 📌 ตารางเช็คลิสต์เตรียมเครื่อง (อัปเกรดเป็น Unified UI) -->
+            <div id="dynamicChecklistContainer" class="mb-4 d-none">
+                <label class="form-label text-dark fw-bold mb-3">✅ สิ่งที่แอดมินต้องเตรียม <span class="text-muted fw-normal">(เช็คให้ครบทุกเครื่อง)</span></label>
+                <div class="table-responsive bg-white">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th class="text-start ps-4">รหัส iPad</th>
+                                <th>G-Drive</th>
+                                <th>ไฟล์เอกสาร</th>
+                                <th>ไฟล์รูปภาพ</th>
+                                <th>Safari</th>
+                                <th>ปุ่มลัด</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dynamicChecklistBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 🚨 หมวดยืมฉุกเฉิน -->
+            <div class="mb-4 p-4 rounded-4" style="background-color: #fff5f5; border: 1px dashed #fca5a5;">
+                <div class="form-check form-switch d-flex align-items-center gap-3">
+                    <input class="form-check-input m-0" type="checkbox" id="emergencyCheck" style="width: 45px !important; height: 24px !important; cursor: pointer;" onchange="toggleEmergencyNote()">
+                    <label class="form-check-label fw-bold text-danger m-0" for="emergencyCheck" style="font-size: 1.1rem; cursor: pointer;">🚨 กรณีเบิกยืมฉุกเฉิน</label>
+                </div>
+                
+                <div id="emergencyNoteContainer" class="mt-3" style="display: none;">
+                    <label class="form-label text-danger fw-bold fs-6 mb-2">ระบุเหตุผลการยืมฉุกเฉิน <span class="text-muted fw-normal" style="font-size: 0.85rem;">(บังคับกรอก)</span></label>
+                    <input type="text" id="emergencyNote" class="form-control border-danger" placeholder="เช่น เครื่องเดิมชำรุดกะทันหัน, อาจารย์ขอเพิ่มด่วน...">
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-submit-custom shadow-sm" id="submitBtn" onclick="submitStep1()">💾 ยืนยันการเตรียมเครื่อง</button>
+        </form>
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -267,7 +267,7 @@
             tr.dataset.sortval = numericValue;
             tr.dataset.rawname = ipadId;
 
-            // 📌 อัปเดต HTML ของแต่ละแถวให้ตรงกับ Unified UI
+            // 📌 อัปเดต HTML ตารางให้ตรงกับ Unified UI (Step 5)
             tr.innerHTML = `
                 <td data-label="รหัส iPad" class="text-start ps-4">
                     <div class="fw-bold text-dark fs-6 m-0">${ipadId}</div>
@@ -276,7 +276,7 @@
                 <td data-label="ไฟล์เอกสาร"><input type="checkbox" class="form-check-input check-${safeId}" value="file"></td>
                 <td data-label="ไฟล์รูปภาพ"><input type="checkbox" class="form-check-input check-${safeId}" value="img"></td>
                 <td data-label="Safari"><input type="checkbox" class="form-check-input check-${safeId}" value="safari"></td>
-                <td data-label="ปุ่มลัด"><button type="button" class="btn btn-shortcut btn-sm fw-bold px-3 rounded-pill w-100" onclick="tickAllRow('${safeId}')">ติ๊กครบ</button></td>
+                <td data-label="ปุ่มลัด"><button type="button" class="btn btn-shortcut btn-sm fw-bold px-3 w-100" onclick="tickAllRow('${safeId}')">ติ๊กครบ</button></td>
             `;
             tbody.appendChild(tr);
         } else {
