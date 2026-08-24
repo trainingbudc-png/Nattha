@@ -10,56 +10,83 @@
     <link rel="stylesheet" href="theme-user.css">
     <style>
         body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
-        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 850px; margin: auto; border: 1px solid #e9ecef; }
-        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 20px; transition: 0.3s; border: none; font-size: 1.1rem; }
-        .btn-confirm:hover { background: #495057; color: white; }
-        .info-box { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 15px; margin-bottom: 25px; }
-        .info-label { font-size: 0.85rem; color: #6c757d; margin-bottom: 2px; }
-        .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
-        .divider { width: 1px; background-color: #dee2e6; height: 40px; }
+        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); max-width: 950px; margin: auto; border: 1px solid #e2e8f0; }
         
-        /* 📌 สไตล์ใหม่สำหรับการจัดกลุ่มเช็คลิสต์แบบการ์ด (แทนตาราง) */
-        .confirm-card-checklist { margin-top: 20px; }
-        .checklist-item-group { background: white; border-radius: 16px; border: 1px solid #e9ecef; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); overflow: hidden; }
-        .group-header-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background-color: #f8f9fa; border-bottom: 1px solid #dee2e6; }
-        .group-title { font-weight: 600; color: #495057; font-size: 0.95rem; }
-        .group-header-controls { display: flex; align-items: center; gap: 10px; }
-        .group-label { font-size: 1.1rem; font-weight: bold; color: #212529; margin-bottom: 0; }
-        .group-details-panel { padding: 5px 20px 15px 20px; display: flex; flex-direction: column; }
-        .detail-item-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed #dee2e6; }
-        .detail-item-row:last-child { border-bottom: none; } /* ลบเส้นประบรรทัดสุดท้าย */
-        .item-label { font-weight: 600; color: #495057; font-size: 0.95rem; }
-        .group-footer-row { padding: 15px 20px; border-top: 1px solid #e9ecef; background: #fff; }
+        /* 📌 Info Box (มาตรฐานเดียวกันทุกหน้า) */
+        .info-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: center; }
+        .info-label { font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+        .info-value { font-size: 1.15rem; font-weight: bold; color: #1e293b; }
+        .divider { width: 1px; background-color: #e2e8f0; height: 50px; }
 
-        .check-app:disabled { cursor: not-allowed; opacity: 0.5; }
-        .check-app, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
+        /* 💻 สไตล์ตารางสำหรับจอคอม (Desktop) */
+        .table-responsive { border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
+        .table { margin-bottom: 0; }
+        .table th { background-color: #f8fafc; color: #475569; font-weight: 600; text-align: center; padding: 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.95rem; white-space: nowrap; }
+        .table td { vertical-align: middle; text-align: center; padding: 12px 15px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 500; font-size: 0.95rem; }
+        .table tbody tr:hover { background-color: #fcfcfc; }
+        
+        /* 📌 ปุ่ม Checkbox และปุ่มยืนยัน */
+        .check-app:disabled { cursor: not-allowed; opacity: 0.4; }
+        .check-app, .select-ipad { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: #212529; }
+        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 25px; transition: 0.3s; border: none; font-size: 1.1rem; }
+        .btn-confirm:hover { background: #495057; color: white; }
+
+        /* 📱 ปรับการ์ดบนหน้าจอมือถือ (Mobile) */
+        @media (max-width: 768px) {
+            .info-box { flex-direction: column; text-align: center; gap: 15px; }
+            .divider { width: 50px; height: 1px; }
+            .table-responsive { border: none; }
+            .table thead { display: none; }
+            .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+            .table tbody td::before { content: attr(data-label); font-weight: 500; color: #64748b; font-size: 0.95rem; text-align: left; margin-right: 15px; }
+            
+            /* แยกเส้นแบ่งระหว่าง หัวข้อการ์ด กับ เช็คลิสต์ ให้ชัดเจน */
+            .table tbody td:first-child { border-bottom: 2px solid #e2e8f0 !important; padding-bottom: 16px; margin-bottom: 8px; }
+            .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 16px; display: block; }
+            .table tbody td:last-child::before { display: none; } 
+            .table tbody td:last-child .btn { padding: 12px !important; font-size: 1.05rem; }
+        }
     </style>
 </head>
 <body>
 <div class="confirm-card">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold text-dark mb-0">Step 2 | รับเครื่อง</h4>
+        <h4 class="fw-bold text-dark mb-0">✅ Step 2 | รับเครื่อง</h4>
         <a href="step2-list.html" class="btn btn-outline-dark px-3 fw-bold rounded-pill btn-sm border-2">🔙 กลับ</a>
     </div>
     
-    <div class="info-box d-flex justify-content-around align-items-center">
+    <div class="info-box">
         <div class="text-center">
-            <div class="info-label">👤 ผู้ขอเบิกยืม:</div>
+            <div class="info-label">👤 ผู้ขอเบิกยืม</div>
             <div id="displayUserName" class="info-value">กำลังโหลด...</div>
         </div>
         <div class="divider"></div>
         <div class="text-center">
-            <div class="info-label">👨‍💻 แอดมินผู้เตรียม:</div>
+            <div class="info-label">👨‍💻 แอดมินผู้เตรียม</div>
             <div id="displayAdminName" class="info-value">กำลังโหลด...</div>
         </div>
     </div>
 
-    <!-- 📌 พื้นที่แสดงรายการ iPad แบบใหม่ (Grouped Panel) -->
-    <div class="confirm-card-checklist" id="itemList">
-        <div class="text-center text-muted py-3">กำลังโหลดข้อมูล... ⏳</div>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th class="text-start ps-4">เลือกรับเครื่อง</th>
+                    <th>Drive</th>
+                    <th>File</th>
+                    <th>Img</th>
+                    <th>Safari</th>
+                    <th>ปุ่มลัด</th>
+                </tr>
+            </thead>
+            <tbody id="itemList">
+                <tr><td colspan="6" class="text-muted py-4 text-center">กำลังโหลดข้อมูล... ⏳</td></tr>
+            </tbody>
+        </table>
     </div>
     
-    <button id="btnSubmit" class="btn btn-confirm shadow-sm" onclick="submitReceipt()">ยืนยันการรับเครื่อง</button>
+    <button id="btnSubmit" class="btn btn-confirm shadow-sm" onclick="submitReceipt()">💾 ยืนยันการรับเครื่อง</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -74,71 +101,51 @@
         document.getElementById('displayUserName').innerText = res.userName || "ไม่ระบุ";
         document.getElementById('displayAdminName').innerText = res.adminName || "ไม่ระบุ";
 
-        const container = document.getElementById('itemList');
-        container.innerHTML = ""; 
+        const tbody = document.getElementById('itemList');
+        tbody.innerHTML = ""; 
 
         if(res.data && res.data.length > 0) {
             res.data.forEach(item => {
-                // 📌 โครงสร้าง HTML แบบใหม่ (ไม่มี Table)
-                container.innerHTML += `
-                <div class="checklist-item-group" data-ipad="${item.ipadId}">
-                    <div class="group-header-row">
-                        <span class="group-title">เลือกรับเครื่อง</span>
-                        <div class="group-header-controls">
-                            <input type="checkbox" class="select-ipad form-check-input" id="btn-${item.ipadId}" onchange="toggleRow(this)"> 
-                            <label for="btn-${item.ipadId}" style="cursor:pointer;" class="group-label">${item.ipadId}</label>
+                tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
+                    <td data-label="เลือกรับเครื่อง" class="text-start ps-4">
+                        <div class="d-flex align-items-center">
+                            <input type="checkbox" class="select-ipad form-check-input me-3" id="btn-${item.ipadId}" onchange="toggleRow(this)"> 
+                            <label for="btn-${item.ipadId}" style="cursor:pointer;" class="fw-bold fs-6 m-0">${item.ipadId}</label>
                         </div>
-                    </div>
-                    <div class="group-details-panel">
-                        <div class="detail-item-row">
-                            <label class="item-label">Drive</label>
-                            <input type="checkbox" class="check-app form-check-input" disabled>
-                        </div>
-                        <div class="detail-item-row">
-                            <label class="item-label">File</label>
-                            <input type="checkbox" class="check-app form-check-input" disabled>
-                        </div>
-                        <div class="detail-item-row">
-                            <label class="item-label">Img</label>
-                            <input type="checkbox" class="check-app form-check-input" disabled>
-                        </div>
-                        <div class="detail-item-row">
-                            <label class="item-label">Safari</label>
-                            <input type="checkbox" class="check-app form-check-input" disabled>
-                        </div>
-                    </div>
-                    <div class="group-footer-row">
-                        <button type="button" class="btn btn-dark btn-sm fw-bold w-100 rounded-pill py-2" onclick="tickAll(this)">ติ๊กครบ</button>
-                    </div>
-                </div>`;
+                    </td>
+                    <td data-label="Drive"><input type="checkbox" class="check-app form-check-input" disabled></td>
+                    <td data-label="File"><input type="checkbox" class="check-app form-check-input" disabled></td>
+                    <td data-label="Img"><input type="checkbox" class="check-app form-check-input" disabled></td>
+                    <td data-label="Safari"><input type="checkbox" class="check-app form-check-input" disabled></td>
+                    <td data-label="ปุ่มลัด"><button type="button" class="btn btn-dark btn-sm fw-bold w-100 rounded-pill" onclick="tickAll(this)">ติ๊กครบ</button></td>
+                </tr>`;
             });
         } else {
-            container.innerHTML = '<div class="text-danger text-center py-3 fw-bold">❌ ไม่พบรายการเครื่อง</div>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-danger fw-bold py-4 text-center">❌ ไม่พบรายการเครื่อง</td></tr>';
         }
     });
 
     function toggleRow(checkbox) {
-        // 📌 เปลี่ยนการอ้างอิงจาก 'tr' เป็น '.checklist-item-group'
-        const group = checkbox.closest('.checklist-item-group');
-        group.querySelectorAll('.check-app').forEach(app => {
+        const row = checkbox.closest('tr');
+        row.querySelectorAll('.check-app').forEach(app => {
             app.disabled = !checkbox.checked;
             if (!checkbox.checked) app.checked = false;
         });
     }
 
     function tickAll(btn) {
-        const group = btn.closest('.checklist-item-group');
-        const mainCheck = group.querySelector('.select-ipad');
+        const row = btn.closest('tr');
+        const mainCheck = row.querySelector('.select-ipad');
         mainCheck.checked = true; 
-        group.querySelectorAll('.check-app').forEach(cb => { cb.disabled = false; cb.checked = true; });
+        row.querySelectorAll('.check-app').forEach(cb => { cb.disabled = false; cb.checked = true; });
     }
 
     async function submitReceipt() {
         let items = [];
         document.querySelectorAll('.select-ipad:checked').forEach(ipad => {
-            const group = ipad.closest('.checklist-item-group');
-            const checks = Array.from(group.querySelectorAll('.check-app')).map(c => c.checked ? "☑" : "☐");
-            items.push({ ipadId: group.dataset.ipad, checklist: checks.join(",") });
+            const row = ipad.closest('tr');
+            const checks = Array.from(row.querySelectorAll('.check-app')).map(c => c.checked ? "☑" : "☐");
+            items.push({ ipadId: row.dataset.ipad, checklist: checks.join(",") });
         });
 
         if (items.length === 0) {
@@ -162,16 +169,15 @@
                     allowOutsideClick: false
                 }).then(() => {
                     const userRole = localStorage.getItem("userRole");
-                    if (userRole === "Admin") {
-                        window.location.href = "admin.html";
-                    } else {
-                        window.location.href = "user.html";
-                    }
+                    window.location.href = userRole === "Admin" ? "admin.html" : "user.html";
                 });
+            } else { 
+                Swal.fire("❌ เกิดข้อผิดพลาด", result.message || "ในการบันทึกข้อมูล", "error"); 
+                btn.innerText = "💾 ยืนยันการรับเครื่อง"; btn.disabled = false; 
             }
-            else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message || "ในการบันทึกข้อมูล", "error"); btn.innerText = "ยืนยันการรับเครื่อง"; btn.disabled = false; }
         } catch (error) {
-            Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); btn.innerText = "ยืนยันการรับเครื่อง"; btn.disabled = false;
+            Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); 
+            btn.innerText = "💾 ยืนยันการรับเครื่อง"; btn.disabled = false;
         }
     }
 </script>
