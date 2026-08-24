@@ -10,30 +10,47 @@
     <link rel="stylesheet" href="theme-user.css">
     <style>
         body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
-        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 950px; margin: auto; border: 1px solid #e9ecef; }
-        .info-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 12px; padding: 15px; margin-bottom: 25px; }
-        .info-label { font-size: 0.85rem; color: #6c757d; margin-bottom: 2px; }
-        .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
-        .divider { width: 1px; background-color: #dee2e6; height: 40px; }
+        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); max-width: 1000px; margin: auto; border: 1px solid #e2e8f0; }
         
-        /* 📌 ลบ CSS input-admin-name ออกเพราะไม่ได้ใช้แท็ก input แล้ว */
-        
-        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; border: none; }
-        .btn-confirm:hover { background: #495057; color: white; }
-        .table th { background-color: #f8f9fa; text-align: center; font-size: 0.9rem; vertical-align: middle; color: #495057; border-bottom: 2px solid #dee2e6;}
-        .table td { vertical-align: middle; text-align: center; border-bottom: 1px solid #e9ecef; }
-        .radio-group label { border-radius: 8px; font-weight: 500; }
-        .hint-box { border-radius: 8px; font-size: 0.95rem; display: none; background-color: #f8f9fa; border-color: #dee2e6; color: #495057; }
+        /* 📌 Info Box */
+        .info-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: center; }
+        .info-label { font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+        .info-value { font-size: 1.15rem; font-weight: bold; color: #1e293b; }
+        .divider { width: 1px; background-color: #e2e8f0; height: 50px; }
 
-        .check-item, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
-        @media screen and (max-width: 768px) {
-            .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
+        /* 💻 สไตล์ตารางสำหรับจอคอม (Desktop) */
+        .table-responsive { border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
+        .table { margin-bottom: 0; }
+        .table th { background-color: #f8fafc; color: #475569; font-weight: 600; text-align: center; padding: 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.95rem; white-space: nowrap; }
+        .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 500; font-size: 0.95rem; }
+        .table tbody tr:hover { background-color: #fcfcfc; }
+        
+        /* 📌 ปุ่ม Checkbox และส่วนอื่นๆ */
+        .check-item:disabled { cursor: not-allowed; opacity: 0.4; }
+        .check-item, .select-ipad { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: #212529; }
+        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 25px; transition: 0.3s; border: none; font-size: 1.1rem; }
+        .btn-confirm:hover { background: #495057; color: white; }
+        
+        /* 🔘 ปรับสไตล์ปุ่ม Radio เลือกการสอบ */
+        .radio-group label { border-radius: 8px; font-weight: 500; padding: 8px 24px; transition: 0.2s; }
+        .btn-check:checked + .btn-outline-dark { background-color: #212529; color: white; }
+        .btn-check:checked + .btn-outline-danger { background-color: #dc3545; color: white; }
+        .hint-box { border-radius: 8px; font-size: 0.95rem; display: none; background-color: #f8fafc; border: 1px solid #e2e8f0; color: #475569; }
+
+        /* 📱 ปรับการ์ดบนหน้าจอมือถือ (Mobile) */
+        @media (max-width: 768px) {
+            .info-box { flex-direction: column; text-align: center; gap: 15px; }
+            .divider { width: 50px; height: 1px; }
+            .table-responsive { border: none; }
             .table thead { display: none; }
-            .table tbody tr { display: block; background: white; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #e9ecef; }
-            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #dee2e6; }
-            .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
-            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #495057; font-size: 0.95rem; text-align: left; margin-right: 15px; }
-            .btn-sm { padding: 10px !important; margin-top: 5px; }
+            .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+            .table tbody td::before { content: attr(data-label); font-weight: 500; color: #64748b; font-size: 0.95rem; text-align: left; margin-right: 15px; }
+            
+            .table tbody td:first-child { border-bottom: 2px solid #e2e8f0 !important; padding-bottom: 16px; margin-bottom: 8px; }
+            .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 16px; display: block; }
+            .table tbody td:last-child::before { display: none; } 
+            .table tbody td:last-child .btn { padding: 12px !important; font-size: 1.05rem; }
         }
     </style>
 </head>
@@ -41,19 +58,18 @@
 
 <div class="confirm-card">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold text-dark mb-0">📝Step 3 | ก่อนสอบ</h4>
+        <h4 class="fw-bold text-dark mb-0">📝 Step 3 | ก่อนสอบ</h4>
         <a href="step3-list.html" class="btn btn-outline-dark px-3 fw-bold rounded-pill btn-sm border-2">🔙 กลับ</a>
     </div>
     
-    <div class="info-box d-flex justify-content-around align-items-center">
+    <div class="info-box">
         <div class="text-center">
-            <div class="info-label">🔖 เลขรายการ:</div>
+            <div class="info-label">🔖 เลขรายการ</div>
             <div id="displayReqId" class="info-value">กำลังโหลด...</div>
         </div>
         <div class="divider"></div>
         <div class="text-center">
-            <div class="info-label">👨‍💻 ผู้ตรวจสอบ:</div>
-            <!-- 📌 เปลี่ยนจากแท็ก input เป็นแท็ก div แบบล็อกข้อมูลแก้ไขไม่ได้ -->
+            <div class="info-label">👨‍💻 ผู้ตรวจสอบ</div>
             <div id="inspectorName" class="info-value">กำลังโหลด...</div>
         </div>
     </div>
@@ -62,30 +78,44 @@
         <label class="fw-bold mb-2 text-dark">เลือกระบบการสอบ:</label>
         <div class="d-flex flex-wrap gap-2 radio-group">
             <input type="radio" class="btn-check" name="examType" id="osce" value="OSCE" checked onclick="handleExamChange(this.value)">
-            <label class="btn btn-outline-dark px-4" for="osce">OSCE</label>
+            <label class="btn btn-outline-dark" for="osce">OSCE</label>
+            
             <input type="radio" class="btn-check" name="examType" id="exam" value="Exam+" onclick="handleExamChange(this.value)">
-            <label class="btn btn-outline-dark px-4" for="exam">Exam+</label>
+            <label class="btn btn-outline-dark" for="exam">Exam+</label>
+            
             <input type="radio" class="btn-check" name="examType" id="crq" value="CRQ" onclick="handleExamChange(this.value)">
-            <label class="btn btn-outline-dark px-4" for="crq">CRQ</label>
+            <label class="btn btn-outline-dark" for="crq">CRQ</label>
+            
             <input type="radio" class="btn-check" name="examType" id="none" value="ไม่ได้สอบ" onclick="handleExamChange(this.value)">
-            <label class="btn btn-outline-danger px-4" for="none">ไม่ได้สอบ</label>
+            <label class="btn btn-outline-danger" for="none">ไม่ได้สอบ</label>
         </div>
-        <div id="examHint" class="alert alert-light hint-box mt-3 py-2 px-3 border shadow-sm"><strong>💡 คำแนะนำ [Exam+]:</strong> ไม่ต้องปิด Bluetooth เนื่องจากปากกาต้องใช้ Bluetooth</div>
-        <div id="noteContainer" class="mt-3" style="display:none;"><input type="text" id="reasonNote" class="form-control border-danger" placeholder="⚠️ ระบุเหตุผลที่ไม่ได้สอบ..."></div>
+        <div id="examHint" class="alert hint-box mt-3 py-2 px-3 shadow-sm"><strong>💡 คำแนะนำ [Exam+]:</strong> ไม่ต้องปิด Bluetooth เนื่องจากปากกาต้องใช้ Bluetooth</div>
+        <div id="noteContainer" class="mt-3" style="display:none;">
+            <input type="text" id="reasonNote" class="form-control border-danger" placeholder="⚠️ ระบุเหตุผลที่ไม่ได้สอบ...">
+        </div>
     </div>
 
     <div class="table-responsive">
-        <table class="table align-middle text-center">
+        <table class="table align-middle">
             <thead>
-                <tr><th>iPad</th><th>Logout Drive</th><th>ปิด Wi-Fi</th><th>ปิด Bluetooth</th><th>ปิด AirDrop</th><th>โหมดเครื่องบิน</th><th>เริ่มใช้งาน</th><th>จัดการ</th></tr>
+                <tr>
+                    <th class="text-start ps-4">เลือกเครื่อง</th>
+                    <th>Logout Drive</th>
+                    <th>ปิด Wi-Fi</th>
+                    <th>ปิด Bluetooth</th>
+                    <th>ปิด AirDrop</th>
+                    <th>โหมดเครื่องบิน</th>
+                    <th>เริ่มใช้งาน</th>
+                    <th>ปุ่มลัด</th>
+                </tr>
             </thead>
             <tbody id="itemList">
-                <tr><td colspan="8" class="text-muted py-4">กำลังโหลดรายการ iPad... ⏳</td></tr>
+                <tr><td colspan="8" class="text-muted py-4 text-center">กำลังโหลดรายการ iPad... ⏳</td></tr>
             </tbody>
         </table>
     </div>
 
-    <button class="btn btn-confirm mt-4 shadow-sm" onclick="saveStep3()">💾 ยืนยันเครื่องพร้อมสอบ</button>
+    <button class="btn btn-confirm shadow-sm" onclick="saveStep3()">💾 ยืนยันเครื่องพร้อมสอบ</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -106,11 +136,9 @@
     window.onload = function() {
         document.getElementById('displayReqId').innerText = reqId || "ไม่พบข้อมูล";
         const savedName = localStorage.getItem("userName");
-        
-        // 📌 เปลี่ยนการดึงข้อมูลจาก .value มาใช้ .innerText เพื่อเขียนลงใน div
         if(savedName) document.getElementById('inspectorName').innerText = savedName;
 
-        if(!reqId) { document.getElementById('itemList').innerHTML = '<tr><td colspan="8" class="text-danger py-4">❌ ไม่พบหมายเลขรายการ</td></tr>'; return; }
+        if(!reqId) { document.getElementById('itemList').innerHTML = '<tr><td colspan="8" class="text-danger fw-bold py-4 text-center">❌ ไม่พบหมายเลขรายการ</td></tr>'; return; }
 
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep2Data", reqId: reqId }) })
         .then(res => res.json())
@@ -120,10 +148,10 @@
             if(res.data && res.data.length > 0) {
                 res.data.forEach(item => {
                     tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
-                        <td data-label="เลือกเครื่อง" class="fw-bold text-dark text-start">
+                        <td data-label="เลือกเครื่อง" class="text-start ps-4">
                             <div class="d-flex align-items-center">
-                                <input type="checkbox" class="select-ipad form-check-input me-2" id="btn-${item.ipadId}" onchange="toggleRow(this)">
-                                <label for="btn-${item.ipadId}" style="cursor:pointer;" class="fs-5">${item.ipadId}</label>
+                                <input type="checkbox" class="select-ipad form-check-input me-3" id="btn-${item.ipadId}" onchange="toggleRow(this)">
+                                <label for="btn-${item.ipadId}" style="cursor:pointer;" class="fw-bold fs-6 m-0">${item.ipadId}</label>
                             </div>
                         </td>
                         <td data-label="Logout Drive"><input type="checkbox" class="check-item form-check-input" disabled></td>
@@ -132,10 +160,10 @@
                         <td data-label="ปิด AirDrop"><input type="checkbox" class="check-item form-check-input" disabled></td>
                         <td data-label="โหมดเครื่องบิน"><input type="checkbox" class="check-item form-check-input" disabled></td>
                         <td data-label="เริ่มใช้งาน"><input type="checkbox" class="check-item form-check-input" disabled></td>
-                        <td data-label="จัดการ"><button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill w-100" onclick="checkAllInRow(this)">ติ๊กครบ</button></td>
+                        <td data-label="ปุ่มลัด"><button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill w-100" onclick="checkAllInRow(this)">ติ๊กครบ</button></td>
                     </tr>`;
                 });
-            } else { tbody.innerHTML = `<tr><td colspan="8" class="text-danger py-4">❌ ไม่พบข้อมูล iPad</td></tr>`; }
+            } else { tbody.innerHTML = `<tr><td colspan="8" class="text-danger fw-bold py-4 text-center">❌ ไม่พบข้อมูล iPad</td></tr>`; }
         });
     };
 
@@ -167,7 +195,6 @@
         const btn = document.querySelector('.btn-confirm');
         const originalText = btn.innerText; btn.innerText = "⏳ กำลังบันทึกข้อมูล..."; btn.disabled = true;
         
-        // 📌 เปลี่ยนตอนกดดึงข้อมูลมาเป็น .innerText ด้วย
         let inspector = document.getElementById('inspectorName').innerText.trim() || "User (ไม่ระบุชื่อ)";
         const examValue = document.querySelector('input[name="examType"]:checked').value;
         const noteValue = document.getElementById('reasonNote').value;
@@ -184,18 +211,16 @@
                     confirmButtonText: "OK",
                     allowOutsideClick: false
                 }).then(() => {
-                    // 📌 เงื่อนไขแยก Admin กับ User
                     const userRole = localStorage.getItem("userRole");
-                    if (userRole === "Admin") {
-                        window.location.href = "admin.html";
-                    } else {
-                        window.location.href = "user.html";
-                    }
+                    window.location.href = userRole === "Admin" ? "admin.html" : "user.html";
                 });
+            } else { 
+                Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); 
+                btn.innerText = originalText; btn.disabled = false; 
             }
-            else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); btn.innerText = originalText; btn.disabled = false; }
         } catch (error) {
-            Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); btn.innerText = originalText; btn.disabled = false;
+            Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); 
+            btn.innerText = originalText; btn.disabled = false;
         }
     }
 </script>
