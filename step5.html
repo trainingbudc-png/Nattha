@@ -93,7 +93,7 @@
         </table>
     </div>
 
-    <button class="btn btn-confirm shadow-sm" onclick="submitCheck()">ยืนยันการตรวจสอบเครื่องเสร็จสมบูรณ์</button>
+    <button class="btn btn-confirm shadow-sm" onclick="submitCheck()">💾 ยืนยันการตรวจสอบเครื่องเสร็จสมบูรณ์</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -116,9 +116,10 @@
             
             if(res.data && res.data.length > 0) {
                 res.data.forEach((item) => {
+                    // 📌 แก้ไขตรงนี้: เปลี่ยนจาก fs-5 เป็น fs-6 เพื่อให้ตัวอักษรเท่ากับ Step 2,3,4
                     tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
                         <td data-label="เครื่องที่" class="text-start ps-4">
-                            <div class="fw-bold text-dark fs-5 m-0">${item.ipadId}</div>
+                            <div class="fw-bold text-dark fs-6 m-0">${item.ipadId}</div>
                         </td>
                         <td data-label="เช็ค G-Drive"><input type="checkbox" class="check-item form-check-input"></td>
                         <td data-label="เช็คแอพ File"><input type="checkbox" class="check-item form-check-input"></td>
