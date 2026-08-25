@@ -9,15 +9,83 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-user.css">
     <style>
-        .btn-action { background-color: #212529; color: white; border: none; font-weight: 600; border-radius: 8px; transition: 0.2s; }
+        .btn-action { background-color: #212529; color: white; border: none; font-weight: 600; border-radius: 10px; transition: 0.2s; }
         .btn-action:hover { background-color: #495057; color: white; transform: translateY(-2px); }
         .container-wide, .nav-header { max-width: 1280px !important; margin: 0 auto !important; }
         .container-wide { padding-left: 20px !important; padding-right: 20px !important; }
+
+        /* 💻 จัดระเบียบกล่อง iPad สำหรับจอคอมพิวเตอร์ */
+        @media (min-width: 769px) {
+            .ipad-box { text-align: center; width: 100%; }
+        }
+
+        /* 📱 ปรับ UI/UX การ์ดบนหน้าจอมือถือ */
+        @media (max-width: 768px) {
+            .table-card { background: transparent; box-shadow: none; border: none; padding: 0; margin-top: 10px; }
+            .table thead { display: none; }
+            .table tbody tr { 
+                display: block; 
+                background: #ffffff; 
+                border-radius: 16px; 
+                margin-bottom: 16px; 
+                padding: 16px 20px; 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.04); 
+                border: 1px solid #e2e8f0 !important;
+            }
+            .table tbody td { 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                text-align: right; 
+                padding: 12px 0; 
+                border-bottom: 1px solid #f1f5f9 !important;
+            }
+            .table tbody td::before { 
+                content: attr(data-label); 
+                font-weight: 500; 
+                color: #64748b; 
+                font-size: 0.9rem; 
+                text-align: left; 
+                margin-right: 15px; 
+                flex-shrink: 0; 
+            }
+            
+            /* 📌 จัดการช่อง "รหัส iPad" ให้ปัดลงบรรทัดใหม่ และชิดขวาสุด */
+            .table tbody td[data-label="รหัส iPad"] { 
+                flex-direction: column; 
+                align-items: flex-start; 
+            }
+            .table tbody td[data-label="รหัส iPad"]::before { 
+                margin-bottom: 8px; 
+                margin-top: 0; 
+            }
+            .ipad-box { 
+                width: 100%; 
+                text-align: right; 
+                background-color: #f8fafc; 
+                padding: 10px 12px;
+                border-radius: 8px;
+                border: 1px solid #f1f5f9;
+            }
+            
+            /* 📌 ซ่อนคำว่า 'จัดการ' และขยายปุ่มให้เต็มหน้าจอ */
+            .table tbody td:last-child { 
+                border-bottom: none !important; 
+                padding-bottom: 0; 
+                padding-top: 16px; 
+                display: block; 
+            }
+            .table tbody td:last-child::before { display: none; } 
+            .table tbody td:last-child .btn { padding: 12px !important; font-size: 1.05rem; }
+        }
     </style>
 </head>
 <body>
     <nav class="nav-header">
-        <div class="nav-title">📝Step 3 | ก่อนสอบ (ค้างดำเนินการ)</div>
+        <div class="nav-title" style="line-height: 1.2;">
+            📝 Step 3 | ก่อนสอบ 
+            <span class="d-block d-sm-inline" style="font-size: 0.95rem; color: #6c757d; font-weight: 500;">(ค้างดำเนินการ)</span>
+        </div>
         <div class="d-flex align-items-center">
             <a href="user.html" class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold">🔙 กลับเมนูหลัก</a>
         </div>
@@ -44,7 +112,7 @@
     </div>
 
 <script>
-    
+    const API_URL = "https://script.google.com/macros/s/AKfycbwv7qtsMDLxaXD3RbGB8Q0Nq1U0Q91cRL7rhe0Ge4OWEC41cvtajsI-JlFwjPmRrPCu/exec";
     const currentUserId = localStorage.getItem("userId");
 
     window.onload = async function() {
@@ -57,7 +125,6 @@
             tbody.innerHTML = "";
 
             if (result.status === "success" && result.data.length > 0) {
-                // 📌 กรองด้วย userId
                 const pendingRequests = result.data.filter(item => item.userId === currentUserId && item.status && item.status.includes("Step[2]"));
 
                 if (pendingRequests.length === 0) {
@@ -71,12 +138,12 @@
 
                     tbody.innerHTML += `
                         <tr>
-                            <td data-label="📌 เลขรายการ" class="fw-bold text-dark">${req.reqId}</td>
-                            <td data-label="🕒 วันที่">${dateStr}</td>
-                            <td data-label="📱 รหัส iPad" style="max-width: 300px;">${formattedIpads}</td>
-                            <td data-label="📊 สถานะ"><span class="badge bg-danger text-white px-3 py-2 rounded-pill">${req.status}</span></td>
-                            <td data-label="⚙️ จัดการ">
-                                <button class="btn btn-action btn-sm px-3 shadow-sm w-100" onclick="window.location.href='step3.html?reqId=${req.reqId}'">➡️ ดำเนินการ</button>
+                            <td data-label="เลขรายการ"><div class="fw-bold text-dark">${req.reqId}</div></td>
+                            <td data-label="วันที่"><div>${dateStr}</div></td>
+                            <td data-label="รหัส iPad"><div class="ipad-box">${formattedIpads}</div></td>
+                            <td data-label="สถานะ"><div><span class="badge bg-danger text-white px-3 py-2 rounded-pill">${req.status}</span></div></td>
+                            <td data-label="จัดการ">
+                                <button class="btn btn-action btn-sm px-3 shadow-sm w-100" onclick="window.location.href='step3.html?reqId=${req.reqId}'">ดำเนินการ</button>
                             </td>
                         </tr>
                     `;
@@ -101,7 +168,7 @@
         });
         let displayGroups = [];
         if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-        if (airIds.length > 0) displayGroups.push(`<span class="text-secondary fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
+        if (airIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
         return displayGroups.join('<br>');
     }
 </script>
