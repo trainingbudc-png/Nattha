@@ -161,11 +161,11 @@
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script src="script.js"></script>
-<!-- 📌 ดึง API_URL มาจากไฟล์นี้แทน -->
-<script src="script.js"></script>
 
 <script>
-    let globalLogData = []; //
+    
+    
+    let globalLogData = []; // 📌 เก็บข้อมูลที่โหลดมาทั้งหมดไว้กรอง
 
     window.onload = function() {
         const userName = localStorage.getItem("userName");
@@ -271,7 +271,7 @@
             let statusTxt = item.status || "-";
             let statusHtml = "";
 
-if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
+            if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
                 statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 2">Step[1] </button>`;
             } else if(statusTxt.includes("Step[2]")) {
                 statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 3">Step[2] </button>`;
@@ -280,17 +280,13 @@ if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt
             } else if(statusTxt.includes("Step[4]")) {
                 statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'" title="ตรวจสอบรับคืน: Step 5">Step[4] </button>`;
             } else if(statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์")) {
-                // ⭕ เสร็จสิ้น: พื้นขาว ขอบแดง (คุมธีม แต่ดูสะอาดตา)
-                statusHtml = `<span class="badge bg-white text-danger border border-danger px-3 py-2 rounded-pill shadow-sm">✔️ เสร็จสิ้น</span>`;
+                statusHtml = `<span class="badge bg-success px-3 py-2 rounded-pill shadow-sm">✔️ เสร็จสิ้น</span>`;
             } else if(statusTxt.includes("ยกเลิกรายการ")) {
-                // ⚪ ยกเลิก: สีเทาอ่อน (จมไปกับพื้นหลัง ไม่กวนสายตา)
-                statusHtml = `<span class="badge bg-light text-secondary border border-light px-3 py-2 rounded-pill shadow-sm">❌ ยกเลิก</span>`;
+                statusHtml = `<span class="badge bg-dark px-3 py-2 rounded-pill shadow-sm">❌ ยกเลิก</span>`;
             } else if(statusTxt.includes("ซ่อม") || statusTxt.includes("ชำรุด") || statusTxt.includes("ปัญหา")) {
-                // ⚫ มีปัญหา: สีดำเข้ม (ตัดกับแดง ดูจริงจัง)
-                statusHtml = `<span class="badge bg-dark text-white px-3 py-2 rounded-pill shadow-sm">⚠️ มีปัญหา</span>`;
+                statusHtml = `<span class="badge bg-dark text-warning px-3 py-2 rounded-pill shadow-sm">⚠️ มีปัญหา</span>`;
             } else {
-                // สถานะอื่นๆ
-                statusHtml = `<span class="badge bg-white text-dark border px-3 py-2 rounded-pill shadow-sm">${statusTxt}</span>`;
+                statusHtml = `<span class="badge bg-secondary px-3 py-2 rounded-pill shadow-sm">${statusTxt}</span>`;
             }
 
             tbody.innerHTML += `

@@ -82,10 +82,7 @@
         
         <div class="d-flex justify-content-between align-items-end mb-3">
             <h5 class="fw-bold text-dark m-0">ตารางข้อมูลรายการเบิก-ยืม</h5>
-            <div>
-                <button class="btn btn-dark btn-sm rounded-pill fw-bold px-4 shadow-sm me-2" onclick="fetchData()">🔄 อัปเดตข้อมูล</button>
-                <button class="btn btn-success btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="exportToCSV()">📥 ส่งออก (Excel)</button>
-            </div>
+            <button class="btn btn-dark btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="fetchData()">🔄 อัปเดตข้อมูล</button>
         </div>
 
         <!-- 📌 ส่วนของ Filter (ตัวกรอง) 3 จุด -->
@@ -152,11 +149,11 @@
     </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwv7qtsMDLxaXD3RbGB8Q0Nq1U0Q91cRL7rhe0Ge4OWEC41cvtajsI-JlFwjPmRrPCu/exec";
+    
     
     // ตัวแปรสำหรับเก็บข้อมูลต้นฉบับและข้อมูลที่ถูกกรอง
     let allDashboardData = [];
-    let filteredData = []; 
+    let filteredData = []; // เพิ่มตัวแปรสำหรับเก็บงานที่ถูกกรองแล้ว
     
     let currentPage = 1;
     const itemsPerPage = 20; 
@@ -171,11 +168,9 @@
 
     function formatStepCell(text) {
         if (!text || text.trim() === "") return '<td class="step-cell-empty"></td>';
-        let parts = text.split("<br>");
-        if(parts.length === 2) {
-            return `<td class="step-cell"><span style="color:#16a34a; font-size:1rem; font-weight:bold;">${parts[0]}</span><br><span style="font-size:0.8rem; color:#6c757d; font-weight:normal;">${parts[1]}</span></td>`;
-        }
-        return `<td class="step-cell">${text}</td>`;
+        let formatted = text.replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
+        formatted = formatted.replace(/☑/g, '<span style="color:#7c3aed; font-size:1rem;">☑</span>');
+        return `<td class="step-cell">${formatted}</td>`;
     }
 
     function formatStatus(statusText) {
@@ -188,7 +183,7 @@
 
     function formatEmergency(emText) {
         if (!emText || emText.trim() === "" || emText === "☐") return '<span style="color:#dc3545; font-size:1.2rem;">☐</span>';
-        return `<span style="color:#dc3545; font-size:1.2rem; font-weight:bold;">✅</span>`;
+        return `<span style="color:#dc3545; font-size:1.2rem; font-weight:bold;">☑</span>`;
     }
 
     // 📌 ดึงข้อมูลจากเซิร์ฟเวอร์
@@ -223,14 +218,13 @@
         // วนลูปกรองข้อมูลจากข้อมูลต้นฉบับ
         filteredData = allDashboardData.filter(item => {
             
-            // 1. กรองคำค้นหา (ค้นหาจาก เลขรายการ, ผู้เตรียม, ผู้รับ, หมายเหตุ)
+            // 1. กรองคำค้นหา (ค้นหาจาก เลขรายการ, ผู้เตรียม, ผู้รับ)
             let matchSearch = true;
             if (searchText !== "") {
                 const reqMatch = item.reqId ? item.reqId.toLowerCase().includes(searchText) : false;
                 const prepMatch = item.preparer ? item.preparer.toLowerCase().includes(searchText) : false;
                 const recMatch = item.receiver ? item.receiver.toLowerCase().includes(searchText) : false;
-                const noteMatch = item.note ? item.note.toLowerCase().includes(searchText) : false;
-                matchSearch = reqMatch || prepMatch || recMatch || noteMatch;
+                matchSearch = reqMatch || prepMatch || recMatch;
             }
 
             // 2. กรองสถานะ
@@ -242,7 +236,7 @@
             // 3. กรองฉุกเฉิน
             let matchEm = true;
             if (emCheck) {
-                matchEm = item.emergency === "✅";
+                matchEm = item.emergency === "☑";
             }
 
             // ผ่านทั้ง 3 ด่านถึงจะเก็บไว้
@@ -254,7 +248,7 @@
         renderTable();
     }
 
-    // 📌 วาดตาราง
+    // 📌 วาดตาราง (ใช้ตัวแปร filteredData แทน allDashboardData)
     function renderTable() {
         const tbody = document.getElementById("dashboardBody");
         tbody.innerHTML = "";
@@ -330,54 +324,6 @@
         if (page < 1 || page > totalPages) return;
         currentPage = page;
         renderTable();
-    }
-
-    // 📌 ฟังก์ชันส่งออกข้อมูลเป็นไฟล์ CSV (เปิดใน Excel ได้)
-    function exportToCSV() {
-        if (filteredData.length === 0) {
-            alert("⚠️ ไม่มีข้อมูลให้ส่งออกครับ (ลองเช็คตัวกรองข้อมูลดูนะ)");
-            return;
-        }
-
-        let csvContent = "\uFEFF"; 
-        csvContent += "เลขรายการ,Step 1 | เตรียม,Step 2 | ยืม,Step 3 | ก่อนสอบ,Step 4 | คืน,Step 5 | ตรวจ,สถานะรวม,ผู้เตรียมเครื่อง,ผู้ที่จะมารับเครื่อง,หมายเหตุ,ยืมฉุกเฉิน\n";
-
-        const stripHTML = (html) => {
-            let tmp = document.createElement("DIV");
-            tmp.innerHTML = html;
-            let text = tmp.textContent || tmp.innerText || "";
-            return text.replace(/\n/g, " ").trim(); 
-        };
-
-        filteredData.forEach(item => {
-            let reqId = item.reqId.replace("REQ-", "");
-            let s1 = stripHTML(item.step1);
-            let s2 = stripHTML(item.step2);
-            let s3 = stripHTML(item.step3);
-            let s4 = stripHTML(item.step4);
-            let s5 = stripHTML(item.step5);
-            let status = item.status;
-            let preparer = item.preparer;
-            let receiver = item.receiver;
-            let note = item.note.replace(/"/g, '""'); 
-            let emergency = item.emergency === "✅" ? "ใช่" : "-";
-
-            let row = `"${reqId}","${s1}","${s2}","${s3}","${s4}","${s5}","${status}","${preparer}","${receiver}","${note}","${emergency}"`;
-            csvContent += row + "\n";
-        });
-
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        
-        let today = new Date();
-        let dateStr = today.toISOString().split('T')[0];
-        link.setAttribute("download", `รายงานเบิกยืม_iPad_${dateStr}.csv`);
-        
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
     }
 </script>
 </body>

@@ -10,78 +10,54 @@
     <link rel="stylesheet" href="theme-user.css">
     <style>
         body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
-        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); max-width: 950px; margin: auto; border: 1px solid #e2e8f0; }
-        
-        /* 📌 Info Box (มาตรฐานเดียวกันทุกหน้า) */
-        .info-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: center; }
-        .info-label { font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
-        .info-value { font-size: 1.15rem; font-weight: bold; color: #1e293b; }
-        .divider { width: 1px; background-color: #e2e8f0; height: 50px; }
-
-        /* 💻 สไตล์ตารางสำหรับจอคอม (Desktop) */
-        .table-responsive { border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
-        .table { margin-bottom: 0; }
-        .table th { background-color: #f8fafc; color: #475569; font-weight: 600; text-align: center; padding: 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.95rem; white-space: nowrap; }
-        .table td { vertical-align: middle; text-align: center; padding: 12px 15px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 500; font-size: 0.95rem; }
-        .table tbody tr:hover { background-color: #fcfcfc; }
-        
-        /* 📌 ปุ่ม Checkbox และปุ่มยืนยัน */
-        .check-app:disabled { cursor: not-allowed; opacity: 0.4; }
-        .check-app, .select-ipad { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: #212529; }
-        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 25px; transition: 0.3s; border: none; font-size: 1.1rem; }
+        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 850px; margin: auto; border: 1px solid #e9ecef; }
+        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 20px; transition: 0.3s; border: none; font-size: 1.1rem; }
         .btn-confirm:hover { background: #495057; color: white; }
+        .info-box { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .info-label { font-size: 0.85rem; color: #6c757d; margin-bottom: 2px; }
+        .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
+        .divider { width: 1px; background-color: #dee2e6; height: 40px; }
+        
+        .check-app:disabled { cursor: not-allowed; opacity: 0.5; }
 
-        /* 📱 ปรับการ์ดบนหน้าจอมือถือ (Mobile) */
-        @media (max-width: 768px) {
-            .info-box { flex-direction: column; text-align: center; gap: 15px; }
-            .divider { width: 50px; height: 1px; }
-            .table-responsive { border: none; }
+        .check-app, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
+        @media screen and (max-width: 768px) {
+            .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
             .table thead { display: none; }
-            .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; }
-            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
-            .table tbody td::before { content: attr(data-label); font-weight: 500; color: #64748b; font-size: 0.95rem; text-align: left; margin-right: 15px; }
-            
-            /* แยกเส้นแบ่งระหว่าง หัวข้อการ์ด กับ เช็คลิสต์ ให้ชัดเจน */
-            .table tbody td:first-child { border-bottom: 2px solid #e2e8f0 !important; padding-bottom: 16px; margin-bottom: 8px; }
-            .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 16px; display: block; }
-            .table tbody td:last-child::before { display: none; } 
-            .table tbody td:last-child .btn { padding: 12px !important; font-size: 1.05rem; }
+            .table tbody tr { display: block; background: white; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #e9ecef; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #dee2e6; }
+            .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
+            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #495057; font-size: 0.95rem; text-align: left; margin-right: 15px; }
+            .btn-sm { padding: 10px !important; margin-top: 5px; }
         }
     </style>
 </head>
 <body>
 <div class="confirm-card">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold text-dark mb-0">✅Step 2 | รับเครื่อง</h4>
+        <h4 class="fw-bold text-dark mb-0">Step 2 | รับเครื่อง</h4>
         <a href="step2-list.html" class="btn btn-outline-dark px-3 fw-bold rounded-pill btn-sm border-2">🔙 กลับ</a>
     </div>
     
-    <div class="info-box">
+    <div class="info-box d-flex justify-content-around align-items-center">
         <div class="text-center">
-            <div class="info-label">👤 ผู้ขอเบิกยืม</div>
+            <div class="info-label">👤 ผู้ขอเบิกยืม:</div>
             <div id="displayUserName" class="info-value">กำลังโหลด...</div>
         </div>
         <div class="divider"></div>
         <div class="text-center">
-            <div class="info-label">👨‍💻 แอดมินผู้เตรียม</div>
+            <div class="info-label">👨‍💻 แอดมินผู้เตรียม:</div>
             <div id="displayAdminName" class="info-value">กำลังโหลด...</div>
         </div>
     </div>
 
     <div class="table-responsive">
-        <table class="table align-middle">
-            <thead>
-                <tr>
-                    <th class="text-start ps-4">เลือกรับเครื่อง</th>
-                    <th>Drive</th>
-                    <th>File</th>
-                    <th>Img</th>
-                    <th>Safari</th>
-                    <th>ปุ่มลัด</th>
-                </tr>
+        <table class="table table-bordered text-center align-middle">
+            <thead class="table-light">
+                <tr><th>iPad</th><th>Drive</th><th>File</th><th>Img</th><th>Safari</th><th>ปุ่มลัด</th></tr>
             </thead>
             <tbody id="itemList">
-                <tr><td colspan="6" class="text-muted py-4 text-center">กำลังโหลดข้อมูล... ⏳</td></tr>
+                <tr><td colspan="6" class="text-muted py-3">กำลังโหลดข้อมูล... ⏳</td></tr>
             </tbody>
         </table>
     </div>
@@ -90,9 +66,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script src="script.js"></script>
-<script src="script.js"></script>
-
 <script>
+    
     const reqId = new URLSearchParams(window.location.search).get('reqId');
     const currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
 
@@ -107,11 +82,11 @@
 
         if(res.data && res.data.length > 0) {
             res.data.forEach(item => {
-                tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
-                    <td data-label="เลือกรับเครื่อง" class="text-start ps-4">
+                tbody.innerHTML += `<tr>
+                    <td data-label="เลือกรับเครื่อง" class="fw-bold text-start">
                         <div class="d-flex align-items-center">
-                            <input type="checkbox" class="select-ipad form-check-input me-3" id="btn-${item.ipadId}" onchange="toggleRow(this)"> 
-                            <label for="btn-${item.ipadId}" style="cursor:pointer;" class="fw-bold fs-6 m-0">${item.ipadId}</label>
+                            <input type="checkbox" class="select-ipad form-check-input me-2" id="btn-${item.ipadId}" onchange="toggleRow(this)"> 
+                            <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-dark fs-5">${item.ipadId}</label>
                         </div>
                     </td>
                     <td data-label="Drive"><input type="checkbox" class="check-app form-check-input" disabled></td>
@@ -122,7 +97,7 @@
                 </tr>`;
             });
         } else {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-danger fw-bold py-4 text-center">❌ ไม่พบรายการเครื่อง</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-danger py-3">❌ ไม่พบรายการเครื่อง</td></tr>';
         }
     });
 
@@ -146,7 +121,7 @@
         document.querySelectorAll('.select-ipad:checked').forEach(ipad => {
             const row = ipad.closest('tr');
             const checks = Array.from(row.querySelectorAll('.check-app')).map(c => c.checked ? "☑" : "☐");
-            items.push({ ipadId: row.dataset.ipad, checklist: checks.join(",") });
+            items.push({ ipadId: row.querySelector('label').innerText, checklist: checks.join(",") });
         });
 
         if (items.length === 0) {
@@ -169,16 +144,18 @@
                     confirmButtonText: "OK",
                     allowOutsideClick: false
                 }).then(() => {
+                    // 📌 เงื่อนไขแยก Admin กับ User
                     const userRole = localStorage.getItem("userRole");
-                    window.location.href = userRole === "Admin" ? "admin.html" : "user.html";
+                    if (userRole === "Admin") {
+                        window.location.href = "admin.html";
+                    } else {
+                        window.location.href = "user.html";
+                    }
                 });
-            } else { 
-                Swal.fire("❌ เกิดข้อผิดพลาด", result.message || "ในการบันทึกข้อมูล", "error"); 
-                btn.innerText = "💾 ยืนยันการรับเครื่อง"; btn.disabled = false; 
             }
+            else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message || "ในการบันทึกข้อมูล", "error"); btn.innerText = "✅ ยืนยันการรับเครื่อง"; btn.disabled = false; }
         } catch (error) {
-            Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); 
-            btn.innerText = "💾 ยืนยันการรับเครื่อง"; btn.disabled = false;
+            Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); btn.innerText = "✅ ยืนยันการรับเครื่อง"; btn.disabled = false;
         }
     }
 </script>

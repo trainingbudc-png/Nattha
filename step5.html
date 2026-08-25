@@ -10,60 +10,61 @@
     <link rel="stylesheet" href="theme-admin.css">
     <style>
         body { background: #fdf2f2; font-family: 'Kanit', sans-serif; padding: 20px; }
-        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(220,53,69,0.05); max-width: 950px; margin: auto; border: 1px solid #fecaca; }
         
-        /* 📌 Info Box (สไตล์เดียวกับฝั่ง User แต่เป็นโทนสีแดง) */
-        .info-box { background-color: #fef2f2; border: 1px solid #fca5a5; border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: center; }
+        .main-header-card { background: white; padding: 20px 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(220,53,69,0.05); margin: auto; max-width: 900px; margin-bottom: 20px; border-left: 6px solid #dc3545; }
+        /* 📌 เปลี่ยนสีหัวข้อหลักเป็นสีดำเข้ม */
+        .main-header-card h3 { color: #212529; font-weight: 600; margin: 0; font-size: 1.6rem; }
+        
+        .confirm-card { background: white; padding: 0; border-radius: 12px; box-shadow: 0 10px 25px rgba(220,53,69,0.08); max-width: 900px; margin: auto; overflow: hidden; }
+        
+        .red-header { background-color: #dc3545; color: white; padding: 15px 20px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
+        .req-id-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 8px; font-size: 0.9rem; }
+        
+        /* 📌 เปลี่ยนสี Label และ Value เป็นโทนดำ/เทาเข้ม */
+        .info-panel { padding: 15px 20px; background: #fef2f2; border-bottom: 1px solid #fca5a5; display: flex; justify-content: space-around; align-items: center; }
         .info-label { font-size: 0.85rem; color: #495057; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
-        .info-value { font-size: 1.15rem; font-weight: bold; color: #212529; }
-        .divider { width: 1px; background-color: #fca5a5; height: 50px; }
+        .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
+        .divider { width: 1px; background-color: #fca5a5; height: 40px; }
 
-        /* 💻 สไตล์ตารางสำหรับจอคอม (Desktop) */
-        .table-responsive { border-radius: 12px; border: 1px solid #fca5a5; overflow: hidden; }
-        .table { margin-bottom: 0; }
-        .table th { background-color: #fef2f2; color: #212529; font-weight: 600; text-align: center; padding: 15px; border-bottom: 2px solid #fca5a5; font-size: 0.95rem; white-space: nowrap; }
-        .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid #fee2e2; color: #1e293b; font-weight: 500; font-size: 0.95rem; }
-        .table tbody tr:hover { background-color: #fff9f9; }
+        /* 📌 เปลี่ยนสีหัวตารางเป็นสีดำเข้ม */
+        .table { margin-bottom: 0 !important; border-collapse: collapse; }
+        .table th { font-size: 0.9rem; vertical-align: middle; text-align: center; color: #212529; background: white; padding: 15px 10px; border-bottom: 2px solid #fca5a5; font-weight: 600; }
+        .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid #fee2e2; }
         
-        /* 📌 ปุ่ม Checkbox และปุ่มยืนยัน */
-        .check-item { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: #dc3545; }
-        .btn-confirm { background: #dc3545; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 25px; transition: 0.3s; border: none; font-size: 1.1rem; }
-        .btn-confirm:hover { background: #b91c1c; color: white; }
-.btn-shortcut { background: white; color: #212529; border: 2px solid #dc3545; transition: 0.2s; }
-        .btn-shortcut:hover { background: #dc3545; color: white; }
+        /* 📌 เปลี่ยนสีปุ่มลัดให้เป็นขอบดำ ตัวหนังสือดำ เหมือน Step 1 */
+        .btn-shortcut { background: white; color: #212529; border: 1px solid #212529; font-size: 0.85rem; font-weight: bold; padding: 8px 12px; border-radius: 6px; transition: 0.2s; }
+        .btn-shortcut:hover { background: #212529; color: white; }
+        
+        .btn-confirm { background: #dc3545; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: calc(100% - 40px); margin: 20px; border: none; transition: 0.3s; font-size: 1.1rem; }
+        .btn-confirm:hover { background: #b91c1c; }
 
-        /* 📱 ปรับการ์ดบนหน้าจอมือถือ (Mobile) */
-        @media (max-width: 768px) {
-            .info-box { flex-direction: column; text-align: center; gap: 15px; }
-            .divider { width: 50px; height: 1px; }
-            .table-responsive { border: none; }
+        /* 📱 รองรับมือถือ & ขยายปุ่มจิ้มง่าย */
+        .check-item { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #dc3545; }
+        @media screen and (max-width: 768px) {
+            .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
             .table thead { display: none; }
-            .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(220,53,69,0.06); border: 1px solid #fecaca; }
-            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px solid #fee2e2; }
-            .table tbody td::before { content: attr(data-label); font-weight: 500; color: #64748b; font-size: 0.95rem; text-align: left; margin-right: 15px; }
-            
-            /* แยกเส้นแบ่งระหว่าง หัวข้อการ์ด กับ เช็คลิสต์ ให้ชัดเจน */
-            .table tbody td:first-child { border-bottom: 2px solid #fca5a5 !important; padding-bottom: 16px; margin-bottom: 8px; }
-            .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 16px; display: block; }
-            .table tbody td:last-child::before { display: none; } 
-            .table tbody td:last-child .btn { padding: 12px !important; font-size: 1.05rem; }
+            .table tbody tr { display: block; background: white; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #e9ecef; }
+            .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
+            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; }
+            .btn-shortcut { width: 100% !important; margin-top: 5px; padding: 10px !important; border-radius: 50rem !important;}
         }
     </style>
 </head>
 <body>
 
+<div class="main-header-card d-flex justify-content-between align-items-center">
+    <h3>🔍Step 5 | ตรวจรับคืน</h3>
+    <a href="step5-list.html" class="btn btn-outline-secondary px-3 fw-bold rounded-pill btn-sm border-2">🔙 กลับ</a>
+</div>
+
 <div class="confirm-card">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold text-dark mb-0">🔍 Step 5 | ตรวจรับคืน</h4>
-        <a href="step5-list.html" class="btn btn-outline-danger px-3 fw-bold rounded-pill btn-sm border-2">🔙 กลับ</a>
+    <div class="red-header">
+        <span>iPad ที่ยืม</span>
+        <span class="req-id-badge" id="headerReqId">รายการ: Loading...</span>
     </div>
     
-    <div class="info-box">
-        <div class="text-center">
-            <div class="info-label">🔖 เลขรายการ</div>
-            <div id="displayReqIdBox" class="info-value">กำลังโหลด...</div>
-        </div>
-        <div class="divider"></div>
+    <div class="info-panel">
         <div class="text-center">
             <div class="info-label">👤 ผู้ขอเบิกยืม</div>
             <div id="displayUserName" class="info-value">กำลังโหลด...</div>
@@ -79,8 +80,8 @@
         <table class="table align-middle">
             <thead>
                 <tr>
-                    <th class="text-start ps-4">เครื่องที่</th>
-                    <th>เช็ค G-Drive</th>
+                    <th style="text-align: left; padding-left: 20px;">เครื่องที่</th>
+                    <th>เช็ค Google Drive</th>
                     <th>เช็คแอพ File</th>
                     <th>เช็คแอพ รูปภาพ</th>
                     <th>เช็คแอพ Safari</th>
@@ -88,22 +89,22 @@
                 </tr>
             </thead>
             <tbody id="itemList">
-                <tr><td colspan="6" class="text-muted py-4 text-center">กำลังโหลดข้อมูลเครื่อง... ⏳</td></tr>
+                <tr><td colspan="6" class="text-muted py-4 text-center">กำลังโหลดข้อมูลเครื่อง...</td></tr>
             </tbody>
         </table>
     </div>
 
-    <button class="btn btn-confirm shadow-sm" onclick="submitCheck()">ยืนยันการตรวจสอบเครื่องเสร็จสมบูรณ์</button>
+    <button class="btn btn-confirm" onclick="submitCheck()">💾 ยืนยันการตรวจสอบเครื่องเสร็จสมบูรณ์</button>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script><script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script src="script.js"></script>
 <script>
     
     const reqId = new URLSearchParams(window.location.search).get('reqId');
 
     window.onload = function() {
         if(!reqId) { Swal.fire("แจ้งเตือน","ไม่พบเลขรายการ","warning"); return; }
-        document.getElementById('displayReqIdBox').innerText = reqId;
+        document.getElementById('headerReqId').innerText = "รายการ: " + reqId;
 
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep1Data", reqId: reqId }) })
         .then(res => res.json())
@@ -116,19 +117,16 @@
             
             if(res.data && res.data.length > 0) {
                 res.data.forEach((item) => {
-                    // 📌 แก้ไขตรงนี้: เปลี่ยนจาก fs-5 เป็น fs-6 เพื่อให้ตัวอักษรเท่ากับ Step 2,3,4
                     tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
-                        <td data-label="เครื่องที่" class="text-start ps-4">
-                            <div class="fw-bold text-dark fs-6 m-0">${item.ipadId}</div>
-                        </td>
-                        <td data-label="เช็ค G-Drive"><input type="checkbox" class="check-item form-check-input"></td>
-                        <td data-label="เช็คแอพ File"><input type="checkbox" class="check-item form-check-input"></td>
-                        <td data-label="เช็คแอพ รูปภาพ"><input type="checkbox" class="check-item form-check-input"></td>
-                        <td data-label="เช็คแอพ Safari"><input type="checkbox" class="check-item form-check-input"></td>
-                        <td data-label="ปุ่มลัด"><button type="button" class="btn btn-shortcut btn-sm fw-bold px-3 rounded-pill w-100" onclick="checkAllInRow(this)">ติ๊กครบ</button></td>
+                        <td data-label="📱 เครื่องที่" class="fw-bold text-dark text-start ps-3 fs-5">${item.ipadId}</td>
+                        <td data-label="📁 เช็ค G-Drive"><input type="checkbox" class="check-item form-check-input"></td>
+                        <td data-label="📄 เช็คแอพ File"><input type="checkbox" class="check-item form-check-input"></td>
+                        <td data-label="🖼️ เช็คแอพ รูปภาพ"><input type="checkbox" class="check-item form-check-input"></td>
+                        <td data-label="🌐 เช็คแอพ Safari"><input type="checkbox" class="check-item form-check-input"></td>
+                        <td data-label="⚡ ปุ่มลัด"><button type="button" class="btn btn-shortcut w-100 rounded-pill" onclick="checkAllInRow(this)">ติ๊กครบ</button></td>
                     </tr>`;
                 });
-            } else { tbody.innerHTML = '<tr><td colspan="6" class="text-danger fw-bold py-4 text-center">❌ ไม่พบรายการเครื่อง</td></tr>'; }
+            } else { tbody.innerHTML = '<tr><td colspan="6" class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</td></tr>'; }
         });
     };
 
