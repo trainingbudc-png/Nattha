@@ -160,12 +160,12 @@
     </div>
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script src="script.js"></script>
+<!-- 📌 ดึง API_URL มาจากไฟล์นี้แทน -->
+<script src="script.js"></script>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwv7qtsMDLxaXD3RbGB8Q0Nq1U0Q91cRL7rhe0Ge4OWEC41cvtajsI-JlFwjPmRrPCu/exec";
-    
-    let globalLogData = []; // 📌 เก็บข้อมูลที่โหลดมาทั้งหมดไว้กรอง
+    let globalLogData = []; //
 
     window.onload = function() {
         const userName = localStorage.getItem("userName");
