@@ -29,7 +29,7 @@ function hideLoading() {
 }
 
 // -----------------------------------------
-// 2. ระบบเรียกใช้ API (ใช้แทน fetch แบบเก่า)
+// 2. ระบบเรียกใช้ API (🚀 ใช้ Fetch แบบมาตรฐานที่สุด ป้องกันปัญหา CORS บล็อกเว็บ 100%)
 // -----------------------------------------
 async function callAPI(payload) {
     try {
@@ -69,7 +69,6 @@ function logoutSystem() {
 
 async function executeLogout() {
     showLoading("กำลังออกจากระบบ...");
-    // 📌 เคลียร์ค่าทั้งหมดตอนล็อคเอาท์
     localStorage.clear();
     try {
         await liff.init({ liffId: LIFF_ID });
