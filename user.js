@@ -183,23 +183,27 @@ async function openProfileModal() {
 }
 
 async function saveProfileData() {
-    const currentUser = localStorage.getItem("userName");
+    const currentUserId = localStorage.getItem("userId"); // 📌 ดึง userId มาใช้เป็นกุญแจหลัก
+    const firstName = document.getElementById("editProfileFirstName").value.trim();
+    const lastName = document.getElementById("editProfileLastName").value.trim();
     const nickname = document.getElementById("editProfileNickname").value.trim(); 
     const dept = document.getElementById("editProfileDept").value.trim();
     let phone = document.getElementById("editProfilePhone").value.trim();
 
-    if (!dept || !phone) {
-        Swal.fire("แจ้งเตือน", "กรุณากรอกข้อมูล ฝ่าย/แผนก และ เบอร์โทรศัพท์ ให้ครบถ้วนครับ", "warning");
+    if (!firstName || !lastName || !dept || !phone) {
+        Swal.fire("แจ้งเตือน", "กรุณากรอกข้อมูล ชื่อ, นามสกุล, ฝ่าย/แผนก และ เบอร์โทรศัพท์ ให้ครบถ้วนครับ", "warning");
         return;
     }
 
-    // 🚀 ท่าไม้ตายสับขาหลอก: บังคับเติมขีดกลางให้เบอร์โทร
+    // จัดฟอร์แมตเบอร์โทร
     phone = phone.replace(/-/g, ""); 
     if (phone.length === 10) {
         phone = phone.substring(0, 3) + "-" + phone.substring(3, 6) + "-" + phone.substring(6);
     } else {
         phone = "Tel. " + phone; 
     }
+
+    const newFullName = firstName + " " + lastName; // 📌 ประกอบร่างชื่อใหม่
 
     const btn = document.getElementById("btnSaveProfile");
     const originalText = btn.innerHTML;
@@ -209,7 +213,8 @@ async function saveProfileData() {
     try {
         const res = await callAPI({ 
             action: "updateUserProfile", 
-            name: currentUser, 
+            userId: currentUserId, // 📌 ส่ง userId ไปค้นหา (แม่นยำกว่าชื่อ)
+            name: newFullName,     // 📌 ส่งชื่อใหม่ไปอัปเดต
             nickname: nickname, 
             dept: dept, 
             phone: phone 
@@ -217,6 +222,11 @@ async function saveProfileData() {
 
         if (res.status === "success") {
             profileModal.hide();
+            
+            // 📌 อัปเดตชื่อใหม่ในระบบทันที
+            localStorage.setItem("userName", newFullName); 
+            document.getElementById("showName").innerText = newFullName;
+
             Swal.fire({
                 title: "บันทึกสำเร็จ!",
                 text: "อัปเดตข้อมูลส่วนตัวของคุณเรียบร้อยแล้ว",
