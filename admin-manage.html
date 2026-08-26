@@ -55,7 +55,7 @@
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- 📌 ดึง script.js เพื่อเอา API_URL -->
+<!-- 📌 ดึง script.js เพื่อเรียกใช้ฟังก์ชัน callAPI() -->
 <script src="script.js"></script> 
 
 <script>
@@ -69,12 +69,14 @@
         loadPendingData();
     };
 
-    function loadPendingData() {
+    // 🚀 อัปเกรด: เปลี่ยนมาใช้ callAPI เพื่อความไวแสงและดักจับ Error
+    async function loadPendingData() {
         const tbody = document.getElementById("manageTableBody");
-        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
-        .then(res => res.json())
-        .then(res => {
+        
+        try {
+            const res = await callAPI({ action: "getData" });
             tbody.innerHTML = ""; 
+            
             if (res.status === "success" && res.data && res.data.length > 0) {
                 const pendingData = res.data.filter(item => item.status && item.status.includes("รอแอดมินยืนยัน"));
 
@@ -105,10 +107,10 @@
             } else {
                 tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
             }
-        }).catch(err => {
-            // 📌 ใส่เผื่อไว้ให้มันไม่ค้างเวลาเน็ตหลุดหรือมีปัญหา
+        } catch (err) {
+            console.error("Error loading pending data:", err);
             tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
-        });
+        }
     }
 
     function formatIpadText(ipadText) {
@@ -155,19 +157,25 @@
         });
     }
 
-    function processAction(actionType, reqId, loadingText, successText) {
+    // 🚀 อัปเกรด: เปลี่ยนมาใช้ callAPI เวลาแอดมินกดปุ่มยืนยัน/ยกเลิก
+    async function processAction(actionType, reqId, loadingText, successText) {
         Swal.fire({ title: loadingText, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-        fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: actionType, reqId: reqId, adminName: currentAdmin })
-        })
-        .then(res => res.json())
-        .then(res => {
-            if (res.status === "success") Swal.fire("สำเร็จ!", successText, "success").then(() => loadPendingData());
-            else Swal.fire("เกิดข้อผิดพลาด", res.message, "error");
-        }).catch(err => {
+        
+        try {
+            const res = await callAPI({ 
+                action: actionType, 
+                reqId: reqId, 
+                adminName: currentAdmin 
+            });
+            
+            if (res.status === "success") {
+                Swal.fire("สำเร็จ!", successText, "success").then(() => loadPendingData());
+            } else {
+                Swal.fire("เกิดข้อผิดพลาด", res.message || "ไม่สามารถดำเนินการได้", "error");
+            }
+        } catch (err) {
             Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
-        });
+        }
     }
 </script>
 </body>
