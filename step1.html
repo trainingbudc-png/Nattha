@@ -5,14 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Step 1 | เตรียมเครื่อง</title>
 	<link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- 📌 นำเข้าไลบรารี Select2 สำหรับทำช่องค้นหารายชื่อ -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
@@ -25,20 +19,6 @@
         .form-control, .form-select { border-radius: 10px; border: 1px solid #fca5a5; padding: 12px 15px; }
         .form-control:focus, .form-select:focus { border-color: #dc3545; box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25); }
         
-        /* 📌 ปรับหน้าตาของกล่องค้นหา Select2 ให้เข้ากับตีมแดง */
-        .select2-container--bootstrap-5 .select2-selection {
-            border-radius: 10px !important;
-            border: 1px solid #fca5a5 !important;
-            min-height: 50px !important;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-        }
-        .select2-container--bootstrap-5.select2-container--focus .select2-selection {
-            border-color: #dc3545 !important;
-            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
-        }
-
         /* 📌 สไตล์ส่วนของการเลือก iPad */
         .category-header { background-color: #fef2f2; color: #212529; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; margin-bottom: 5px; border: 1px solid #fca5a5; }
         .category-header:hover { background-color: #fecaca; }
@@ -62,7 +42,7 @@
         .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid #fee2e2; color: #1e293b; font-weight: 500; font-size: 0.95rem; }
         .table tbody tr:hover { background-color: #fff9f9; }
 
-        /* 📌 ปุ่ม Checkbox และปุ่มยืนยัน */
+/* 📌 ปุ่ม Checkbox และปุ่มยืนยัน */
         .form-check-input { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: #dc3545; }
         .btn-shortcut { background: white; color: #212529; border: 2px solid #dc3545; transition: 0.2s; border-radius: 50rem; font-size: 0.85rem;}
         .btn-shortcut:hover { background: #dc3545; color: white; }
@@ -102,9 +82,9 @@
                 <input type="text" id="reqIdInput" class="form-control form-control-lg bg-light text-danger fw-bold" readonly placeholder="ระบบจะสร้างให้อัตโนมัติหากไม่มีการระบุมา">
             </div>
 
-            <!-- 📌 ช่อง: เลือกผู้ยืม (เพิ่ม id="userNameSelect" ให้พิมพ์ค้นหาได้) -->
+            <!-- 📌 ช่อง: เลือกผู้ยืม -->
             <div class="mb-4">
-                <label class="form-label">👤 เลือกผู้ขอเบิกยืม <span class="text-muted fw-normal">(พิมพ์ชื่อค้นหาได้)</span></label>
+                <label class="form-label">👤 เลือกผู้ขอเบิกยืม <span class="text-muted fw-normal">(ผู้ใช้งาน)</span></label>
                 <select id="userNameSelect" class="form-select form-select-lg" required>
                     <option value="">กำลังโหลดรายชื่อ... ⏳</option>
                 </select>
@@ -136,7 +116,7 @@
                 </div>
             </div>
 
-            <!-- 📌 ตารางเช็คลิสต์เตรียมเครื่อง -->
+            <!-- 📌 ตารางเช็คลิสต์เตรียมเครื่อง (อัปเกรดเป็น Unified UI) -->
             <div id="dynamicChecklistContainer" class="mb-4 d-none">
                 <label class="form-label text-dark fw-bold mb-3">✅ สิ่งที่แอดมินต้องเตรียม <span class="text-muted fw-normal">(เช็คให้ครบทุกเครื่อง)</span></label>
                 <div class="table-responsive bg-white">
@@ -174,15 +154,12 @@
         </form>
     </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<!-- 📌 โหลด API_URL มาจาก script.js -->
-<script src="script.js"></script>
 
 <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbwv7qtsMDLxaXD3RbGB8Q0Nq1U0Q91cRL7rhe0Ge4OWEC41cvtajsI-JlFwjPmRrPCu/exec";
+    
     let maxLimit = 0;
 
     window.onload = function() {
@@ -217,28 +194,15 @@
         .then(res => {
             const select = document.getElementById("userNameSelect");
             select.innerHTML = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
-            
             if(res.status === "success" && res.data.length > 0) {
-                // 📌 1. เรียงลำดับชื่อ ก-ฮ ด้วย localeCompare
-                res.data.sort((a, b) => a.localeCompare(b, 'th'));
-
                 res.data.forEach(name => { select.innerHTML += `<option value="${name}">${name}</option>`; });
                 
-                // 📌 2. เปิดใช้งานระบบค้นหา (Select2)
-                $('#userNameSelect').select2({
-                    theme: "bootstrap-5",
-                    width: '100%',
-                    placeholder: "-- เลือกชื่อผู้ขอยืม --",
-                    allowClear: true
-                });
-
-                // จัดการ URL Parameter ถ้ามีส่งมารอไว้แล้ว
                 const urlParams = new URLSearchParams(window.location.search);
                 const urlBorrower = urlParams.get('borrower') || "";
                 if(urlBorrower !== "") {
                     for(let i = 0; i < select.options.length; i++) {
                         if(select.options[i].text.includes(urlBorrower)) {
-                            $('#userNameSelect').val(select.options[i].value).trigger('change');
+                            select.selectedIndex = i;
                             break;
                         }
                     }
@@ -303,6 +267,7 @@
             tr.dataset.sortval = numericValue;
             tr.dataset.rawname = ipadId;
 
+            // 📌 อัปเดต HTML ตารางให้ตรงกับ Unified UI (Step 5)
             tr.innerHTML = `
                 <td data-label="รหัส iPad" class="text-start ps-4">
                     <div class="fw-bold text-dark fs-6 m-0">${ipadId}</div>
@@ -405,7 +370,7 @@
 
         let finalNote = `เตรียมให้: ${recipientName} (${selectedIpads.length} เครื่อง)`;
         if(isEmergency) {
-            finalNote = `🚨 [ยืมฉุกเฉิน] เหตุผล: ${emergencyNote}`;
+            finalNote = `🚨 [หมายเหตุ]: ${emergencyNote}`;
         }
 
         const payload = { 
