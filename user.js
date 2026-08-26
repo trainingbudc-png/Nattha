@@ -1,5 +1,5 @@
 // =========================================
-// 📌 ไฟล์ user.js : ระบบประมวลผลสำหรับหน้าผู้ใช้งาน
+// 📌 ไฟล์ user.js : ระบบประมวลผลสำหรับหน้าผู้ใช้งาน (ฉบับเสถียรสูงสุด)
 // =========================================
 
 window.onload = function() {
@@ -20,6 +20,7 @@ async function loadUserTableData() {
     tbody.innerHTML = '<tr><td colspan="4" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
     
     const currentUserId = localStorage.getItem("userId");
+    const currentUserName = localStorage.getItem("userName"); // ใช้ชื่อเทียบสำรองเผื่อเคสเก่า
 
     try {
         const res = await callAPI({ action: "getData" });
@@ -27,8 +28,13 @@ async function loadUserTableData() {
         if (res.status === "success" && res.data && res.data.length > 0) {
             tbody.innerHTML = ""; 
             
-            // 📌 กรองข้อมูลด้วย userId แทนชื่อ
-            const myData = res.data.filter(item => item.userId === currentUserId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ");
+            // 📌 กรองข้อมูลให้ยืดหยุ่นขึ้น (เช็คทั้ง userId และ ชื่อผู้ใช้งาน เพื่อความชัวร์ 100%)
+            const myData = res.data.filter(item => {
+                let matchUser = (item.userId && item.userId === currentUserId) || 
+                                (item.name && item.name.trim() === currentUserName.trim());
+                let isValidReq = item.reqId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ";
+                return matchUser && isValidReq;
+            });
 
             if (myData.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-5">คุณยังไม่มีรายการเบิก-ยืมในขณะนี้</td></tr>';
@@ -64,10 +70,9 @@ async function loadUserTableData() {
 
                 let statusTxt = item.status || "-";
                 let displayStatus = statusTxt;
-                let badgeClass = "badge-gray";
+                let badgeClass = "bg-secondary text-white";
                 let actionBtn = "";
 
-                // 📌 ปรับสีปุ่มให้เป็น Dark Theme ทั้งหมดให้ดูคลีนๆ เข้ากับเว็บ
                 if (statusTxt.includes("Step[1]")) {
                     displayStatus = "Step[1]";
                     badgeClass = "bg-danger text-white";
@@ -103,10 +108,10 @@ async function loadUserTableData() {
                 `;
             });
         } else {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-5">ไม่พบข้อมูลในระบบ</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-5">คุณยังไม่มีรายการเบิก-ยืมในขณะนี้</td></tr>';
         }
     } catch (err) {
-        console.error(err);
+        console.error("UserTable Error:", err);
         tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
     }
 }
@@ -183,7 +188,7 @@ async function openProfileModal() {
 }
 
 async function saveProfileData() {
-    const currentUserId = localStorage.getItem("userId"); // 📌 ดึง userId มาใช้เป็นกุญแจหลัก
+    const currentUserId = localStorage.getItem("userId"); 
     const firstName = document.getElementById("editProfileFirstName").value.trim();
     const lastName = document.getElementById("editProfileLastName").value.trim();
     const nickname = document.getElementById("editProfileNickname").value.trim(); 
@@ -195,7 +200,6 @@ async function saveProfileData() {
         return;
     }
 
-    // จัดฟอร์แมตเบอร์โทร
     phone = phone.replace(/-/g, ""); 
     if (phone.length === 10) {
         phone = phone.substring(0, 3) + "-" + phone.substring(3, 6) + "-" + phone.substring(6);
@@ -203,7 +207,7 @@ async function saveProfileData() {
         phone = "Tel. " + phone; 
     }
 
-    const newFullName = firstName + " " + lastName; // 📌 ประกอบร่างชื่อใหม่
+    const newFullName = firstName + " " + lastName; 
 
     const btn = document.getElementById("btnSaveProfile");
     const originalText = btn.innerHTML;
@@ -213,8 +217,8 @@ async function saveProfileData() {
     try {
         const res = await callAPI({ 
             action: "updateUserProfile", 
-            userId: currentUserId, // 📌 ส่ง userId ไปค้นหา (แม่นยำกว่าชื่อ)
-            name: newFullName,     // 📌 ส่งชื่อใหม่ไปอัปเดต
+            userId: currentUserId, 
+            name: newFullName,     
             nickname: nickname, 
             dept: dept, 
             phone: phone 
@@ -223,7 +227,6 @@ async function saveProfileData() {
         if (res.status === "success") {
             profileModal.hide();
             
-            // 📌 อัปเดตชื่อใหม่ในระบบทันที
             localStorage.setItem("userName", newFullName); 
             document.getElementById("showName").innerText = newFullName;
 
@@ -232,9 +235,11 @@ async function saveProfileData() {
                 text: "อัปเดตข้อมูลส่วนตัวของคุณเรียบร้อยแล้ว",
                 icon: "success",
                 confirmButtonColor: "#10b981"
+            }).then(() => {
+                loadUserTableData(); // รีเฟรชตารางหลังเปลี่ยนชื่อ
             });
         } else {
-            Swal.fire("ข้อผิดพลาด", "ไม่สามารถอัปเดตข้อมูลได้", "error");
+            Swal.fire("ข้อผิดพลาด", res.message || "ไม่สามารถอัปเดตข้อมูลได้", "error");
         }
     } catch (error) {
         Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
