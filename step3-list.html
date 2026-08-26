@@ -14,67 +14,18 @@
         .container-wide, .nav-header { max-width: 1280px !important; margin: 0 auto !important; }
         .container-wide { padding-left: 20px !important; padding-right: 20px !important; }
 
-        /* 💻 จัดระเบียบกล่อง iPad สำหรับจอคอมพิวเตอร์ */
-        @media (min-width: 769px) {
-            .ipad-box { text-align: center; width: 100%; }
-        }
+        @media (min-width: 769px) { .ipad-box { text-align: center; width: 100%; } }
 
-        /* 📱 ปรับ UI/UX การ์ดบนหน้าจอมือถือ */
         @media (max-width: 768px) {
             .table-card { background: transparent; box-shadow: none; border: none; padding: 0; margin-top: 10px; }
             .table thead { display: none; }
-            .table tbody tr { 
-                display: block; 
-                background: #ffffff; 
-                border-radius: 16px; 
-                margin-bottom: 16px; 
-                padding: 16px 20px; 
-                box-shadow: 0 4px 15px rgba(0,0,0,0.04); 
-                border: 1px solid #e2e8f0 !important;
-            }
-            .table tbody td { 
-                display: flex; 
-                justify-content: space-between; 
-                align-items: center; 
-                text-align: right; 
-                padding: 12px 0; 
-                border-bottom: 1px solid #f1f5f9 !important;
-            }
-            .table tbody td::before { 
-                content: attr(data-label); 
-                font-weight: 500; 
-                color: #64748b; 
-                font-size: 0.9rem; 
-                text-align: left; 
-                margin-right: 15px; 
-                flex-shrink: 0; 
-            }
-            
-            /* 📌 จัดการช่อง "รหัส iPad" ให้ปัดลงบรรทัดใหม่ และชิดขวาสุด */
-            .table tbody td[data-label="รหัส iPad"] { 
-                flex-direction: column; 
-                align-items: flex-start; 
-            }
-            .table tbody td[data-label="รหัส iPad"]::before { 
-                margin-bottom: 8px; 
-                margin-top: 0; 
-            }
-            .ipad-box { 
-                width: 100%; 
-                text-align: right; 
-                background-color: #f8fafc; 
-                padding: 10px 12px;
-                border-radius: 8px;
-                border: 1px solid #f1f5f9;
-            }
-            
-            /* 📌 ซ่อนคำว่า 'จัดการ' และขยายปุ่มให้เต็มหน้าจอ */
-            .table tbody td:last-child { 
-                border-bottom: none !important; 
-                padding-bottom: 0; 
-                padding-top: 16px; 
-                display: block; 
-            }
+            .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid #e2e8f0 !important; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px solid #f1f5f9 !important; }
+            .table tbody td::before { content: attr(data-label); font-weight: 500; color: #64748b; font-size: 0.9rem; text-align: left; margin-right: 15px; flex-shrink: 0; }
+            .table tbody td[data-label="รหัส iPad"] { flex-direction: column; align-items: flex-start; }
+            .table tbody td[data-label="รหัส iPad"]::before { margin-bottom: 8px; margin-top: 0; }
+            .ipad-box { width: 100%; text-align: right; background-color: #f8fafc; padding: 10px 12px; border-radius: 8px; border: 1px solid #f1f5f9; }
+            .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 16px; display: block; }
             .table tbody td:last-child::before { display: none; } 
             .table tbody td:last-child .btn { padding: 12px !important; font-size: 1.05rem; }
         }
@@ -113,20 +64,25 @@
 
 <script src="script.js"></script>	
 <script>
-
     const currentUserId = localStorage.getItem("userId");
+    const currentUserName = localStorage.getItem("userName");
 
     window.onload = async function() {
         if(!currentUserId) { window.location.href = "index.html"; return; }
         
         try {
-            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) });
-            const result = await res.json();
+            const res = await callAPI({ action: "getData" });
             const tbody = document.getElementById("requestListBody");
             tbody.innerHTML = "";
 
-            if (result.status === "success" && result.data.length > 0) {
-                const pendingRequests = result.data.filter(item => item.userId === currentUserId && item.status && item.status.includes("Step[2]"));
+            if (res.status === "success" && res.data && res.data.length > 0) {
+                const pendingRequests = res.data.filter(item => {
+                    let matchUser = (item.userId && item.userId === currentUserId) || 
+                                    (item.name && item.name.trim() === currentUserName.trim());
+                    let isValidReq = item.reqId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ";
+                    let isStatusMatch = item.status && item.status.includes("Step[2]");
+                    return matchUser && isValidReq && isStatusMatch;
+                });
 
                 if (pendingRequests.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="5" class="text-center fw-bold py-5 text-muted">🎉 ไม่มีรายการค้างดำเนินการในขณะนี้</td></tr>';
@@ -150,7 +106,7 @@
                     `;
                 });
             } else {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ ไม่พบข้อมูลในระบบ</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">ยังไม่มีรายการค้างดำเนินการ</td></tr>';
             }
         } catch (error) {
             document.getElementById("requestListBody").innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
