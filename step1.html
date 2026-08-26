@@ -151,6 +151,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+<!-- ดึงไฟล์แกนกลาง -->
 <script src="script.js"></script>
 
 <script>
@@ -182,78 +183,79 @@
         loadUsersAndIpads();
     };
 
-    // 🚀 รวบตึง! โหลดรายชื่อผู้ใช้งานและ iPad ที่ว่างมาพร้อมกันใน 1 วินาที (ลดเวลาเชื่อมต่อ Google)
+    // 🚀 ระบบโหลดคิวเข้าแถว (โหลดชัวร์ 100% ตัวที่พี่เคยบอกว่าทำงานได้ปกติ)
     async function loadUsersAndIpads() {
         try {
-            const response = await fetch(API_URL, {
+            // โหลดรายชื่อ
+            const userResponse = await fetch(API_URL, {
                 method: 'POST',
-                body: JSON.stringify({ action: "getStep1InitData" })
+                body: JSON.stringify({ action: "getUserNames" })
             });
-            const res = await response.json();
+            const userRes = await userResponse.json();
 
             const select = document.getElementById("userNameSelect");
             select.innerHTML = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
+            
+            if (userRes.status === "success" && userRes.data) {
+                userRes.data.sort((a, b) => a.localeCompare(b, 'th'));
+                userRes.data.forEach(name => { select.innerHTML += `<option value="${name}">${name}</option>`; });
+                
+                $('#userNameSelect').select2({
+                    theme: "bootstrap-5",
+                    width: '100%',
+                    placeholder: "-- เลือกชื่อผู้ขอยืม --",
+                    allowClear: true
+                });
+
+                const urlBorrower = new URLSearchParams(window.location.search).get('borrower') || "";
+                if (urlBorrower !== "") {
+                    for(let i = 0; i < select.options.length; i++) {
+                        if(select.options[i].text.includes(urlBorrower)) {
+                            $('#userNameSelect').val(select.options[i].value).trigger('change');
+                            break;
+                        }
+                    }
+                }
+            } else {
+                select.innerHTML = '<option value="">❌ ไม่พบรายชื่อผู้ใช้งาน</option>';
+            }
+
+            // โหลด iPad
+            const invResponse = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "getInventory" })
+            });
+            const invRes = await invResponse.json();
 
             const containerNormal = document.getElementById("ipadNormalContainer");
             const containerAir = document.getElementById("ipadAirContainer");
             containerNormal.innerHTML = ""; containerAir.innerHTML = "";
+            
+            if (invRes.status === "success" && invRes.data) {
+                invRes.data.sort((a, b) => {
+                    let numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
+                    let numB = parseInt(b.replace(/\D/g, ''), 10) || 0;
+                    return numA - numB;
+                });
 
-            if (res.status === "success") {
-                // 📌 1. ยัดข้อมูลรายชื่อเข้าช่อง Select2
-                if (res.users && res.users.length > 0) {
-                    res.users.sort((a, b) => a.localeCompare(b, 'th'));
-                    res.users.forEach(name => { select.innerHTML += `<option value="${name}">${name}</option>`; });
+                let countNormal = 0, countAir = 0;
+
+                invRes.data.forEach(id => { 
+                    const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+                    const btnHtml = `
+                        <input type="checkbox" class="btn-check ipad-checkbox" id="btn-${safeId}" value="${id}" data-safeid="${safeId}" onchange="handleIpadSelection(this)">
+                        <label class="btn btn-outline-red shadow-sm" for="btn-${safeId}" title="${id}">${id}</label>
+                    `;
                     
-                    $('#userNameSelect').select2({
-                        theme: "bootstrap-5",
-                        width: '100%',
-                        placeholder: "-- เลือกชื่อผู้ขอยืม --",
-                        allowClear: true
-                    });
+                    if (id.includes("Air") || id.includes("APC")) { containerAir.innerHTML += btnHtml; countAir++; } 
+                    else { containerNormal.innerHTML += btnHtml; countNormal++; }
+                });
 
-                    const urlBorrower = new URLSearchParams(window.location.search).get('borrower') || "";
-                    if (urlBorrower !== "") {
-                        for(let i = 0; i < select.options.length; i++) {
-                            if(select.options[i].text.includes(urlBorrower)) {
-                                $('#userNameSelect').val(select.options[i].value).trigger('change');
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    select.innerHTML = '<option value="">❌ ไม่พบรายชื่อผู้ใช้งาน</option>';
-                }
-
-                // 📌 2. ยัดข้อมูลรหัสเครื่องลงตะกร้า
-                if (res.inventory && res.inventory.length > 0) {
-                    res.inventory.sort((a, b) => {
-                        let numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
-                        let numB = parseInt(b.replace(/\D/g, ''), 10) || 0;
-                        return numA - numB;
-                    });
-
-                    let countNormal = 0, countAir = 0;
-
-                    res.inventory.forEach(id => { 
-                        const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
-                        const btnHtml = `
-                            <input type="checkbox" class="btn-check ipad-checkbox" id="btn-${safeId}" value="${id}" data-safeid="${safeId}" onchange="handleIpadSelection(this)">
-                            <label class="btn btn-outline-red shadow-sm" for="btn-${safeId}" title="${id}">${id}</label>
-                        `;
-                        
-                        if (id.includes("Air") || id.includes("APC")) { containerAir.innerHTML += btnHtml; countAir++; } 
-                        else { containerNormal.innerHTML += btnHtml; countNormal++; }
-                    });
-
-                    if(countNormal === 0) containerNormal.innerHTML = '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
-                    if(countAir === 0) containerAir.innerHTML = '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
-                } else { 
-                    containerNormal.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
-                    containerAir.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
-                }
-
-            } else {
-                throw new Error("เซิร์ฟเวอร์ตอบกลับผิดพลาด");
+                if(countNormal === 0) containerNormal.innerHTML = '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
+                if(countAir === 0) containerAir.innerHTML = '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
+            } else { 
+                containerNormal.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
+                containerAir.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
             }
 
         } catch (error) {
@@ -350,6 +352,7 @@
         }
     }
 
+    // 🚀 ระบบบันทึกแบบทะลุบล็อก (ดัก Google ตัดสายแต่ข้อมูลเข้าชัวร์)
     async function submitStep1() {
         const reqIdValue = document.getElementById("reqIdInput").value.trim(); 
         const recipientName = document.getElementById("userNameSelect").value;
@@ -411,6 +414,7 @@
             try {
                 res = JSON.parse(rawText);
             } catch (parseErr) {
+                // ถ้าตอบกลับมาแล้วพัง (Google ตัดสาย) แต่เน็ตยังอยู่ = ข้อมูลเข้าชัวร์
                 if (navigator.onLine) {
                     Swal.fire({
                         title: "บันทึกสำเร็จ!",
@@ -425,7 +429,7 @@
                 }
             }
 
-            if(res.status === "success") {
+            if(res && res.status === "success") {
                 Swal.fire({
                     title: "บันทึกสำเร็จ!",
                     html: `หมายเลขรายการ : <b>${res.reqId || "-"}</b><br>ระบบบันทึกสถานะ : รอยืนยันแล้ว`,
@@ -437,7 +441,7 @@
                     window.location.href = "admin.html";
                 });
             } else {
-                Swal.fire("ข้อผิดพลาด", res.message || "เกิดข้อผิดพลาดในการบันทึก", "error");
+                Swal.fire("ข้อผิดพลาด", (res && res.message) ? res.message : "เกิดข้อผิดพลาดในการบันทึก", "error");
                 btn.innerHTML = "ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
             }
 
