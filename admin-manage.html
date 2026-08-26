@@ -55,15 +55,10 @@
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- 📌 1. เพิ่มบรรทัดดึง script.js ลงไปตรงนี้ -->
+<!-- 📌 ดึง script.js เพื่อเอา API_URL -->
 <script src="script.js"></script> 
 
 <script>
-    // 📌 2. ลบบรรทัด const API_URL ทิ้งไปเลย ให้เหลือแค่นี้พอ
-    const currentUserId = localStorage.getItem("userId");
-    // ...
-    <script>
-
     const currentAdmin = localStorage.getItem("userName") || "Admin";
 
     window.onload = function() {
@@ -92,7 +87,6 @@
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
                     let formattedIpads = formatIpadText(item.ipadId);
 
-                    // 📌 เพิ่ม data-label ให้รองรับจอมือถือ
                     tbody.innerHTML += `
                         <tr>
                             <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
@@ -111,6 +105,9 @@
             } else {
                 tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
             }
+        }).catch(err => {
+            // 📌 ใส่เผื่อไว้ให้มันไม่ค้างเวลาเน็ตหลุดหรือมีปัญหา
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
         });
     }
 
