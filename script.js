@@ -29,30 +29,23 @@ function hideLoading() {
 }
 
 // -----------------------------------------
-// 2. ระบบเรียกใช้ API (อัปเกรด: มีระบบยิงซ้ำอัตโนมัติ 3 รอบถ้าเน็ตหลุดหรือ Google ค้าง)
+// 2. ระบบเรียกใช้ API (🚀 แก้ไข: เอา Headers เจ้าปัญหาออก ป้องกัน Google บล็อก)
 // -----------------------------------------
 async function callAPI(payload, retries = 3) {
     for (let i = 0; i < retries; i++) {
         try {
+            // 📌 ยิงแบบดิบๆ บ้านๆ นี่แหละ Google Apps Script ชอบที่สุด ไม่โดนบล็อกชัวร์
             const res = await fetch(API_URL, {
                 method: "POST",
-                redirect: "follow", // บังคับให้วิ่งตาม Redirect ของ Google ป้องกันหลุด
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8", // บังคับเป็น text ป้องกันปัญหา CORS ที่ทำให้เว็บตาย
-                },
                 body: JSON.stringify(payload)
             });
-            
-            if (!res.ok) {
-                throw new Error("HTTP Status " + res.status);
-            }
             
             return await res.json();
             
         } catch (error) {
             console.warn(`เชื่อมต่อขัดข้อง (ลองใหม่รอบที่ ${i + 1}/${retries}):`, error);
             
-            // ถ้าลองครบ 3 รอบแล้วยังพังอยู่ ค่อยยอมแพ้และโยน Error ออกมาให้หน้าเว็บรู้
+            // ถ้าลองครบ 3 รอบแล้วยังพังอยู่ ค่อยยอมแพ้และโยน Error ออกมา
             if (i === retries - 1) {
                 throw error; 
             }
