@@ -57,7 +57,6 @@
     <div class="table-responsive">
         <table class="table align-middle">
             <thead>
-                <!-- 📌 เอาคอลัมน์ปุ่มลัดออก -->
                 <tr><th>เครื่องที่</th><th>แอพ File</th><th>แอพ รูปภาพ</th><th>แอพ Safari</th><th>เช็ค Wi-Fi</th><th>เช็ค Bluetooth</th><th>เช็ค AirDrop</th><th>G-Drive</th><th>ลบ WI-FI</th></tr>
             </thead>
             <tbody id="itemList">
@@ -66,7 +65,7 @@
         </table>
     </div>
 
-    <button class="btn btn-confirm shadow-sm" onclick="submitReturn()">ยืนยันการส่งคืนเครื่องทั้งหมด</button>
+    <button class="btn btn-confirm shadow-sm" onclick="submitReturn()">💾 ยืนยันการส่งคืนเครื่องทั้งหมด</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script src="script.js"></script>
@@ -83,11 +82,18 @@
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep2Data", reqId: reqId }) })
         .then(res => res.json())
         .then(res => {
+            // 🚨 ดักคนทำซ้ำ
+            if (res.reqStatus && res.reqStatus !== "Step[3]") {
+                Swal.fire("แจ้งเตือน", `รายการนี้ส่งคืนเครื่องไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => {
+                    window.location.href = localStorage.getItem("userRole") === "Admin" ? "admin.html" : "user.html";
+                });
+                return;
+            }
+
             const tbody = document.getElementById('itemList');
             tbody.innerHTML = "";
             if(res.data && res.data.length > 0) {
                 res.data.forEach((item) => {
-                    // 📌 เอา <td data-label="ปุ่มลัด"> ออก
                     tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
                         <td data-label="📱 เลือกส่งคืน" class="fw-bold text-start">
                             <div class="d-flex align-items-center">
@@ -116,13 +122,12 @@
 
     async function submitReturn() {
         let items = [];
-        let isAllChecked = true; // 📌 ตัวแปรตรวจสอบว่าติ๊กครบไหม
+        let isAllChecked = true; 
 
         document.querySelectorAll('.select-ipad:checked').forEach(checkbox => {
             const row = checkbox.closest('tr');
             const checks = Array.from(row.querySelectorAll('.check-item'));
 
-            // 📌 ถ้ามีช่องไหนไม่ติ๊ก
             if (checks.some(c => !c.checked)) {
                 isAllChecked = false;
             }
@@ -136,7 +141,6 @@
             return;
         }
 
-        // 📌 ดักจับกรณีติ๊กรายการย่อยไม่ครบ
         if (!isAllChecked) {
             Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาตรวจสอบและติ๊กรายการให้ครบทุกข้อ สำหรับ iPad ที่เลือกครับ!", icon: "warning", confirmButtonColor: "#212529" });
             return;
