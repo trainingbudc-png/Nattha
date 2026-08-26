@@ -55,8 +55,15 @@
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- 📌 1. เพิ่มบรรทัดดึง script.js ลงไปตรงนี้ -->
+<script src="script.js"></script> 
+
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwv7qtsMDLxaXD3RbGB8Q0Nq1U0Q91cRL7rhe0Ge4OWEC41cvtajsI-JlFwjPmRrPCu/exec";
+    // 📌 2. ลบบรรทัด const API_URL ทิ้งไปเลย ให้เหลือแค่นี้พอ
+    const currentUserId = localStorage.getItem("userId");
+    // ...
+    <script>
+
     const currentAdmin = localStorage.getItem("userName") || "Admin";
 
     window.onload = function() {
