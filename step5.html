@@ -12,7 +12,6 @@
         body { background: #fdf2f2; font-family: 'Kanit', sans-serif; padding: 20px; }
         
         .main-header-card { background: white; padding: 20px 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(220,53,69,0.05); margin: auto; max-width: 900px; margin-bottom: 20px; border-left: 6px solid #dc3545; }
-        /* 📌 เปลี่ยนสีหัวข้อหลักเป็นสีดำเข้ม */
         .main-header-card h3 { color: #212529; font-weight: 600; margin: 0; font-size: 1.6rem; }
         
         .confirm-card { background: white; padding: 0; border-radius: 12px; box-shadow: 0 10px 25px rgba(220,53,69,0.08); max-width: 900px; margin: auto; overflow: hidden; }
@@ -20,25 +19,18 @@
         .red-header { background-color: #dc3545; color: white; padding: 15px 20px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
         .req-id-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 8px; font-size: 0.9rem; }
         
-        /* 📌 เปลี่ยนสี Label และ Value เป็นโทนดำ/เทาเข้ม */
         .info-panel { padding: 15px 20px; background: #fef2f2; border-bottom: 1px solid #fca5a5; display: flex; justify-content: space-around; align-items: center; }
         .info-label { font-size: 0.85rem; color: #495057; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
         .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
         .divider { width: 1px; background-color: #fca5a5; height: 40px; }
 
-        /* 📌 เปลี่ยนสีหัวตารางเป็นสีดำเข้ม */
         .table { margin-bottom: 0 !important; border-collapse: collapse; }
         .table th { font-size: 0.9rem; vertical-align: middle; text-align: center; color: #212529; background: white; padding: 15px 10px; border-bottom: 2px solid #fca5a5; font-weight: 600; }
         .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid #fee2e2; }
         
-        /* 📌 เปลี่ยนสีปุ่มลัดให้เป็นขอบดำ ตัวหนังสือดำ เหมือน Step 1 */
-        .btn-shortcut { background: white; color: #212529; border: 1px solid #212529; font-size: 0.85rem; font-weight: bold; padding: 8px 12px; border-radius: 6px; transition: 0.2s; }
-        .btn-shortcut:hover { background: #212529; color: white; }
-        
         .btn-confirm { background: #dc3545; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: calc(100% - 40px); margin: 20px; border: none; transition: 0.3s; font-size: 1.1rem; }
         .btn-confirm:hover { background: #b91c1c; }
 
-        /* 📱 รองรับมือถือ & ขยายปุ่มจิ้มง่าย */
         .check-item { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #dc3545; }
         @media screen and (max-width: 768px) {
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
@@ -47,7 +39,6 @@
             .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #e9ecef; }
             .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
             .table tbody td::before { content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; }
-            .btn-shortcut { width: 100% !important; margin-top: 5px; padding: 10px !important; border-radius: 50rem !important;}
         }
     </style>
 </head>
@@ -79,17 +70,17 @@
     <div class="table-responsive">
         <table class="table align-middle">
             <thead>
+                <!-- 📌 เอาคอลัมน์ปุ่มลัดออก -->
                 <tr>
                     <th style="text-align: left; padding-left: 20px;">เครื่องที่</th>
                     <th>เช็ค Google Drive</th>
                     <th>เช็คแอพ File</th>
                     <th>เช็คแอพ รูปภาพ</th>
                     <th>เช็คแอพ Safari</th>
-                    <th>ปุ่มลัด</th>
                 </tr>
             </thead>
             <tbody id="itemList">
-                <tr><td colspan="6" class="text-muted py-4 text-center">กำลังโหลดข้อมูลเครื่อง...</td></tr>
+                <tr><td colspan="5" class="text-muted py-4 text-center">กำลังโหลดข้อมูลเครื่อง...</td></tr>
             </tbody>
         </table>
     </div>
@@ -109,6 +100,14 @@
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep1Data", reqId: reqId }) })
         .then(res => res.json())
         .then(res => {
+            // 🚨 ดักคนทำซ้ำ
+            if (res.reqStatus && res.reqStatus !== "Step[4]") {
+                Swal.fire("แจ้งเตือน", `รายการนี้ถูกตรวจสอบปิดจบไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => {
+                    window.location.href = "admin.html";
+                });
+                return;
+            }
+
             document.getElementById('displayUserName').innerText = res.userName || "ไม่ระบุ";
             document.getElementById('displayAdminName').innerText = res.adminName || "ไม่ระบุ";
 
@@ -117,34 +116,43 @@
             
             if(res.data && res.data.length > 0) {
                 res.data.forEach((item) => {
+                    // 📌 เอา <td data-label="⚡ ปุ่มลัด"> ออก
                     tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
                         <td data-label="📱 เครื่องที่" class="fw-bold text-dark text-start ps-3 fs-5">${item.ipadId}</td>
                         <td data-label="📁 เช็ค G-Drive"><input type="checkbox" class="check-item form-check-input"></td>
                         <td data-label="📄 เช็คแอพ File"><input type="checkbox" class="check-item form-check-input"></td>
                         <td data-label="🖼️ เช็คแอพ รูปภาพ"><input type="checkbox" class="check-item form-check-input"></td>
                         <td data-label="🌐 เช็คแอพ Safari"><input type="checkbox" class="check-item form-check-input"></td>
-                        <td data-label="⚡ ปุ่มลัด"><button type="button" class="btn btn-shortcut w-100 rounded-pill" onclick="checkAllInRow(this)">ติ๊กครบ</button></td>
                     </tr>`;
                 });
-            } else { tbody.innerHTML = '<tr><td colspan="6" class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</td></tr>'; }
+            } else { tbody.innerHTML = '<tr><td colspan="5" class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</td></tr>'; }
         });
     };
 
-    function checkAllInRow(btn) {
-        const row = btn.closest('tr');
-        row.querySelectorAll('.check-item').forEach(cb => cb.checked = true);
-    }
-
     async function submitCheck() {
+        let items = [];
+        let isAllChecked = true; 
+
+        document.querySelectorAll('#itemList tr[data-ipad]').forEach(row => {
+            const checks = Array.from(row.querySelectorAll('.check-item'));
+            
+            if (checks.some(c => !c.checked)) {
+                isAllChecked = false;
+            }
+
+            const checkValues = checks.map(c => c.checked ? "☑" : "☐");
+            items.push({ ipadId: row.dataset.ipad, checks: checkValues });
+        });
+
+        // 📌 ดักจับกรณีติ๊กรายการย่อยไม่ครบ
+        if (!isAllChecked) {
+            Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาตรวจสอบและติ๊กรายการให้ครบทุกข้อ สำหรับ iPad ทุกเครื่องครับ!", icon: "warning", confirmButtonColor: "#dc3545" });
+            return;
+        }
+        
         const btn = document.querySelector('.btn-confirm');
         const originalText = btn.innerText; btn.innerText = "⏳ กำลังบันทึกข้อมูล..."; btn.disabled = true;
 
-        let items = [];
-        document.querySelectorAll('#itemList tr[data-ipad]').forEach(row => {
-            const checks = Array.from(row.querySelectorAll('.check-item')).map(c => c.checked ? "☑" : "☐");
-            items.push({ ipadId: row.dataset.ipad, checks: checks });
-        });
-        
         const borrowerName = document.getElementById('displayUserName').innerText;
 
         try {
