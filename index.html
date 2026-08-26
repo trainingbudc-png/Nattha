@@ -109,7 +109,7 @@
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
-<!-- 📌 ดึงลิงก์ API และ LIFF_ID มาจาก script.js แทน -->
+<!-- 📌 ดึงลิงก์ API และ LIFF_ID มาจาก script.js -->
 <script src="script.js"></script>
 
 <script>
@@ -132,7 +132,6 @@
         }
 
         try {
-            // 📌 เปลี่ยนมาเรียกใช้ LIFF_ID แบบเพียวๆ (เพราะดึงค่ามาจาก script.js แล้ว)
             await liff.init({ liffId: LIFF_ID });
             
             if (!liff.isLoggedIn()) {
@@ -184,7 +183,7 @@
                 document.getElementById('regFirstName').value = nameParts[0] || "";
                 document.getElementById('regLastName').value = nameParts.slice(1).join(" ") || "";
                 
-                // 📌 [อัปเกรด] นำรายชื่อแผนกที่ส่งมาพร้อมกัน มาสร้าง Dropdown ได้เลยทันที (ไม่ต้องยิง API ใหม่)
+                // 📌 นำรายชื่อแผนกที่ส่งมาพร้อมกัน มาสร้าง Dropdown ได้เลยทันที (ไม่ต้องยิง API ใหม่)
                 const selectDept = document.getElementById('regDept');
                 if (data.departments && data.departments.length > 0) {
                     selectDept.innerHTML = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>';
@@ -200,28 +199,6 @@
         }
     }
 
-    async function loadDepartments() {
-        const selectDept = document.getElementById('regDept');
-        try {
-            const res = await fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "getDepartments" })
-            });
-            const data = await res.json();
-
-            if (data.status === "success" && data.data.length > 0) {
-                selectDept.innerHTML = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>';
-                data.data.forEach(dept => {
-                    selectDept.innerHTML += `<option value="${dept}">${dept}</option>`;
-                });
-            } else {
-                selectDept.innerHTML = '<option value="">(ไม่พบข้อมูลแผนก)</option>';
-            }
-        } catch (error) {
-            selectDept.innerHTML = '<option value="">(เชื่อมต่อข้อมูลล้มเหลว)</option>';
-        }
-    }
-
     async function submitRegistration() {
         const userId = document.getElementById('hiddenUserId').value;
         const firstName = document.getElementById('regFirstName').value.trim();
@@ -234,8 +211,8 @@
             return alert("⚠️ กรุณากรอก ชื่อ, นามสกุล, แผนก และเบอร์โทร ให้ครบถ้วนครับ");
         }
 
-        // 🚀 ท่าไม้ตายสับขาหลอก: บังคับเติมขีดกลางให้เบอร์โทร
-        phone = phone.replace(/-/g, ""); // ลบขีดเก่าออกก่อน
+        // 🚀 บังคับเติมขีดกลางให้เบอร์โทร
+        phone = phone.replace(/-/g, ""); 
         if (phone.length === 10) {
             phone = phone.substring(0, 3) + "-" + phone.substring(3, 6) + "-" + phone.substring(6);
         } else {
