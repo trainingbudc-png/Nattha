@@ -127,15 +127,17 @@
                 </div>
                 <div class="modal-body p-4 pt-3">
                     
-                    <!-- แยกชื่อและนามสกุล (Readonly) -->
+<!-- แยกชื่อและนามสกุล -->
                     <div class="row mb-3">
                         <div class="col-6">
                             <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">ชื่อจริง</label>
-                            <input type="text" id="editProfileFirstName" class="form-control bg-light text-muted" readonly style="border-radius: 8px; cursor: not-allowed;">
+                            <!-- 📌 เอา readonly และพื้นหลังสีเทาออก -->
+                            <input type="text" id="editProfileFirstName" class="form-control" style="border-radius: 8px;">
                         </div>
                         <div class="col-6">
                             <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">นามสกุล</label>
-                            <input type="text" id="editProfileLastName" class="form-control bg-light text-muted" readonly style="border-radius: 8px; cursor: not-allowed;">
+                            <!-- 📌 เอา readonly และพื้นหลังสีเทาออก -->
+                            <input type="text" id="editProfileLastName" class="form-control" style="border-radius: 8px;">
                         </div>
                     </div>
 
