@@ -54,10 +54,11 @@
     <div class="table-responsive">
         <table class="table table-bordered text-center align-middle">
             <thead class="table-light">
-                <tr><th>iPad</th><th>Drive</th><th>File</th><th>Img</th><th>Safari</th><th>ปุ่มลัด</th></tr>
+                <!-- 📌 เอาคอลัมน์ปุ่มลัดออก -->
+                <tr><th>iPad</th><th>Drive</th><th>File</th><th>Img</th><th>Safari</th></tr>
             </thead>
             <tbody id="itemList">
-                <tr><td colspan="6" class="text-muted py-3">กำลังโหลดข้อมูล... ⏳</td></tr>
+                <tr><td colspan="5" class="text-muted py-3">กำลังโหลดข้อมูล... ⏳</td></tr>
             </tbody>
         </table>
     </div>
@@ -82,6 +83,7 @@
 
         if(res.data && res.data.length > 0) {
             res.data.forEach(item => {
+                // 📌 เอา <td data-label="ปุ่มลัด"> ออก
                 tbody.innerHTML += `<tr>
                     <td data-label="เลือกรับเครื่อง" class="fw-bold text-start">
                         <div class="d-flex align-items-center">
@@ -93,11 +95,10 @@
                     <td data-label="File"><input type="checkbox" class="check-app form-check-input" disabled></td>
                     <td data-label="Img"><input type="checkbox" class="check-app form-check-input" disabled></td>
                     <td data-label="Safari"><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td data-label="ปุ่มลัด"><button type="button" class="btn btn-dark btn-sm fw-bold w-100 rounded-pill" onclick="tickAll(this)">ติ๊กครบ</button></td>
                 </tr>`;
             });
         } else {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-danger py-3">❌ ไม่พบรายการเครื่อง</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-danger py-3">❌ ไม่พบรายการเครื่อง</td></tr>';
         }
     });
 
@@ -109,23 +110,31 @@
         });
     }
 
-    function tickAll(btn) {
-        const row = btn.closest('tr');
-        const mainCheck = row.querySelector('.select-ipad');
-        mainCheck.checked = true; 
-        row.querySelectorAll('.check-app').forEach(cb => { cb.disabled = false; cb.checked = true; });
-    }
-
     async function submitReceipt() {
         let items = [];
+        let isAllChecked = true; // 📌 ตัวแปรเช็คว่าติ๊กครบไหม
+
         document.querySelectorAll('.select-ipad:checked').forEach(ipad => {
             const row = ipad.closest('tr');
-            const checks = Array.from(row.querySelectorAll('.check-app')).map(c => c.checked ? "☑" : "☐");
-            items.push({ ipadId: row.querySelector('label').innerText, checklist: checks.join(",") });
+            const checks = Array.from(row.querySelectorAll('.check-app'));
+            
+            // 📌 เช็คว่ามีช่องไหนดันยังไม่ติ๊กหรือเปล่า
+            if (checks.some(c => !c.checked)) {
+                isAllChecked = false;
+            }
+
+            const checkValues = checks.map(c => c.checked ? "☑" : "☐");
+            items.push({ ipadId: row.querySelector('label').innerText, checklist: checkValues.join(",") });
         });
 
         if (items.length === 0) {
             Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาติ๊กเลือกหน้าชื่อ iPad อย่างน้อย 1 เครื่องก่อนกดยืนยันครับ!", icon: "warning", confirmButtonColor: "#212529" });
+            return;
+        }
+
+        // 📌 ดักจับกรณีติ๊กรายการย่อยไม่ครบ
+        if (!isAllChecked) {
+            Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาตรวจสอบและติ๊กรายการให้ครบทุกข้อ สำหรับ iPad ที่เลือกครับ!", icon: "warning", confirmButtonColor: "#212529" });
             return;
         }
 
@@ -144,7 +153,6 @@
                     confirmButtonText: "OK",
                     allowOutsideClick: false
                 }).then(() => {
-                    // 📌 เงื่อนไขแยก Admin กับ User
                     const userRole = localStorage.getItem("userRole");
                     if (userRole === "Admin") {
                         window.location.href = "admin.html";
