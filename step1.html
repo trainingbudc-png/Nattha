@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- นำเข้าไลบรารี Select2 สำหรับช่องค้นหารายชื่อ -->
+    <!-- 📌 นำเข้าไลบรารี Select2 สำหรับทำช่องค้นหารายชื่อ -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
@@ -18,12 +18,14 @@
     <style>
         body { background: #fdf2f2; font-family: 'Kanit', sans-serif; padding: 20px; }
         
+        /* 📌 กรอบการ์ดหลัก (มาตรฐานเดียวกับ Step 5) */
         .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(220,53,69,0.05); max-width: 950px; margin: auto; border: 1px solid #fecaca; }
         
         .form-label { font-weight: 600; color: #495057; font-size: 0.95rem; }
         .form-control, .form-select { border-radius: 10px; border: 1px solid #fca5a5; padding: 12px 15px; }
         .form-control:focus, .form-select:focus { border-color: #dc3545; box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25); }
         
+        /* 📌 ปรับหน้าตาของกล่องค้นหา Select2 ให้เข้ากับตีมแดง */
         .select2-container--bootstrap-5 .select2-selection {
             border-radius: 10px !important;
             border: 1px solid #fca5a5 !important;
@@ -37,6 +39,7 @@
             box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
         }
 
+        /* 📌 สไตล์ส่วนของการเลือก iPad */
         .category-header { background-color: #fef2f2; color: #212529; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; margin-bottom: 5px; border: 1px solid #fca5a5; }
         .category-header:hover { background-color: #fecaca; }
         .category-header::after { content: '▼'; font-size: 0.8rem; transition: transform 0.3s ease; }
@@ -47,22 +50,26 @@
         .grid-layout .btn { width: 100%; margin: 0 !important; padding: 8px 5px !important; font-size: 0.95rem; text-align: center; white-space: normal; line-height: 1.2; display: flex; align-items: center; justify-content: center; min-height: 45px; border-radius: 8px; }
         .grid-full-width { grid-column: 1 / -1; text-align: center; padding: 10px 0; }
 
+        /* 🔘 ปุ่มกดเลือก iPad */
         .btn-outline-red { color: #212529; border-color: #fca5a5; font-weight: 600; background-color: white; }
         .btn-outline-red:hover { background-color: #fef2f2; border-color: #dc3545; color: #dc3545; }
         .btn-check:checked + .btn-outline-red { background-color: #dc3545; color: white; border-color: #dc3545; box-shadow: 0 4px 10px rgba(220,53,69,0.3); }
 
+        /* 💻 สไตล์ตารางสำหรับจอคอม (Desktop) */
         .table-responsive { border-radius: 12px; border: 1px solid #fca5a5; overflow: hidden; }
         .table { margin-bottom: 0; }
         .table th { background-color: #fef2f2; color: #212529; font-weight: 600; text-align: center; padding: 15px; border-bottom: 2px solid #fca5a5; font-size: 0.95rem; white-space: nowrap; }
         .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid #fee2e2; color: #1e293b; font-weight: 500; font-size: 0.95rem; }
         .table tbody tr:hover { background-color: #fff9f9; }
 
+        /* 📌 ปุ่ม Checkbox และปุ่มยืนยัน */
         .form-check-input { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: #dc3545; }
         .btn-shortcut { background: white; color: #212529; border: 2px solid #dc3545; transition: 0.2s; border-radius: 50rem; font-size: 0.85rem;}
         .btn-shortcut:hover { background: #dc3545; color: white; }
         .btn-submit-custom { background-color: #dc3545; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 25px; transition: 0.3s; border: none; font-size: 1.1rem; }
         .btn-submit-custom:hover { background-color: #b91c1c; color: white; }
 
+        /* 📱 ปรับการ์ดบนหน้าจอมือถือ (Mobile) */
         @media (max-width: 768px) {
             .confirm-card { padding: 20px; border-radius: 16px; margin-top: 10px; }
             .table-responsive { border: none; }
@@ -82,17 +89,20 @@
     
     <div class="confirm-card my-3 mb-5">
         
+        <!-- 📌 ส่วนหัวของเพจ (อยู่ในกรอบการ์ด) -->
         <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-danger border-opacity-25">
             <h4 class="text-dark fw-bold mb-0">📦 Step 1 | เตรียมเครื่อง</h4>
             <a href="admin.html" class="btn btn-outline-danger px-4 fw-bold rounded-pill border-2 btn-sm">🔙 กลับเมนูแอดมิน</a>
         </div>
         
         <form id="step1Form">
+            <!-- 📌 ช่อง: เลขรายการ -->
             <div class="mb-4">
                 <label class="form-label">📌 เลขรายการ <span class="text-muted fw-normal">(ID อ้างอิงจากระบบหลัก)</span></label>
                 <input type="text" id="reqIdInput" class="form-control form-control-lg bg-light text-danger fw-bold" readonly placeholder="ระบบจะสร้างให้อัตโนมัติหากไม่มีการระบุมา">
             </div>
 
+            <!-- 📌 ช่อง: เลือกผู้ยืม (เพิ่ม id="userNameSelect" ให้พิมพ์ค้นหาได้) -->
             <div class="mb-4">
                 <label class="form-label">👤 เลือกผู้ขอเบิกยืม <span class="text-muted fw-normal">(พิมพ์ชื่อค้นหาได้)</span></label>
                 <select id="userNameSelect" class="form-select form-select-lg" required>
@@ -100,6 +110,7 @@
                 </select>
             </div>
 
+            <!-- 📌 ช่อง: เลือก iPad -->
             <div class="mb-4">
                 <label class="form-label d-flex justify-content-between align-items-end mb-3">
                     <span>📱 เลือกเครื่องที่ว่าง <span class="text-muted fw-normal">(กดเลือกได้หลายเครื่อง)</span></span>
@@ -125,6 +136,7 @@
                 </div>
             </div>
 
+            <!-- 📌 ตารางเช็คลิสต์เตรียมเครื่อง -->
             <div id="dynamicChecklistContainer" class="mb-4 d-none">
                 <label class="form-label text-dark fw-bold mb-3">✅ สิ่งที่แอดมินต้องเตรียม <span class="text-muted fw-normal">(เช็คให้ครบทุกเครื่อง)</span></label>
                 <div class="table-responsive bg-white">
@@ -145,6 +157,7 @@
                 </div>
             </div>
 
+            <!-- 🚨 หมวดยืมฉุกเฉิน -->
             <div class="mb-4 p-4 rounded-4" style="background-color: #fff5f5; border: 1px dashed #fca5a5;">
                 <div class="form-check form-switch d-flex align-items-center gap-3">
                     <input class="form-check-input m-0" type="checkbox" id="emergencyCheck" style="width: 45px !important; height: 24px !important; cursor: pointer;" onchange="toggleEmergencyNote()">
@@ -198,72 +211,80 @@
         loadUsersAndIpads();
     };
 
-    // 📌 อัปเกรด: เปลี่ยนมาใช้ callAPI เพื่อความเสถียร
+    // 🚀 อัปเกรดความเร็วแสง: ยิง API ครั้งเดียว ได้ทั้งชื่อคนและรายการเครื่อง! 
     async function loadUsersAndIpads() {
         try {
-            // โหลดรายชื่อผู้ใช้
-            const userRes = await callAPI({ action: "getUserNames" });
+            const res = await callAPI({ action: "getStep1InitData" });
+            
             const select = document.getElementById("userNameSelect");
             select.innerHTML = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
             
-            if (userRes.status === "success" && userRes.data.length > 0) {
-                userRes.data.sort((a, b) => a.localeCompare(b, 'th'));
-                userRes.data.forEach(name => { select.innerHTML += `<option value="${name}">${name}</option>`; });
-                
-                $('#userNameSelect').select2({
-                    theme: "bootstrap-5",
-                    width: '100%',
-                    placeholder: "-- เลือกชื่อผู้ขอยืม --",
-                    allowClear: true
-                });
-
-                const urlBorrower = new URLSearchParams(window.location.search).get('borrower') || "";
-                if (urlBorrower !== "") {
-                    for(let i = 0; i < select.options.length; i++) {
-                        if(select.options[i].text.includes(urlBorrower)) {
-                            $('#userNameSelect').val(select.options[i].value).trigger('change');
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // โหลดรายการ iPad ที่ว่าง
-            const invRes = await callAPI({ action: "getInventory" });
             const containerNormal = document.getElementById("ipadNormalContainer");
             const containerAir = document.getElementById("ipadAirContainer");
             containerNormal.innerHTML = ""; containerAir.innerHTML = "";
-            
-            if (invRes.status === "success" && invRes.data.length > 0) {
-                invRes.data.sort((a, b) => {
-                    let numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
-                    let numB = parseInt(b.replace(/\D/g, ''), 10) || 0;
-                    return numA - numB;
-                });
 
-                let countNormal = 0, countAir = 0;
-
-                invRes.data.forEach(id => { 
-                    const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
-                    const btnHtml = `
-                        <input type="checkbox" class="btn-check ipad-checkbox" id="btn-${safeId}" value="${id}" data-safeid="${safeId}" onchange="handleIpadSelection(this)">
-                        <label class="btn btn-outline-red shadow-sm" for="btn-${safeId}" title="${id}">${id}</label>
-                    `;
+            if (res.status === "success") {
+                
+                // --- 1. เอาข้อมูลยัดใส่ช่องค้นหาชื่อ ---
+                if (res.users && res.users.length > 0) {
+                    res.users.sort((a, b) => a.localeCompare(b, 'th'));
+                    res.users.forEach(name => { select.innerHTML += `<option value="${name}">${name}</option>`; });
                     
-                    if (id.includes("Air") || id.includes("APC")) { containerAir.innerHTML += btnHtml; countAir++; } 
-                    else { containerNormal.innerHTML += btnHtml; countNormal++; }
-                });
+                    $('#userNameSelect').select2({
+                        theme: "bootstrap-5",
+                        width: '100%',
+                        placeholder: "-- เลือกชื่อผู้ขอยืม --",
+                        allowClear: true
+                    });
 
-                if(countNormal === 0) containerNormal.innerHTML = '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
-                if(countAir === 0) containerAir.innerHTML = '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
-            } else { 
-                containerNormal.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
-                containerAir.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
+                    const urlBorrower = new URLSearchParams(window.location.search).get('borrower') || "";
+                    if (urlBorrower !== "") {
+                        for(let i = 0; i < select.options.length; i++) {
+                            if(select.options[i].text.includes(urlBorrower)) {
+                                $('#userNameSelect').val(select.options[i].value).trigger('change');
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // --- 2. เอาข้อมูลยัดใส่กล่องเครื่อง iPad ---
+                if (res.inventory && res.inventory.length > 0) {
+                    res.inventory.sort((a, b) => {
+                        let numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
+                        let numB = parseInt(b.replace(/\D/g, ''), 10) || 0;
+                        return numA - numB;
+                    });
+
+                    let countNormal = 0, countAir = 0;
+
+                    res.inventory.forEach(id => { 
+                        const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+                        const btnHtml = `
+                            <input type="checkbox" class="btn-check ipad-checkbox" id="btn-${safeId}" value="${id}" data-safeid="${safeId}" onchange="handleIpadSelection(this)">
+                            <label class="btn btn-outline-red shadow-sm" for="btn-${safeId}" title="${id}">${id}</label>
+                        `;
+                        
+                        if (id.includes("Air") || id.includes("APC")) { containerAir.innerHTML += btnHtml; countAir++; } 
+                        else { containerNormal.innerHTML += btnHtml; countNormal++; }
+                    });
+
+                    if(countNormal === 0) containerNormal.innerHTML = '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
+                    if(countAir === 0) containerAir.innerHTML = '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
+                } else { 
+                    containerNormal.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
+                    containerAir.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
+                }
+
+            } else {
+                throw new Error("API failed to load");
             }
-
         } catch (error) {
             console.error("Error loading setup data:", error);
-            Swal.fire("ข้อผิดพลาด", "ไม่สามารถดึงข้อมูลคลังและรายชื่อได้ กรุณารีเฟรชหน้าเว็บ", "error");
+            document.getElementById("userNameSelect").innerHTML = '<option value="">❌ โหลดข้อมูลล้มเหลว</option>';
+            document.getElementById("ipadNormalContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
+            document.getElementById("ipadAirContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
+            Swal.fire("ข้อผิดพลาด", "เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ กรุณารีเฟรชหน้าเว็บ", "error");
         }
     }
 
@@ -353,7 +374,6 @@
         }
     }
 
-    // 📌 อัปเกรด: เปลี่ยนมาใช้ callAPI
     async function submitStep1() {
         const reqIdValue = document.getElementById("reqIdInput").value.trim(); 
         const recipientName = document.getElementById("userNameSelect").value;
