@@ -54,7 +54,8 @@
         </div>
         <div class="d-flex align-items-center gap-2">
             <span class="admin-name d-none d-md-inline">แอดมิน: <span id="adminNameDisplay">Loading...</span></span>
-            <button class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" onclick="logout()">ออกจากระบบ</button>
+            <!-- 📌 เปลี่ยนมาเรียกใช้ logoutSystem() แทน -->
+            <button class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" onclick="logoutSystem()">ออกจากระบบ</button>
         </div>
     </nav>
 
@@ -161,11 +162,12 @@
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="script.js"></script>
-<script>
 
-    
-    let globalLogData = []; // 📌 เก็บข้อมูลที่โหลดมาทั้งหมดไว้กรอง
+<!-- 📌 เชื่อมท่อกับ script.js ของเรา -->
+<script src="script.js"></script>
+
+<script>
+    let globalLogData = []; 
 
     window.onload = function() {
         const userName = localStorage.getItem("userName");
@@ -180,7 +182,6 @@
         loadAdminTableData();
     };
 
-    // 1. โหลดข้อมูลจากเซิร์ฟเวอร์
     function loadAdminTableData() {
         const tbody = document.getElementById("adminTableBody");
         tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
@@ -189,9 +190,8 @@
         .then(res => res.json())
         .then(res => {
             if (res.status === "success" && res.data && res.data.length > 0) {
-                // กรองเอาแถวหัวตารางออก
                 globalLogData = res.data.filter(item => item.reqId !== "ReqID" && item.reqId !== "เลขรายการ");
-                filterTable(); // เรียกใช้ฟังก์ชันกรองและสร้างตาราง
+                filterTable(); 
             } else {
                 globalLogData = [];
                 filterTable();
@@ -201,19 +201,15 @@
         });
     }
 
-    // 2. ฟังก์ชันกรองข้อมูล
     function filterTable() {
         const searchText = document.getElementById("searchInput").value.toLowerCase().trim();
         const statusValue = document.getElementById("statusFilter").value;
 
-        // คัดกรองข้อมูล
         const filteredData = globalLogData.filter(item => {
-            // เช็คชื่อ หรือ เลขรายการ
             const nameMatch = item.name ? item.name.toLowerCase().includes(searchText) : false;
             const reqMatch = item.reqId ? item.reqId.toLowerCase().includes(searchText) : false;
             const isTextMatch = nameMatch || reqMatch;
 
-            // เช็คสถานะ
             let statusTxt = item.status || "";
             let isStatusMatch = false;
 
@@ -228,18 +224,14 @@
             return isTextMatch && isStatusMatch;
         });
 
-        // ส่งข้อมูลที่กรองแล้วไปสร้างตาราง
         renderTable(filteredData);
     }
 
-    // 3. ฟังก์ชันสร้างตาราง (HTML)
     function renderTable(data) {
         const tbody = document.getElementById("adminTableBody");
         const countLabel = document.getElementById("resultCountLabel");
         
-        // อัปเดตตัวนับ
         countLabel.innerText = `พบ ${data.length} รายการ`;
-
         tbody.innerHTML = ""; 
         
         if (data.length === 0) {
@@ -250,7 +242,6 @@
         data.forEach(item => {
             let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
 
-            // จัดการสีและข้อความ iPad
             let formattedIpads = '<span class="text-muted">-</span>';
             if (item.ipadId && item.ipadId.trim() !== "") {
                 let rawIpads = item.ipadId.split(',').map(id => id.trim());
@@ -267,11 +258,10 @@
                 formattedIpads = displayGroups.join('<br>');
             }
 
-            // จัดการป้ายสถานะ + ปุ่มกดข้าม Step (Super Admin)
             let statusTxt = item.status || "-";
             let statusHtml = "";
 
-if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
+            if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
                 statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 2">Step[1] </button>`;
             } else if(statusTxt.includes("Step[2]")) {
                 statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 3">Step[2] </button>`;
@@ -280,16 +270,12 @@ if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt
             } else if(statusTxt.includes("Step[4]")) {
                 statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'" title="ตรวจสอบรับคืน: Step 5">Step[4] </button>`;
             } else if(statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์")) {
-                // ⭕ เสร็จสิ้น: พื้นขาว ขอบแดง (คุมธีม แต่ดูสะอาดตา)
                 statusHtml = `<span class="badge bg-white text-danger border border-danger px-3 py-2 rounded-pill shadow-sm">✔️ เสร็จสิ้น</span>`;
             } else if(statusTxt.includes("ยกเลิกรายการ")) {
-                // ⚪ ยกเลิก: สีเทาอ่อน (จมไปกับพื้นหลัง ไม่กวนสายตา)
                 statusHtml = `<span class="badge bg-light text-secondary border border-light px-3 py-2 rounded-pill shadow-sm">❌ ยกเลิก</span>`;
             } else if(statusTxt.includes("ซ่อม") || statusTxt.includes("ชำรุด") || statusTxt.includes("ปัญหา")) {
-                // ⚫ มีปัญหา: สีดำเข้ม (ตัดกับแดง ดูจริงจัง)
                 statusHtml = `<span class="badge bg-dark text-white px-3 py-2 rounded-pill shadow-sm">⚠️ มีปัญหา</span>`;
             } else {
-                // สถานะอื่นๆ
                 statusHtml = `<span class="badge bg-white text-dark border px-3 py-2 rounded-pill shadow-sm">${statusTxt}</span>`;
             }
 
@@ -304,21 +290,7 @@ if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt
             `;
         });
     }
-
-    async function logout() {
-        if(confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) {
-            localStorage.removeItem("userName");
-            localStorage.removeItem("userRole");
-            try {
-                await liff.init({ liffId: "2010557323-PAyWhGxW" }); 
-                if (liff.isLoggedIn()) liff.logout();
-                if (liff.isInClient()) liff.closeWindow(); 
-                else window.location.href = "index.html"; 
-            } catch (err) {
-                window.location.href = "index.html";
-            }
-        }
-    }
+    // 📌 ลบฟังก์ชัน logout() อันเก่าทิ้งไปแล้วเรียบร้อยครับ!
 </script>
 </body>
 </html>
