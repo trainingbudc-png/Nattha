@@ -29,30 +29,18 @@ function hideLoading() {
 }
 
 // -----------------------------------------
-// 2. ระบบเรียกใช้ API (🚀 แก้ไข: เอา Headers เจ้าปัญหาออก ป้องกัน Google บล็อก)
+// 2. ระบบเรียกใช้ API (ใช้แทน fetch แบบเก่า)
 // -----------------------------------------
-async function callAPI(payload, retries = 3) {
-    for (let i = 0; i < retries; i++) {
-        try {
-            // 📌 ยิงแบบดิบๆ บ้านๆ นี่แหละ Google Apps Script ชอบที่สุด ไม่โดนบล็อกชัวร์
-            const res = await fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            });
-            
-            return await res.json();
-            
-        } catch (error) {
-            console.warn(`เชื่อมต่อขัดข้อง (ลองใหม่รอบที่ ${i + 1}/${retries}):`, error);
-            
-            // ถ้าลองครบ 3 รอบแล้วยังพังอยู่ ค่อยยอมแพ้และโยน Error ออกมา
-            if (i === retries - 1) {
-                throw error; 
-            }
-            
-            // รอ 1 วินาที แล้วแอบยิงข้อมูลไปขอใหม่เงียบๆ
-            await new Promise(resolve => setTimeout(resolve, 1000));
-        }
+async function callAPI(payload) {
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+        return await res.json();
+    } catch (error) {
+        console.error("API Error:", error);
+        throw error;
     }
 }
 
