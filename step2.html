@@ -54,7 +54,6 @@
     <div class="table-responsive">
         <table class="table table-bordered text-center align-middle">
             <thead class="table-light">
-                <!-- 📌 เอาคอลัมน์ปุ่มลัดออก -->
                 <tr><th>iPad</th><th>Drive</th><th>File</th><th>Img</th><th>Safari</th></tr>
             </thead>
             <tbody id="itemList">
@@ -75,6 +74,14 @@
     fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep1Data", reqId: reqId }) })
     .then(res => res.json())
     .then(res => {
+        // 🚨 ดักคนทำซ้ำ
+        if (res.reqStatus && res.reqStatus !== "Step[1]") {
+            Swal.fire("แจ้งเตือน", `รายการนี้รับเครื่องไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => {
+                window.location.href = localStorage.getItem("userRole") === "Admin" ? "admin.html" : "user.html";
+            });
+            return;
+        }
+
         document.getElementById('displayUserName').innerText = res.userName || "ไม่ระบุ";
         document.getElementById('displayAdminName').innerText = res.adminName || "ไม่ระบุ";
 
@@ -83,7 +90,6 @@
 
         if(res.data && res.data.length > 0) {
             res.data.forEach(item => {
-                // 📌 เอา <td data-label="ปุ่มลัด"> ออก
                 tbody.innerHTML += `<tr>
                     <td data-label="เลือกรับเครื่อง" class="fw-bold text-start">
                         <div class="d-flex align-items-center">
@@ -112,13 +118,12 @@
 
     async function submitReceipt() {
         let items = [];
-        let isAllChecked = true; // 📌 ตัวแปรเช็คว่าติ๊กครบไหม
+        let isAllChecked = true; 
 
         document.querySelectorAll('.select-ipad:checked').forEach(ipad => {
             const row = ipad.closest('tr');
             const checks = Array.from(row.querySelectorAll('.check-app'));
             
-            // 📌 เช็คว่ามีช่องไหนดันยังไม่ติ๊กหรือเปล่า
             if (checks.some(c => !c.checked)) {
                 isAllChecked = false;
             }
@@ -132,7 +137,6 @@
             return;
         }
 
-        // 📌 ดักจับกรณีติ๊กรายการย่อยไม่ครบ
         if (!isAllChecked) {
             Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาตรวจสอบและติ๊กรายการให้ครบทุกข้อ สำหรับ iPad ที่เลือกครับ!", icon: "warning", confirmButtonColor: "#212529" });
             return;
