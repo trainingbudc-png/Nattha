@@ -73,11 +73,11 @@
 
     <div class="table-responsive">
         <table class="table align-middle text-center">
-            <thead>
+            <thead id="tableHeader">
                 <tr><th>iPad</th><th>Logout Drive</th><th>ปิด Wi-Fi</th><th>ปิด Bluetooth</th><th>ปิด AirDrop</th><th>โหมดเครื่องบิน</th><th>เริ่มใช้งาน</th></tr>
             </thead>
             <tbody id="itemList">
-                <tr><td colspan="7" class="text-muted py-4">กำลังโหลดรายการ iPad... ⏳</td></tr>
+                <tr><td colspan="8" class="text-muted py-4">กำลังโหลดรายการ iPad... ⏳</td></tr>
             </tbody>
         </table>
     </div>
@@ -87,8 +87,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script src="script.js"></script>
 <script>
-    
     const reqId = new URLSearchParams(window.location.search).get('reqId');
+    const isAdmin = localStorage.getItem("userRole") === "Admin";
+
+    if (isAdmin) {
+        document.getElementById('tableHeader').firstElementChild.innerHTML += '<th>จัดการ</th>';
+    }
 
     function handleExamChange(examType) {
         const hintBox = document.getElementById('examHint');
@@ -106,15 +110,14 @@
         
         if(savedName) document.getElementById('inspectorName').innerText = savedName;
 
-        if(!reqId) { document.getElementById('itemList').innerHTML = '<tr><td colspan="7" class="text-danger py-4">❌ ไม่พบหมายเลขรายการ</td></tr>'; return; }
+        if(!reqId) { document.getElementById('itemList').innerHTML = '<tr><td colspan="8" class="text-danger py-4">❌ ไม่พบหมายเลขรายการ</td></tr>'; return; }
 
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep2Data", reqId: reqId }) })
         .then(res => res.json())
         .then(res => {
-            // 🚨 ดักคนทำซ้ำ
             if (res.reqStatus && res.reqStatus !== "Step[2]") {
                 Swal.fire("แจ้งเตือน", `รายการนี้ตรวจสอบก่อนสอบไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => {
-                    window.location.href = localStorage.getItem("userRole") === "Admin" ? "admin.html" : "user.html";
+                    window.location.href = isAdmin ? "admin.html" : "user.html";
                 });
                 return;
             }
@@ -123,6 +126,8 @@
             tbody.innerHTML = "";
             if(res.data && res.data.length > 0) {
                 res.data.forEach(item => {
+                    let adminBtnTd = isAdmin ? `<td data-label="จัดการ"><button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill w-100" onclick="tickAllInRow(this)">ติ๊กครบ</button></td>` : '';
+                    
                     tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
                         <td data-label="เลือกเครื่อง" class="fw-bold text-dark text-start">
                             <div class="d-flex align-items-center">
@@ -136,15 +141,23 @@
                         <td data-label="ปิด AirDrop"><input type="checkbox" class="check-item form-check-input" disabled></td>
                         <td data-label="โหมดเครื่องบิน"><input type="checkbox" class="check-item form-check-input" disabled></td>
                         <td data-label="เริ่มใช้งาน"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                        ${adminBtnTd}
                     </tr>`;
                 });
-            } else { tbody.innerHTML = `<tr><td colspan="7" class="text-danger py-4">❌ ไม่พบข้อมูล iPad</td></tr>`; }
+            } else { tbody.innerHTML = `<tr><td colspan="${isAdmin ? '8' : '7'}" class="text-danger py-4">❌ ไม่พบข้อมูล iPad</td></tr>`; }
         });
     };
 
     function toggleRow(checkbox) {
         const row = checkbox.closest('tr');
         row.querySelectorAll('.check-item').forEach(cb => { cb.disabled = !checkbox.checked; if (!checkbox.checked) cb.checked = false; });
+    }
+
+    function tickAllInRow(btn) {
+        const row = btn.closest('tr');
+        const mainCheck = row.querySelector('.select-ipad');
+        mainCheck.checked = true;
+        row.querySelectorAll('.check-item').forEach(cb => { cb.disabled = false; cb.checked = true; });
     }
 
     async function saveStep3() {
@@ -192,12 +205,7 @@
                     confirmButtonText: "OK",
                     allowOutsideClick: false
                 }).then(() => {
-                    const userRole = localStorage.getItem("userRole");
-                    if (userRole === "Admin") {
-                        window.location.href = "admin.html";
-                    } else {
-                        window.location.href = "user.html";
-                    }
+                    window.location.href = isAdmin ? "admin.html" : "user.html";
                 });
             }
             else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); btn.innerText = originalText; btn.disabled = false; }
