@@ -184,7 +184,16 @@
                 document.getElementById('regFirstName').value = nameParts[0] || "";
                 document.getElementById('regLastName').value = nameParts.slice(1).join(" ") || "";
                 
-                loadDepartments();
+                // 📌 [อัปเกรด] นำรายชื่อแผนกที่ส่งมาพร้อมกัน มาสร้าง Dropdown ได้เลยทันที (ไม่ต้องยิง API ใหม่)
+                const selectDept = document.getElementById('regDept');
+                if (data.departments && data.departments.length > 0) {
+                    selectDept.innerHTML = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>';
+                    data.departments.forEach(dept => {
+                        selectDept.innerHTML += `<option value="${dept}">${dept}</option>`;
+                    });
+                } else {
+                    selectDept.innerHTML = '<option value="">(ไม่พบข้อมูลแผนก)</option>';
+                }
             }
         } catch (error) {
             showError("เซิร์ฟเวอร์ไม่ตอบสนอง", "ไม่สามารถตรวจสอบข้อมูลกับฐานข้อมูลได้");
