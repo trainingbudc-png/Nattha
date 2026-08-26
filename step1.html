@@ -9,7 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- นำเข้าไลบรารี Select2 สำหรับช่องค้นหารายชื่อ -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
@@ -17,25 +16,13 @@
     
     <style>
         body { background: #fdf2f2; font-family: 'Kanit', sans-serif; padding: 20px; }
-        
         .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(220,53,69,0.05); max-width: 950px; margin: auto; border: 1px solid #fecaca; }
-        
         .form-label { font-weight: 600; color: #495057; font-size: 0.95rem; }
         .form-control, .form-select { border-radius: 10px; border: 1px solid #fca5a5; padding: 12px 15px; }
         .form-control:focus, .form-select:focus { border-color: #dc3545; box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25); }
         
-        .select2-container--bootstrap-5 .select2-selection {
-            border-radius: 10px !important;
-            border: 1px solid #fca5a5 !important;
-            min-height: 50px !important;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-        }
-        .select2-container--bootstrap-5.select2-container--focus .select2-selection {
-            border-color: #dc3545 !important;
-            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
-        }
+        .select2-container--bootstrap-5 .select2-selection { border-radius: 10px !important; border: 1px solid #fca5a5 !important; min-height: 50px !important; font-size: 1.1rem; display: flex; align-items: center; }
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection { border-color: #dc3545 !important; box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important; }
 
         .category-header { background-color: #fef2f2; color: #212529; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; margin-bottom: 5px; border: 1px solid #fca5a5; }
         .category-header:hover { background-color: #fecaca; }
@@ -70,7 +57,6 @@
             .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(220,53,69,0.06); border: 1px solid #fecaca; }
             .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px solid #fee2e2; }
             .table tbody td::before { content: attr(data-label); font-weight: 500; color: #64748b; font-size: 0.95rem; text-align: left; margin-right: 15px; }
-
             .table tbody td:first-child { border-bottom: 2px solid #fca5a5 !important; padding-bottom: 16px; margin-bottom: 8px; }
             .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 16px; display: block; }
             .table tbody td:last-child::before { display: none; } 
@@ -81,7 +67,6 @@
 <body>
     
     <div class="confirm-card my-3 mb-5">
-        
         <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-danger border-opacity-25">
             <h4 class="text-dark fw-bold mb-0">📦 Step 1 | เตรียมเครื่อง</h4>
             <a href="admin.html" class="btn btn-outline-danger px-4 fw-bold rounded-pill border-2 btn-sm">🔙 กลับเมนูแอดมิน</a>
@@ -166,7 +151,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<!-- 📌 โหลด API_URL และ callAPI จาก script.js -->
 <script src="script.js"></script>
 
 <script>
@@ -198,20 +182,20 @@
         loadUsersAndIpads();
     };
 
-    // 🚀 ย้อนกลับมาใช้ระบบดึงข้อมูลตัวดั้งเดิมที่ชัวร์ 100% แต่ให้มันวิ่งพร้อมกัน 2 สายเพื่อความไว
+    // 🚀 กลับสู่สามัญ: โหลดข้อมูลแบบเข้าคิว (รอโหลดชื่อเสร็จ ค่อยโหลด iPad) กันเซิร์ฟเวอร์ Google ค้าง
     async function loadUsersAndIpads() {
         try {
-            // สั่งยิงไปดึงรายชื่อ กับ ดึงข้อมูลเครื่อง พร้อมๆ กันเลย
-            const [userRes, invRes] = await Promise.all([
-                callAPI({ action: "getUserNames" }),
-                callAPI({ action: "getInventory" })
-            ]);
-            
-            // --- 1. จัดการรายชื่อผู้ยืม ---
+            // 📌 1. โหลดรายชื่อผู้ใช้ก่อน
+            const userResponse = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "getUserNames" })
+            });
+            const userRes = await userResponse.json();
+
             const select = document.getElementById("userNameSelect");
             select.innerHTML = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
             
-            if (userRes.status === "success" && userRes.data && userRes.data.length > 0) {
+            if (userRes.status === "success" && userRes.data) {
                 userRes.data.sort((a, b) => a.localeCompare(b, 'th'));
                 userRes.data.forEach(name => { select.innerHTML += `<option value="${name}">${name}</option>`; });
                 
@@ -235,12 +219,18 @@
                 select.innerHTML = '<option value="">❌ ไม่พบรายชื่อผู้ใช้งาน</option>';
             }
 
-            // --- 2. จัดการกล่องเครื่อง iPad ---
+            // 📌 2. พอโหลดชื่อเสร็จ ค่อยโหลดรายชื่อ iPad
+            const invResponse = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "getInventory" })
+            });
+            const invRes = await invResponse.json();
+
             const containerNormal = document.getElementById("ipadNormalContainer");
             const containerAir = document.getElementById("ipadAirContainer");
             containerNormal.innerHTML = ""; containerAir.innerHTML = "";
             
-            if (invRes.status === "success" && invRes.data && invRes.data.length > 0) {
+            if (invRes.status === "success" && invRes.data) {
                 invRes.data.sort((a, b) => {
                     let numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
                     let numB = parseInt(b.replace(/\D/g, ''), 10) || 0;
@@ -361,6 +351,7 @@
         }
     }
 
+    // 📌 ยิงข้อมูลบันทึกแบบชัวร์ๆ ไม่มีกั๊ก
     async function submitStep1() {
         const reqIdValue = document.getElementById("reqIdInput").value.trim(); 
         const recipientName = document.getElementById("userNameSelect").value;
@@ -411,7 +402,12 @@
         };
 
         try {
-            const res = await callAPI(payload);
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            const res = await response.json();
+            
             if(res.status === "success") {
                 Swal.fire({
                     title: "บันทึกสำเร็จ!",
