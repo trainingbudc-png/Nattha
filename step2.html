@@ -54,10 +54,13 @@
     <div class="table-responsive">
         <table class="table table-bordered text-center align-middle">
             <thead class="table-light">
-                <tr><th>iPad</th><th>Drive</th><th>File</th><th>Img</th><th>Safari</th></tr>
+                <tr id="tableHeader">
+                    <th>iPad</th><th>Drive</th><th>File</th><th>Img</th><th>Safari</th>
+                    <!-- 📌 หัวตารางสำหรับแอดมินจะถูกแทรกตรงนี้ -->
+                </tr>
             </thead>
             <tbody id="itemList">
-                <tr><td colspan="5" class="text-muted py-3">กำลังโหลดข้อมูล... ⏳</td></tr>
+                <tr><td colspan="6" class="text-muted py-3">กำลังโหลดข้อมูล... ⏳</td></tr>
             </tbody>
         </table>
     </div>
@@ -67,17 +70,21 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script src="script.js"></script>
 <script>
-    
     const reqId = new URLSearchParams(window.location.search).get('reqId');
     const currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
+    const isAdmin = localStorage.getItem("userRole") === "Admin"; // 📌 เช็คว่าเป็นแอดมินหรือไม่
+
+    // ถ้าเป็นแอดมิน ให้เพิ่มหัวตารางปุ่มลัด
+    if (isAdmin) {
+        document.getElementById('tableHeader').innerHTML += '<th>ปุ่มลัด</th>';
+    }
 
     fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep1Data", reqId: reqId }) })
     .then(res => res.json())
     .then(res => {
-        // 🚨 ดักคนทำซ้ำ
         if (res.reqStatus && res.reqStatus !== "Step[1]") {
             Swal.fire("แจ้งเตือน", `รายการนี้รับเครื่องไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => {
-                window.location.href = localStorage.getItem("userRole") === "Admin" ? "admin.html" : "user.html";
+                window.location.href = isAdmin ? "admin.html" : "user.html";
             });
             return;
         }
@@ -90,6 +97,9 @@
 
         if(res.data && res.data.length > 0) {
             res.data.forEach(item => {
+                // 📌 ถ้าเป็นแอดมิน ให้สร้างคอลัมน์ปุ่มลัดด้วย
+                let adminBtnTd = isAdmin ? `<td data-label="ปุ่มลัด"><button type="button" class="btn btn-dark btn-sm fw-bold w-100 rounded-pill" onclick="tickAllInRow(this)">ติ๊กครบ</button></td>` : '';
+                
                 tbody.innerHTML += `<tr>
                     <td data-label="เลือกรับเครื่อง" class="fw-bold text-start">
                         <div class="d-flex align-items-center">
@@ -101,10 +111,11 @@
                     <td data-label="File"><input type="checkbox" class="check-app form-check-input" disabled></td>
                     <td data-label="Img"><input type="checkbox" class="check-app form-check-input" disabled></td>
                     <td data-label="Safari"><input type="checkbox" class="check-app form-check-input" disabled></td>
+                    ${adminBtnTd}
                 </tr>`;
             });
         } else {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-danger py-3">❌ ไม่พบรายการเครื่อง</td></tr>';
+            tbody.innerHTML = `<tr><td colspan="${isAdmin ? '6' : '5'}" class="text-danger py-3">❌ ไม่พบรายการเครื่อง</td></tr>`;
         }
     });
 
@@ -113,6 +124,17 @@
         row.querySelectorAll('.check-app').forEach(app => {
             app.disabled = !checkbox.checked;
             if (!checkbox.checked) app.checked = false;
+        });
+    }
+
+    // 📌 ฟังก์ชันสำหรับให้แอดมินกดติ๊กครบ
+    function tickAllInRow(btn) {
+        const row = btn.closest('tr');
+        const mainCheck = row.querySelector('.select-ipad');
+        mainCheck.checked = true; 
+        row.querySelectorAll('.check-app').forEach(cb => { 
+            cb.disabled = false; 
+            cb.checked = true; 
         });
     }
 
@@ -157,12 +179,7 @@
                     confirmButtonText: "OK",
                     allowOutsideClick: false
                 }).then(() => {
-                    const userRole = localStorage.getItem("userRole");
-                    if (userRole === "Admin") {
-                        window.location.href = "admin.html";
-                    } else {
-                        window.location.href = "user.html";
-                    }
+                    window.location.href = isAdmin ? "admin.html" : "user.html";
                 });
             }
             else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message || "ในการบันทึกข้อมูล", "error"); btn.innerText = "✅ ยืนยันการรับเครื่อง"; btn.disabled = false; }
