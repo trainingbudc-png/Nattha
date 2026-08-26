@@ -108,10 +108,11 @@
 </div>
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-<script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwv7qtsMDLxaXD3RbGB8Q0Nq1U0Q91cRL7rhe0Ge4OWEC41cvtajsI-JlFwjPmRrPCu/exec";
-    const MY_LIFF_ID = "2010557323-PAyWhGxW"; 
 
+<!-- 📌 ดึงลิงก์ API และ LIFF_ID มาจาก script.js แทน -->
+<script src="script.js"></script>
+
+<script>
     window.onload = async () => {
         // ⚡ ระบบ Fast Login
         const savedUserId = localStorage.getItem("userId");
@@ -131,7 +132,8 @@
         }
 
         try {
-            await liff.init({ liffId: MY_LIFF_ID });
+            // 📌 เปลี่ยนมาเรียกใช้ LIFF_ID แบบเพียวๆ (เพราะดึงค่ามาจาก script.js แล้ว)
+            await liff.init({ liffId: LIFF_ID });
             
             if (!liff.isLoggedIn()) {
                 liff.login();
