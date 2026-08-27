@@ -54,7 +54,6 @@
         </div>
         <div class="d-flex align-items-center gap-2">
             <span class="admin-name d-none d-md-inline">แอดมิน: <span id="adminNameDisplay">Loading...</span></span>
-            <!-- 📌 เปลี่ยนมาเรียกใช้ logoutSystem() แทน -->
             <button class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" onclick="logoutSystem()">ออกจากระบบ</button>
         </div>
     </nav>
@@ -162,8 +161,6 @@
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- 📌 เชื่อมท่อกับ script.js ของเรา -->
 <script src="script.js"></script>
 
 <script>
@@ -258,6 +255,15 @@
                 formattedIpads = displayGroups.join('<br>');
             }
 
+            // 📌 UX: จัดระเบียบชื่อผู้ยืม แยกชื่อหลักกับ(ชื่อเล่น) ให้อยู่คนละบรรทัด
+            let displayName = item.name || "-";
+            if (displayName !== "-" && displayName.includes("(")) {
+                let parts = displayName.split("(");
+                let mainName = parts[0].trim();
+                let nickName = "(" + parts[1].trim();
+                displayName = `${mainName}<br><span class="text-secondary fw-normal" style="font-size: 0.85rem;">${nickName}</span>`;
+            }
+
             let statusTxt = item.status || "-";
             let statusHtml = "";
 
@@ -283,14 +289,13 @@
                 <tr>
                     <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
                     <td data-label="วัน-เวลา" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
-                    <td data-label="ผู้ดำเนินการ" class="fw-bold" style="color: #495057;">${item.name || "-"}</td>
+                    <td data-label="ผู้ดำเนินการ" class="fw-bold" style="color: #495057; line-height: 1.5;">${displayName}</td>
                     <td data-label="รหัส iPad" style="max-width: 100%; line-height: 1.6;">${formattedIpads}</td>
                     <td data-label="สถานะ">${statusHtml}</td>
                 </tr>
             `;
         });
     }
-    // 📌 ลบฟังก์ชัน logout() อันเก่าทิ้งไปแล้วเรียบร้อยครับ!
 </script>
 </body>
 </html>
