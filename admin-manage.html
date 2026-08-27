@@ -8,8 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-admin.css">
     <style>
+        /* 📌 จัดระเบียบ Navbar ให้อยู่กึ่งกลาง ไม่บานออกขอบจอ */
+        .navbar-custom { background: #ffffff; border-bottom: 2px solid #fecaca; padding: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .container-main { max-width: 1100px; margin: 0 auto; }
+        
         @media screen and (max-width: 768px) {
-            .navbar-custom { flex-direction: column; gap: 15px; text-align: center; }
+            .navbar-custom .container-main { flex-direction: column; gap: 15px; text-align: center; }
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
             .table thead { display: none; }
             .table tbody tr { display: block; background: white; border-radius: 12px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(220,53,69,0.1); border: 1px solid #fecaca; }
@@ -22,18 +26,20 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-custom d-flex justify-content-between align-items-center">
-        <div class="fw-bold fs-5 text-danger">
-            ⚙️ จัดการรายการเตรียมเครื่อง
-        </div>
-        <!-- 📌 เพิ่มปุ่มรีเฟรชตรงนี้ครับ -->
-        <div class="d-flex gap-2">
-            <button class="btn btn-dark btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="loadPendingData()">🔄 รีเฟรช</button>
-            <a href="admin.html" class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-4 border-2">🔙 กลับ</a>
+    <nav class="navbar navbar-custom">
+        <!-- 📌 ครอบ Navbar ด้วย container-main เพื่อให้ขนาดเท่ากับตารางเป๊ะๆ -->
+        <div class="container container-main d-flex justify-content-between align-items-center">
+            <div class="fw-bold fs-5 text-danger">
+                ⚙️ จัดการรายการเตรียมเครื่อง
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-dark btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="loadPendingData()">🔄 รีเฟรช</button>
+                <a href="admin.html" class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-4 border-2">🔙 กลับ</a>
+            </div>
         </div>
     </nav>
 
-    <div class="container pb-5 mt-4" style="max-width: 1100px;">
+    <div class="container container-main pb-5 mt-4">
         <div class="section-title">รายการที่ "รอแอดมินยืนยันการเตรียม"</div>
         <p class="text-muted mb-4 px-2" style="font-size: 0.9rem;">
             * เมื่อคุณกดยืนยัน ระบบจะส่งข้อความแจ้งเตือนไปที่ LINE ของผู้ขอเบิกยืมทันที <br>
@@ -75,7 +81,6 @@
     function loadPendingData() {
         const tbody = document.getElementById("manageTableBody");
         
-        // 📌 แสดงคำว่า กำลังโหลด... ทันทีที่กดปุ่มรีเฟรช
         tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted fw-bold">กำลังโหลดข้อมูลล่าสุด... ⏳</td></tr>'; 
         
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
@@ -94,6 +99,7 @@
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
                     let formattedIpads = formatIpadText(item.ipadId);
 
+                    // 📌 ปรับปุ่มจัดการให้เป็น rounded-pill เพื่อความสวยงามกลมกลืน
                     tbody.innerHTML += `
                         <tr>
                             <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
@@ -102,8 +108,8 @@
                             <td data-label="ผู้ยืม" class="fw-bold text-primary">${item.name || "-"}</td>
                             <td data-label="จัดการ">
                                 <div class="d-flex flex-column gap-2 px-1">
-                                    <button class="btn btn-success btn-sm fw-bold rounded-3 shadow-sm" onclick="confirmStep1('${item.reqId}')">✅ ยืนยัน (ส่ง LINE)</button>
-                                    <button class="btn btn-outline-danger btn-sm fw-bold rounded-3 bg-white" onclick="cancelStep1('${item.reqId}')">❌ ยกเลิกรายการ</button>
+                                    <button class="btn btn-success btn-sm fw-bold rounded-pill shadow-sm py-2" onclick="confirmStep1('${item.reqId}')">✅ ยืนยัน (ส่ง LINE)</button>
+                                    <button class="btn btn-outline-danger btn-sm fw-bold rounded-pill bg-white border-2 py-2" onclick="cancelStep1('${item.reqId}')">❌ ยกเลิกรายการ</button>
                                 </div>
                             </td>
                         </tr>
@@ -175,7 +181,6 @@
                 Swal.fire("เกิดข้อผิดพลาด", res.message, "error");
             }
         }).catch(err => {
-            // ดักไว้ถ้า Google ตัดสาย แต่ข้อมูลเข้าชัวร์ ให้ถือว่าผ่าน
             if(navigator.onLine) {
                  Swal.fire("สำเร็จ!", successText + " (แต่อาจใช้เวลาอัปเดตสักครู่)", "success").then(() => loadPendingData());
             } else {
