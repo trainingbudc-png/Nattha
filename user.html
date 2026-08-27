@@ -24,47 +24,22 @@
         /* บีบตารางให้เพรียวบางสวยงามกระชับ */
         .table th { padding: 12px !important; font-size: 0.95rem; }
         .table td { padding: 8px 12px !important; font-size: 0.9rem; vertical-align: middle; }
-
-        /* 📌 สไตล์สำหรับการ์ดรายการ Active ธีมสีดำสำหรับ User */
-        .req-card {
-            background: #fff;
-            border-radius: 12px; 
-            border: 1px solid #e9ecef;
-            border-left: 5px solid #212529; 
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-            transition: 0.2s;
+        
+        /* 📌 สไตล์การ์ดงาน Active แบบ Dropdown สุดเท่ */
+        .active-task-card {
+            border: 1px solid #fecaca;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
         }
-        .req-card:hover {
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        .active-task-card:hover {
+            box-shadow: 0 4px 15px rgba(220,53,69,0.1) !important;
+            border-color: #dc3545;
         }
-        .req-card-title {
-            font-weight: 600;
-            color: #212529;
-            margin: 0;
-            font-size: 0.95rem;
+        .collapse-icon {
+            transition: transform 0.3s ease;
+            display: inline-block;
         }
-        .req-card-btn {
-            border: 1px solid #212529;
-            color: #212529;
-            background: transparent;
-            border-radius: 50px;
-            padding: 4px 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-        .req-card-btn:hover:not(:disabled) {
-            background: #212529;
-            color: #fff;
-        }
-        .req-card-btn:disabled {
-            border-color: #adb5bd;
-            color: #adb5bd;
-            cursor: not-allowed;
+        [aria-expanded="true"] .collapse-icon {
+            transform: rotate(180deg);
         }
     </style>
 </head>
@@ -90,18 +65,18 @@
 
     <div class="container-wide pb-5">
         
-        <!-- 📌 ส่วนที่ 1: รายการที่กำลังดำเนินการ (Active) อยู่บนสุด -->
-        <div class="d-flex justify-content-between align-items-end mt-4 mb-3">
+        <!-- 📌 ส่วนที่ 1: รายการที่กำลังดำเนินการ (Active) แปลงเป็น Card -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mt-4 mb-3 gap-2">
             <div class="d-flex align-items-center gap-2">
-                <div style="width: 4px; height: 22px; background-color: #212529; border-radius: 2px;"></div>
+                <div style="width: 4px; height: 20px; background-color: #dc3545; border-radius: 2px;"></div>
                 <h5 class="fw-bold m-0 text-dark">รายการที่กำลังดำเนินการ (Active)</h5>
             </div>
-            <button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold bg-white" onclick="loadUserTableData()">🔄 โหลดใหม่</button>
+            <button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold bg-white shadow-sm border-2" onclick="loadUserTableData()">🔄 อัปเดต</button>
         </div>
         
-        <!-- กล่องสำหรับใส่ Card ธีมผู้ใช้ -->
-        <div id="activeCardsContainer" class="row g-3 mb-5">
-            <div class="col-12 text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</div>
+        <!-- พื้นที่สำหรับใส่ Card งาน -->
+        <div class="row g-3 mb-5" id="activeCardsContainer">
+            <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>
         </div>
 
         <!-- 🔵 หมวดหมู่: เมนูลัดแบบการ์ด -->
@@ -136,7 +111,7 @@
             </div>
         </div>
 
-        <!-- 📌 ตารางที่ 2: ประวัติอุปกรณ์ของฉัน (History) -->
+        <!-- 📌 ส่วนที่ 2: ประวัติอุปกรณ์ของฉัน (History) ยังคงเป็นตาราง -->
         <div class="d-flex align-items-center gap-2 mb-3">
             <div style="width: 4px; height: 20px; background-color: #212529; border-radius: 2px;"></div>
             <h5 class="fw-bold m-0 text-dark">ประวัติอุปกรณ์ของฉัน (เสร็จสิ้น)</h5>
@@ -204,6 +179,7 @@
         </div>
     </div>
 
+    <!-- 📌 โหลด Bootstrap ให้ Card แบบ Collapse ทำงานได้ -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
