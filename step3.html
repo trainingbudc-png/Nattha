@@ -10,20 +10,24 @@
     <link rel="stylesheet" href="theme-user.css">
     <style>
         body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
-        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 950px; margin: auto; border: 1px solid #e9ecef; }
-        .info-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 12px; padding: 15px; margin-bottom: 25px; }
-        .info-label { font-size: 0.85rem; color: #6c757d; margin-bottom: 2px; }
+        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 1000px; margin: auto; border: 1px solid #e9ecef; }
+        .info-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: center; }
+        .info-label { font-size: 0.85rem; color: #6c757d; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
         .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
         .divider { width: 1px; background-color: #dee2e6; height: 40px; }
         
-        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; border: none; }
+        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; border: none; margin-top: 20px; }
         .btn-confirm:hover { background: #495057; color: white; }
-        .table th { background-color: #f8f9fa; text-align: center; font-size: 0.9rem; vertical-align: middle; color: #495057; border-bottom: 2px solid #dee2e6;}
-        .table td { vertical-align: middle; text-align: center; border-bottom: 1px solid #e9ecef; }
+        
+        .table th { background-color: #f8f9fa; text-align: center; font-size: 0.9rem; vertical-align: middle; color: #495057; border-bottom: 2px solid #dee2e6; padding: 12px; }
+        .table td { vertical-align: middle; text-align: center; padding: 12px; border-bottom: 1px solid #e9ecef; }
+        
         .radio-group label { border-radius: 8px; font-weight: 500; }
         .hint-box { border-radius: 8px; font-size: 0.95rem; display: none; background-color: #f8f9fa; border-color: #dee2e6; color: #495057; }
 
         .check-item, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
+        .check-item:disabled { cursor: not-allowed; opacity: 0.5; }
+
         @media screen and (max-width: 768px) {
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
             .table thead { display: none; }
@@ -39,18 +43,18 @@
 
 <div class="confirm-card">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold text-dark mb-0">📝Step 3 | ก่อนสอบ</h4>
+        <h4 class="fw-bold text-dark mb-0">📝 Step 3 | ก่อนสอบ</h4>
         <a href="step3-list.html" class="btn btn-outline-dark px-3 fw-bold rounded-pill btn-sm border-2">🔙 กลับ</a>
     </div>
     
-    <div class="info-box d-flex justify-content-around align-items-center">
+    <div class="info-box">
         <div class="text-center">
-            <div class="info-label">🔖 เลขรายการ:</div>
+            <div class="info-label">🔖 เลขรายการ</div>
             <div id="displayReqId" class="info-value">กำลังโหลด...</div>
         </div>
         <div class="divider"></div>
         <div class="text-center">
-            <div class="info-label">👨‍💻 ผู้ตรวจสอบ:</div>
+            <div class="info-label">👨‍💻 ผู้ตรวจสอบ</div>
             <div id="inspectorName" class="info-value">กำลังโหลด...</div>
         </div>
     </div>
@@ -82,7 +86,7 @@
         </table>
     </div>
 
-    <button class="btn btn-confirm mt-4 shadow-sm" onclick="saveStep3()">ยืนยันเครื่องพร้อมสอบ</button>
+    <button class="btn btn-confirm shadow-sm" onclick="saveStep3()">ยืนยันเครื่องพร้อมสอบ</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script src="script.js"></script>
@@ -168,9 +172,7 @@
             const row = checkbox.closest('tr');
             const checks = Array.from(row.querySelectorAll('.check-item'));
             
-            if (checks.some(c => !c.checked)) {
-                isAllChecked = false;
-            }
+            if (checks.some(c => !c.checked)) isAllChecked = false;
 
             const checkValues = checks.map(c => c.checked ? "☑" : "☐");
             items.push({ ipadId: row.dataset.ipad, checks: checkValues });
