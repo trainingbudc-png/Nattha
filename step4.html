@@ -3,27 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Step4 | ส่งคืนเครื่อง</title>
+    <title>Step 4 | ส่งคืนเครื่อง</title>
 	<link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
-	
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-user.css">
     <style>
         body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
-        .confirm-card { background: white; padding: 0; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 1000px; margin: auto; overflow: hidden; border: 1px solid #e9ecef;}
-        .dark-header { background-color: #212529; color: white; padding: 15px 20px; font-weight: 600; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
-        .info-panel { padding: 15px 20px; background: #f8f9fa; border-bottom: 1px solid #dee2e6; display: flex; justify-content: space-around; align-items: center; }
+        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 1000px; margin: auto; border: 1px solid #e9ecef; }
+        .info-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: center; }
         .info-label { font-size: 0.85rem; color: #6c757d; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
         .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
         .divider { width: 1px; background-color: #dee2e6; height: 40px; }
-        .table { margin-bottom: 0 !important; }
-        .table th { font-size: 0.85rem; vertical-align: middle; text-align: center; color: #495057; background: #f8f9fa; padding: 12px; border-bottom: 2px solid #dee2e6;}
+        
+        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; border: none; margin-top: 20px; }
+        .btn-confirm:hover { background: #495057; color: white; }
+        
+        .table th { background-color: #f8f9fa; text-align: center; font-size: 0.9rem; vertical-align: middle; color: #495057; border-bottom: 2px solid #dee2e6; padding: 12px; }
         .table td { vertical-align: middle; text-align: center; padding: 12px; border-bottom: 1px solid #e9ecef; }
-        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: calc(100% - 40px); margin: 20px; border: none; transition: 0.3s; font-size: 1.1rem;}
-        .btn-confirm:hover { background: #495057; }
-
+        
         .check-item, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
+        .check-item:disabled { cursor: not-allowed; opacity: 0.5; }
+
         @media screen and (max-width: 768px) {
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
             .table thead { display: none; }
@@ -37,12 +38,12 @@
 <body>
 
 <div class="confirm-card">
-    <div class="dark-header">
-        <span>📥Step4 | ส่งคืนเครื่อง</span>
-        <a href="step4-list.html" class="btn btn-outline-light px-3 fw-bold rounded-pill btn-sm border-2">🔙 กลับ</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold text-dark mb-0">📥 Step 4 | ส่งคืนเครื่อง</h4>
+        <a href="step4-list.html" class="btn btn-outline-dark px-3 fw-bold rounded-pill btn-sm border-2">🔙 กลับ</a>
     </div>
     
-    <div class="info-panel">
+    <div class="info-box">
         <div class="text-center">
             <div class="info-label">🔖 เลขรายการ</div>
             <div id="displayReqIdBox" class="info-value">กำลังโหลด...</div>
@@ -55,12 +56,12 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table align-middle">
+        <table class="table align-middle text-center">
             <thead id="tableHeader">
                 <tr><th>เครื่องที่</th><th>แอพ File</th><th>แอพ รูปภาพ</th><th>แอพ Safari</th><th>เช็ค Wi-Fi</th><th>เช็ค Bluetooth</th><th>เช็ค AirDrop</th><th>G-Drive</th><th>ลบ WI-FI</th></tr>
             </thead>
             <tbody id="itemList">
-                <tr><td colspan="10" class="text-muted py-4 text-center">กำลังโหลดข้อมูล... ⏳</td></tr>
+                <tr><td colspan="10" class="text-muted py-4">กำลังโหลดข้อมูล... ⏳</td></tr>
             </tbody>
         </table>
     </div>
@@ -70,7 +71,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script src="script.js"></script>
 <script>
-    
     const reqId = new URLSearchParams(window.location.search).get('reqId');
     const currentLoggerName = localStorage.getItem("userName") || "User";
     const isAdmin = localStorage.getItem("userRole") === "Admin";
@@ -101,7 +101,7 @@
                     let adminBtnTd = isAdmin ? `<td data-label="ปุ่มลัด"><button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill w-100" onclick="tickAllInRow(this)">ติ๊กครบ</button></td>` : '';
                     
                     tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
-                        <td data-label="📱 เลือกส่งคืน" class="fw-bold text-start">
+                        <td data-label="เลือกส่งคืน" class="fw-bold text-start">
                             <div class="d-flex align-items-center">
                                 <input type="checkbox" class="select-ipad form-check-input me-2" id="btn-${item.ipadId}" onchange="toggleRow(this)">
                                 <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-dark fs-5">${item.ipadId}</label>
@@ -118,7 +118,7 @@
                         ${adminBtnTd}
                     </tr>`;
                 });
-            } else { tbody.innerHTML = `<tr><td colspan="${isAdmin ? '10' : '9'}" class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</td></tr>`; }
+            } else { tbody.innerHTML = `<tr><td colspan="${isAdmin ? '10' : '9'}" class="text-danger py-4">❌ ไม่พบรายการเครื่อง</td></tr>`; }
         });
     };
 
@@ -142,9 +142,7 @@
             const row = checkbox.closest('tr');
             const checks = Array.from(row.querySelectorAll('.check-item'));
 
-            if (checks.some(c => !c.checked)) {
-                isAllChecked = false;
-            }
+            if (checks.some(c => !c.checked)) isAllChecked = false;
 
             const checkValues = checks.map(c => c.checked ? "☑" : "☐");
             items.push({ ipadId: row.dataset.ipad, checks: checkValues });
