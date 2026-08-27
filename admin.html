@@ -60,6 +60,28 @@
 
     <div class="container pb-5" style="max-width: 1100px;">
         
+        <!-- 📌 ตารางที่ 1: รายการที่กำลังดำเนินการ (Active) อยู่บนสุดตามสั่ง -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mt-4 mb-3 gap-2">
+            <div class="section-title mt-0 mb-0">รายการที่กำลังดำเนินการ (Active)</div>
+            <button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="loadAdminTableData()">🔄 โหลดใหม่</button>
+        </div>
+        <div class="table-card table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">เลขรายการ</th>
+                        <th style="width: 15%;">วัน-เวลา</th>
+                        <th style="width: 20%;">ผู้ดำเนินการ</th>
+                        <th style="width: 35%;">รหัส iPad</th>
+                        <th style="width: 15%;">สถานะ</th>
+                    </tr>
+                </thead>
+                <tbody id="activeTableBody">
+                    <tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
+                </tbody>
+            </table>
+        </div>
+
         <!-- ภาพรวมระบบ -->
         <div class="section-title">ภาพรวมระบบ</div>
         <div class="row g-3">
@@ -109,13 +131,12 @@
             </div>
         </div>
 
-        <!-- 📌 ส่วนตาราง Log (เพิ่มตัวกรองและค้นหา) -->
+        <!-- 📌 ตารางที่ 2: ประวัติรายการ (เสร็จสิ้น / ยกเลิก) -->
         <div class="d-flex justify-content-between align-items-end mt-5 mb-3">
-            <div class="section-title mt-0 mb-0">ตารางสถานะล่าสุด (Log)</div>
-            <button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3" onclick="loadAdminTableData()">🔄 โหลดใหม่</button>
+            <div class="section-title mt-0 mb-0">ประวัติรายการ (เสร็จสิ้น / ยกเลิก)</div>
         </div>
         
-        <!-- 🎯 แถบค้นหาและตัวกรอง (Filter Bar) -->
+        <!-- 🎯 แถบค้นหาและตัวกรอง (Filter Bar) สำหรับตารางประวัติ -->
         <div class="filter-card">
             <div class="row align-items-end g-3">
                 <div class="col-md-5">
@@ -126,11 +147,6 @@
                     <label class="form-label fw-bold text-dark" style="font-size: 0.9rem;">📌 กรองตามสถานะ</label>
                     <select id="statusFilter" class="form-select form-select-sm border-2" onchange="filterTable()">
                         <option value="all">แสดงทุกสถานะ (ทั้งหมด)</option>
-                        <option value="รอแอดมินยืนยัน">⏳ รอยืนยันเตรียมเครื่อง</option>
-                        <option value="Step[1]">Step [1] รอผู้ใช้รับเครื่อง</option>
-                        <option value="Step[2]">Step [2] ผู้ใช้รับไปแล้ว (รอก่อนสอบ)</option>
-                        <option value="Step[3]">Step [3] เข้าสอบแล้ว (รอส่งคืน)</option>
-                        <option value="Step[4]">Step [4] คืนแล้ว (รอแอดมินตรวจ)</option>
                         <option value="เสร็จสิ้น">✔️ ปิดรายการสมบูรณ์แล้ว</option>
                         <option value="ยกเลิก">❌ ยกเลิกรายการ</option>
                     </select>
@@ -180,8 +196,8 @@
     };
 
     function loadAdminTableData() {
-        const tbody = document.getElementById("adminTableBody");
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
+        document.getElementById("activeTableBody").innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
+        document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
         
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
         .then(res => res.json())
@@ -194,7 +210,8 @@
                 filterTable();
             }
         }).catch(err => {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
+            document.getElementById("activeTableBody").innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
+            document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
         });
     }
 
@@ -202,37 +219,54 @@
         const searchText = document.getElementById("searchInput").value.toLowerCase().trim();
         const statusValue = document.getElementById("statusFilter").value;
 
-        const filteredData = globalLogData.filter(item => {
+        // 1. ค้นหาจากช่อง Search (ค้นหาเจอทั้ง 2 ตาราง)
+        let searchedData = globalLogData.filter(item => {
             const nameMatch = item.name ? item.name.toLowerCase().includes(searchText) : false;
             const reqMatch = item.reqId ? item.reqId.toLowerCase().includes(searchText) : false;
-            const isTextMatch = nameMatch || reqMatch;
-
-            let statusTxt = item.status || "";
-            let isStatusMatch = false;
-
-            if (statusValue === "all") {
-                isStatusMatch = true;
-            } else if (statusValue === "เสร็จสิ้น") {
-                isStatusMatch = statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์");
-            } else {
-                isStatusMatch = statusTxt.includes(statusValue);
-            }
-
-            return isTextMatch && isStatusMatch;
+            return nameMatch || reqMatch;
         });
 
-        renderTable(filteredData);
+        // 2. แยกร่างข้อมูลเป็น Active กับ History
+        let activeData = [];
+        let historyData = [];
+
+        searchedData.forEach(item => {
+            let statusTxt = item.status || "";
+            // ถ้าเป็นเสร็จสิ้นหรือยกเลิก ให้ไปตารางประวัติ
+            let isHistory = statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์") || statusTxt.includes("ยกเลิก");
+            
+            if (isHistory) {
+                historyData.push(item);
+            } else {
+                activeData.push(item);
+            }
+        });
+
+        // 3. ตัวกรอง Dropdown ให้มีผลเฉพาะตารางประวัติด้านล่าง
+        let finalHistoryData = historyData.filter(item => {
+            if (statusValue === "all") return true;
+            if (statusValue === "เสร็จสิ้น") {
+                return item.status.includes("คืนแล้ว") || item.status.includes("เสร็จสิ้น") || item.status.includes("เคลียร์");
+            }
+            return item.status.includes(statusValue);
+        });
+
+        // ส่งไปวาด 2 ตารางแยกกัน
+        renderTable(activeData, "activeTableBody", null); 
+        renderTable(finalHistoryData, "adminTableBody", "resultCountLabel"); 
     }
 
-    function renderTable(data) {
-        const tbody = document.getElementById("adminTableBody");
-        const countLabel = document.getElementById("resultCountLabel");
+    function renderTable(data, targetTbodyId, countLabelId) {
+        const tbody = document.getElementById(targetTbodyId);
         
-        countLabel.innerText = `พบ ${data.length} รายการ`;
+        if (countLabelId) {
+            document.getElementById(countLabelId).innerText = `พบ ${data.length} รายการ`;
+        }
+        
         tbody.innerHTML = ""; 
         
         if (data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">🔍 ไม่พบข้อมูลที่ตรงกับเงื่อนไขการค้นหา</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">🔍 ไม่พบข้อมูล</td></tr>';
             return;
         }
 
@@ -255,7 +289,7 @@
                 formattedIpads = displayGroups.join('<br>');
             }
 
-            // 📌 UX: จัดระเบียบชื่อผู้ยืม แยกชื่อหลักกับ(ชื่อเล่น) ให้อยู่คนละบรรทัด
+            // 📌 UX: จัดระเบียบชื่อผู้ยืม แยกชื่อหลักกับ(ชื่อเล่น)
             let displayName = item.name || "-";
             if (displayName !== "-" && displayName.includes("(")) {
                 let parts = displayName.split("(");
@@ -267,7 +301,8 @@
             let statusTxt = item.status || "-";
             let statusHtml = "";
 
-if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
+            // 📌 UX: ปุ่มเป็น Outline พื้นขาวทั้งหมดสำหรับ Active Steps
+            if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
                 statusHtml = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 2">Step[1] </button>`;
             } else if(statusTxt.includes("Step[2]")) {
                 statusHtml = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 3">Step[2] </button>`;
