@@ -96,16 +96,18 @@
                             </div>
                             ${adminBtn}
                         </div>
+                      <!-- ส่วนรายการย่อยที่จะกางออกมา -->
                         <div class="collapse" id="collapse-${item.ipadId}">
-                            <div class="pt-3 mt-3 border-top d-flex justify-content-center flex-wrap gap-3">
-                                <div class="text-center"><span class="sub-check-label">แอพ File</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div class="text-center"><span class="sub-check-label">แอพ รูปภาพ</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div class="text-center"><span class="sub-check-label">แอพ Safari</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div class="text-center"><span class="sub-check-label">เช็ค Wi-Fi</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div class="text-center"><span class="sub-check-label">เช็ค Bluetooth</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div class="text-center"><span class="sub-check-label">เช็ค AirDrop</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div class="text-center"><span class="sub-check-label">G-Drive</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div class="text-center"><span class="sub-check-label">ลบ WI-FI</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                            <!-- 📌 เปลี่ยนมาใช้ Grid แบ่ง 4 คอลัมน์ 2 แถว -->
+                            <div class="pt-3 mt-3 border-top" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; row-gap: 20px; text-align: center;">
+                                <div><span class="sub-check-label text-truncate" title="แอพ File">แอพ File</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                                <div><span class="sub-check-label text-truncate" title="แอพ รูปภาพ">แอพ รูปภาพ</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                                <div><span class="sub-check-label text-truncate" title="แอพ Safari">แอพ Safari</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                                <div><span class="sub-check-label text-truncate" title="เช็ค Wi-Fi">เช็ค Wi-Fi</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                                <div><span class="sub-check-label text-truncate" title="เช็ค Bluetooth">เช็ค Bluetooth</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                                <div><span class="sub-check-label text-truncate" title="เช็ค AirDrop">เช็ค AirDrop</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                                <div><span class="sub-check-label text-truncate" title="G-Drive">G-Drive</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                                <div><span class="sub-check-label text-truncate" title="ลบ WI-FI">ลบ WI-FI</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
                             </div>
                         </div>
                     </div>`;
