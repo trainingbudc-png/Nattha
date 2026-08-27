@@ -87,7 +87,7 @@
                 res.data.forEach((item) => {
                     let adminBtn = isAdmin ? `<button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill shadow-sm" onclick="tickAllInCard(this)">ติ๊กครบ</button>` : '';
                     
-                    container.innerHTML += `
+                   container.innerHTML += `
                     <div class="ipad-card bg-white border border-2 rounded-4 p-3 transition-all" data-ipad="${item.ipadId}">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center gap-3">
@@ -96,18 +96,32 @@
                             </div>
                             ${adminBtn}
                         </div>
-                      <!-- ส่วนรายการย่อยที่จะกางออกมา -->
                         <div class="collapse" id="collapse-${item.ipadId}">
-                            <!-- 📌 เปลี่ยนมาใช้ Grid แบ่ง 4 คอลัมน์ 2 แถว -->
-                            <div class="pt-3 mt-3 border-top" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; row-gap: 20px; text-align: center;">
-                                <div><span class="sub-check-label text-truncate" title="แอพ File">แอพ File</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div><span class="sub-check-label text-truncate" title="แอพ รูปภาพ">แอพ รูปภาพ</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div><span class="sub-check-label text-truncate" title="แอพ Safari">แอพ Safari</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div><span class="sub-check-label text-truncate" title="เช็ค Wi-Fi">เช็ค Wi-Fi</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div><span class="sub-check-label text-truncate" title="เช็ค Bluetooth">เช็ค Bluetooth</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div><span class="sub-check-label text-truncate" title="เช็ค AirDrop">เช็ค AirDrop</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div><span class="sub-check-label text-truncate" title="G-Drive">G-Drive</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div><span class="sub-check-label text-truncate" title="ลบ WI-FI">ลบ WI-FI</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                            <div class="pt-2 mt-3 border-top" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; row-gap: 12px;">
+                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    <span class="sub-check-label mb-0 text-start" style="padding-top: 2px;">Logout Drive</span>
+                                </label>
+                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    <span class="sub-check-label mb-0 text-start" style="padding-top: 2px;">ปิด Wi-Fi</span>
+                                </label>
+                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    <span class="sub-check-label mb-0 text-start" style="padding-top: 2px;">ปิด Bluetooth</span>
+                                </label>
+                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    <span class="sub-check-label mb-0 text-start" style="padding-top: 2px;">ปิด AirDrop</span>
+                                </label>
+                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    <span class="sub-check-label mb-0 text-start" style="padding-top: 2px;">โหมดเครื่องบิน</span>
+                                </label>
+                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    <span class="sub-check-label mb-0 text-start" style="padding-top: 2px;">เริ่มใช้งาน</span>
+                                </label>
                             </div>
                         </div>
                     </div>`;
