@@ -19,11 +19,11 @@
         .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; border: none; margin-top: 20px; }
         .btn-confirm:hover { background: #495057; color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(33,37,41,0.2); }
         
-        /* 📌 ดีไซน์การ์ด iPad แบบใหม่ (เพิ่ม overflow-hidden เพื่อให้กรอบหัวโค้งตาม) */
+        /* 📌 ดีไซน์การ์ด iPad แบบใหม่ */
         .ipad-card { transition: all 0.3s ease; border-color: #dee2e6; }
         .ipad-card.active-card { border-color: #212529 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.08) !important; transform: translateY(-2px); }
         
-        /* 📌 ปรับสีและขนาด Checkbox ให้เหมือนในรูป */
+        /* 📌 ปรับสีและขนาด Checkbox ให้เหมือนในรูปเป๊ะๆ */
         .select-ipad { width: 26px !important; height: 26px !important; cursor: pointer; accent-color: #0d6efd; transition: transform 0.2s; }
         .select-ipad:active { transform: scale(0.9); }
         
@@ -91,10 +91,9 @@
                 res.data.forEach((item) => {
                     let adminBtn = isAdmin ? `<button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill shadow-sm" onclick="tickAllInCard(this)">ติ๊กครบ</button>` : '';
                     
-                    // 📌 ปรับโครงสร้างใหม่ให้มี "แถบหัวข้อ (Header)" แยกชัดเจน
                     container.innerHTML += `
                     <div class="ipad-card bg-white border border-2 rounded-4 overflow-hidden transition-all" data-ipad="${item.ipadId}">
-                        <!-- แถบหัวข้อ -->
+                        <!-- แถบหัวข้อสีเทาอ่อน -->
                         <div class="bg-light border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center gap-3">
                                 <input type="checkbox" class="select-ipad form-check-input m-0 shadow-sm" id="btn-${item.ipadId}" data-target="collapse-${item.ipadId}" onchange="toggleCard(this)">
@@ -103,40 +102,40 @@
                             ${adminBtn}
                         </div>
                         
-                        <!-- เนื้อหาที่กางออกมา -->
+                        <!-- เนื้อหาที่กางออกมา (กล่องอยู่ซ้าย ข้อความอยู่ขวา) -->
                         <div class="collapse" id="collapse-${item.ipadId}">
-                            <div class="p-4 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div class="p-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">File</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.95rem;">File</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">รูปภาพ</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.95rem;">รูปภาพ</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">Safari</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.95rem;">Safari</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">Wi-Fi</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.95rem;">Wi-Fi</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">Bluetooth</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.95rem;">Bluetooth</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">AirDrop</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.95rem;">AirDrop</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">G-Drive</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.95rem;">G-Drive</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">ลบ WI-FI</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.95rem;">ลบ WI-FI</span>
                                 </label>
                             </div>
                         </div>
