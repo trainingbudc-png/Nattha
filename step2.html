@@ -100,6 +100,7 @@
                 // 📌 ถ้าเป็นแอดมิน ให้สร้างคอลัมน์ปุ่มลัดด้วย
                 let adminBtnTd = isAdmin ? `<td data-label="ปุ่มลัด"><button type="button" class="btn btn-dark btn-sm fw-bold w-100 rounded-pill" onclick="tickAllInRow(this)">ติ๊กครบ</button></td>` : '';
                 
+                // สังเกตที่ style="display: none;" ใน class check-app เพื่อซ่อนไว้ก่อน
                 tbody.innerHTML += `<tr>
                     <td data-label="เลือกรับเครื่อง" class="fw-bold text-start">
                         <div class="d-flex align-items-center">
@@ -107,10 +108,10 @@
                             <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-dark fs-5">${item.ipadId}</label>
                         </div>
                     </td>
-                    <td data-label="Drive"><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td data-label="File"><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td data-label="Img"><input type="checkbox" class="check-app form-check-input" disabled></td>
-                    <td data-label="Safari"><input type="checkbox" class="check-app form-check-input" disabled></td>
+                    <td data-label="Drive"><input type="checkbox" class="check-app form-check-input" style="display: none;" disabled></td>
+                    <td data-label="File"><input type="checkbox" class="check-app form-check-input" style="display: none;" disabled></td>
+                    <td data-label="Img"><input type="checkbox" class="check-app form-check-input" style="display: none;" disabled></td>
+                    <td data-label="Safari"><input type="checkbox" class="check-app form-check-input" style="display: none;" disabled></td>
                     ${adminBtnTd}
                 </tr>`;
             });
@@ -119,11 +120,20 @@
         }
     });
 
+    // 📌 ฟังก์ชันจัดการเมื่อติ๊กหรือไม่ติ๊ก iPad
     function toggleRow(checkbox) {
         const row = checkbox.closest('tr');
         row.querySelectorAll('.check-app').forEach(app => {
+            // สลับสถานะ Disable
             app.disabled = !checkbox.checked;
-            if (!checkbox.checked) app.checked = false;
+            
+            // แสดงหรือซ่อนกล่องติ๊ก
+            app.style.display = checkbox.checked ? "inline-block" : "none";
+            
+            // ถ้าเอาติ๊ก iPad ออก ให้เคลียร์ค่าเช็คบ็อกซ์อื่นๆ ด้วย
+            if (!checkbox.checked) {
+                app.checked = false;
+            }
         });
     }
 
@@ -133,6 +143,7 @@
         const mainCheck = row.querySelector('.select-ipad');
         mainCheck.checked = true; 
         row.querySelectorAll('.check-app').forEach(cb => { 
+            cb.style.display = "inline-block"; // แสดงกล่องติ๊ก
             cb.disabled = false; 
             cb.checked = true; 
         });
