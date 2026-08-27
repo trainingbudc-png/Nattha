@@ -126,14 +126,16 @@
                             </div>
                             ${adminBtn}
                         </div>
+<!-- ส่วนรายการย่อยที่จะกางออกมา -->
                         <div class="collapse" id="collapse-${item.ipadId}">
-                            <div class="pt-3 mt-3 border-top d-flex justify-content-center flex-wrap gap-3">
-                                <div class="text-center"><span class="sub-check-label">Logout Drive</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div class="text-center"><span class="sub-check-label">ปิด Wi-Fi</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div class="text-center"><span class="sub-check-label">ปิด Bluetooth</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div class="text-center"><span class="sub-check-label">ปิด AirDrop</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div class="text-center"><span class="sub-check-label">โหมดเครื่องบิน</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                                <div class="text-center"><span class="sub-check-label">เริ่มใช้งาน</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                            <!-- 📌 เปลี่ยนมาใช้ Grid แบ่ง 3 คอลัมน์ 2 แถว -->
+                            <div class="pt-3 mt-3 border-top" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; row-gap: 20px; text-align: center;">
+                                <div><span class="sub-check-label text-truncate" title="Logout Drive">Logout Drive</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                                <div><span class="sub-check-label text-truncate" title="ปิด Wi-Fi">ปิด Wi-Fi</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                                <div><span class="sub-check-label text-truncate" title="ปิด Bluetooth">ปิด Bluetooth</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                                <div><span class="sub-check-label text-truncate" title="ปิด AirDrop">ปิด AirDrop</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                                <div><span class="sub-check-label text-truncate" title="โหมดเครื่องบิน">โหมดเครื่องบิน</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                                <div><span class="sub-check-label text-truncate" title="เริ่มใช้งาน">เริ่มใช้งาน</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
                             </div>
                         </div>
                     </div>`;
