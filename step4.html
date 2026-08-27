@@ -27,7 +27,7 @@
         .select-ipad { width: 26px !important; height: 26px !important; cursor: pointer; accent-color: #0d6efd; transition: transform 0.2s; }
         .select-ipad:active { transform: scale(0.9); }
         
-        .check-item { width: 22px !important; height: 22px !important; cursor: pointer; accent-color: #0d6efd; }
+        .check-item { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: #0d6efd; }
 
         @media screen and (max-width: 768px) {
             .confirm-card { padding: 20px; }
@@ -101,39 +101,39 @@
                             ${adminBtn}
                         </div>
                         <div class="collapse" id="collapse-${item.ipadId}">
-                            <!-- 📌 ปรับข้อความให้สั้นลง และกระจายแถวแนวนอนให้สวยงามเหมือนในรูป -->
-                            <div class="pt-3 mt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2 px-1">
-                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                            <!-- 📌 ปรับข้อความให้อยู่ด้านล่างกล่องติ๊กตามที่สั่ง -->
+                            <div class="pt-4 mt-3 border-top d-flex flex-wrap justify-content-between align-items-start gap-3 px-2">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">File</span>
+                                    <span class="fw-bold text-dark text-center" style="font-size: 0.85rem;">File</span>
                                 </label>
-                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">รูปภาพ</span>
+                                    <span class="fw-bold text-dark text-center" style="font-size: 0.85rem;">รูปภาพ</span>
                                 </label>
-                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">Safari</span>
+                                    <span class="fw-bold text-dark text-center" style="font-size: 0.85rem;">Safari</span>
                                 </label>
-                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">Wi-Fi</span>
+                                    <span class="fw-bold text-dark text-center" style="font-size: 0.85rem;">Wi-Fi</span>
                                 </label>
-                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">Bluetooth</span>
+                                    <span class="fw-bold text-dark text-center" style="font-size: 0.85rem;">Bluetooth</span>
                                 </label>
-                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">AirDrop</span>
+                                    <span class="fw-bold text-dark text-center" style="font-size: 0.85rem;">AirDrop</span>
                                 </label>
-                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">G-Drive</span>
+                                    <span class="fw-bold text-dark text-center" style="font-size: 0.85rem;">G-Drive</span>
                                 </label>
-                                <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">ลบ WI-FI</span>
+                                    <span class="fw-bold text-dark text-center" style="font-size: 0.85rem;">ลบ WI-FI</span>
                                 </label>
                             </div>
                         </div>
