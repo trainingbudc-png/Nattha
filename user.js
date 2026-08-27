@@ -87,6 +87,7 @@ function renderUserTableRows(dataList, tbodyElement, isHistoryTable) {
     }
 
     dataList.forEach(item => {
+        // --- 1. จัดการข้อมูลรหัส iPad ---
         let formattedIpads = '<span class="text-muted">-</span>';
         if (item.ipadId && item.ipadId.trim() !== "") {
             let rawIpads = item.ipadId.split(',').map(id => id.trim());
@@ -103,54 +104,83 @@ function renderUserTableRows(dataList, tbodyElement, isHistoryTable) {
             });
 
             let displayGroups = [];
-            if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-            if (airIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
+            // ปรับสีและสไตล์ของ Tag iPad ให้ดูคล้าย Admin
+            if (normalIds.length > 0) displayGroups.push(`<span class="badge bg-dark text-white me-1">[iPad]</span> <span class="fw-bold">${normalIds.join(', ')}</span>`);
+            if (airIds.length > 0) displayGroups.push(`<span class="badge bg-danger text-white me-1">[Air+APC]</span> <span class="fw-bold">${airIds.join(', ')}</span>`);
             formattedIpads = displayGroups.join('<br>');
         }
 
+        // --- 2. จัดการข้อมูลสถานะและปุ่ม ---
         let statusTxt = item.status || "-";
         let displayStatus = statusTxt;
         let badgeClass = "bg-secondary text-white";
         let actionBtn = "";
 
         if (statusTxt.includes("Step[1]")) {
-            displayStatus = "Step[1]";
-            badgeClass = "bg-danger text-white";
-            actionBtn = `<button class="btn btn-dark btn-sm fw-bold rounded-pill px-3 shadow-sm w-100" onclick="window.location.href='step2.html?reqId=${item.reqId}'">รับเครื่อง</button>`;
+            displayStatus = "Step[1] : รับเครื่อง";
+            badgeClass = "bg-primary text-white";
+            actionBtn = `<button class="btn btn-primary btn-sm fw-bold rounded px-3 shadow-sm w-100" onclick="window.location.href='step2.html?reqId=${item.reqId}'"><i class="bi bi-box-seam me-1"></i> รับเครื่อง</button>`;
         } else if (statusTxt.includes("Step[2]")) {
-            displayStatus = "Step[2]";
-            badgeClass = "bg-danger text-white";
-            actionBtn = `<button class="btn btn-dark btn-sm fw-bold rounded-pill px-3 shadow-sm w-100" onclick="window.location.href='step3.html?reqId=${item.reqId}'">ก่อนสอบ</button>`;
+            displayStatus = "Step[2] : ก่อนสอบ";
+            badgeClass = "bg-warning text-dark";
+            actionBtn = `<button class="btn btn-warning btn-sm fw-bold rounded px-3 shadow-sm w-100" onclick="window.location.href='step3.html?reqId=${item.reqId}'"><i class="bi bi-camera me-1"></i> ก่อนสอบ</button>`;
         } else if (statusTxt.includes("Step[3]")) {
-            displayStatus = "Step[3]";
-            badgeClass = "bg-danger text-white";
-            actionBtn = `<button class="btn btn-dark btn-sm fw-bold rounded-pill px-3 shadow-sm w-100" onclick="window.location.href='step4.html?reqId=${item.reqId}'">ส่งคืน</button>`;
+            displayStatus = "Step[3] : ส่งคืน";
+            badgeClass = "bg-info text-dark";
+            actionBtn = `<button class="btn btn-info btn-sm fw-bold rounded px-3 shadow-sm w-100" onclick="window.location.href='step4.html?reqId=${item.reqId}'"><i class="bi bi-arrow-return-left me-1"></i> ส่งคืน</button>`;
         } else if (statusTxt.includes("Step[4]")) {
-            displayStatus = "รอตรวจคืน";
+            displayStatus = "รอ Admin ตรวจคืน";
             badgeClass = "bg-danger text-white";
-            actionBtn = `<button class="btn btn-secondary btn-sm fw-bold rounded-pill px-3 w-100" disabled>⏳ รอตรวจ</button>`;
+            actionBtn = `<button class="btn btn-outline-danger btn-sm fw-bold rounded px-3 w-100" disabled><i class="bi bi-hourglass-split me-1"></i> รอตรวจ</button>`;
         } else if (statusTxt.includes("เคลียร์") || statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น")) {
             displayStatus = "คืนเรียบร้อย";
             badgeClass = "bg-success text-white";
-            actionBtn = `<button class="btn btn-success btn-sm fw-bold rounded-pill px-3 w-100" disabled>✔️ เสร็จสิ้น</button>`;
+            actionBtn = `<button class="btn btn-success btn-sm fw-bold rounded px-3 w-100" disabled><i class="bi bi-check-circle me-1"></i> เสร็จสิ้น</button>`;
         } else if (statusTxt.includes("ยกเลิก")) {
             displayStatus = "ยกเลิกรายการ";
             badgeClass = "bg-light text-secondary border";
-            actionBtn = `<button class="btn btn-outline-secondary btn-sm fw-bold rounded-pill px-3 w-100" disabled>❌ ยกเลิก</button>`;
+            actionBtn = `<button class="btn btn-light btn-sm fw-bold rounded px-3 w-100 border" disabled><i class="bi bi-x-circle me-1"></i> ยกเลิก</button>`;
         } else {
             displayStatus = statusTxt;
             badgeClass = "bg-secondary text-white"; 
             actionBtn = `<span class="text-muted">-</span>`;
         }
         
-        tbodyElement.innerHTML += `
-            <tr>
-                <td data-label="📌 เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
-                <td data-label="📱 รหัส iPad" style="max-width: 350px; line-height: 1.6;">${formattedIpads}</td>
-                <td data-label="📊 สถานะ"><span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm">${displayStatus}</span></td>
-                <td data-label="⚙️ จัดการ" style="max-width: 150px;">${actionBtn}</td>
-            </tr>
-        `;
+        // --- 3. วาดตารางโดยแยก UX ระหว่าง Active และ History ---
+        if (!isHistoryTable) {
+            // 🌟 UX สำหรับตารางแรก (Active) - สไตล์ Admin
+            tbodyElement.innerHTML += `
+                <tr class="align-middle shadow-sm bg-white" style="border-bottom: 2px solid #f8f9fa; transition: 0.3s;">
+                    <td data-label="📌 เลขรายการ" class="p-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-light text-danger rounded p-2 me-2 shadow-sm">
+                                <i class="bi bi-file-earmark-text-fill"></i>
+                            </div>
+                            <span class="fw-bold text-dark fs-6">${item.reqId}</span>
+                        </div>
+                    </td>
+                    <td data-label="📱 รหัส iPad" class="p-3" style="max-width: 350px; line-height: 1.8;">
+                        ${formattedIpads}
+                    </td>
+                    <td data-label="📊 สถานะ" class="p-3 text-center">
+                        <span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm" style="font-size: 0.85rem; letter-spacing: 0.5px;">${displayStatus}</span>
+                    </td>
+                    <td data-label="⚙️ จัดการ" class="p-3 text-center" style="max-width: 150px;">
+                        ${actionBtn}
+                    </td>
+                </tr>
+            `;
+        } else {
+            // 📝 UX สำหรับตารางประวัติ (History) - สไตล์มินิมอลแบบเดิม
+            tbodyElement.innerHTML += `
+                <tr class="align-middle border-bottom">
+                    <td data-label="📌 เลขรายการ" class="fw-bold text-secondary">${item.reqId}</td>
+                    <td data-label="📱 รหัส iPad" style="max-width: 350px; line-height: 1.6; font-size: 0.9rem;">${formattedIpads}</td>
+                    <td data-label="📊 สถานะ"><span class="badge bg-light text-dark border px-2 py-1 rounded">${displayStatus}</span></td>
+                    <td data-label="⚙️ จัดการ" style="max-width: 150px;">${actionBtn}</td>
+                </tr>
+            `;
+        }
     });
 }
 
