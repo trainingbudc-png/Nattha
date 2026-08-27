@@ -5,39 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>หน้าผู้ใช้งาน | ระบบ iPad</title>
     
-    <!-- 📌 1. ไอคอนบนแท็บเบราว์เซอร์ (Favicon) ใช้รูปของพี่แล้ว -->
     <link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <!-- 📌 ดึงธีมสีดำ-ขาวมาใช้ -->
     <link rel="stylesheet" href="theme-user.css">
 
-    <!-- 🚨👇 นำโค้ดมาวางแทรกตรงนี้เลยครับ ก่อนแท็ก </head> 👇🚨 -->
     <style>
-        /* 📌 จัดระเบียบขอบหน้าจอไม่ให้ชิดขอบ */
         .container-wide, .nav-header {
-            max-width: 1280px !important; /* กำหนดความกว้างสูงสุด */
-            margin: 0 auto !important;    /* จัดให้อยู่กึ่งกลาง */
+            max-width: 1280px !important;
+            margin: 0 auto !important;
         }
-        
-        /* ปรับระยะขอบซ้ายขวาเพิ่มนิดหน่อย เพื่อความสวยงาม */
         .container-wide {
             padding-left: 20px !important;
             padding-right: 20px !important;
         }
+        /* บีบตารางให้เพรียวบางสวยงามกระชับ */
+        .table th { padding: 12px !important; font-size: 0.95rem; }
+        .table td { padding: 8px 12px !important; font-size: 0.9rem; vertical-align: middle; }
     </style>
-    <!-- 🚨👆 จบส่วนที่วางแทรก 👆🚨 -->
-
 </head>
 <body>
-<!-- ... (โค้ดส่วนอื่นๆ คงเดิมทั้งหมด) ... -->
 
     <!-- 🟢 Navbar -->
     <nav class="nav-header">
-        
-        <!-- 📌 2. ไอคอนหน้าคำว่า "เมนูผู้ใช้งาน" ใช้รูปของพี่แล้ว -->
         <div class="nav-title d-flex align-items-center gap-2">
             <img src="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" alt="Logo" style="width: 28px; height: 28px; object-fit: contain;">
             เมนูผู้ใช้งาน
@@ -46,7 +38,6 @@
         <div class="d-flex align-items-center gap-2">
             <span class="text-primary fw-bold d-none d-sm-inline">สวัสดี, <span id="showName">Loading...</span></span>
             
-            <!-- ⚙️ ปุ่มเฟืองแก้ไขโปรไฟล์ -->
             <button class="btn btn-light btn-sm rounded-circle shadow-sm border" onclick="openProfileModal()" title="แก้ไขข้อมูลส่วนตัว" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
                 ⚙️
             </button>
@@ -57,6 +48,31 @@
 
     <div class="container-wide pb-5">
         
+        <!-- 📌 ตารางที่ 1: รายการที่กำลังดำเนินการ (Active) อยู่บนสุด -->
+        <div class="d-flex justify-content-between align-items-end mt-4 mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <div style="width: 4px; height: 20px; background-color: #dc3545; border-radius: 2px;"></div>
+                <h5 class="fw-bold m-0 text-dark">รายการที่กำลังดำเนินการ (Active)</h5>
+            </div>
+            <button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold bg-white" onclick="loadUserTableData()">🔄 อัปเดต</button>
+        </div>
+        
+        <div class="table-card table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">เลขรายการ</th>
+                        <th style="width: 45%;">รหัส iPad</th>
+                        <th style="width: 15%;">สถานะปัจจุบัน</th>
+                        <th style="width: 20%;">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="activeTableBody">
+                    <tr><td colspan="4" class="text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
+                </tbody>
+            </table>
+        </div>
+
         <!-- 🔵 หมวดหมู่: เมนูลัดแบบการ์ด -->
         <div class="section-title title-blue">เมนูลัด</div>
         <div class="row g-3 mb-5">
@@ -89,13 +105,10 @@
             </div>
         </div>
 
-        <!-- 🔵 หมวดหมู่: รายการของฉัน -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="d-flex align-items-center gap-2">
-                <div style="width: 4px; height: 20px; background-color: #212529; border-radius: 2px;"></div>
-                <h5 class="fw-bold m-0 text-dark">ประวัติอุปกรณ์ของฉัน</h5>
-            </div>
-            <button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold" onclick="loadUserTableData()">🔄 อัปเดต</button>
+        <!-- 📌 ตารางที่ 2: ประวัติอุปกรณ์ของฉัน (History) -->
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <div style="width: 4px; height: 20px; background-color: #212529; border-radius: 2px;"></div>
+            <h5 class="fw-bold m-0 text-dark">ประวัติอุปกรณ์ของฉัน (เสร็จสิ้น)</h5>
         </div>
         
         <div class="table-card table-responsive">
@@ -108,8 +121,8 @@
                         <th style="width: 20%;">จัดการ</th>
                     </tr>
                 </thead>
-                <tbody id="userTableBody">
-                    <tr><td colspan="4" class="text-center py-5 text-muted">กำลังโหลดข้อมูลของคุณ... ⏳</td></tr>
+                <tbody id="historyTableBody">
+                    <tr><td colspan="4" class="text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
@@ -126,44 +139,32 @@
                     <p class="text-muted mb-0" style="font-size: 0.9rem;">อัปเดตข้อมูลของคุณให้เป็นปัจจุบัน</p>
                 </div>
                 <div class="modal-body p-4 pt-3">
-                    
-<!-- แยกชื่อและนามสกุล -->
                     <div class="row mb-3">
                         <div class="col-6">
                             <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">ชื่อจริง</label>
-                            <!-- 📌 เอา readonly และพื้นหลังสีเทาออก -->
                             <input type="text" id="editProfileFirstName" class="form-control" style="border-radius: 8px;">
                         </div>
                         <div class="col-6">
                             <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">นามสกุล</label>
-                            <!-- 📌 เอา readonly และพื้นหลังสีเทาออก -->
                             <input type="text" id="editProfileLastName" class="form-control" style="border-radius: 8px;">
                         </div>
                     </div>
-
-                    <!-- ช่องชื่อเล่น -->
                     <div class="mb-3">
                         <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">
                             ชื่อเล่น <span class="fw-normal text-muted" style="font-size: 0.8rem;">(เปลี่ยนได้ ไม่มีผลกับระบบ)</span>
                         </label>
                         <input type="text" id="editProfileNickname" class="form-control" placeholder="เช่น นัท, เฟธ" style="border-radius: 8px;">
                     </div>
-
-                    <!-- ช่องแผนก (Dropdown) -->
                     <div class="mb-3">
                         <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">ฝ่าย / แผนก</label>
                         <select id="editProfileDept" class="form-select" style="border-radius: 8px;">
                             <option value="">-- กรุณาเลือกแผนกของคุณ --</option>
                         </select>
                     </div>
-
-                    <!-- ช่องเบอร์โทรศัพท์ -->
                     <div class="mb-4">
                         <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">เบอร์ติดต่อภายใน (หรือมือถือ)</label>
                         <input type="tel" id="editProfilePhone" class="form-control" placeholder="กรอกเบอร์ที่สามารถติดต่อได้" style="border-radius: 8px;">
                     </div>
-
-                    <!-- ปุ่มบันทึกแบบใหม่ สีเขียว -->
                     <button type="button" class="btn w-100 fw-bold py-2 shadow-sm" id="btnSaveProfile" onclick="saveProfileData()" style="background-color: #10b981; color: white; border-radius: 8px; font-size: 1.05rem; transition: 0.2s;">
                         ✅ บันทึกการเปลี่ยนแปลง
                     </button>
@@ -172,7 +173,6 @@
         </div>
     </div>
 
-    <!-- 📌 โหลดไฟล์ Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
