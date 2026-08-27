@@ -27,9 +27,8 @@
         .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #dc3545; transition: transform 0.2s; }
         .select-ipad:active { transform: scale(0.9); }
         
-        .check-item { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: #212529; opacity: 0; visibility: hidden; transform: translateY(5px) scale(0.8); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .check-item.show-cb { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
-        .check-item:disabled { cursor: not-allowed; }
+        /* 📌 แก้ไขให้แสดงผลตลอดเวลา ไม่ต้องซ่อนแล้ว */
+        .check-item { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: #212529; }
 
         @media screen and (max-width: 768px) {
             .confirm-card { padding: 20px; }
@@ -58,7 +57,6 @@
         </div>
     </div>
 
-    <!-- 📌 คอนเทนเนอร์ใส่การ์ดแทนตารางเดิม -->
     <div id="itemList" class="d-flex flex-column gap-3 mb-4">
         <div class="text-center text-muted py-4">กำลังโหลดข้อมูล... ⏳</div>
     </div>
@@ -104,7 +102,7 @@
                             ${adminBtn}
                         </div>
                         <div class="collapse" id="collapse-${item.ipadId}">
-                            <!-- 📌 ปรับเปลี่ยนเป็นแนวนอนแถวยาว (Horizontal Row) -->
+                            <!-- 📌 ปรับเปลี่ยนเป็นแนวนอนแถวยาว กล่องติ๊กจะขึ้นโชว์เลยเมื่อกางการ์ด -->
                             <div class="pt-3 mt-3 border-top d-flex flex-wrap gap-4 align-items-center justify-content-start">
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
@@ -158,7 +156,7 @@
         } else {
             bsCollapse.hide();
             card.classList.remove('active-card');
-            collapseElement.querySelectorAll('.check-item').forEach(cb => cb.checked = false);
+            collapseElement.querySelectorAll('.check-item').forEach(cb => cb.checked = false); // เคลียร์กล่องย่อยเวลาพับเก็บ
         }
     }
 
@@ -170,9 +168,7 @@
             toggleCard(mainCheck);
         }
         card.querySelectorAll('.check-item').forEach(cb => { 
-            cb.disabled = false; 
             cb.checked = true; 
-            cb.classList.add('show-cb');
         });
     }
 
