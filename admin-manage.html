@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-admin.css">
     <style>
-        /* 📌 จัดระเบียบ Navbar ให้อยู่กึ่งกลาง ไม่บานออกขอบจอ */
         .navbar-custom { background: #ffffff; border-bottom: 2px solid #fecaca; padding: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .container-main { max-width: 1100px; margin: 0 auto; }
         
@@ -27,24 +26,30 @@
 <body>
 
     <nav class="navbar navbar-custom">
-        <!-- 📌 ครอบ Navbar ด้วย container-main เพื่อให้ขนาดเท่ากับตารางเป๊ะๆ -->
         <div class="container container-main d-flex justify-content-between align-items-center">
             <div class="fw-bold fs-5 text-danger">
                 ⚙️ จัดการรายการเตรียมเครื่อง
             </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-dark btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="loadPendingData()">🔄 รีเฟรช</button>
-                <a href="admin.html" class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-4 border-2">🔙 กลับ</a>
-            </div>
+            <!-- 📌 คืนพื้นที่ให้ปุ่ม กลับ อยู่ตัวเดียวแบบคลีนๆ -->
+            <a href="admin.html" class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-4 border-2">🔙 กลับ</a>
         </div>
     </nav>
 
     <div class="container container-main pb-5 mt-4">
-        <div class="section-title">รายการที่ "รอแอดมินยืนยันการเตรียม"</div>
-        <p class="text-muted mb-4 px-2" style="font-size: 0.9rem;">
-            * เมื่อคุณกดยืนยัน ระบบจะส่งข้อความแจ้งเตือนไปที่ LINE ของผู้ขอเบิกยืมทันที <br>
-            * หากกดยกเลิก ระบบจะคืนสถานะอุปกรณ์เหล่านั้นกลับเป็น "ว่าง"
-        </p>
+        
+        <!-- 📌 จัดระเบียบ UX ใหม่: ย้ายปุ่มรีเฟรชมาไว้เหนือตาราง ชิดขวาตรงกับคอลัมน์จัดการ -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 px-2 gap-3">
+            <div>
+                <div class="section-title mb-2">รายการที่ "รอแอดมินยืนยันการเตรียม"</div>
+                <p class="text-muted mb-0" style="font-size: 0.9rem; line-height: 1.6;">
+                    * เมื่อคุณกดยืนยัน ระบบจะส่งข้อความแจ้งเตือนไปที่ LINE ของผู้ขอเบิกยืมทันที <br>
+                    * หากกดยกเลิก ระบบจะคืนสถานะอุปกรณ์เหล่านั้นกลับเป็น "ว่าง"
+                </p>
+            </div>
+            <button class="btn btn-dark btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm align-self-end" onclick="loadPendingData()">
+                🔄 รีเฟรชตาราง
+            </button>
+        </div>
         
         <div class="table-card table-responsive">
             <table class="table table-hover align-middle">
@@ -99,7 +104,6 @@
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
                     let formattedIpads = formatIpadText(item.ipadId);
 
-                    // 📌 ปรับปุ่มจัดการให้เป็น rounded-pill เพื่อความสวยงามกลมกลืน
                     tbody.innerHTML += `
                         <tr>
                             <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
