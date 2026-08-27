@@ -1,5 +1,5 @@
 // =========================================
-// 📌 ไฟล์ user.js : ระบบประมวลผลสำหรับหน้าผู้ใช้งาน (ฉบับเสถียรสูงสุด)
+// 📌 ไฟล์ user.js : ระบบประมวลผลสำหรับหน้าผู้ใช้งาน (ฉบับอัปเกรด)
 // =========================================
 
 window.onload = function() {
@@ -20,7 +20,7 @@ async function loadUserTableData() {
     tbody.innerHTML = '<tr><td colspan="4" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
     
     const currentUserId = localStorage.getItem("userId");
-    const currentUserName = localStorage.getItem("userName"); // ใช้ชื่อเทียบสำรองเผื่อเคสเก่า
+    const currentUserName = localStorage.getItem("userName"); 
 
     try {
         const res = await callAPI({ action: "getData" });
@@ -28,10 +28,15 @@ async function loadUserTableData() {
         if (res.status === "success" && res.data && res.data.length > 0) {
             tbody.innerHTML = ""; 
             
-            // 📌 กรองข้อมูลให้ยืดหยุ่นขึ้น (เช็คทั้ง userId และ ชื่อผู้ใช้งาน เพื่อความชัวร์ 100%)
+            // 📌 กรองข้อมูลให้ยืดหยุ่นขึ้น (ตัดชื่อเล่นในวงเล็บออกก่อนเทียบ)
             const myData = res.data.filter(item => {
+                let dbName = item.name ? item.name.split("(")[0].trim() : "";
+                let localName = currentUserName ? currentUserName.split("(")[0].trim() : "";
+
                 let matchUser = (item.userId && item.userId === currentUserId) || 
-                                (item.name && item.name.trim() === currentUserName.trim());
+                                (dbName === localName) || 
+                                (item.name && item.name.includes(localName));
+                                
                 let isValidReq = item.reqId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ";
                 return matchUser && isValidReq;
             });
@@ -236,7 +241,7 @@ async function saveProfileData() {
                 icon: "success",
                 confirmButtonColor: "#10b981"
             }).then(() => {
-                loadUserTableData(); // รีเฟรชตารางหลังเปลี่ยนชื่อ
+                loadUserTableData(); 
             });
         } else {
             Swal.fire("ข้อผิดพลาด", res.message || "ไม่สามารถอัปเดตข้อมูลได้", "error");
