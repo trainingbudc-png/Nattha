@@ -75,7 +75,7 @@
             </div>
             <!-- 📌 เปลี่ยนปุ่มเป็นแบบมีกรอบ (Outline) พร้อมพื้นหลังขาวและขอบหนา -->
             <button class="btn btn-outline-dark btn-sm rounded-pill fw-bold px-4 py-2 border-2 shadow-sm align-self-end bg-white" onclick="loadPendingData()">
-                🔄 รีเฟรชตาราง
+                🔄 รีเฟรช
             </button>
         </div>
         
@@ -150,8 +150,8 @@ pendingData.forEach(item => {
                             <td data-label="ผู้ยืม" class="fw-bold text-primary" style="line-height: 1.5;">${displayName}</td>
                             <td data-label="จัดการ">
                                 <div class="d-flex flex-column gap-2 px-1">
-                                    <button class="btn btn-success btn-sm fw-bold rounded-pill shadow-sm py-2" onclick="confirmStep1('${item.reqId}')">✅ ยืนยัน (ส่ง LINE)</button>
-                                    <button class="btn btn-outline-danger btn-sm fw-bold rounded-pill bg-white border-2 py-2" onclick="cancelStep1('${item.reqId}')">❌ ยกเลิกรายการ</button>
+                                    <button class="btn btn-success btn-sm fw-bold rounded-pill shadow-sm py-2" onclick="confirmStep1('${item.reqId}')">✅ ยืนยัน</button>
+                                    <button class="btn btn-outline-danger btn-sm fw-bold rounded-pill bg-white border-2 py-2" onclick="cancelStep1('${item.reqId}')">❌ ปฏิเสธ</button>
                                 </div>
                             </td>
                         </tr>
