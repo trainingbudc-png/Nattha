@@ -96,12 +96,14 @@
                         ${adminBtn}
                     </div>
                     <!-- ส่วนรายการย่อยที่จะกางออกมา -->
+                   <!-- ส่วนรายการย่อยที่จะกางออกมา -->
                     <div class="collapse" id="collapse-${item.ipadId}">
-                        <div class="pt-3 mt-3 border-top d-flex justify-content-around flex-wrap gap-2">
-                            <div class="text-center"><span class="sub-check-label">Drive</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                            <div class="text-center"><span class="sub-check-label">File</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                            <div class="text-center"><span class="sub-check-label">Img</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                            <div class="text-center"><span class="sub-check-label">Safari</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                        <!-- 📌 เปลี่ยนมาใช้ Grid แบ่ง 4 คอลัมน์เท่าๆ กัน -->
+                        <div class="pt-3 mt-3 border-top" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center;">
+                            <div><span class="sub-check-label text-truncate" title="Drive">Drive</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                            <div><span class="sub-check-label text-truncate" title="File">File</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                            <div><span class="sub-check-label text-truncate" title="Img">Img</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                            <div><span class="sub-check-label text-truncate" title="Safari">Safari</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
                         </div>
                     </div>
                 </div>`;
