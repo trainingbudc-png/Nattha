@@ -13,20 +13,15 @@
     
     <style>
         .menu-text h5 { color: #212529 !important; }
-        .section-title {
-            color: #212529 !important;
-            font-size: 1.35rem !important; 
-            font-weight: 700 !important; 
-        }
+        .section-title { color: #212529 !important; font-size: 1.35rem !important; font-weight: 700 !important; }
         
-        .filter-card {
-            background: #ffffff;
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            padding: 15px 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            margin-bottom: 20px;
-        }
+        .filter-card { background: #ffffff; border: 1px solid #e9ecef; border-radius: 12px; padding: 15px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 20px; }
+
+        /* 📌 บีบตารางให้เพรียวบางและกระชับขึ้น (Compact Table) */
+        .table th { padding: 10px !important; font-size: 0.95rem; }
+        .table td { padding: 6px 10px !important; font-size: 0.9rem; vertical-align: middle; }
+        #activeTableBody td, #adminTableBody td { line-height: 1.2 !important; }
+        .table .btn-sm { padding: 4px 12px !important; font-size: 0.85rem !important; }
 
         @media screen and (max-width: 768px) {
             .navbar-custom { flex-direction: column; gap: 15px; text-align: center; }
@@ -60,9 +55,9 @@
 
     <div class="container pb-5" style="max-width: 1100px;">
         
-        <!-- 📌 ตารางที่ 1: รายการที่กำลังดำเนินการ (Active) อยู่บนสุดตามสั่ง -->
+        <!-- 📌 ตารางที่ 1: รายการที่กำลังดำเนินการ (Active) -->
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mt-4 mb-3 gap-2">
-            <div class="section-title mt-0 mb-0">รายการที่กำลังดำเนินการ (Active)</div>
+            <div class="section-title mt-0 mb-0 border-start border-danger border-4 ps-2">รายการที่กำลังดำเนินการ (Active)</div>
             <button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="loadAdminTableData()">🔄 โหลดใหม่</button>
         </div>
         <div class="table-card table-responsive mb-5">
@@ -83,7 +78,7 @@
         </div>
 
         <!-- ภาพรวมระบบ -->
-        <div class="section-title">ภาพรวมระบบ</div>
+        <div class="section-title border-start border-info border-4 ps-2">ภาพรวมระบบ</div>
         <div class="row g-3">
             <div class="col-12">
                 <a href="dashboard.html" class="menu-card" style="border-left-color: #0dcaf0;">
@@ -96,7 +91,7 @@
             </div>
         </div>
 
-        <div class="section-title mt-4">ระบบจัดการ</div>
+        <div class="section-title mt-4 border-start border-primary border-4 ps-2">ระบบจัดการ</div>
         <div class="row g-3">
             <div class="col-6 col-md-6">
                 <a href="step1.html" class="menu-card h-100">
@@ -118,7 +113,7 @@
             </div>
         </div>
 
-        <div class="section-title mt-4">ระบบแจ้งเตือนปัญหา</div>
+        <div class="section-title mt-4 border-start border-warning border-4 ps-2">ระบบแจ้งเตือนปัญหา</div>
         <div class="row g-3">
             <div class="col-12">
                 <a href="report-issue.html" class="menu-card">
@@ -133,10 +128,10 @@
 
         <!-- 📌 ตารางที่ 2: ประวัติรายการ (เสร็จสิ้น / ยกเลิก) -->
         <div class="d-flex justify-content-between align-items-end mt-5 mb-3">
-            <div class="section-title mt-0 mb-0">ประวัติรายการ (เสร็จสิ้น / ยกเลิก)</div>
+            <div class="section-title mt-0 mb-0 border-start border-secondary border-4 ps-2">ประวัติรายการ (เสร็จสิ้น / ยกเลิก)</div>
         </div>
         
-        <!-- 🎯 แถบค้นหาและตัวกรอง (Filter Bar) สำหรับตารางประวัติ -->
+        <!-- 🎯 แถบค้นหาและตัวกรอง (Filter Bar) -->
         <div class="filter-card">
             <div class="row align-items-end g-3">
                 <div class="col-md-5">
@@ -219,20 +214,19 @@
         const searchText = document.getElementById("searchInput").value.toLowerCase().trim();
         const statusValue = document.getElementById("statusFilter").value;
 
-        // 1. ค้นหาจากช่อง Search (ค้นหาเจอทั้ง 2 ตาราง)
+        // ค้นหาทั้ง 2 ตาราง
         let searchedData = globalLogData.filter(item => {
             const nameMatch = item.name ? item.name.toLowerCase().includes(searchText) : false;
             const reqMatch = item.reqId ? item.reqId.toLowerCase().includes(searchText) : false;
             return nameMatch || reqMatch;
         });
 
-        // 2. แยกร่างข้อมูลเป็น Active กับ History
+        // แยกร่างตาราง Active กับ History
         let activeData = [];
         let historyData = [];
 
         searchedData.forEach(item => {
             let statusTxt = item.status || "";
-            // ถ้าเป็นเสร็จสิ้นหรือยกเลิก ให้ไปตารางประวัติ
             let isHistory = statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์") || statusTxt.includes("ยกเลิก");
             
             if (isHistory) {
@@ -242,7 +236,7 @@
             }
         });
 
-        // 3. ตัวกรอง Dropdown ให้มีผลเฉพาะตารางประวัติด้านล่าง
+        // กรองสถานะเฉพาะตารางประวัติ
         let finalHistoryData = historyData.filter(item => {
             if (statusValue === "all") return true;
             if (statusValue === "เสร็จสิ้น") {
@@ -251,7 +245,7 @@
             return item.status.includes(statusValue);
         });
 
-        // ส่งไปวาด 2 ตารางแยกกัน
+        // วาดตาราง
         renderTable(activeData, "activeTableBody", null); 
         renderTable(finalHistoryData, "adminTableBody", "resultCountLabel"); 
     }
@@ -289,7 +283,7 @@
                 formattedIpads = displayGroups.join('<br>');
             }
 
-            // 📌 UX: จัดระเบียบชื่อผู้ยืม แยกชื่อหลักกับ(ชื่อเล่น)
+            // แยกบรรทัดชื่อเล่น
             let displayName = item.name || "-";
             if (displayName !== "-" && displayName.includes("(")) {
                 let parts = displayName.split("(");
@@ -301,7 +295,7 @@
             let statusTxt = item.status || "-";
             let statusHtml = "";
 
-            // 📌 UX: ปุ่มเป็น Outline พื้นขาวทั้งหมดสำหรับ Active Steps
+            // ปรับปุ่มให้เป็น Outline พื้นขาว
             if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
                 statusHtml = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 2">Step[1] </button>`;
             } else if(statusTxt.includes("Step[2]")) {
@@ -324,8 +318,8 @@
                 <tr>
                     <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
                     <td data-label="วัน-เวลา" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
-                    <td data-label="ผู้ดำเนินการ" class="fw-bold" style="color: #495057; line-height: 1.5;">${displayName}</td>
-                    <td data-label="รหัส iPad" style="max-width: 100%; line-height: 1.6;">${formattedIpads}</td>
+                    <td data-label="ผู้ดำเนินการ" class="fw-bold" style="color: #495057;">${displayName}</td>
+                    <td data-label="รหัส iPad" style="max-width: 100%;">${formattedIpads}</td>
                     <td data-label="สถานะ">${statusHtml}</td>
                 </tr>
             `;
