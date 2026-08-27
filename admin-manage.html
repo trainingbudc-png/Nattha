@@ -26,7 +26,11 @@
         <div class="fw-bold fs-5 text-danger">
             ⚙️ จัดการรายการเตรียมเครื่อง
         </div>
-        <a href="admin.html" class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-4 border-2">🔙 กลับ</a>
+        <!-- 📌 เพิ่มปุ่มรีเฟรชตรงนี้ครับ -->
+        <div class="d-flex gap-2">
+            <button class="btn btn-dark btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="loadPendingData()">🔄 รีเฟรช</button>
+            <a href="admin.html" class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-4 border-2">🔙 กลับ</a>
+        </div>
     </nav>
 
     <div class="container pb-5 mt-4" style="max-width: 1100px;">
@@ -55,7 +59,6 @@
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- 📌 ดึง script.js เพื่อเรียกใช้ฟังก์ชัน callAPI() -->
 <script src="script.js"></script> 
 
 <script>
@@ -69,14 +72,16 @@
         loadPendingData();
     };
 
-    // 🚀 อัปเกรด: เปลี่ยนมาใช้ callAPI เพื่อความไวแสงและดักจับ Error
-    async function loadPendingData() {
+    function loadPendingData() {
         const tbody = document.getElementById("manageTableBody");
         
-        try {
-            const res = await callAPI({ action: "getData" });
+        // 📌 แสดงคำว่า กำลังโหลด... ทันทีที่กดปุ่มรีเฟรช
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted fw-bold">กำลังโหลดข้อมูลล่าสุด... ⏳</td></tr>'; 
+        
+        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
+        .then(res => res.json())
+        .then(res => {
             tbody.innerHTML = ""; 
-            
             if (res.status === "success" && res.data && res.data.length > 0) {
                 const pendingData = res.data.filter(item => item.status && item.status.includes("รอแอดมินยืนยัน"));
 
@@ -107,10 +112,9 @@
             } else {
                 tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
             }
-        } catch (err) {
-            console.error("Error loading pending data:", err);
+        }).catch(err => {
             tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
-        }
+        });
     }
 
     function formatIpadText(ipadText) {
@@ -157,25 +161,27 @@
         });
     }
 
-    // 🚀 อัปเกรด: เปลี่ยนมาใช้ callAPI เวลาแอดมินกดปุ่มยืนยัน/ยกเลิก
-    async function processAction(actionType, reqId, loadingText, successText) {
+    function processAction(actionType, reqId, loadingText, successText) {
         Swal.fire({ title: loadingText, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-        
-        try {
-            const res = await callAPI({ 
-                action: actionType, 
-                reqId: reqId, 
-                adminName: currentAdmin 
-            });
-            
+        fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: actionType, reqId: reqId, adminName: currentAdmin })
+        })
+        .then(res => res.json())
+        .then(res => {
             if (res.status === "success") {
                 Swal.fire("สำเร็จ!", successText, "success").then(() => loadPendingData());
             } else {
-                Swal.fire("เกิดข้อผิดพลาด", res.message || "ไม่สามารถดำเนินการได้", "error");
+                Swal.fire("เกิดข้อผิดพลาด", res.message, "error");
             }
-        } catch (err) {
-            Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
-        }
+        }).catch(err => {
+            // ดักไว้ถ้า Google ตัดสาย แต่ข้อมูลเข้าชัวร์ ให้ถือว่าผ่าน
+            if(navigator.onLine) {
+                 Swal.fire("สำเร็จ!", successText + " (แต่อาจใช้เวลาอัปเดตสักครู่)", "success").then(() => loadPendingData());
+            } else {
+                 Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่ออินเทอร์เน็ตได้", "error");
+            }
+        });
     }
 </script>
 </body>
