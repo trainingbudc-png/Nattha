@@ -175,11 +175,12 @@ function renderActiveUserCards(data) {
 }
 
 // 📌 ฟังก์ชันวาดตาราง History
+// 📌 ฟังก์ชันวาดตาราง History (ลบคอลัมน์ จัดการ ออกแล้ว)
 function renderUserTableRows(dataList, tbodyElement) {
     tbodyElement.innerHTML = "";
 
     if (dataList.length === 0) {
-        tbodyElement.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">ยังไม่มีประวัติรายการเสร็จสิ้น</td></tr>`;
+        tbodyElement.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-4">ยังไม่มีประวัติรายการเสร็จสิ้น</td></tr>`;
         return;
     }
 
@@ -208,28 +209,24 @@ function renderUserTableRows(dataList, tbodyElement) {
         let statusTxt = item.status || "-";
         let displayStatus = statusTxt;
         let badgeClass = "bg-secondary text-white";
-        let actionBtn = "";
 
         if (statusTxt.includes("เคลียร์") || statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น")) {
             displayStatus = "คืนเรียบร้อย";
             badgeClass = "bg-success text-white";
-            actionBtn = `<button class="btn btn-success btn-sm fw-bold rounded-pill px-3 w-100" disabled>✔️ เสร็จสิ้น</button>`;
         } else if (statusTxt.includes("ยกเลิก")) {
             displayStatus = "ยกเลิกรายการ";
             badgeClass = "bg-light text-secondary border";
-            actionBtn = `<button class="btn btn-outline-secondary btn-sm fw-bold rounded-pill px-3 w-100" disabled>❌ ยกเลิก</button>`;
         } else {
             displayStatus = statusTxt;
             badgeClass = "bg-secondary text-white"; 
-            actionBtn = `<span class="text-muted">-</span>`;
         }
         
+        // ลบ <td> ที่เป็นปุ่มจัดการออกไปแล้ว
         tbodyElement.innerHTML += `
             <tr>
                 <td data-label="📌 เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
                 <td data-label="📱 รหัส iPad" style="max-width: 350px; line-height: 1.6;">${formattedIpads}</td>
                 <td data-label="📊 สถานะ"><span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm">${displayStatus}</span></td>
-                <td data-label="⚙️ จัดการ" style="max-width: 150px;">${actionBtn}</td>
             </tr>
         `;
     });
