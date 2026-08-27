@@ -10,17 +10,21 @@
     <link rel="stylesheet" href="theme-user.css">
     <style>
         body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
-        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 850px; margin: auto; border: 1px solid #e9ecef; }
-        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 20px; transition: 0.3s; border: none; font-size: 1.1rem; }
-        .btn-confirm:hover { background: #495057; color: white; }
-        .info-box { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
-        .info-label { font-size: 0.85rem; color: #6c757d; margin-bottom: 2px; }
+        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 1000px; margin: auto; border: 1px solid #e9ecef; }
+        .info-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: center; }
+        .info-label { font-size: 0.85rem; color: #6c757d; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
         .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
         .divider { width: 1px; background-color: #dee2e6; height: 40px; }
         
+        .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; border: none; margin-top: 20px; }
+        .btn-confirm:hover { background: #495057; color: white; }
+        
+        .table th { background-color: #f8f9fa; text-align: center; font-size: 0.9rem; vertical-align: middle; color: #495057; border-bottom: 2px solid #dee2e6; padding: 12px; }
+        .table td { vertical-align: middle; text-align: center; padding: 12px; border-bottom: 1px solid #e9ecef; }
+        
+        .check-app, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
         .check-app:disabled { cursor: not-allowed; opacity: 0.5; }
 
-        .check-app, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
         @media screen and (max-width: 768px) {
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
             .table thead { display: none; }
@@ -35,32 +39,29 @@
 <body>
 <div class="confirm-card">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold text-dark mb-0">Step 2 | รับเครื่อง</h4>
+        <h4 class="fw-bold text-dark mb-0">✅ Step 2 | รับเครื่อง</h4>
         <a href="step2-list.html" class="btn btn-outline-dark px-3 fw-bold rounded-pill btn-sm border-2">🔙 กลับ</a>
     </div>
     
-    <div class="info-box d-flex justify-content-around align-items-center">
+    <div class="info-box">
         <div class="text-center">
-            <div class="info-label">👤 ผู้ขอเบิกยืม:</div>
+            <div class="info-label">👤 ผู้ขอเบิกยืม</div>
             <div id="displayUserName" class="info-value">กำลังโหลด...</div>
         </div>
         <div class="divider"></div>
         <div class="text-center">
-            <div class="info-label">👨‍💻 แอดมินผู้เตรียม:</div>
+            <div class="info-label">👨‍💻 แอดมินผู้เตรียม</div>
             <div id="displayAdminName" class="info-value">กำลังโหลด...</div>
         </div>
     </div>
 
     <div class="table-responsive">
-        <table class="table table-bordered text-center align-middle">
-            <thead class="table-light">
-                <tr id="tableHeader">
-                    <th>iPad</th><th>Drive</th><th>File</th><th>Img</th><th>Safari</th>
-                    <!-- 📌 หัวตารางสำหรับแอดมินจะถูกแทรกตรงนี้ -->
-                </tr>
+        <table class="table align-middle text-center">
+            <thead id="tableHeader">
+                <tr><th>iPad</th><th>Drive</th><th>File</th><th>Img</th><th>Safari</th></tr>
             </thead>
             <tbody id="itemList">
-                <tr><td colspan="6" class="text-muted py-3">กำลังโหลดข้อมูล... ⏳</td></tr>
+                <tr><td colspan="6" class="text-muted py-4">กำลังโหลดข้อมูล... ⏳</td></tr>
             </tbody>
         </table>
     </div>
@@ -72,11 +73,10 @@
 <script>
     const reqId = new URLSearchParams(window.location.search).get('reqId');
     const currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
-    const isAdmin = localStorage.getItem("userRole") === "Admin"; // 📌 เช็คว่าเป็นแอดมินหรือไม่
+    const isAdmin = localStorage.getItem("userRole") === "Admin"; 
 
-    // ถ้าเป็นแอดมิน ให้เพิ่มหัวตารางปุ่มลัด
     if (isAdmin) {
-        document.getElementById('tableHeader').innerHTML += '<th>ปุ่มลัด</th>';
+        document.getElementById('tableHeader').firstElementChild.innerHTML += '<th>ปุ่มลัด</th>';
     }
 
     fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep1Data", reqId: reqId }) })
@@ -97,10 +97,8 @@
 
         if(res.data && res.data.length > 0) {
             res.data.forEach(item => {
-                // 📌 ถ้าเป็นแอดมิน ให้สร้างคอลัมน์ปุ่มลัดด้วย
                 let adminBtnTd = isAdmin ? `<td data-label="ปุ่มลัด"><button type="button" class="btn btn-dark btn-sm fw-bold w-100 rounded-pill" onclick="tickAllInRow(this)">ติ๊กครบ</button></td>` : '';
                 
-                // สังเกตที่ style="display: none;" ใน class check-app เพื่อซ่อนไว้ก่อน
                 tbody.innerHTML += `<tr>
                     <td data-label="เลือกรับเครื่อง" class="fw-bold text-start">
                         <div class="d-flex align-items-center">
@@ -116,34 +114,25 @@
                 </tr>`;
             });
         } else {
-            tbody.innerHTML = `<tr><td colspan="${isAdmin ? '6' : '5'}" class="text-danger py-3">❌ ไม่พบรายการเครื่อง</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="${isAdmin ? '6' : '5'}" class="text-danger py-4">❌ ไม่พบรายการเครื่อง</td></tr>`;
         }
     });
 
-    // 📌 ฟังก์ชันจัดการเมื่อติ๊กหรือไม่ติ๊ก iPad
     function toggleRow(checkbox) {
         const row = checkbox.closest('tr');
         row.querySelectorAll('.check-app').forEach(app => {
-            // สลับสถานะ Disable
             app.disabled = !checkbox.checked;
-            
-            // แสดงหรือซ่อนกล่องติ๊ก
             app.style.display = checkbox.checked ? "inline-block" : "none";
-            
-            // ถ้าเอาติ๊ก iPad ออก ให้เคลียร์ค่าเช็คบ็อกซ์อื่นๆ ด้วย
-            if (!checkbox.checked) {
-                app.checked = false;
-            }
+            if (!checkbox.checked) app.checked = false;
         });
     }
 
-    // 📌 ฟังก์ชันสำหรับให้แอดมินกดติ๊กครบ
     function tickAllInRow(btn) {
         const row = btn.closest('tr');
         const mainCheck = row.querySelector('.select-ipad');
         mainCheck.checked = true; 
         row.querySelectorAll('.check-app').forEach(cb => { 
-            cb.style.display = "inline-block"; // แสดงกล่องติ๊ก
+            cb.style.display = "inline-block"; 
             cb.disabled = false; 
             cb.checked = true; 
         });
@@ -157,9 +146,7 @@
             const row = ipad.closest('tr');
             const checks = Array.from(row.querySelectorAll('.check-app'));
             
-            if (checks.some(c => !c.checked)) {
-                isAllChecked = false;
-            }
+            if (checks.some(c => !c.checked)) isAllChecked = false;
 
             const checkValues = checks.map(c => c.checked ? "☑" : "☐");
             items.push({ ipadId: row.querySelector('label').innerText, checklist: checkValues.join(",") });
