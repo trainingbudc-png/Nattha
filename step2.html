@@ -22,8 +22,13 @@
         .table th { background-color: #f8f9fa; text-align: center; font-size: 0.9rem; vertical-align: middle; color: #495057; border-bottom: 2px solid #dee2e6; padding: 12px; }
         .table td { vertical-align: middle; text-align: center; padding: 12px; border-bottom: 1px solid #e9ecef; }
         
-        .check-app, .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #212529; }
-        .check-app:disabled { cursor: not-allowed; opacity: 0.5; }
+        /* 📌 UX: อนิเมชันปุ่ม Checkbox ให้เฟดขึ้นมาแบบสมูทๆ */
+        .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #dc3545; transition: transform 0.2s; }
+        .select-ipad:active { transform: scale(0.9); }
+        
+        .check-item { width: 25px !important; height: 25px !important; cursor: pointer; accent-color: #212529; opacity: 0; visibility: hidden; transform: translateY(5px) scale(0.8); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .check-item.show-cb { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .check-item:disabled { cursor: not-allowed; }
 
         @media screen and (max-width: 768px) {
             .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
@@ -106,10 +111,10 @@
                             <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-dark fs-5">${item.ipadId}</label>
                         </div>
                     </td>
-                    <td data-label="Drive"><input type="checkbox" class="check-app form-check-input" style="display: none;" disabled></td>
-                    <td data-label="File"><input type="checkbox" class="check-app form-check-input" style="display: none;" disabled></td>
-                    <td data-label="Img"><input type="checkbox" class="check-app form-check-input" style="display: none;" disabled></td>
-                    <td data-label="Safari"><input type="checkbox" class="check-app form-check-input" style="display: none;" disabled></td>
+                    <td data-label="Drive"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                    <td data-label="File"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                    <td data-label="Img"><input type="checkbox" class="check-item form-check-input" disabled></td>
+                    <td data-label="Safari"><input type="checkbox" class="check-item form-check-input" disabled></td>
                     ${adminBtnTd}
                 </tr>`;
             });
@@ -118,12 +123,17 @@
         }
     });
 
+    // 📌 UX: แสดงกล่อง Checkbox ย่อยเมื่อติ๊กเลือกเครื่อง
     function toggleRow(checkbox) {
         const row = checkbox.closest('tr');
-        row.querySelectorAll('.check-app').forEach(app => {
-            app.disabled = !checkbox.checked;
-            app.style.display = checkbox.checked ? "inline-block" : "none";
-            if (!checkbox.checked) app.checked = false;
+        row.querySelectorAll('.check-item').forEach(cb => {
+            cb.disabled = !checkbox.checked;
+            if (checkbox.checked) {
+                cb.classList.add('show-cb');
+            } else {
+                cb.classList.remove('show-cb');
+                cb.checked = false;
+            }
         });
     }
 
@@ -131,10 +141,10 @@
         const row = btn.closest('tr');
         const mainCheck = row.querySelector('.select-ipad');
         mainCheck.checked = true; 
-        row.querySelectorAll('.check-app').forEach(cb => { 
-            cb.style.display = "inline-block"; 
+        row.querySelectorAll('.check-item').forEach(cb => { 
             cb.disabled = false; 
             cb.checked = true; 
+            cb.classList.add('show-cb');
         });
     }
 
@@ -144,7 +154,7 @@
 
         document.querySelectorAll('.select-ipad:checked').forEach(ipad => {
             const row = ipad.closest('tr');
-            const checks = Array.from(row.querySelectorAll('.check-app'));
+            const checks = Array.from(row.querySelectorAll('.check-item'));
             
             if (checks.some(c => !c.checked)) isAllChecked = false;
 
