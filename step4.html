@@ -6,7 +6,7 @@
     <title>Step 4 | ส่งคืนเครื่อง</title>
 	<link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-user.css">
     <style>
         body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
@@ -23,12 +23,11 @@
         .ipad-card { transition: all 0.3s ease; border-color: #dee2e6; }
         .ipad-card.active-card { border-color: #212529 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.08) !important; transform: translateY(-2px); }
         
-        /* ตั้งค่าปุ่ม Checkbox ให้ดูมีมิติเวลากด */
-        .select-ipad { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #dc3545; transition: transform 0.2s; }
+        /* 📌 ปรับสีและขนาด Checkbox ให้เหมือนในรูป */
+        .select-ipad { width: 26px !important; height: 26px !important; cursor: pointer; accent-color: #0d6efd; transition: transform 0.2s; }
         .select-ipad:active { transform: scale(0.9); }
         
-        /* 📌 แก้ไขให้แสดงผลตลอดเวลา ไม่ต้องซ่อนแล้ว */
-        .check-item { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: #212529; }
+        .check-item { width: 22px !important; height: 22px !important; cursor: pointer; accent-color: #0d6efd; }
 
         @media screen and (max-width: 768px) {
             .confirm-card { padding: 20px; }
@@ -96,45 +95,45 @@
                     <div class="ipad-card bg-white border border-2 rounded-4 p-3 transition-all" data-ipad="${item.ipadId}">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center gap-3">
-                                <input type="checkbox" class="select-ipad form-check-input m-0 shadow-sm" style="width: 30px; height: 30px; cursor: pointer; accent-color: #212529;" id="btn-${item.ipadId}" data-target="collapse-${item.ipadId}" onchange="toggleCard(this)">
+                                <input type="checkbox" class="select-ipad form-check-input m-0 shadow-sm" id="btn-${item.ipadId}" data-target="collapse-${item.ipadId}" onchange="toggleCard(this)">
                                 <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-dark fw-bold fs-5 mb-0">${item.ipadId}</label>
                             </div>
                             ${adminBtn}
                         </div>
                         <div class="collapse" id="collapse-${item.ipadId}">
-                            <!-- 📌 ปรับเปลี่ยนเป็นแนวนอนแถวยาว กล่องติ๊กจะขึ้นโชว์เลยเมื่อกางการ์ด -->
-                            <div class="pt-3 mt-3 border-top d-flex flex-wrap gap-4 align-items-center justify-content-start">
+                            <!-- 📌 ปรับข้อความให้สั้นลง และกระจายแถวแนวนอนให้สวยงามเหมือนในรูป -->
+                            <div class="pt-3 mt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2 px-1">
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-medium text-dark" style="font-size: 0.95rem;">File</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">File</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-medium text-dark" style="font-size: 0.95rem;">รูปภาพ</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">รูปภาพ</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-medium text-dark" style="font-size: 0.95rem;">Safari</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">Safari</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-medium text-dark" style="font-size: 0.95rem;">Wi-Fi</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">Wi-Fi</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-medium text-dark" style="font-size: 0.95rem;">Bluetooth</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">Bluetooth</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-medium text-dark" style="font-size: 0.95rem;">AirDrop</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">AirDrop</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-medium text-dark" style="font-size: 0.95rem;">G-Drive</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">G-Drive</span>
                                 </label>
                                 <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
                                     <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    <span class="fw-medium text-dark" style="font-size: 0.95rem;">ลบ WI-FI</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">ลบ WI-FI</span>
                                 </label>
                             </div>
                         </div>
@@ -156,7 +155,7 @@
         } else {
             bsCollapse.hide();
             card.classList.remove('active-card');
-            collapseElement.querySelectorAll('.check-item').forEach(cb => cb.checked = false); // เคลียร์กล่องย่อยเวลาพับเก็บ
+            collapseElement.querySelectorAll('.check-item').forEach(cb => cb.checked = false); 
         }
     }
 
