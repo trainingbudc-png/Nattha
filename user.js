@@ -123,7 +123,7 @@ function renderActiveUserCards(data) {
 
         // ปรับปุ่มให้เป็นภาษาฝั่ง User โดยอิงจากสถานะ
         if (statusTxt.includes("Step[1]")) {
-            actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'">รับเครื่อง</button>`;
+            actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'">รับเครื่องฟฟฟ</button>`;
         } else if (statusTxt.includes("Step[2]")) {
             actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'">ก่อนสอบ</button>`;
         } else if (statusTxt.includes("Step[3]")) {
