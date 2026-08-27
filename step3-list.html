@@ -77,10 +77,17 @@
 
             if (res.status === "success" && res.data && res.data.length > 0) {
                 const pendingRequests = res.data.filter(item => {
+                    // 📌 ปรับให้ฉลาดขึ้น: ตัดข้อความในวงเล็บทิ้งไปก่อนเทียบ
+                    let dbName = item.name ? item.name.split("(")[0].trim() : "";
+                    let localName = currentUserName ? currentUserName.split("(")[0].trim() : "";
+
                     let matchUser = (item.userId && item.userId === currentUserId) || 
-                                    (item.name && item.name.trim() === currentUserName.trim());
+                                    (dbName === localName) || 
+                                    (item.name && item.name.includes(localName));
+                                    
                     let isValidReq = item.reqId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ";
-                    let isStatusMatch = item.status && item.status.includes("Step[2]");
+                    let isStatusMatch = item.status && item.status.includes("Step[2]"); // 📌 สำหรับ Step 3 ต้องหาของที่ค้างจาก Step 2
+                    
                     return matchUser && isValidReq && isStatusMatch;
                 });
 
