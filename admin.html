@@ -23,15 +23,22 @@
         #adminTableBody td { line-height: 1.2 !important; }
         .table .btn-sm { padding: 4px 12px !important; font-size: 0.85rem !important; }
 
-        /* 📌 สไตล์การ์ดงาน Active สุดเท่ */
+        /* 📌 สไตล์การ์ดงาน Active แบบ Dropdown สุดเท่ */
         .active-task-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
             border: 1px solid #fecaca;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
         }
         .active-task-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(220,53,69,0.1) !important;
+            box-shadow: 0 4px 15px rgba(220,53,69,0.1) !important;
             border-color: #dc3545;
+        }
+        /* ลูกศรชี้ลง และหมุนขึ้นเวลากดกาง */
+        .collapse-icon {
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+        [aria-expanded="true"] .collapse-icon {
+            transform: rotate(180deg);
         }
 
         @media screen and (max-width: 768px) {
@@ -66,7 +73,7 @@
 
     <div class="container pb-5" style="max-width: 1100px;">
         
-        <!-- 📌 ส่วนที่ 1: รายการที่กำลังดำเนินการ (Active) เปลี่ยนเป็นการ์ดงาน -->
+        <!-- 📌 ส่วนที่ 1: รายการที่กำลังดำเนินการ (Active) เปลี่ยนเป็นการ์ดงานแบบ Dropdown -->
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mt-4 mb-3 gap-2">
             <div class="section-title mt-0 mb-0 border-start border-danger border-4 ps-2">รายการที่กำลังดำเนินการ (Active)</div>
             <button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="loadAdminTableData()">🔄 โหลดใหม่</button>
@@ -169,6 +176,8 @@
         </div>
     </div>
 
+<!-- 📌 ต้องมี Bootstrap JS ตัวนี้เพื่อให้ระบบคลิกกางการ์ด (Collapse) ทำงานได้ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="script.js"></script>
@@ -213,14 +222,12 @@
         const searchText = document.getElementById("searchInput").value.toLowerCase().trim();
         const statusValue = document.getElementById("statusFilter").value;
 
-        // ค้นหาทั้ง 2 ส่วน
         let searchedData = globalLogData.filter(item => {
             const nameMatch = item.name ? item.name.toLowerCase().includes(searchText) : false;
             const reqMatch = item.reqId ? item.reqId.toLowerCase().includes(searchText) : false;
             return nameMatch || reqMatch;
         });
 
-        // แยกร่างตาราง Active กับ History
         let activeData = [];
         let historyData = [];
 
@@ -235,7 +242,6 @@
             }
         });
 
-        // กรองสถานะเฉพาะประวัติ
         let finalHistoryData = historyData.filter(item => {
             if (statusValue === "all") return true;
             if (statusValue === "เสร็จสิ้น") {
@@ -244,12 +250,11 @@
             return item.status.includes(statusValue);
         });
 
-        // วาดการ์ดและตาราง
         renderActiveCards(activeData); 
         renderTable(finalHistoryData, "adminTableBody", "resultCountLabel"); 
     }
 
-    // 📌 ฟังก์ชันเสกการ์ดงานแทนตาราง
+    // 📌 ฟังก์ชันเสกการ์ดงานแบบ Dropdown (Progressive Disclosure)
     function renderActiveCards(data) {
         const container = document.getElementById("activeCardsContainer");
         container.innerHTML = ""; 
@@ -261,8 +266,9 @@
 
         data.forEach(item => {
             let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
+            // สร้าง ID ให้ตัว Dropdown แบบไม่ให้ซ้ำกันและไม่มีอักขระพิเศษ
+            let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
 
-            // จัดการรหัส iPad
             let formattedIpads = '<span class="text-muted">-</span>';
             if (item.ipadId && item.ipadId.trim() !== "") {
                 let rawIpads = item.ipadId.split(',').map(id => id.trim());
@@ -279,7 +285,6 @@
                 formattedIpads = displayGroups.join('<br>');
             }
 
-            // จัดการชื่อและชื่อเล่นให้เล็กลง
             let displayName = item.name || "-";
             let nickNameHtml = "";
             if (displayName !== "-" && displayName.includes("(")) {
@@ -288,7 +293,6 @@
                 nickNameHtml = `<div class="text-secondary mt-1" style="font-size: 0.8rem;">(${parts[1].trim()}</div>`;
             }
 
-            // จัดการปุ่มสถานะแบบ Outline
             let statusTxt = item.status || "-";
             let statusHtml = "";
             if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
@@ -303,41 +307,53 @@
                 statusHtml = `<span class="badge bg-light text-dark border px-3 py-2 rounded-pill">${statusTxt}</span>`;
             }
 
-            // ประกอบร่างเป็น Card
+            // 📌 ประกอบร่างการ์ดแบบยุบได้ (Collapse)
             container.innerHTML += `
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="active-task-card p-3 bg-white rounded-4 shadow-sm h-100 d-flex flex-column position-relative overflow-hidden">
+                    <div class="active-task-card bg-white rounded-4 shadow-sm position-relative overflow-hidden h-100">
                         <div class="position-absolute top-0 start-0 bottom-0 bg-danger" style="width: 4px;"></div>
-                        <div class="d-flex justify-content-between align-items-start mb-2 ps-2">
-                            <div>
-                                <div class="fw-bold text-dark" style="font-size: 0.95rem;">${item.reqId}</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">📅 ${dateStr}</div>
+                        
+                        <!-- Header: โชว์แค่เลขรายการและปุ่ม (กดเพื่อให้กางได้) -->
+                        <div class="p-3 d-flex justify-content-between align-items-center" 
+                             style="cursor: pointer; user-select: none;" 
+                             data-bs-toggle="collapse" 
+                             data-bs-target="#collapse-${safeId}" 
+                             aria-expanded="false">
+                            
+                            <div class="fw-bold text-dark ps-2 d-flex align-items-center gap-2" style="font-size: 1.05rem;">
+                                ${item.reqId}
+                                <span class="collapse-icon text-muted" style="font-size: 0.7rem;">▼</span>
                             </div>
-                            <div>${statusHtml}</div>
+                            
+                            <!-- Stop Propagation ป้องกันไม่ให้กดปุ่ม Step แล้วการ์ดพับเอง -->
+                            <div onclick="event.stopPropagation();">${statusHtml}</div>
                         </div>
-                        <div class="ps-2 mt-auto pt-3 border-top border-light d-flex justify-content-between align-items-end">
-                            <div style="line-height: 1.2;">
-                                <span class="fw-bold text-primary" style="font-size: 0.95rem;">👤 ${displayName}</span>
-                                ${nickNameHtml}
-                            </div>
-                            <div class="text-end" style="font-size: 0.85rem; line-height: 1.4;">
-                                ${formattedIpads}
+
+                        <!-- Body: รายละเอียดที่จะกางออกมาเมื่อกด -->
+                        <div id="collapse-${safeId}" class="collapse">
+                            <div class="p-3 pt-2 ps-4 border-top border-light">
+                                <div class="text-muted mb-2" style="font-size: 0.75rem;">📅 ${dateStr}</div>
+                                <div class="d-flex justify-content-between align-items-end">
+                                    <div style="line-height: 1.2;">
+                                        <span class="fw-bold text-primary" style="font-size: 0.95rem;">👤 ${displayName}</span>
+                                        ${nickNameHtml}
+                                    </div>
+                                    <div class="text-end" style="font-size: 0.85rem; line-height: 1.4;">
+                                        ${formattedIpads}
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             `;
         });
     }
 
-    // 📌 ฟังก์ชันวาดตารางสำหรับประวัติ
     function renderTable(data, targetTbodyId, countLabelId) {
         const tbody = document.getElementById(targetTbodyId);
-        
-        if (countLabelId) {
-            document.getElementById(countLabelId).innerText = `พบ ${data.length} รายการ`;
-        }
-        
+        if (countLabelId) document.getElementById(countLabelId).innerText = `พบ ${data.length} รายการ`;
         tbody.innerHTML = ""; 
         
         if (data.length === 0) {
@@ -364,7 +380,6 @@
                 formattedIpads = displayGroups.join('<br>');
             }
 
-            // แยกบรรทัดชื่อเล่น
             let displayName = item.name || "-";
             if (displayName !== "-" && displayName.includes("(")) {
                 let parts = displayName.split("(");
