@@ -182,32 +182,52 @@
         loadUsersAndIpads();
     };
 
-    // 🚀 ระบบเร่งสปีด: ใช้ Cache จำรายชื่อผู้ใช้ไว้ ไม่ต้องรอโหลดซ้ำ
+    // 🚀 กลับสู่สามัญ: โหลดข้อมูลแบบเข้าคิว (ดึงชื่อก่อน แล้วดึง iPad ตาม) ชัวร์ที่สุด!
     async function loadUsersAndIpads() {
-        const select = document.getElementById("userNameSelect");
-        const containerNormal = document.getElementById("ipadNormalContainer");
-        const containerAir = document.getElementById("ipadAirContainer");
-
-        // 📌 1. โหลดข้อมูลรายชื่อจากหน่วยความจำ (Cache) ขึ้นมาแสดงผลทันทีแบบไม่ต้องรอ
-        const cachedUsers = localStorage.getItem("cachedUserNames");
-        let hasCache = false;
-
-        if (cachedUsers) {
-            try {
-                const usersArray = JSON.parse(cachedUsers);
-                populateUserDropdown(usersArray, select);
-                hasCache = true;
-            } catch(e) {}
-        }
-
         try {
-            // 📌 2. โหลดแค่คลัง iPad ก่อนเลย เพราะรายชื่อโหลดจาก Cache ไปแล้ว
+            // 📌 1. โหลดรายชื่อผู้ใช้ก่อน
+            const userResponse = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "getUserNames" })
+            });
+            const userRes = await userResponse.json();
+
+            const select = document.getElementById("userNameSelect");
+            select.innerHTML = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
+            
+            if (userRes.status === "success" && userRes.data) {
+                userRes.data.sort((a, b) => a.localeCompare(b, 'th'));
+                userRes.data.forEach(name => { select.innerHTML += `<option value="${name}">${name}</option>`; });
+                
+                $('#userNameSelect').select2({
+                    theme: "bootstrap-5",
+                    width: '100%',
+                    placeholder: "-- เลือกชื่อผู้ขอยืม --",
+                    allowClear: true
+                });
+
+                const urlBorrower = new URLSearchParams(window.location.search).get('borrower') || "";
+                if (urlBorrower !== "") {
+                    for(let i = 0; i < select.options.length; i++) {
+                        if(select.options[i].text.includes(urlBorrower)) {
+                            $('#userNameSelect').val(select.options[i].value).trigger('change');
+                            break;
+                        }
+                    }
+                }
+            } else {
+                select.innerHTML = '<option value="">❌ ไม่พบรายชื่อผู้ใช้งาน</option>';
+            }
+
+            // 📌 2. พอโหลดชื่อเสร็จ ค่อยโหลดรายชื่อ iPad
             const invResponse = await fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action: "getInventory" })
             });
             const invRes = await invResponse.json();
 
+            const containerNormal = document.getElementById("ipadNormalContainer");
+            const containerAir = document.getElementById("ipadAirContainer");
             containerNormal.innerHTML = ""; containerAir.innerHTML = "";
             
             if (invRes.status === "success" && invRes.data) {
@@ -237,53 +257,11 @@
                 containerAir.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
             }
 
-            // 📌 3. โหลดรายชื่อจาก Google ลับหลัง เพื่ออัปเดตข้อมูลล่าสุดเข้า Cache (หรือโหลดจริงถ้าไม่มี Cache)
-            const userResponse = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: "getUserNames" })
-            });
-            const userRes = await userResponse.json();
-            
-            if (userRes.status === "success" && userRes.data) {
-                localStorage.setItem("cachedUserNames", JSON.stringify(userRes.data)); // บันทึกลง Cache
-                
-                // ถ้าเพิ่งเคยเปิดหน้าเว็บนี้ครั้งแรก (ไม่มี Cache) ถึงจะแสดงผลตรงนี้
-                if (!hasCache) {
-                    populateUserDropdown(userRes.data, select);
-                }
-            } else if (!hasCache) {
-                select.innerHTML = '<option value="">❌ ไม่พบรายชื่อผู้ใช้งาน</option>';
-            }
-
         } catch (error) {
             console.error("Error loading setup data:", error);
-            if (!hasCache) select.innerHTML = '<option value="">❌ โหลดข้อมูลล้มเหลว</option>';
+            document.getElementById("userNameSelect").innerHTML = '<option value="">❌ โหลดข้อมูลล้มเหลว</option>';
             document.getElementById("ipadNormalContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
             document.getElementById("ipadAirContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
-        }
-    }
-
-    // ฟังก์ชันย่อยสำหรับช่วยใส่รายชื่อลงในช่องค้นหา
-    function populateUserDropdown(userArray, selectElement) {
-        selectElement.innerHTML = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
-        userArray.sort((a, b) => a.localeCompare(b, 'th'));
-        userArray.forEach(name => { selectElement.innerHTML += `<option value="${name}">${name}</option>`; });
-        
-        $('#userNameSelect').select2({
-            theme: "bootstrap-5",
-            width: '100%',
-            placeholder: "-- เลือกชื่อผู้ขอยืม --",
-            allowClear: true
-        });
-
-        const urlBorrower = new URLSearchParams(window.location.search).get('borrower') || "";
-        if (urlBorrower !== "") {
-            for(let i = 0; i < selectElement.options.length; i++) {
-                if(selectElement.options[i].text.includes(urlBorrower)) {
-                    $('#userNameSelect').val(selectElement.options[i].value).trigger('change');
-                    break;
-                }
-            }
         }
     }
 
@@ -435,6 +413,7 @@
             try {
                 res = JSON.parse(rawText);
             } catch (parseErr) {
+                // ถ้าตอบกลับมาแล้วพัง (Google ตัดสาย) แต่เน็ตยังอยู่ = ข้อมูลเข้าชัวร์
                 if (navigator.onLine) {
                     Swal.fire({
                         title: "บันทึกสำเร็จ!",
