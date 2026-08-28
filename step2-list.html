@@ -14,17 +14,12 @@
         .container-wide, .nav-header { max-width: 1280px !important; margin: 0 auto !important; }
         .container-wide { padding-left: 20px !important; padding-right: 20px !important; }
 
-        @media (min-width: 769px) { .ipad-box { text-align: center; width: 100%; } }
-
         @media (max-width: 768px) {
             .table-card { background: transparent; box-shadow: none; border: none; padding: 0; margin-top: 10px; }
             .table thead { display: none; }
             .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid #e2e8f0 !important; }
             .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px solid #f1f5f9 !important; }
             .table tbody td::before { content: attr(data-label); font-weight: 500; color: #64748b; font-size: 0.9rem; text-align: left; margin-right: 15px; flex-shrink: 0; }
-            .table tbody td[data-label="รหัส iPad"] { flex-direction: column; align-items: flex-start; }
-            .table tbody td[data-label="รหัส iPad"]::before { margin-bottom: 8px; margin-top: 0; }
-            .ipad-box { width: 100%; text-align: right; background-color: #f8fafc; padding: 10px 12px; border-radius: 8px; border: 1px solid #f1f5f9; }
             .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 16px; display: block; }
             .table tbody td:last-child::before { display: none; } 
             .table tbody td:last-child .btn { padding: 12px !important; font-size: 1.05rem; }
@@ -47,16 +42,17 @@
         <div class="table-card table-responsive">
             <table class="table table-hover align-middle">
                 <thead>
-                    <tr>
+                    <tr class="text-center">
                         <th style="width: 15%;">เลขรายการ</th>
-                        <th style="width: 20%;">วันที่และเวลา</th>
-                        <th style="width: 35%;">รหัส iPad</th>
+                        <th style="width: 15%;">วันที่และเวลา</th>
+                        <th style="width: 20%;">อุปกรณ์ที่ยืม</th>
+                        <th style="width: 20%;">เครื่องที่เตรียม</th>
                         <th style="width: 15%;">สถานะ</th>
                         <th style="width: 15%;">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody id="requestListBody">
-                    <tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
+                    <tr><td colspan="6" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
@@ -77,11 +73,9 @@
 
             if (res.status === "success" && res.data && res.data.length > 0) {
                 const pendingRequests = res.data.filter(item => {
-                    // 📌 ปรับให้ฉลาดขึ้น: ดึงมาเฉพาะชื่อหลัก (ตัดข้อความในวงเล็บทิ้งไปก่อนเทียบ)
                     let dbName = item.name ? item.name.split("(")[0].trim() : "";
                     let localName = currentUserName ? currentUserName.split("(")[0].trim() : "";
 
-                    // เช็คว่า User ID ตรงกันไหม หรือ ชื่อหลักตรงกันมั้ย หรือ ชื่อเต็มๆ มีชื่อล็อกอินซ่อนอยู่มั้ย
                     let matchUser = (item.userId && item.userId === currentUserId) || 
                                     (dbName === localName) || 
                                     (item.name && item.name.includes(localName));
@@ -93,19 +87,52 @@
                 });
 
                 if (pendingRequests.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="text-center fw-bold py-5 text-muted">🎉 ไม่มีรายการค้างดำเนินการในขณะนี้</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center fw-bold py-5 text-muted">🎉 ไม่มีรายการค้างดำเนินการในขณะนี้</td></tr>';
                     return;
                 }
 
                 pendingRequests.forEach(req => {
                     let dateStr = req.timestamp ? new Date(req.timestamp).toLocaleString("th-TH") : "-";
-                    let formattedIpads = formatIpadText(req.ipadId);
+                    
+                    let typeHtml = '<span class="text-muted">-</span>';
+                    let idsHtml = '<span class="text-muted">-</span>';
+                    
+                    if (req.ipadId && req.ipadId.trim() !== "") {
+                        let rawIpads = req.ipadId.split(',').map(id => id.trim());
+                        let normalIds = [], airIds = [];
+
+                        rawIpads.forEach(id => {
+                            let numMatch = id.match(/\d+/); 
+                            let num = numMatch ? numMatch[0] : id; 
+                            if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) {
+                                airIds.push(num);
+                            } else {
+                                normalIds.push(num);
+                            }
+                        });
+
+                        let typeArr = [];
+                        let idsArr = [];
+                        
+                        if (normalIds.length > 0) {
+                            typeArr.push(`<div class="fw-bold text-danger mb-1">iPad</div>`);
+                            idsArr.push(`<div class="mb-1 text-dark" style="word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`);
+                        }
+                        if (airIds.length > 0) {
+                            typeArr.push(`<div class="fw-bold text-primary mb-1">Air+APC</div>`);
+                            idsArr.push(`<div class="mb-1 text-dark" style="word-break: break-word; line-height: 1.6;">${airIds.join(', ')}</div>`);
+                        }
+                        
+                        typeHtml = typeArr.join('');
+                        idsHtml = idsArr.join('');
+                    }
 
                     tbody.innerHTML += `
-                        <tr>
+                        <tr class="text-center align-middle">
                             <td data-label="เลขรายการ"><div class="fw-bold text-dark">${req.reqId}</div></td>
-                            <td data-label="วันที่"><div>${dateStr}</div></td>
-                            <td data-label="รหัส iPad"><div class="ipad-box">${formattedIpads}</div></td>
+                            <td data-label="วันที่และเวลา"><div class="text-muted" style="font-size: 0.9rem;">${dateStr}</div></td>
+                            <td data-label="อุปกรณ์ที่ยืม">${typeHtml}</td>
+                            <td data-label="เครื่องที่เตรียม">${idsHtml}</td>
                             <td data-label="สถานะ"><div><span class="badge bg-danger text-white px-3 py-2 rounded-pill">${req.status}</span></div></td>
                             <td data-label="จัดการ">
                                 <button class="btn btn-action btn-sm px-3 shadow-sm w-100" onclick="window.location.href='step2.html?reqId=${req.reqId}'">ดำเนินการ</button>
@@ -114,28 +141,12 @@
                     `;
                 });
             } else {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">ยังไม่มีรายการค้างดำเนินการ</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5">ยังไม่มีรายการค้างดำเนินการ</td></tr>';
             }
         } catch (error) {
-            document.getElementById("requestListBody").innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
+            document.getElementById("requestListBody").innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
         }
     };
-
-    function formatIpadText(ipadText) {
-        if (!ipadText || ipadText.trim() === "") return "-";
-        let rawIpads = ipadText.split(',').map(id => id.trim());
-        let normalIds = [], airIds = [];
-        rawIpads.forEach(id => {
-            let numMatch = id.match(/\d+/); 
-            let num = numMatch ? numMatch[0] : id; 
-            if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num);
-            else normalIds.push(num);
-        });
-        let displayGroups = [];
-        if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-        if (airIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
-        return displayGroups.join('<br>');
-    }
 </script>
 </body>
 </html>
