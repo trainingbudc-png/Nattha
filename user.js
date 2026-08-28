@@ -22,6 +22,7 @@ async function loadUserTableData() {
     activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>';
     historyTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
     
+    // 📌 ดึง LINE ID (userId) และ ชื่อ มาใช้สำหรับการกรองข้อมูล
     const currentUserId = localStorage.getItem("userId");
     const currentUserName = localStorage.getItem("userName"); 
 
@@ -29,17 +30,25 @@ async function loadUserTableData() {
         const res = await callAPI({ action: "getData" });
         
         if (res.status === "success" && res.data && res.data.length > 0) {
-            // กรองข้อมูลเฉพาะของ User นี้
+            
+            // 📌 ระบบกรองข้อมูลฉบับปรับปรุง: ล็อกเป้าด้วย LINE ID เป็นหลัก
             const myData = res.data.filter(item => {
+                let isValidReq = item.reqId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ";
+                if (!isValidReq) return false;
+
+                // 1. ตรวจสอบด้วย LINE ID ก่อน (ชัวร์ที่สุด เปลี่ยนชื่อก็ไม่หลุด)
+                if (currentUserId && item.userId === currentUserId) {
+                    return true;
+                }
+
+                // 2. แผนสำรอง (Fallback): สำหรับรายการเก่าในระบบที่ยังไม่มีการบันทึก LINE ID 
                 let dbName = item.name ? item.name.split("(")[0].trim() : "";
                 let localName = currentUserName ? currentUserName.split("(")[0].trim() : "";
+                if (dbName === localName || (item.name && item.name.includes(localName))) {
+                    return true;
+                }
 
-                let matchUser = (item.userId && item.userId === currentUserId) || 
-                                (dbName === localName) || 
-                                (item.name && item.name.includes(localName));
-                                
-                let isValidReq = item.reqId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ";
-                return matchUser && isValidReq;
+                return false;
             });
 
             if (myData.length === 0) {
@@ -62,9 +71,7 @@ async function loadUserTableData() {
                 }
             });
 
-            // วาดการ์ด Active (ด้านบน)
             renderActiveUserCards(activeList);
-            // วาดตาราง History (ด้านล่าง)
             renderUserTableRows(historyList, historyTbody);
 
         } else {
