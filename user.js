@@ -241,7 +241,7 @@ function renderUserTableRows(dataList, tbodyElement) {
         tbodyElement.innerHTML += `
             <tr class="text-center align-middle">
                 <td data-label="📌 เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
-                <td data-label="📦 รายการ">${typeHtml}</td>
+                <td data-label="📦 อุปกรณ์ที่ยืม">${typeHtml}</td>
                 <td data-label="📱 เครื่องที่เตรียม" class="text-start">${idsHtml}</td>
                 <td data-label="📊 สถานะ"><span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm mx-auto">${displayStatus}</span></td>
             </tr>
