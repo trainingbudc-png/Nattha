@@ -353,21 +353,23 @@
         });
     }
 
-    function renderTable(data, targetTbodyId, countLabelId) {
+  function renderTable(data, targetTbodyId, countLabelId) {
         const tbody = document.getElementById(targetTbodyId);
         if (countLabelId) document.getElementById(countLabelId).innerText = `พบ ${data.length} รายการ`;
         tbody.innerHTML = ""; 
         
         if (data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">🔍 ไม่พบข้อมูล</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5">🔍 ไม่พบข้อมูล</td></tr>';
             return;
         }
 
         data.forEach(item => {
             let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
 
-            // 📌 จัดการ iPad ในตาราง History ให้เหมือนหน้า User
-            let formattedIpads = '<span class="text-muted">-</span>';
+            // 📌 แยกตัวแปร อุปกรณ์ที่ยืม (typeHtml) กับ เครื่องที่เตรียม (idsHtml)
+            let typeHtml = '<span class="text-muted">-</span>';
+            let idsHtml = '<span class="text-muted">-</span>';
+            
             if (item.ipadId && item.ipadId.trim() !== "") {
                 let rawIpads = item.ipadId.split(',').map(id => id.trim());
                 let normalIds = [], airIds = [];
@@ -382,14 +384,20 @@
                     }
                 });
 
-                let displayGroups = [];
+                let typeArr = [];
+                let idsArr = [];
+                
                 if (normalIds.length > 0) {
-                    displayGroups.push(`<div class="mb-2 text-end text-md-center"><div class="text-danger fw-bold mb-1">[iPad]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${normalIds.join(', ')}</div></div>`);
+                    typeArr.push(`<div class="fw-bold text-danger mb-1">iPad</div>`);
+                    idsArr.push(`<div class="mb-1 text-dark" style="word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`);
                 }
                 if (airIds.length > 0) {
-                    displayGroups.push(`<div class="mb-2 text-end text-md-center"><div class="text-primary fw-bold mb-1">[Air+APC]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${airIds.join(', ')}</div></div>`);
+                    typeArr.push(`<div class="fw-bold text-primary mb-1">Air+APC</div>`);
+                    idsArr.push(`<div class="mb-1 text-dark" style="word-break: break-word; line-height: 1.6;">${airIds.join(', ')}</div>`);
                 }
-                formattedIpads = displayGroups.join('');
+                
+                typeHtml = typeArr.join('');
+                idsHtml = idsArr.join('');
             }
 
             let displayName = item.name || "-";
@@ -418,7 +426,8 @@
                     <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
                     <td data-label="วัน-เวลา" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
                     <td data-label="ผู้ดำเนินการ" class="fw-bold" style="color: #495057;">${displayName}</td>
-                    <td data-label="รหัส iPad" style="max-width: 100%;">${formattedIpads}</td>
+                    <td data-label="อุปกรณ์ที่ยืม">${typeHtml}</td>
+                    <td data-label="เครื่องที่เตรียม">${idsHtml}</td>
                     <td data-label="สถานะ">${statusHtml}</td>
                 </tr>
             `;
