@@ -6,11 +6,11 @@
     <title>Step 2 | รับเครื่อง</title>
 	<link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-user.css">
     <style>
         body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
-        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 850px; margin: auto; border: 1px solid #e9ecef; }
+        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 900px; margin: auto; border: 1px solid #e9ecef; }
         .info-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: center; }
         .info-label { font-size: 0.85rem; color: #6c757d; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
         .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
@@ -22,8 +22,13 @@
         /* 📌 ดีไซน์การ์ด iPad แบบใหม่ */
         .ipad-card { transition: all 0.3s ease; border-color: #dee2e6; }
         .ipad-card.active-card { border-color: #212529 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.08) !important; transform: translateY(-2px); }
-        .sub-check-label { font-size: 0.8rem; font-weight: 600; color: #6c757d; display: block; margin-bottom: 5px; text-transform: uppercase; }
         
+        /* 📌 ปรับสีและขนาด Checkbox ให้เหมือนในรูปเป๊ะๆ */
+        .select-ipad { width: 26px !important; height: 26px !important; cursor: pointer; accent-color: #0d6efd; transition: transform 0.2s; }
+        .select-ipad:active { transform: scale(0.9); }
+        
+        .check-item { width: 22px !important; height: 22px !important; cursor: pointer; accent-color: #0d6efd; }
+
         @media screen and (max-width: 768px) {
             .confirm-card { padding: 20px; }
             .info-box { flex-direction: column; gap: 15px; }
@@ -85,25 +90,37 @@
             res.data.forEach(item => {
                 let adminBtn = isAdmin ? `<button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill shadow-sm" onclick="tickAllInCard(this)">ติ๊กครบ</button>` : '';
                 
-                // 📌 โครงสร้างการ์ดพับได้ (Accordion)
+                // 📌 โครงสร้างการ์ดพับได้ รูปแบบเดียวกับ Step 4
                 container.innerHTML += `
-                <div class="ipad-card bg-white border border-2 rounded-4 p-3 transition-all" data-ipad="${item.ipadId}">
-                    <div class="d-flex justify-content-between align-items-center">
+                <div class="ipad-card bg-white border border-2 rounded-4 overflow-hidden transition-all" data-ipad="${item.ipadId}">
+                    <!-- แถบหัวข้อสีเทาอ่อน -->
+                    <div class="bg-light border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-3">
-                            <input type="checkbox" class="select-ipad form-check-input m-0 shadow-sm" style="width: 30px; height: 30px; cursor: pointer; accent-color: #212529;" id="btn-${item.ipadId}" data-target="collapse-${item.ipadId}" onchange="toggleCard(this)"> 
+                            <input type="checkbox" class="select-ipad form-check-input m-0 shadow-sm" id="btn-${item.ipadId}" data-target="collapse-${item.ipadId}" onchange="toggleCard(this)"> 
                             <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-dark fw-bold fs-5 mb-0">${item.ipadId}</label>
                         </div>
                         ${adminBtn}
                     </div>
-                    <!-- ส่วนรายการย่อยที่จะกางออกมา -->
-                   <!-- ส่วนรายการย่อยที่จะกางออกมา -->
+                    
+                    <!-- เนื้อหาที่กางออกมา (ข้อความอยู่บน กล่องติ๊กอยู่ล่าง) -->
                     <div class="collapse" id="collapse-${item.ipadId}">
-                        <!-- 📌 เปลี่ยนมาใช้ Grid แบ่ง 4 คอลัมน์เท่าๆ กัน -->
-                        <div class="pt-3 mt-3 border-top" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center;">
-                            <div><span class="sub-check-label text-truncate" title="Drive">Drive</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                            <div><span class="sub-check-label text-truncate" title="File">File</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                            <div><span class="sub-check-label text-truncate" title="Img">Img</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
-                            <div><span class="sub-check-label text-truncate" title="Safari">Safari</span><input type="checkbox" class="check-item form-check-input m-0 fs-3 shadow-sm" style="cursor: pointer; accent-color: #212529;"></div>
+                        <div class="p-4 d-flex flex-wrap align-items-center justify-content-around gap-3">
+                            <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
+                                <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">Drive</span>
+                                <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                            </label>
+                            <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
+                                <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">File</span>
+                                <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                            </label>
+                            <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
+                                <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">Img</span>
+                                <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                            </label>
+                            <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
+                                <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">Safari</span>
+                                <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                            </label>
                         </div>
                     </div>
                 </div>`;
