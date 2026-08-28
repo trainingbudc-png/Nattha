@@ -79,6 +79,7 @@ async function loadUserTableData() {
 }
 
 // 📌 ฟังก์ชันเสกการ์ดงานแบบ Dropdown สำหรับผู้ใช้
+// 📌 ฟังก์ชันเสกการ์ดงานแบบ Dropdown สำหรับผู้ใช้
 function renderActiveUserCards(data) {
     const container = document.getElementById("activeCardsContainer");
     container.innerHTML = ""; 
@@ -92,7 +93,6 @@ function renderActiveUserCards(data) {
         let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
         let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
 
-        // 📌 จัดการ iPad สำหรับการ์ดด้านบน
         let formattedIpads = '<span class="text-muted">-</span>';
         if (item.ipadId && item.ipadId.trim() !== "") {
             let rawIpads = item.ipadId.split(',').map(id => id.trim());
@@ -106,16 +106,14 @@ function renderActiveUserCards(data) {
             let displayGroups = [];
             
             if (normalIds.length > 0) {
-                displayGroups.push(`<div class="mb-2"><div class="text-danger fw-bold mb-1">iPad</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${normalIds.join(', ')}</div></div>`);
+                displayGroups.push(`<div class="mb-2"><div class="text-danger fw-bold mb-1">[iPad]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${normalIds.join(', ')}</div></div>`);
             }
             if (airIds.length > 0) {
-                displayGroups.push(`<div class="mb-2"><div class="text-primary fw-bold mb-1">Air+APC</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${airIds.join(', ')}</div></div>`);
+                displayGroups.push(`<div class="mb-2"><div class="text-primary fw-bold mb-1">[Air+APC]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${airIds.join(', ')}</div></div>`);
             }
-            
             formattedIpads = displayGroups.join('');
         }
 
-        // จัดการชื่อ
         let displayName = item.name || "-";
         let nickNameHtml = "";
         if (displayName !== "-" && displayName.includes("(")) {
@@ -127,7 +125,6 @@ function renderActiveUserCards(data) {
         let statusTxt = item.status || "-";
         let actionBtn = "";
 
-        // ปรับปุ่มให้เป็นภาษาฝั่ง User โดยอิงจากสถานะ
         if (statusTxt.includes("Step[1]")) {
             actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'">รับเครื่อง</button>`;
         } else if (statusTxt.includes("Step[2]")) {
@@ -140,7 +137,7 @@ function renderActiveUserCards(data) {
             actionBtn = `<span class="badge bg-secondary text-white px-3 py-2 rounded-pill">${statusTxt}</span>`;
         }
 
-        // ประกอบร่าง Card แบบ Dropdown
+        // 📌 เพิ่มคำสั่ง onclick="closeOtherAccordions" บังคับปิดการ์ดอื่น
         container.innerHTML += `
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="active-task-card bg-white rounded-4 shadow-sm position-relative overflow-hidden h-100">
@@ -150,7 +147,8 @@ function renderActiveUserCards(data) {
                          style="cursor: pointer; user-select: none;" 
                          data-bs-toggle="collapse" 
                          data-bs-target="#collapse-${safeId}" 
-                         aria-expanded="false">
+                         aria-expanded="false"
+                         onclick="closeOtherAccordions('collapse-${safeId}')">
                         
                         <div class="fw-bold text-dark ps-2 d-flex align-items-center gap-2" style="font-size: 1.05rem;">
                             ${item.reqId}
@@ -160,7 +158,7 @@ function renderActiveUserCards(data) {
                         <div onclick="event.stopPropagation();">${actionBtn}</div>
                     </div>
 
-                    <div id="collapse-${safeId}" class="collapse" data-bs-parent="#activeCardsContainer">
+                    <div id="collapse-${safeId}" class="collapse">
                         <div class="p-3 pt-2 ps-4 border-top border-light">
                             <div class="text-muted mb-3" style="font-size: 0.75rem;">📅 ${dateStr}</div>
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-start gap-3">
@@ -177,6 +175,16 @@ function renderActiveUserCards(data) {
                 </div>
             </div>
         `;
+    });
+}
+
+// 📌 ฟังก์ชันสั่งปิดการ์ดอื่นๆ เมื่อกดกางการ์ดใหม่ (ใส่ต่อท้ายได้เลย)
+function closeOtherAccordions(targetId) {
+    document.querySelectorAll('#activeCardsContainer .collapse.show').forEach(el => {
+        if (el.id !== targetId) {
+            let bsCollapse = bootstrap.Collapse.getInstance(el) || new bootstrap.Collapse(el, {toggle: false});
+            bsCollapse.hide();
+        }
     });
 }
 
