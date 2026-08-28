@@ -92,7 +92,7 @@ function renderActiveUserCards(data) {
         let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
         let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
 
-        // 📌 จัดการ iPad (ปรับแต่งให้ตัดบรรทัดสวยงาม ไม่เบียดขอบ)
+        // 📌 จัดการ iPad (เอา [iPad] ไว้ด้านบน แล้วให้ตัวเลขเรียงด้านล่าง)
         let formattedIpads = '<span class="text-muted">-</span>';
         if (item.ipadId && item.ipadId.trim() !== "") {
             let rawIpads = item.ipadId.split(',').map(id => id.trim());
@@ -104,9 +104,14 @@ function renderActiveUserCards(data) {
                 else normalIds.push(num);
             });
             let displayGroups = [];
-            // ล็อก [iPad] ไว้ด้านหน้า แล้วปล่อยตัวเลขตัดบรรทัดไปด้านขวาเนียนๆ
-            if (normalIds.length > 0) displayGroups.push(`<div class="d-flex justify-content-end gap-2 mb-1"><span class="text-danger fw-bold flex-shrink-0">[iPad]</span><div class="text-end" style="word-break: break-word; line-height: 1.5;">${normalIds.join(', ')}</div></div>`);
-            if (airIds.length > 0) displayGroups.push(`<div class="d-flex justify-content-end gap-2 mb-1"><span class="text-danger fw-bold flex-shrink-0">[Air+APC]</span><div class="text-end" style="word-break: break-word; line-height: 1.5;">${airIds.join(', ')}</div></div>`);
+            
+            if (normalIds.length > 0) {
+                displayGroups.push(`<div class="mb-2"><div class="text-danger fw-bold mb-1">[iPad]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${normalIds.join(', ')}</div></div>`);
+            }
+            if (airIds.length > 0) {
+                displayGroups.push(`<div class="mb-2"><div class="text-danger fw-bold mb-1">[Air+APC]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${airIds.join(', ')}</div></div>`);
+            }
+            
             formattedIpads = displayGroups.join('');
         }
 
@@ -135,7 +140,7 @@ function renderActiveUserCards(data) {
             actionBtn = `<span class="badge bg-secondary text-white px-3 py-2 rounded-pill">${statusTxt}</span>`;
         }
 
-        // 📌 ประกอบร่าง Card แบบ Dropdown (ปรับ Layout ป้องกันชื่อและ iPad แย่งที่กัน)
+        // ประกอบร่าง Card แบบ Dropdown
         container.innerHTML += `
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="active-task-card bg-white rounded-4 shadow-sm position-relative overflow-hidden h-100">
@@ -157,14 +162,13 @@ function renderActiveUserCards(data) {
 
                     <div id="collapse-${safeId}" class="collapse">
                         <div class="p-3 pt-2 ps-4 border-top border-light">
-                            <div class="text-muted mb-2" style="font-size: 0.75rem;">📅 ${dateStr}</div>
-                            <!-- แบ่งสัดส่วนซ้ายขวาให้ชัดเจน flex-column ช่วยให้ปัดบรรทัดเมื่อจอมือถือเล็กมากๆ -->
+                            <div class="text-muted mb-3" style="font-size: 0.75rem;">📅 ${dateStr}</div>
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-start gap-3">
                                 <div style="line-height: 1.2; min-width: 80px;" class="flex-shrink-0">
                                     <span class="fw-bold text-primary" style="font-size: 0.95rem;">👤 ${displayName}</span>
                                     ${nickNameHtml}
                                 </div>
-                                <div class="text-end w-100" style="font-size: 0.85rem;">
+                                <div class="text-end w-100" style="font-size: 0.9rem;">
                                     ${formattedIpads}
                                 </div>
                             </div>
@@ -186,6 +190,7 @@ function renderUserTableRows(dataList, tbodyElement) {
     }
 
     dataList.forEach(item => {
+        // 📌 จัดการ iPad ในตาราง History (เอา [iPad] ไว้ด้านบนสุดเช่นกัน)
         let formattedIpads = '<span class="text-muted">-</span>';
         if (item.ipadId && item.ipadId.trim() !== "") {
             let rawIpads = item.ipadId.split(',').map(id => id.trim());
@@ -202,8 +207,12 @@ function renderUserTableRows(dataList, tbodyElement) {
             });
 
             let displayGroups = [];
-            if (normalIds.length > 0) displayGroups.push(`<div class="d-flex gap-2 mb-1 justify-content-end justify-content-md-start text-end text-md-start"><span class="text-danger fw-bold flex-shrink-0">[iPad]</span><div style="word-break: break-word; line-height: 1.5;">${normalIds.join(', ')}</div></div>`);
-            if (airIds.length > 0) displayGroups.push(`<div class="d-flex gap-2 mb-1 justify-content-end justify-content-md-start text-end text-md-start"><span class="text-danger fw-bold flex-shrink-0">[Air+APC]</span><div style="word-break: break-word; line-height: 1.5;">${airIds.join(', ')}</div></div>`);
+            if (normalIds.length > 0) {
+                displayGroups.push(`<div class="mb-2 text-end text-md-start"><div class="text-danger fw-bold mb-1">[iPad]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${normalIds.join(', ')}</div></div>`);
+            }
+            if (airIds.length > 0) {
+                displayGroups.push(`<div class="mb-2 text-end text-md-start"><div class="text-danger fw-bold mb-1">[Air+APC]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${airIds.join(', ')}</div></div>`);
+            }
             formattedIpads = displayGroups.join('');
         }
 
