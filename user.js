@@ -160,7 +160,7 @@ function renderActiveUserCards(data) {
                         <div onclick="event.stopPropagation();">${actionBtn}</div>
                     </div>
 
-                    <div id="collapse-${safeId}" class="collapse">
+                    <div id="collapse-${safeId}" class="collapse" data-bs-parent="#activeCardsContainer">
                         <div class="p-3 pt-2 ps-4 border-top border-light">
                             <div class="text-muted mb-3" style="font-size: 0.75rem;">📅 ${dateStr}</div>
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-start gap-3">
