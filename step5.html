@@ -6,7 +6,7 @@
     <title>Step 5 | ตรวจรับคืน</title>
 	<link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-admin.css">
     <style>
         body { background: #fdf2f2; font-family: 'Kanit', sans-serif; padding: 20px; }
@@ -14,7 +14,7 @@
         .main-header-card { background: white; padding: 20px 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(220,53,69,0.05); margin: auto; max-width: 900px; margin-bottom: 20px; border-left: 6px solid #dc3545; }
         .main-header-card h3 { color: #212529; font-weight: 600; margin: 0; font-size: 1.6rem; }
         
-        .confirm-card { background: white; padding: 0; border-radius: 12px; box-shadow: 0 10px 25px rgba(220,53,69,0.08); max-width: 900px; margin: auto; overflow: hidden; }
+        .confirm-card { background: white; padding: 0; border-radius: 12px; box-shadow: 0 10px 25px rgba(220,53,69,0.08); max-width: 900px; margin: auto; overflow: hidden; border: 1px solid #fee2e2; }
         
         .red-header { background-color: #dc3545; color: white; padding: 15px 20px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
         .req-id-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 8px; font-size: 0.9rem; }
@@ -24,26 +24,22 @@
         .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
         .divider { width: 1px; background-color: #fca5a5; height: 40px; }
 
-        .table { margin-bottom: 0 !important; border-collapse: collapse; }
-        .table th { font-size: 0.9rem; vertical-align: middle; text-align: center; color: #212529; background: white; padding: 15px 10px; border-bottom: 2px solid #fca5a5; font-weight: 600; }
-        .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid #fee2e2; }
-        
-        /* ปุ่มลัดแอดมิน */
-        .btn-shortcut { background: white; color: #212529; border: 1px solid #212529; font-size: 0.85rem; font-weight: bold; padding: 8px 12px; border-radius: 6px; transition: 0.2s; }
-        .btn-shortcut:hover { background: #212529; color: white; }
-
         .btn-confirm { background: #dc3545; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: calc(100% - 40px); margin: 20px; border: none; transition: 0.3s; font-size: 1.1rem; }
         .btn-confirm:hover { background: #b91c1c; }
 
-        .check-item { width: 28px !important; height: 28px !important; cursor: pointer; accent-color: #dc3545; }
+        /* 📌 ดีไซน์การ์ด iPad แบบใหม่ */
+        .ipad-card { transition: all 0.3s ease; border-color: #e2e8f0; }
+        .ipad-card.active-card { border-color: #dc3545 !important; box-shadow: 0 4px 15px rgba(220,53,69,0.08) !important; transform: translateY(-2px); }
+        
+        /* 📌 ปรับสีและขนาด Checkbox ให้เป็นธีมแดงของ Step 5 */
+        .select-ipad { width: 26px !important; height: 26px !important; cursor: pointer; accent-color: #dc3545; transition: transform 0.2s; }
+        .select-ipad:active { transform: scale(0.9); }
+        
+        .check-item { width: 22px !important; height: 22px !important; cursor: pointer; accent-color: #dc3545; }
+
         @media screen and (max-width: 768px) {
-            .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
-            .table thead { display: none; }
-            .table tbody tr { display: block; background: white; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 0; border-bottom: 1px dashed #e9ecef; }
-            .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
-            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; }
-            .btn-shortcut { width: 100% !important; margin-top: 5px; padding: 10px !important; border-radius: 50rem !important;}
+            .info-panel { flex-direction: column; gap: 15px; }
+            .divider { width: 100%; height: 1px; }
         }
     </style>
 </head>
@@ -56,7 +52,7 @@
 
 <div class="confirm-card">
     <div class="red-header">
-        <span>iPad ที่ยืม</span>
+        <span>iPad ที่ส่งคืน</span>
         <span class="req-id-badge" id="headerReqId">รายการ: Loading...</span>
     </div>
     
@@ -72,31 +68,17 @@
         </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table align-middle">
-            <thead>
-                <!-- 📌 เพิ่มคอลัมน์ปุ่มลัดกลับมาให้แอดมิน -->
-                <tr>
-                    <th style="text-align: left; padding-left: 20px;">เครื่องที่</th>
-                    <th>เช็ค Google Drive</th>
-                    <th>เช็คแอพ File</th>
-                    <th>เช็คแอพ รูปภาพ</th>
-                    <th>เช็คแอพ Safari</th>
-                    <th>จัดการ</th>
-                </tr>
-            </thead>
-            <tbody id="itemList">
-                <tr><td colspan="6" class="text-muted py-4 text-center">กำลังโหลดข้อมูลเครื่อง...</td></tr>
-            </tbody>
-        </table>
+    <!-- 📌 คอนเทนเนอร์ใส่การ์ดแทนตารางเดิม -->
+    <div id="itemList" class="d-flex flex-column gap-3 p-4">
+        <div class="text-center text-muted py-4">กำลังโหลดข้อมูลเครื่อง... ⏳</div>
     </div>
 
-    <button class="btn btn-confirm" onclick="submitCheck()">ยืนยันการตรวจสอบเครื่องเสร็จสมบูรณ์</button>
+    <button class="btn btn-confirm shadow-sm" onclick="submitCheck()">ยืนยันการตรวจสอบเครื่องเสร็จสมบูรณ์</button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script src="script.js"></script>
 <script>
-    
     const reqId = new URLSearchParams(window.location.search).get('reqId');
 
     window.onload = function() {
@@ -116,43 +98,100 @@
             document.getElementById('displayUserName').innerText = res.userName || "ไม่ระบุ";
             document.getElementById('displayAdminName').innerText = res.adminName || "ไม่ระบุ";
 
-            const tbody = document.getElementById('itemList');
-            tbody.innerHTML = "";
+            const container = document.getElementById('itemList');
+            container.innerHTML = "";
             
             if(res.data && res.data.length > 0) {
                 res.data.forEach((item) => {
-                    // 📌 เสกปุ่มลัดกลับคืนมาให้แอดมิน
-                    tbody.innerHTML += `<tr data-ipad="${item.ipadId}">
-                        <td data-label="📱 เครื่องที่" class="fw-bold text-dark text-start ps-3 fs-5">${item.ipadId}</td>
-                        <td data-label="📁 เช็ค G-Drive"><input type="checkbox" class="check-item form-check-input"></td>
-                        <td data-label="📄 เช็คแอพ File"><input type="checkbox" class="check-item form-check-input"></td>
-                        <td data-label="🖼️ เช็คแอพ รูปภาพ"><input type="checkbox" class="check-item form-check-input"></td>
-                        <td data-label="🌐 เช็คแอพ Safari"><input type="checkbox" class="check-item form-check-input"></td>
-                        <td data-label="⚡ จัดการ"><button type="button" class="btn btn-shortcut w-100 rounded-pill" onclick="checkAllInRow(this)">ติ๊กครบ</button></td>
-                    </tr>`;
+                    // 📌 เสกปุ่มลัดติ๊กครบกลับมาให้แอดมิน
+                    let adminBtn = `<button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill shadow-sm" onclick="tickAllInCard(this)">ติ๊กครบ</button>`;
+                    
+                    container.innerHTML += `
+                    <div class="ipad-card bg-white border border-2 rounded-4 overflow-hidden transition-all" data-ipad="${item.ipadId}">
+                        <!-- แถบหัวข้อสีเทาอ่อน -->
+                        <div class="bg-light border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-3">
+                                <input type="checkbox" class="select-ipad form-check-input m-0 shadow-sm" id="btn-${item.ipadId}" data-target="collapse-${item.ipadId}" onchange="toggleCard(this)">
+                                <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-dark fw-bold fs-5 mb-0">${item.ipadId}</label>
+                            </div>
+                            ${adminBtn}
+                        </div>
+                        
+                        <!-- เนื้อหาที่กางออกมา (ข้อความอยู่บน กล่องติ๊กอยู่ล่าง) -->
+                        <div class="collapse" id="collapse-${item.ipadId}">
+                            <div class="p-4 d-flex flex-wrap align-items-center justify-content-around gap-3">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
+                                    <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">G-Drive</span>
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                </label>
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
+                                    <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">File</span>
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                </label>
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
+                                    <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">รูปภาพ</span>
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                </label>
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
+                                    <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">Safari</span>
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                </label>
+                            </div>
+                        </div>
+                    </div>`;
                 });
-            } else { tbody.innerHTML = '<tr><td colspan="6" class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</td></tr>'; }
+            } else { container.innerHTML = '<div class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</div>'; }
         });
     };
 
-    function checkAllInRow(btn) {
-        const row = btn.closest('tr');
-        row.querySelectorAll('.check-item').forEach(cb => cb.checked = true);
+    function toggleCard(checkbox) {
+        const targetId = checkbox.dataset.target;
+        const collapseElement = document.getElementById(targetId);
+        const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseElement, { toggle: false });
+        const card = checkbox.closest('.ipad-card');
+        
+        if (checkbox.checked) {
+            bsCollapse.show();
+            card.classList.add('active-card');
+        } else {
+            bsCollapse.hide();
+            card.classList.remove('active-card');
+            collapseElement.querySelectorAll('.check-item').forEach(cb => cb.checked = false); 
+        }
+    }
+
+    function tickAllInCard(btn) {
+        const card = btn.closest('.ipad-card');
+        const mainCheck = card.querySelector('.select-ipad');
+        if (!mainCheck.checked) {
+            mainCheck.checked = true;
+            toggleCard(mainCheck);
+        }
+        card.querySelectorAll('.check-item').forEach(cb => { 
+            cb.checked = true; 
+        });
     }
 
     async function submitCheck() {
         let items = [];
         let isAllChecked = true; 
 
-        document.querySelectorAll('#itemList tr[data-ipad]').forEach(row => {
-            const checks = Array.from(row.querySelectorAll('.check-item'));
+        const cards = document.querySelectorAll('.ipad-card');
+        
+        if(cards.length === 0) {
+            Swal.fire("ข้อผิดพลาด", "ไม่พบข้อมูลเครื่องที่ต้องตรวจสอบ", "error");
+            return;
+        }
+
+        cards.forEach(card => {
+            const checks = Array.from(card.querySelectorAll('.check-item'));
             
             if (checks.some(c => !c.checked)) {
                 isAllChecked = false;
             }
 
             const checkValues = checks.map(c => c.checked ? "☑" : "☐");
-            items.push({ ipadId: row.dataset.ipad, checks: checkValues });
+            items.push({ ipadId: card.dataset.ipad, checks: checkValues });
         });
 
         if (!isAllChecked) {
