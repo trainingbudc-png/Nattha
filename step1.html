@@ -413,7 +413,6 @@
             try {
                 res = JSON.parse(rawText);
             } catch (parseErr) {
-                // ถ้าตอบกลับมาแล้วพัง (Google ตัดสาย) แต่เน็ตยังอยู่ = ข้อมูลเข้าชัวร์
                 if (navigator.onLine) {
                     Swal.fire({
                         title: "บันทึกสำเร็จ!",
