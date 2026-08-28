@@ -1,5 +1,5 @@
 // =========================================
-// 📌 ไฟล์ user.js : ระบบประมวลผลสำหรับหน้าผู้ใช้งาน (ฉบับการ์ด Active)
+// 📌 ไฟล์ user.js : ระบบประมวลผลสำหรับหน้าผู้ใช้งาน
 // =========================================
 
 window.onload = function() {
@@ -20,7 +20,7 @@ async function loadUserTableData() {
     const historyTbody = document.getElementById("historyTableBody");
     
     activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>';
-    historyTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
+    historyTbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
     
     const currentUserId = localStorage.getItem("userId");
     const currentUserName = localStorage.getItem("userName"); 
@@ -44,7 +44,7 @@ async function loadUserTableData() {
 
             if (myData.length === 0) {
                 activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">🎉 ไม่มีรายการที่กำลังดำเนินการ</div>';
-                historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">ยังไม่มีประวัติการยืม-คืน</td></tr>';
+                historyTbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-4">ยังไม่มีประวัติการยืม-คืน</td></tr>';
                 return;
             }
 
@@ -69,12 +69,12 @@ async function loadUserTableData() {
 
         } else {
             activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">ไม่มีรายการในระบบ</div>';
-            historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">ไม่มีประวัติในระบบ</td></tr>';
+            historyTbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-4">ไม่มีประวัติในระบบ</td></tr>';
         }
     } catch (err) {
         console.error("UserTable Error:", err);
         activeCardsContainer.innerHTML = '<div class="col-12 text-center text-danger py-5 bg-white rounded-4 border">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</div>';
-        historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
+        historyTbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger py-4">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
     }
 }
 
@@ -92,7 +92,7 @@ function renderActiveUserCards(data) {
         let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
         let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
 
-        // จัดการ iPad
+        // 📌 จัดการ iPad (ปรับแต่งให้ตัดบรรทัดสวยงาม ไม่เบียดขอบ)
         let formattedIpads = '<span class="text-muted">-</span>';
         if (item.ipadId && item.ipadId.trim() !== "") {
             let rawIpads = item.ipadId.split(',').map(id => id.trim());
@@ -104,9 +104,10 @@ function renderActiveUserCards(data) {
                 else normalIds.push(num);
             });
             let displayGroups = [];
-            if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-            if (airIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
-            formattedIpads = displayGroups.join('<br>');
+            // ล็อก [iPad] ไว้ด้านหน้า แล้วปล่อยตัวเลขตัดบรรทัดไปด้านขวาเนียนๆ
+            if (normalIds.length > 0) displayGroups.push(`<div class="d-flex justify-content-end gap-2 mb-1"><span class="text-danger fw-bold flex-shrink-0">[iPad]</span><div class="text-end" style="word-break: break-word; line-height: 1.5;">${normalIds.join(', ')}</div></div>`);
+            if (airIds.length > 0) displayGroups.push(`<div class="d-flex justify-content-end gap-2 mb-1"><span class="text-danger fw-bold flex-shrink-0">[Air+APC]</span><div class="text-end" style="word-break: break-word; line-height: 1.5;">${airIds.join(', ')}</div></div>`);
+            formattedIpads = displayGroups.join('');
         }
 
         // จัดการชื่อ
@@ -123,18 +124,18 @@ function renderActiveUserCards(data) {
 
         // ปรับปุ่มให้เป็นภาษาฝั่ง User โดยอิงจากสถานะ
         if (statusTxt.includes("Step[1]")) {
-            actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'">Step 2</button>`;
+            actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'">รับเครื่อง</button>`;
         } else if (statusTxt.includes("Step[2]")) {
-            actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'">Step 3</button>`;
+            actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'">ก่อนสอบ</button>`;
         } else if (statusTxt.includes("Step[3]")) {
-            actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'">Step 4</button>`;
+            actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'">ส่งคืน</button>`;
         } else if (statusTxt.includes("Step[4]")) {
             actionBtn = `<button class="btn btn-secondary btn-sm fw-bold rounded-pill px-3 shadow-sm" disabled>⏳ รอตรวจคืน</button>`;
         } else {
             actionBtn = `<span class="badge bg-secondary text-white px-3 py-2 rounded-pill">${statusTxt}</span>`;
         }
 
-        // ประกอบร่าง Card แบบ Dropdown
+        // 📌 ประกอบร่าง Card แบบ Dropdown (ปรับ Layout ป้องกันชื่อและ iPad แย่งที่กัน)
         container.innerHTML += `
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="active-task-card bg-white rounded-4 shadow-sm position-relative overflow-hidden h-100">
@@ -157,12 +158,13 @@ function renderActiveUserCards(data) {
                     <div id="collapse-${safeId}" class="collapse">
                         <div class="p-3 pt-2 ps-4 border-top border-light">
                             <div class="text-muted mb-2" style="font-size: 0.75rem;">📅 ${dateStr}</div>
-                            <div class="d-flex justify-content-between align-items-end">
-                                <div style="line-height: 1.2;">
+                            <!-- แบ่งสัดส่วนซ้ายขวาให้ชัดเจน flex-column ช่วยให้ปัดบรรทัดเมื่อจอมือถือเล็กมากๆ -->
+                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-start gap-3">
+                                <div style="line-height: 1.2; min-width: 80px;" class="flex-shrink-0">
                                     <span class="fw-bold text-primary" style="font-size: 0.95rem;">👤 ${displayName}</span>
                                     ${nickNameHtml}
                                 </div>
-                                <div class="text-end" style="font-size: 0.85rem; line-height: 1.4;">
+                                <div class="text-end w-100" style="font-size: 0.85rem;">
                                     ${formattedIpads}
                                 </div>
                             </div>
@@ -175,7 +177,6 @@ function renderActiveUserCards(data) {
 }
 
 // 📌 ฟังก์ชันวาดตาราง History
-// 📌 ฟังก์ชันวาดตาราง History (ลบคอลัมน์ จัดการ ออกแล้ว)
 function renderUserTableRows(dataList, tbodyElement) {
     tbodyElement.innerHTML = "";
 
@@ -201,9 +202,9 @@ function renderUserTableRows(dataList, tbodyElement) {
             });
 
             let displayGroups = [];
-            if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-            if (airIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
-            formattedIpads = displayGroups.join('<br>');
+            if (normalIds.length > 0) displayGroups.push(`<div class="d-flex gap-2 mb-1 justify-content-end justify-content-md-start text-end text-md-start"><span class="text-danger fw-bold flex-shrink-0">[iPad]</span><div style="word-break: break-word; line-height: 1.5;">${normalIds.join(', ')}</div></div>`);
+            if (airIds.length > 0) displayGroups.push(`<div class="d-flex gap-2 mb-1 justify-content-end justify-content-md-start text-end text-md-start"><span class="text-danger fw-bold flex-shrink-0">[Air+APC]</span><div style="word-break: break-word; line-height: 1.5;">${airIds.join(', ')}</div></div>`);
+            formattedIpads = displayGroups.join('');
         }
 
         let statusTxt = item.status || "-";
@@ -221,11 +222,10 @@ function renderUserTableRows(dataList, tbodyElement) {
             badgeClass = "bg-secondary text-white"; 
         }
         
-        // ลบ <td> ที่เป็นปุ่มจัดการออกไปแล้ว
         tbodyElement.innerHTML += `
             <tr>
                 <td data-label="📌 เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
-                <td data-label="📱 รหัส iPad" style="max-width: 350px; line-height: 1.6;">${formattedIpads}</td>
+                <td data-label="📱 รหัส iPad" style="max-width: 350px;">${formattedIpads}</td>
                 <td data-label="📊 สถานะ"><span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm">${displayStatus}</span></td>
             </tr>
         `;
