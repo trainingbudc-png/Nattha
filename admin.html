@@ -161,7 +161,7 @@
         <div class="table-card table-responsive">
             <table class="table table-hover align-middle">
                 <thead>
-                    <tr>
+                    <tr class="text-center">
                         <th style="width: 15%;">เลขรายการ</th>
                         <th style="width: 15%;">วัน-เวลา</th>
                         <th style="width: 20%;">ผู้ดำเนินการ</th>
@@ -266,9 +266,9 @@
 
         data.forEach(item => {
             let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
-            // สร้าง ID ให้ตัว Dropdown แบบไม่ให้ซ้ำกันและไม่มีอักขระพิเศษ
             let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
 
+            // 📌 จัดการ iPad ในการ์ดให้เหมือนหน้า User (แยกหัวข้อ [iPad] ขึ้นบรรทัดบน)
             let formattedIpads = '<span class="text-muted">-</span>';
             if (item.ipadId && item.ipadId.trim() !== "") {
                 let rawIpads = item.ipadId.split(',').map(id => id.trim());
@@ -279,10 +279,15 @@
                     if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num);
                     else normalIds.push(num);
                 });
+                
                 let displayGroups = [];
-                if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-                if (airIds.length > 0) displayGroups.push(`<span class="text-dark fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
-                formattedIpads = displayGroups.join('<br>');
+                if (normalIds.length > 0) {
+                    displayGroups.push(`<div class="mb-2"><div class="text-danger fw-bold mb-1">[iPad]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${normalIds.join(', ')}</div></div>`);
+                }
+                if (airIds.length > 0) {
+                    displayGroups.push(`<div class="mb-2"><div class="text-primary fw-bold mb-1">[Air+APC]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${airIds.join(', ')}</div></div>`);
+                }
+                formattedIpads = displayGroups.join('');
             }
 
             let displayName = item.name || "-";
@@ -307,13 +312,11 @@
                 statusHtml = `<span class="badge bg-light text-dark border px-3 py-2 rounded-pill">${statusTxt}</span>`;
             }
 
-            // 📌 ประกอบร่างการ์ดแบบยุบได้ (Collapse)
             container.innerHTML += `
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="active-task-card bg-white rounded-4 shadow-sm position-relative overflow-hidden h-100">
                         <div class="position-absolute top-0 start-0 bottom-0 bg-danger" style="width: 4px;"></div>
                         
-                        <!-- Header: โชว์แค่เลขรายการและปุ่ม (กดเพื่อให้กางได้) -->
                         <div class="p-3 d-flex justify-content-between align-items-center" 
                              style="cursor: pointer; user-select: none;" 
                              data-bs-toggle="collapse" 
@@ -325,20 +328,18 @@
                                 <span class="collapse-icon text-muted" style="font-size: 0.7rem;">▼</span>
                             </div>
                             
-                            <!-- Stop Propagation ป้องกันไม่ให้กดปุ่ม Step แล้วการ์ดพับเอง -->
                             <div onclick="event.stopPropagation();">${statusHtml}</div>
                         </div>
 
-                        <!-- Body: รายละเอียดที่จะกางออกมาเมื่อกด -->
                         <div id="collapse-${safeId}" class="collapse">
                             <div class="p-3 pt-2 ps-4 border-top border-light">
                                 <div class="text-muted mb-2" style="font-size: 0.75rem;">📅 ${dateStr}</div>
-                                <div class="d-flex justify-content-between align-items-end">
-                                    <div style="line-height: 1.2;">
+                                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-start gap-3">
+                                    <div style="line-height: 1.2; min-width: 80px;" class="flex-shrink-0">
                                         <span class="fw-bold text-primary" style="font-size: 0.95rem;">👤 ${displayName}</span>
                                         ${nickNameHtml}
                                     </div>
-                                    <div class="text-end" style="font-size: 0.85rem; line-height: 1.4;">
+                                    <div class="text-end w-100" style="font-size: 0.9rem;">
                                         ${formattedIpads}
                                     </div>
                                 </div>
@@ -364,20 +365,30 @@
         data.forEach(item => {
             let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
 
+            // 📌 จัดการ iPad ในตาราง History ให้เหมือนหน้า User
             let formattedIpads = '<span class="text-muted">-</span>';
             if (item.ipadId && item.ipadId.trim() !== "") {
                 let rawIpads = item.ipadId.split(',').map(id => id.trim());
                 let normalIds = [], airIds = [];
+                
                 rawIpads.forEach(id => {
                     let numMatch = id.match(/\d+/); 
                     let num = numMatch ? numMatch[0] : id; 
-                    if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num);
-                    else normalIds.push(num);
+                    if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) {
+                        airIds.push(num);
+                    } else {
+                        normalIds.push(num);
+                    }
                 });
+
                 let displayGroups = [];
-                if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-                if (airIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
-                formattedIpads = displayGroups.join('<br>');
+                if (normalIds.length > 0) {
+                    displayGroups.push(`<div class="mb-2 text-end text-md-center"><div class="text-danger fw-bold mb-1">[iPad]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${normalIds.join(', ')}</div></div>`);
+                }
+                if (airIds.length > 0) {
+                    displayGroups.push(`<div class="mb-2 text-end text-md-center"><div class="text-primary fw-bold mb-1">[Air+APC]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${airIds.join(', ')}</div></div>`);
+                }
+                formattedIpads = displayGroups.join('');
             }
 
             let displayName = item.name || "-";
@@ -402,7 +413,7 @@
             }
 
             tbody.innerHTML += `
-                <tr>
+                <tr class="text-center align-middle">
                     <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
                     <td data-label="วัน-เวลา" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
                     <td data-label="ผู้ดำเนินการ" class="fw-bold" style="color: #495057;">${displayName}</td>
