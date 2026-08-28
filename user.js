@@ -20,7 +20,7 @@ async function loadUserTableData() {
     const historyTbody = document.getElementById("historyTableBody");
     
     activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>';
-    historyTbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
+    historyTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
     
     const currentUserId = localStorage.getItem("userId");
     const currentUserName = localStorage.getItem("userName"); 
@@ -44,7 +44,7 @@ async function loadUserTableData() {
 
             if (myData.length === 0) {
                 activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">🎉 ไม่มีรายการที่กำลังดำเนินการ</div>';
-                historyTbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-4">ยังไม่มีประวัติการยืม-คืน</td></tr>';
+                historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">ยังไม่มีประวัติการยืม-คืน</td></tr>';
                 return;
             }
 
@@ -69,12 +69,12 @@ async function loadUserTableData() {
 
         } else {
             activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">ไม่มีรายการในระบบ</div>';
-            historyTbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-4">ไม่มีประวัติในระบบ</td></tr>';
+            historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">ไม่มีประวัติในระบบ</td></tr>';
         }
     } catch (err) {
         console.error("UserTable Error:", err);
         activeCardsContainer.innerHTML = '<div class="col-12 text-center text-danger py-5 bg-white rounded-4 border">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</div>';
-        historyTbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger py-4">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
+        historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
     }
 }
 
@@ -92,7 +92,7 @@ function renderActiveUserCards(data) {
         let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
         let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
 
-        // 📌 จัดการ iPad (เอา [iPad] ไว้ด้านบน แล้วให้ตัวเลขเรียงด้านล่าง)
+        // 📌 จัดการ iPad สำหรับการ์ดด้านบน
         let formattedIpads = '<span class="text-muted">-</span>';
         if (item.ipadId && item.ipadId.trim() !== "") {
             let rawIpads = item.ipadId.split(',').map(id => id.trim());
@@ -106,10 +106,10 @@ function renderActiveUserCards(data) {
             let displayGroups = [];
             
             if (normalIds.length > 0) {
-                displayGroups.push(`<div class="mb-2"><div class="text-danger fw-bold mb-1">[iPad]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${normalIds.join(', ')}</div></div>`);
+                displayGroups.push(`<div class="mb-2"><div class="text-danger fw-bold mb-1">iPad</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${normalIds.join(', ')}</div></div>`);
             }
             if (airIds.length > 0) {
-                displayGroups.push(`<div class="mb-2"><div class="text-danger fw-bold mb-1">[Air+APC]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${airIds.join(', ')}</div></div>`);
+                displayGroups.push(`<div class="mb-2"><div class="text-primary fw-bold mb-1">Air+APC</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${airIds.join(', ')}</div></div>`);
             }
             
             formattedIpads = displayGroups.join('');
@@ -180,18 +180,19 @@ function renderActiveUserCards(data) {
     });
 }
 
-// 📌 ฟังก์ชันวาดตาราง History
+// 📌 ฟังก์ชันวาดตาราง History (แยกคอลัมน์ รายการ และ เครื่องที่เตรียม)
 function renderUserTableRows(dataList, tbodyElement) {
     tbodyElement.innerHTML = "";
 
     if (dataList.length === 0) {
-        tbodyElement.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-4">ยังไม่มีประวัติรายการเสร็จสิ้น</td></tr>`;
+        tbodyElement.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">ยังไม่มีประวัติรายการเสร็จสิ้น</td></tr>`;
         return;
     }
 
     dataList.forEach(item => {
-        // 📌 จัดการ iPad ในตาราง History (เอา [iPad] ไว้ด้านบนสุดเช่นกัน)
-        let formattedIpads = '<span class="text-muted">-</span>';
+        let typeHtml = '<span class="text-muted">-</span>';
+        let idsHtml = '<span class="text-muted">-</span>';
+        
         if (item.ipadId && item.ipadId.trim() !== "") {
             let rawIpads = item.ipadId.split(',').map(id => id.trim());
             let normalIds = [], airIds = [];
@@ -206,14 +207,20 @@ function renderUserTableRows(dataList, tbodyElement) {
                 }
             });
 
-            let displayGroups = [];
+            let typeArr = [];
+            let idsArr = [];
+            
             if (normalIds.length > 0) {
-                displayGroups.push(`<div class="mb-2 text-end text-md-start"><div class="text-danger fw-bold mb-1">[iPad]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${normalIds.join(', ')}</div></div>`);
+                typeArr.push(`<div class="fw-bold text-danger mb-1">iPad</div>`);
+                idsArr.push(`<div class="mb-1 text-dark" style="word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`);
             }
             if (airIds.length > 0) {
-                displayGroups.push(`<div class="mb-2 text-end text-md-start"><div class="text-danger fw-bold mb-1">[Air+APC]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${airIds.join(', ')}</div></div>`);
+                typeArr.push(`<div class="fw-bold text-primary mb-1">Air+APC</div>`);
+                idsArr.push(`<div class="mb-1 text-dark" style="word-break: break-word; line-height: 1.6;">${airIds.join(', ')}</div>`);
             }
-            formattedIpads = displayGroups.join('');
+            
+            typeHtml = typeArr.join('');
+            idsHtml = idsArr.join('');
         }
 
         let statusTxt = item.status || "-";
@@ -232,10 +239,11 @@ function renderUserTableRows(dataList, tbodyElement) {
         }
         
         tbodyElement.innerHTML += `
-            <tr>
+            <tr class="text-center align-middle">
                 <td data-label="📌 เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
-                <td data-label="📱 รหัส iPad" style="max-width: 350px;">${formattedIpads}</td>
-                <td data-label="📊 สถานะ"><span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm">${displayStatus}</span></td>
+                <td data-label="📦 รายการ">${typeHtml}</td>
+                <td data-label="📱 เครื่องที่เตรียม" class="text-start">${idsHtml}</td>
+                <td data-label="📊 สถานะ"><span class="badge ${badgeClass} px-3 py-2 rounded-pill shadow-sm mx-auto">${displayStatus}</span></td>
             </tr>
         `;
     });
