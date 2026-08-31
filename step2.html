@@ -90,7 +90,6 @@
             res.data.forEach(item => {
                 let adminBtn = isAdmin ? `<button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill shadow-sm" onclick="tickAllInCard(this)">ติ๊กครบ</button>` : '';
                 
-                // 📌 โครงสร้างการ์ดพับได้ รูปแบบเดียวกับ Step 4
                 container.innerHTML += `
                 <div class="ipad-card bg-white border border-2 rounded-4 overflow-hidden transition-all" data-ipad="${item.ipadId}">
                     <!-- แถบหัวข้อสีเทาอ่อน -->
@@ -102,25 +101,33 @@
                         ${adminBtn}
                     </div>
                     
-                    <!-- เนื้อหาที่กางออกมา (ข้อความอยู่บน กล่องติ๊กอยู่ล่าง) -->
+                    <!-- 📌 เปลี่ยนเป็นระบบ Grid ล็อกความกว้าง -->
                     <div class="collapse" id="collapse-${item.ipadId}">
-                        <div class="p-4 d-flex flex-wrap align-items-center justify-content-around gap-3">
-                            <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
-                                <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">Drive</span>
-                                <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                            </label>
-                            <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
-                                <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">File</span>
-                                <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                            </label>
-                            <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
-                                <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">Img</span>
-                                <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                            </label>
-                            <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
-                                <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">Safari</span>
-                                <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                            </label>
+                        <div class="p-4 row row-cols-2 row-cols-sm-4 g-4 text-center">
+                            <div class="col">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                    <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Drive</span>
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                </label>
+                            </div>
+                            <div class="col">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                    <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">File</span>
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                </label>
+                            </div>
+                            <div class="col">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                    <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Img</span>
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                </label>
+                            </div>
+                            <div class="col">
+                                <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                    <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Safari</span>
+                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>`;
