@@ -68,11 +68,15 @@
             <label class="btn btn-outline-dark px-4" for="exam">Exam+</label>
             <input type="radio" class="btn-check" name="examType" id="crq" value="CRQ" onclick="handleExamChange(this.value)">
             <label class="btn btn-outline-dark px-4" for="crq">CRQ</label>
-            <input type="radio" class="btn-check" name="examType" id="none" value="ไม่ได้สอบ" onclick="handleExamChange(this.value)">
-            <label class="btn btn-outline-danger px-4" for="none">ไม่ได้สอบ</label>
+            
+            <!-- 📌 แก้ไข Value และ Label เป็น "ไม่ได้ใช้สำหรับสอน" -->
+            <input type="radio" class="btn-check" name="examType" id="none" value="ไม่ได้ใช้สำหรับสอน" onclick="handleExamChange(this.value)">
+            <label class="btn btn-outline-danger px-4" for="none">ไม่ได้ใช้สำหรับสอน</label>
         </div>
         <div id="examHint" class="alert alert-light hint-box mt-3 py-2 px-3 border shadow-sm"><strong>💡 คำแนะนำ [Exam+]:</strong> ไม่ต้องปิด Bluetooth เนื่องจากปากกาต้องใช้ Bluetooth</div>
-        <div id="noteContainer" class="mt-3" style="display:none;"><input type="text" id="reasonNote" class="form-control border-danger" placeholder="⚠️ ระบุเหตุผลที่ไม่ได้สอบ..."></div>
+        
+        <!-- 📌 แก้ไข Placeholder -->
+        <div id="noteContainer" class="mt-3" style="display:none;"><input type="text" id="reasonNote" class="form-control border-danger" placeholder="⚠️ ระบุเหตุผลที่ไม่ได้ใช้สำหรับสอน..."></div>
     </div>
 
     <!-- 📌 คอนเทนเนอร์ใส่การ์ด -->
@@ -95,7 +99,8 @@
         const reasonNote = document.getElementById('reasonNote');
         hintBox.style.display = 'none'; noteContainer.style.display = 'none';
         if (examType === 'Exam+') { hintBox.style.display = 'block'; reasonNote.value = ''; } 
-        else if (examType === 'ไม่ได้สอบ') { noteContainer.style.display = 'block'; } 
+        // 📌 แก้ไขเงื่อนไขเช็คให้ตรงกับ Value ใหม่
+        else if (examType === 'ไม่ได้ใช้สำหรับสอน') { noteContainer.style.display = 'block'; } 
         else { reasonNote.value = ''; }
     }
 
