@@ -133,33 +133,45 @@
                             ${adminBtn}
                         </div>
                         
-                        <!-- เนื้อหาที่กางออกมา (ข้อความอยู่บน กล่องติ๊กอยู่ล่าง) -->
+                        <!-- 📌 เปลี่ยนเป็นระบบ Grid ล็อกความกว้าง (บังคับมือถือ 2 คอลัมน์, จอคอม 3 คอลัมน์) -->
                         <div class="collapse" id="collapse-${item.ipadId}">
-                            <div class="p-4 d-flex flex-wrap align-items-center justify-content-around gap-3">
-                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
-                                    <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">Logout Drive</span>
-                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                </label>
-                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
-                                    <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">ปิด Wi-Fi</span>
-                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                </label>
-                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
-                                    <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">ปิด Bluetooth</span>
-                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                </label>
-                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
-                                    <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">ปิด AirDrop</span>
-                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                </label>
-                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
-                                    <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">โหมดเครื่องบิน</span>
-                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                </label>
-                                <label class="d-flex flex-column align-items-center gap-2 mb-0" style="cursor: pointer; min-width: 60px;">
-                                    <span class="fw-bold text-dark text-center" style="font-size: 0.9rem;">เริ่มใช้งาน</span>
-                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                </label>
+                            <div class="p-4 row row-cols-2 row-cols-md-3 g-3 text-center">
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">Logout Drive</span>
+                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">ปิด Wi-Fi</span>
+                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">ปิด Bluetooth</span>
+                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">ปิด AirDrop</span>
+                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">โหมดเครื่องบิน</span>
+                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">เริ่มใช้งาน</span>
+                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>`;
