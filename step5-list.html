@@ -10,37 +10,12 @@
     <link rel="stylesheet" href="theme-admin.css">
 
     <style>
-        body { background-color: #fdf2f2; }
         .nav-header { background-color: #ffffff; padding: 15px 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #212529; margin-bottom: 30px; }
 
         .btn-action { background-color: #dc3545; color: white; border: none; font-weight: 600; border-radius: 10px; transition: 0.2s; }
         .btn-action:hover { background-color: #b91c1c; color: white; transform: translateY(-2px); }
         .container-wide, .nav-header { max-width: 1280px !important; margin: 0 auto !important; }
         .container-wide { padding-left: 20px !important; padding-right: 20px !important; }
-
-        /* 📌 ดีไซน์ขอบแดงใสให้ตาราง */
-        .table-card { 
-            background: #ffffff; 
-            border: 1px solid #fecaca; 
-            border-radius: 12px; 
-            padding: 15px; 
-            box-shadow: 0 4px 15px rgba(220,53,69,0.08); 
-        }
-
-        /* 📌 ดีไซน์หัวตารางสีแดงทึบ */
-        .table th { 
-            background-color: #dc3545 !important; 
-            color: white !important; 
-            border: none; 
-            padding: 15px; 
-        }
-        
-        /* ทำขอบโค้งให้หัวตารางเฉพาะมุมซ้าย-ขวาบน */
-        .table thead tr th:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
-        .table thead tr th:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
-        
-        .table td { padding: 15px 10px; vertical-align: middle; border-bottom: 1px solid #fee2e2; }
-        .table tbody tr:hover { background-color: #fffafa; }
 
         @media (max-width: 768px) {
             .nav-header { padding: 15px; }
@@ -61,13 +36,13 @@
                 align-items: center;
                 text-align: right;
                 padding: 12px 0;
-                border-bottom: 1px dashed #fee2e2 !important;
+                border-bottom: 1px solid #fee2e2 !important;
             }
             .table tbody td::before {
                 content: attr(data-label);
-                font-weight: 600;
-                color: #b91c1c;
-                font-size: 0.95rem;
+                font-weight: 500;
+                color: #64748b;
+                font-size: 0.9rem;
                 text-align: left;
                 margin-right: 15px;
                 flex-shrink: 0;
@@ -80,11 +55,11 @@
                 display: block;
             }
             .table tbody td:last-child::before { display: none; }
-            .table tbody td:last-child .btn { padding: 12px !important; font-size: 1.05rem; width: 100%; }
+            .table tbody td:last-child .btn { padding: 12px !important; font-size: 1.05rem; }
         }
     </style>
 </head>
-<body>
+<body style="background-color: #fdf2f2;">
 
     <nav class="nav-header">
         <div class="fw-bold text-dark" style="font-size: 1.25rem; line-height: 1.2;">
@@ -92,25 +67,22 @@
             <span class="d-block d-sm-inline" style="font-size: 0.95rem; color: #6c757d; font-weight: 500;">(ค้างดำเนินการ)</span>
         </div>
         <div class="d-flex align-items-center">
-            <a href="admin.html" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold bg-white shadow-sm border-2">🔙 กลับเมนูแอดมิน</a>
+            <a href="admin.html" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">🔙 กลับเมนูแอดมิน</a>
         </div>
     </nav>
 
     <div class="container-wide pb-5">
-        <div class="section-title text-dark border-dark mb-3" style="border-left: 4px solid #212529; padding-left: 10px; font-weight: 700; font-size: 1.15rem;">
-            รายการที่ผู้ใช้งานส่งคืน (รอแอดมินตรวจ)
-        </div>
-        
+        <div class="section-title text-dark border-dark" style="border-left: 4px solid #212529; padding-left: 10px; margin-bottom: 20px; font-weight: 600; font-size: 1.1rem;">รายการที่ผู้ใช้งานส่งคืน (รอแอดมินตรวจ)</div>
         <div class="table-card table-responsive">
-            <table class="table align-middle bg-white mb-0">
+            <table class="table table-hover align-middle bg-white">
                 <thead>
-                    <tr class="text-center">
-                        <th style="width: 15%;">เลขรายการ</th>
-                        <th style="width: 15%;">วันที่และเวลา</th>
-                        <th style="width: 20%;">อุปกรณ์ที่ยืม</th>
-                        <th style="width: 20%;">เครื่องที่เตรียม</th>
-                        <th style="width: 15%;">สถานะ</th>
-                        <th style="width: 15%;">จัดการ</th>
+                    <tr style="background-color: #212529; color: white;" class="text-center">
+                        <th style="width: 15%; border: none; padding: 15px;">เลขรายการ</th>
+                        <th style="width: 15%; border: none; padding: 15px;">วันที่และเวลา</th>
+                        <th style="width: 20%; border: none; padding: 15px;">อุปกรณ์ที่ยืม</th>
+                        <th style="width: 20%; border: none; padding: 15px;">เครื่องที่เตรียม</th>
+                        <th style="width: 15%; border: none; padding: 15px;">สถานะ</th>
+                        <th style="width: 15%; border: none; padding: 15px;">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody id="requestListBody">
@@ -138,7 +110,7 @@
                 const pendingItems = result.data.filter(item => item.status && item.status.includes("Step[4]"));
 
                 if (pendingItems.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center fw-bold py-5 text-muted border-0">🎉 ไม่มีรายการรอตรวจรับคืนในขณะนี้</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center fw-bold py-5 text-muted">🎉 ไม่มีรายการรอตรวจรับคืนในขณะนี้</td></tr>';
                     return;
                 }
 
@@ -184,18 +156,18 @@
                             <td data-label="วันที่และเวลา"><div style="font-size: 0.9rem;" class="text-muted">${dateStr}</div></td>
                             <td data-label="อุปกรณ์ที่ยืม">${typeHtml}</td>
                             <td data-label="เครื่องที่เตรียม">${idsHtml}</td>
-                            <td data-label="สถานะ"><div><span class="badge bg-danger text-white px-3 py-2 rounded-pill shadow-sm border border-danger">Step[4]</span></div></td>
-<td data-label="จัดการ">
-    <button class="btn btn-outline-danger bg-white border-2 btn-sm fw-bold px-4 shadow-sm w-100 rounded-pill" onclick="window.location.href='step5.html?reqId=${item.reqId}'">ตรวจสอบ</button>
-</td>
+                            <td data-label="สถานะ"><div><span class="badge bg-danger text-white px-3 py-2 rounded-pill shadow-sm">Step[4]</span></div></td>
+                            <td data-label="จัดการ">
+                                <button class="btn btn-action btn-sm px-3 shadow-sm w-100" onclick="window.location.href='step5.html?reqId=${item.reqId}'">ตรวจสอบ</button>
+                            </td>
                         </tr>
                     `;
                 });
             } else {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5 border-0">❌ ไม่พบข้อมูลในระบบ</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5">❌ ไม่พบข้อมูลในระบบ</td></tr>';
             }
         } catch (error) {
-            document.getElementById("requestListBody").innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5 border-0">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
+            document.getElementById("requestListBody").innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
         }
     };
 </script>
