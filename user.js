@@ -129,22 +129,29 @@ function renderActiveUserCards(data) {
             nickNameHtml = `<div class="text-secondary mt-1" style="font-size: 0.8rem;">(${parts[1].trim()}</div>`;
         }
 
-        let statusTxt = item.status || "-";
+let statusTxt = item.status || "-";
         let actionBtn = "";
+        let stepLabel = ""; // 📌 สร้างตัวแปรเก็บชื่อ Step
 
+        // 📌 เช็คเงื่อนไขว่าอยู่ Step ไหน และกำหนดชื่อ Step ไว้โชว์
         if (statusTxt.includes("Step[1]")) {
+            stepLabel = "Step 1";
             actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'">รับเครื่อง</button>`;
         } else if (statusTxt.includes("Step[2]")) {
+            stepLabel = "Step 2";
             actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'">ก่อนสอบ</button>`;
         } else if (statusTxt.includes("Step[3]")) {
+            stepLabel = "Step 3";
             actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'">ส่งคืน</button>`;
         } else if (statusTxt.includes("Step[4]")) {
+            stepLabel = "Step 4";
             actionBtn = `<button class="btn btn-secondary btn-sm fw-bold rounded-pill px-3 shadow-sm" disabled>⏳ รอตรวจคืน</button>`;
         } else {
+            stepLabel = statusTxt;
             actionBtn = `<span class="badge bg-secondary text-white px-3 py-2 rounded-pill">${statusTxt}</span>`;
         }
 
-        // 📌 เพิ่มคำสั่ง onclick="closeOtherAccordions" บังคับปิดการ์ดอื่น
+        // 📌 แทรกตัวแปร ${stepLabel} ลงไปข้างๆ ${item.reqId} ใน HTML
         container.innerHTML += `
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="active-task-card bg-white rounded-4 shadow-sm position-relative overflow-hidden">
@@ -159,6 +166,8 @@ function renderActiveUserCards(data) {
                         
                         <div class="fw-bold text-dark ps-2 d-flex align-items-center gap-2" style="font-size: 1.05rem;">
                             ${item.reqId}
+                            <!-- 📌 เพิ่มข้อความ Step ตัวเล็กๆ สีเทาตรงนี้ -->
+                            <span class="text-secondary fw-normal" style="font-size: 0.8rem;">(${stepLabel})</span>
                             <span class="collapse-icon text-muted" style="font-size: 0.7rem;">▼</span>
                         </div>
                         
@@ -166,6 +175,7 @@ function renderActiveUserCards(data) {
                     </div>
 
                     <div id="collapse-${safeId}" class="collapse">
+                        <!-- ส่วนเนื้อหาด้านในการ์ด (คงเดิม) -->
                         <div class="p-3 pt-2 ps-4 border-top border-light">
                             <div class="text-muted mb-3" style="font-size: 0.75rem;">📅 ${dateStr}</div>
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-start gap-3">
