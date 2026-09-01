@@ -12,6 +12,9 @@ window.onload = function() {
 
     document.getElementById("showName").innerText = userName;
     
+    // 📌 แอบเช็คสิทธิ์ ถ้าโดนปรับเป็น Admin จะเด้งไปหน้าแอดมินให้อัตโนมัติเมื่อรีเฟรช
+    verifyRoleSilently();
+    
     loadUserTableData();
 };
 
@@ -86,7 +89,6 @@ async function loadUserTableData() {
 }
 
 // 📌 ฟังก์ชันเสกการ์ดงานแบบ Dropdown สำหรับผู้ใช้
-// 📌 ฟังก์ชันเสกการ์ดงานแบบ Dropdown สำหรับผู้ใช้
 function renderActiveUserCards(data) {
     const container = document.getElementById("activeCardsContainer");
     container.innerHTML = ""; 
@@ -129,7 +131,7 @@ function renderActiveUserCards(data) {
             nickNameHtml = `<div class="text-secondary mt-1" style="font-size: 0.8rem;">(${parts[1].trim()}</div>`;
         }
 
-let statusTxt = item.status || "-";
+        let statusTxt = item.status || "-";
         let actionBtn = "";
         let stepLabel = ""; // 📌 สร้างตัวแปรเก็บชื่อ Step
 
