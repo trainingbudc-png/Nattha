@@ -196,6 +196,10 @@
         }
 
         document.getElementById("adminNameDisplay").innerText = userName;
+        
+        // 📌 แอบเช็คสิทธิ์ ถ้าโดนปลดเป็น User จะเด้งกลับหน้า User อัตโนมัติเมื่อรีเฟรช
+        verifyRoleSilently();
+
         loadAdminTableData();
     };
 
@@ -256,7 +260,6 @@
     }
 
     // 📌 ฟังก์ชันเสกการ์ดงานแบบ Dropdown (Progressive Disclosure)
-  // 📌 ฟังก์ชันเสกการ์ดงานแบบ Dropdown (Progressive Disclosure)
     function renderActiveCards(data) {
         const container = document.getElementById("activeCardsContainer");
         container.innerHTML = ""; 
