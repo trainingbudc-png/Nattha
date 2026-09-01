@@ -79,3 +79,25 @@ async function executeLogout() {
         window.location.replace("index.html");
     }
 }
+
+// -----------------------------------------
+// 4. ระบบตรวจสอบสิทธิ์พื้นหลัง (Silent Role Check)
+// -----------------------------------------
+function verifyRoleSilently() {
+    const userId = localStorage.getItem("userId");
+    const currentRole = localStorage.getItem("userRole");
+    
+    if (userId) {
+        callAPI({ action: "checkRole", userId: userId }).then(res => {
+            // ถ้าระบบพบว่าสิทธิ์ใน Google Sheet ไม่ตรงกับในเครื่อง ให้สลับหน้าทันที
+            if (res.success && res.role !== currentRole) {
+                localStorage.setItem("userRole", res.role);
+                if (res.role === "Admin") {
+                    window.location.replace("admin.html");
+                } else {
+                    window.location.replace("user.html");
+                }
+            }
+        }).catch(e => console.log("Silent role check failed:", e));
+    }
+}
