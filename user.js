@@ -114,12 +114,12 @@ function renderActiveUserCards(data) {
             });
             let displayGroups = [];
             
-            // 📌 เปลี่ยนการสร้าง HTML ตรงนี้ให้อยู่บรรทัดเดียวกัน
+            // 📌 แยก [iPad] เป็นหัวข้อเล็กๆ แล้วเอาตัวเลขเรียงต่อด้านล่างให้อ่านง่าย
             if (normalIds.length > 0) {
-                displayGroups.push(`<div class="mb-1"><span class="text-danger fw-bold">[iPad]</span> <span class="text-dark" style="font-weight: 500;">${normalIds.join(', ')}</span></div>`);
+                displayGroups.push(`<div class="mb-2"><div class="text-danger fw-bold" style="font-size: 0.75rem;">[iPad]</div><div class="text-dark" style="font-weight: 500; line-height: 1.5; word-break: break-word;">${normalIds.join(', ')}</div></div>`);
             }
             if (airIds.length > 0) {
-                displayGroups.push(`<div class="mb-1"><span class="text-primary fw-bold">[Air+APC]</span> <span class="text-dark" style="font-weight: 500;">${airIds.join(', ')}</span></div>`);
+                displayGroups.push(`<div class="mb-2"><div class="text-primary fw-bold" style="font-size: 0.75rem;">[Air+APC]</div><div class="text-dark" style="font-weight: 500; line-height: 1.5; word-break: break-word;">${airIds.join(', ')}</div></div>`);
             }
             formattedIpads = displayGroups.join('');
         }
@@ -136,6 +136,7 @@ function renderActiveUserCards(data) {
         let actionBtn = "";
         let stepLabel = ""; 
 
+        // 📌 เช็คเงื่อนไขว่าอยู่ Step ไหน
         if (statusTxt.includes("Step[1]")) {
             stepLabel = "Step 1";
             actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'">รับเครื่อง</button>`;
@@ -175,15 +176,15 @@ function renderActiveUserCards(data) {
                     </div>
 
                     <div id="collapse-${safeId}" class="collapse">
-                        <!-- 📌 ปรับคำให้กระชับลง -->
+                        <!-- 📌 ส่วนเนื้อหาด้านในการ์ด -->
                         <div class="p-3 pt-2 ps-4 border-top border-light">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="text-muted" style="font-size: 0.8rem;">📅 เวลา:</span>
                                 <span class="text-dark" style="font-size: 0.85rem; font-weight: 500;">${dateStr}</span>
                             </div>
-                            <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex justify-content-between align-items-start mt-2">
                                 <span class="text-muted flex-shrink-0" style="font-size: 0.8rem; padding-top: 2px;">📱 อุปกรณ์:</span>
-                                <div class="text-end w-100 ps-2" style="font-size: 0.9rem;">
+                                <div class="text-end w-100 ps-3" style="font-size: 0.9rem;">
                                     ${formattedIpads}
                                 </div>
                             </div>
@@ -195,6 +196,7 @@ function renderActiveUserCards(data) {
     });
 }
 
+// 📌 ฟังก์ชันสั่งปิดการ์ดอื่นๆ เมื่อกดกางการ์ดใหม่
 function closeOtherAccordions(targetId) {
     document.querySelectorAll('#activeCardsContainer .collapse.show').forEach(el => {
         if (el.id !== targetId) {
@@ -204,6 +206,7 @@ function closeOtherAccordions(targetId) {
     });
 }
 
+// 📌 ฟังก์ชันวาดตาราง History
 function renderUserTableRows(dataList, tbodyElement) {
     tbodyElement.innerHTML = "";
 
