@@ -114,20 +114,28 @@ function renderActiveUserCards(data) {
             });
             let displayGroups = [];
             
+            // 📌 เปลี่ยนการสร้าง HTML ตรงนี้ให้อยู่บรรทัดเดียวกัน
             if (normalIds.length > 0) {
-                displayGroups.push(`<div class="mb-2"><div class="text-danger fw-bold mb-1">[iPad]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${normalIds.join(', ')}</div></div>`);
+                displayGroups.push(`<div class="mb-1"><span class="text-danger fw-bold">[iPad]</span> <span class="text-dark" style="font-weight: 500;">${normalIds.join(', ')}</span></div>`);
             }
             if (airIds.length > 0) {
-                displayGroups.push(`<div class="mb-2"><div class="text-primary fw-bold mb-1">[Air+APC]</div><div style="word-break: break-word; line-height: 1.6; color: #495057;">${airIds.join(', ')}</div></div>`);
+                displayGroups.push(`<div class="mb-1"><span class="text-primary fw-bold">[Air+APC]</span> <span class="text-dark" style="font-weight: 500;">${airIds.join(', ')}</span></div>`);
             }
             formattedIpads = displayGroups.join('');
         }
 
+        let displayName = item.name || "-";
+        let nickNameHtml = "";
+        if (displayName !== "-" && displayName.includes("(")) {
+            let parts = displayName.split("(");
+            displayName = parts[0].trim();
+            nickNameHtml = `<div class="text-secondary mt-1" style="font-size: 0.8rem;">(${parts[1].trim()}</div>`;
+        }
+
         let statusTxt = item.status || "-";
         let actionBtn = "";
-        let stepLabel = ""; // 📌 สร้างตัวแปรเก็บชื่อ Step
+        let stepLabel = ""; 
 
-        // 📌 เช็คเงื่อนไขว่าอยู่ Step ไหน และกำหนดชื่อ Step ไว้โชว์
         if (statusTxt.includes("Step[1]")) {
             stepLabel = "Step 1";
             actionBtn = `<button class="btn btn-outline-danger bg-white border-2 btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'">รับเครื่อง</button>`;
@@ -145,7 +153,6 @@ function renderActiveUserCards(data) {
             actionBtn = `<span class="badge bg-secondary text-white px-3 py-2 rounded-pill">${statusTxt}</span>`;
         }
 
-        // 📌 แทรกตัวแปร ${stepLabel} ลงไปข้างๆ ${item.reqId} ใน HTML
         container.innerHTML += `
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="active-task-card bg-white rounded-4 shadow-sm position-relative overflow-hidden">
@@ -168,15 +175,15 @@ function renderActiveUserCards(data) {
                     </div>
 
                     <div id="collapse-${safeId}" class="collapse">
-                        <!-- 📌 ส่วนเนื้อหาด้านในการ์ด: เอาส่วนแสดงชื่อผู้ยืมออก และปรับ Layout ใหม่ -->
+                        <!-- 📌 ปรับคำให้กระชับลง -->
                         <div class="p-3 pt-2 ps-4 border-top border-light">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-muted" style="font-size: 0.8rem;">📅 วัน-เวลาที่ทำรายการ:</span>
-                                <span class="text-dark" style="font-size: 0.85rem;">${dateStr}</span>
+                                <span class="text-muted" style="font-size: 0.8rem;">📅 เวลา:</span>
+                                <span class="text-dark" style="font-size: 0.85rem; font-weight: 500;">${dateStr}</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-start">
-                                <span class="text-muted flex-shrink-0" style="font-size: 0.8rem; margin-top: 2px;">📱 อุปกรณ์ที่ระบุ:</span>
-                                <div class="text-end w-100" style="font-size: 0.9rem;">
+                                <span class="text-muted flex-shrink-0" style="font-size: 0.8rem; padding-top: 2px;">📱 อุปกรณ์:</span>
+                                <div class="text-end w-100 ps-2" style="font-size: 0.9rem;">
                                     ${formattedIpads}
                                 </div>
                             </div>
@@ -188,7 +195,6 @@ function renderActiveUserCards(data) {
     });
 }
 
-// 📌 ฟังก์ชันสั่งปิดการ์ดอื่นๆ เมื่อกดกางการ์ดใหม่ (ใส่ต่อท้ายได้เลย)
 function closeOtherAccordions(targetId) {
     document.querySelectorAll('#activeCardsContainer .collapse.show').forEach(el => {
         if (el.id !== targetId) {
@@ -198,7 +204,6 @@ function closeOtherAccordions(targetId) {
     });
 }
 
-// 📌 ฟังก์ชันวาดตาราง History (แยกคอลัมน์ รายการ และ เครื่องที่เตรียม)
 function renderUserTableRows(dataList, tbodyElement) {
     tbodyElement.innerHTML = "";
 
