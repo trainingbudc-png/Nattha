@@ -11,7 +11,10 @@ window.onload = function() {
     }
 
     document.getElementById("showName").innerText = userName;
+    
+    // 📌 แอบเช็คสิทธิ์ ถ้าโดนปรับเป็น Admin จะเด้งไปหน้าแอดมินให้อัตโนมัติเมื่อรีเฟรช
     verifyRoleSilently();
+    
     loadUserTableData();
 };
 
@@ -22,6 +25,7 @@ async function loadUserTableData() {
     activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>';
     historyTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
     
+    // 📌 ดึง LINE ID (userId) และ ชื่อ มาใช้สำหรับการกรองข้อมูล
     const currentUserId = localStorage.getItem("userId");
     const currentUserName = localStorage.getItem("userName"); 
 
@@ -30,15 +34,22 @@ async function loadUserTableData() {
         
         if (res.status === "success" && res.data && res.data.length > 0) {
             
+            // 📌 ระบบกรองข้อมูลฉบับปรับปรุง: ล็อกเป้าด้วย LINE ID เป็นหลัก
             const myData = res.data.filter(item => {
                 let isValidReq = item.reqId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ";
                 if (!isValidReq) return false;
 
-                if (currentUserId && item.userId === currentUserId) return true;
+                // 1. ตรวจสอบด้วย LINE ID ก่อน (ชัวร์ที่สุด เปลี่ยนชื่อก็ไม่หลุด)
+                if (currentUserId && item.userId === currentUserId) {
+                    return true;
+                }
 
+                // 2. แผนสำรอง (Fallback): สำหรับรายการเก่าในระบบที่ยังไม่มีการบันทึก LINE ID 
                 let dbName = item.name ? item.name.split("(")[0].trim() : "";
                 let localName = currentUserName ? currentUserName.split("(")[0].trim() : "";
-                if (dbName === localName || (item.name && item.name.includes(localName))) return true;
+                if (dbName === localName || (item.name && item.name.includes(localName))) {
+                    return true;
+                }
 
                 return false;
             });
@@ -56,8 +67,11 @@ async function loadUserTableData() {
                 let statusTxt = item.status || "";
                 let isHistory = statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์") || statusTxt.includes("ยกเลิก");
                 
-                if (isHistory) historyList.push(item);
-                else activeList.push(item);
+                if (isHistory) {
+                    historyList.push(item);
+                } else {
+                    activeList.push(item);
+                }
             });
 
             renderActiveUserCards(activeList);
@@ -100,6 +114,7 @@ function renderActiveUserCards(data) {
             });
             let displayGroups = [];
             
+            // 📌 แยก [iPad] เป็นหัวข้อเล็กๆ แล้วเอาตัวเลขเรียงต่อด้านล่างให้อ่านง่าย
             if (normalIds.length > 0) {
                 displayGroups.push(`<div class="mb-1"><span class="text-danger fw-bold">[iPad]</span> <span class="text-dark" style="font-weight: 500;">${normalIds.join(', ')}</span></div>`);
             }
@@ -109,11 +124,19 @@ function renderActiveUserCards(data) {
             formattedIpads = displayGroups.join('');
         }
 
+        let displayName = item.name || "-";
+        let nickNameHtml = "";
+        if (displayName !== "-" && displayName.includes("(")) {
+            let parts = displayName.split("(");
+            displayName = parts[0].trim();
+            nickNameHtml = `<div class="text-secondary mt-1" style="font-size: 0.8rem;">(${parts[1].trim()}</div>`;
+        }
+
         let statusTxt = item.status || "-";
         let actionBtn = "";
         let stepLabel = ""; 
 
-        // 📌 ปรับน้ำหนักปุ่ม (Visual Hierarchy): แอคชันสีทึบ/รอตรวจสีอ่อน
+        // 📌 เช็คเงื่อนไขว่าอยู่ Step ไหน
         if (statusTxt.includes("Step[1]")) {
             stepLabel = "Step 1";
             actionBtn = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'">รับเครื่อง</button>`;
@@ -153,6 +176,7 @@ function renderActiveUserCards(data) {
                     </div>
 
                     <div id="collapse-${safeId}" class="collapse">
+                        <!-- 📌 ส่วนเนื้อหาด้านในการ์ด -->
                         <div class="p-3 pt-2 ps-4 border-top border-light">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="text-muted" style="font-size: 0.8rem;">📅 เวลา:</span>
@@ -172,6 +196,7 @@ function renderActiveUserCards(data) {
     });
 }
 
+// 📌 ฟังก์ชันสั่งปิดการ์ดอื่นๆ เมื่อกดกางการ์ดใหม่
 function closeOtherAccordions(targetId) {
     document.querySelectorAll('#activeCardsContainer .collapse.show').forEach(el => {
         if (el.id !== targetId) {
@@ -270,8 +295,14 @@ async function openProfileModal() {
     
     document.getElementById("editProfileFirstName").value = firstName;
     document.getElementById("editProfileLastName").value = lastName;
-    document.getElementById("editProfileNickname").value = "กำลังโหลด..."; 
-    document.getElementById("editProfilePhone").value = "กำลังโหลด...";
+    
+    // 📌 แก้ไข: ล้างค่าเก่าทิ้ง และใส่คำว่ากำลังโหลดเป็น Placeholder แทน
+    const nickInput = document.getElementById("editProfileNickname");
+    const phoneInput = document.getElementById("editProfilePhone");
+    nickInput.value = "";
+    phoneInput.value = "";
+    nickInput.placeholder = "กำลังโหลดข้อมูล..."; 
+    phoneInput.placeholder = "กำลังโหลดข้อมูล...";
 
     if (!profileModal) {
         profileModal = new bootstrap.Modal(document.getElementById('profileModal'));
@@ -297,8 +328,8 @@ async function openProfileModal() {
     try {
         const res = await callAPI({ action: "getUserProfile", name: currentUser });
         if (res.status === "success") {
-            document.getElementById("editProfileNickname").value = res.nickname || "";
-            document.getElementById("editProfilePhone").value = res.phone || "";
+            nickInput.value = res.nickname || "";
+            phoneInput.value = res.phone || "";
             
             const deptSelect = document.getElementById("editProfileDept");
             if (res.dept) {
@@ -310,15 +341,13 @@ async function openProfileModal() {
             } else {
                 deptSelect.value = "";
             }
-        } else {
-            document.getElementById("editProfileNickname").value = "";
-            document.getElementById("editProfileDept").value = "";
-            document.getElementById("editProfilePhone").value = "";
         }
     } catch (error) {
-        document.getElementById("editProfileNickname").value = "";
-        document.getElementById("editProfileDept").value = "";
-        document.getElementById("editProfilePhone").value = "";
+        console.error("โหลดโปรไฟล์ไม่สำเร็จ", error);
+    } finally {
+        // 📌 เมื่อโหลดเสร็จ คืนค่า Placeholder ปกติ
+        nickInput.placeholder = "เช่น นัท, เฟธ";
+        phoneInput.placeholder = "กรอกเบอร์ที่สามารถติดต่อได้";
     }
 }
 
