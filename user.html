@@ -79,55 +79,24 @@
             <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>
         </div>
 
-        <!-- 🔵 หมวดหมู่: เมนูลัดแบบการ์ด -->
-        <div class="section-title title-blue">เมนูลัด</div>
-        <div class="row g-3 mb-5">
-            <div class="col-md-4 col-12">
-                <div class="menu-card card-step2" onclick="window.location.href='step2-list.html'">
-                    <div class="menu-icon">✅</div>
-                    <div class="menu-text">
-                        <h6>Step 2 | รับเครื่อง</h6>
-                        <p>ตรวจสอบและยืนยันรับ iPad</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-12">
-                <div class="menu-card card-step3" onclick="window.location.href='step3-list.html'">
-                    <div class="menu-icon">📝</div>
-                    <div class="menu-text">
-                        <h6>Step 3 | ก่อนสอบ</h6>
-                        <p>เตรียมความพร้อมก่อนเข้าสอบ</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-12">
-                <div class="menu-card card-step4" onclick="window.location.href='step4-list.html'">
-                    <div class="menu-icon">📥</div>
-                    <div class="menu-text">
-                        <h6>Step 4 | ส่งคืน</h6>
-                        <p>ส่งคืนเครื่องเมื่อใช้งานเสร็จสิ้น</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- 📌 ส่วนที่ 2: ประวัติอุปกรณ์ของฉัน (History) ยังคงเป็นตาราง -->
         <div class="d-flex align-items-center gap-2 mb-3">
             <div style="width: 4px; height: 20px; background-color: #212529; border-radius: 2px;"></div>
             <h5 class="fw-bold m-0 text-dark">ประวัติอุปกรณ์ของฉัน (เสร็จสิ้น)</h5>
         </div>
         
-<div class="table-card table-responsive">
-            <table class="table table-hover align-middle">
-                <thead>
+        <div class="table-card table-responsive shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid #e9ecef;">
+            <table class="table table-hover align-middle mb-0">
+                <!-- 📌 ปรับหัวตารางให้สว่างขึ้นด้วย class table-light -->
+                <thead class="table-light text-secondary">
                     <tr class="text-center">
-                        <th style="width: 20%;">เลขรายการ</th>
-                        <th style="width: 20%;">อุปกรณ์ที่ยืม</th>
-<th style="width: 40%;">เครื่องที่เตรียม</th>
-                        <th style="width: 20%;">สถานะปัจจุบัน</th>
+                        <th style="width: 20%; padding: 15px;">เลขรายการ</th>
+                        <th style="width: 20%; padding: 15px;">อุปกรณ์ที่ยืม</th>
+                        <th style="width: 40%; padding: 15px;">เครื่องที่เตรียม</th>
+                        <th style="width: 20%; padding: 15px;">สถานะปัจจุบัน</th>
                     </tr>
                 </thead>
-                <tbody id="historyTableBody">
+                <tbody id="historyTableBody" class="bg-white">
                     <tr><td colspan="4" class="text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
@@ -135,7 +104,7 @@
 
     </div>
 
-<!-- Modal แก้ไขข้อมูลส่วนตัว -->
+    <!-- Modal แก้ไขข้อมูลส่วนตัว -->
     <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
