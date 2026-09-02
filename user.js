@@ -12,7 +12,6 @@ window.onload = function() {
 
     document.getElementById("showName").innerText = userName;
     
-    // 📌 แอบเช็คสิทธิ์ ถ้าโดนปรับเป็น Admin จะเด้งไปหน้าแอดมินให้อัตโนมัติเมื่อรีเฟรช
     verifyRoleSilently();
     
     loadUserTableData();
@@ -25,7 +24,6 @@ async function loadUserTableData() {
     activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>';
     historyTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
     
-    // 📌 ดึง LINE ID (userId) และ ชื่อ มาใช้สำหรับการกรองข้อมูล
     const currentUserId = localStorage.getItem("userId");
     const currentUserName = localStorage.getItem("userName"); 
 
@@ -34,17 +32,14 @@ async function loadUserTableData() {
         
         if (res.status === "success" && res.data && res.data.length > 0) {
             
-            // 📌 ระบบกรองข้อมูลฉบับปรับปรุง: ล็อกเป้าด้วย LINE ID เป็นหลัก
             const myData = res.data.filter(item => {
                 let isValidReq = item.reqId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ";
                 if (!isValidReq) return false;
 
-                // 1. ตรวจสอบด้วย LINE ID ก่อน (ชัวร์ที่สุด เปลี่ยนชื่อก็ไม่หลุด)
                 if (currentUserId && item.userId === currentUserId) {
                     return true;
                 }
 
-                // 2. แผนสำรอง (Fallback): สำหรับรายการเก่าในระบบที่ยังไม่มีการบันทึก LINE ID 
                 let dbName = item.name ? item.name.split("(")[0].trim() : "";
                 let localName = currentUserName ? currentUserName.split("(")[0].trim() : "";
                 if (dbName === localName || (item.name && item.name.includes(localName))) {
@@ -88,7 +83,6 @@ async function loadUserTableData() {
     }
 }
 
-// 📌 ฟังก์ชันเสกการ์ดงานแบบ Dropdown สำหรับผู้ใช้
 function renderActiveUserCards(data) {
     const container = document.getElementById("activeCardsContainer");
     container.innerHTML = ""; 
@@ -114,7 +108,6 @@ function renderActiveUserCards(data) {
             });
             let displayGroups = [];
             
-            // 📌 แยก [iPad] เป็นหัวข้อเล็กๆ แล้วเอาตัวเลขเรียงต่อด้านล่างให้อ่านง่าย
             if (normalIds.length > 0) {
                 displayGroups.push(`<div class="mb-1"><span class="text-danger fw-bold">[iPad]</span> <span class="text-dark" style="font-weight: 500;">${normalIds.join(', ')}</span></div>`);
             }
@@ -136,7 +129,6 @@ function renderActiveUserCards(data) {
         let actionBtn = "";
         let stepLabel = ""; 
 
-        // 📌 เช็คเงื่อนไขว่าอยู่ Step ไหน
         if (statusTxt.includes("Step[1]")) {
             stepLabel = "Step 1";
             actionBtn = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'">รับเครื่อง</button>`;
@@ -148,7 +140,8 @@ function renderActiveUserCards(data) {
             actionBtn = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'">ส่งคืน</button>`;
         } else if (statusTxt.includes("Step[4]")) {
             stepLabel = "Step 4";
-            actionBtn = `<button class="btn btn-light border text-secondary btn-sm fw-bold rounded-pill px-3" disabled>⏳ รอตรวจคืน</button>`;
+            // 📌 เอาอีโมจิ ⏳ ออก เพื่อความคลีนและต่อเนื่องกับปุ่มอื่น
+            actionBtn = `<button class="btn btn-light border text-secondary btn-sm fw-bold rounded-pill px-3" disabled>รอตรวจคืน</button>`;
         } else {
             stepLabel = statusTxt;
             actionBtn = `<span class="badge bg-secondary text-white px-3 py-2 rounded-pill">${statusTxt}</span>`;
@@ -176,7 +169,6 @@ function renderActiveUserCards(data) {
                     </div>
 
                     <div id="collapse-${safeId}" class="collapse">
-                        <!-- 📌 ส่วนเนื้อหาด้านในการ์ด -->
                         <div class="p-3 pt-2 ps-4 border-top border-light">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="text-muted" style="font-size: 0.8rem;">📅 เวลา:</span>
@@ -196,7 +188,6 @@ function renderActiveUserCards(data) {
     });
 }
 
-// 📌 ฟังก์ชันสั่งปิดการ์ดอื่นๆ เมื่อกดกางการ์ดใหม่
 function closeOtherAccordions(targetId) {
     document.querySelectorAll('#activeCardsContainer .collapse.show').forEach(el => {
         if (el.id !== targetId) {
@@ -206,7 +197,6 @@ function closeOtherAccordions(targetId) {
     });
 }
 
-// 📌 ฟังก์ชันวาดตาราง History
 function renderUserTableRows(dataList, tbodyElement) {
     tbodyElement.innerHTML = "";
 
@@ -236,7 +226,6 @@ function renderUserTableRows(dataList, tbodyElement) {
             let typeArr = [];
             let idsArr = [];
             
-            // 📌 แก้สีข้อความ iPad เป็นสีดำ เพื่อไม่ให้สื่อถึงข้อผิดพลาด (Error)
             if (normalIds.length > 0) {
                 typeArr.push(`<div class="fw-bold text-dark mb-1">iPad</div>`);
                 idsArr.push(`<div class="mb-1 text-secondary" style="word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`);
@@ -254,9 +243,10 @@ function renderUserTableRows(dataList, tbodyElement) {
         let displayStatus = statusTxt;
         let badgeClass = "bg-secondary text-white";
 
+        // 📌 เปลี่ยนสีป้ายสถานะประวัติจากเขียวเป็นเทาอ่อน เพื่อลดการดึงดูดสายตา
         if (statusTxt.includes("เคลียร์") || statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น")) {
             displayStatus = "คืนเรียบร้อย";
-            badgeClass = "bg-success text-white";
+            badgeClass = "bg-light text-secondary border"; 
         } else if (statusTxt.includes("ยกเลิก")) {
             displayStatus = "ยกเลิกรายการ";
             badgeClass = "bg-light text-secondary border";
@@ -296,7 +286,6 @@ async function openProfileModal() {
     document.getElementById("editProfileFirstName").value = firstName;
     document.getElementById("editProfileLastName").value = lastName;
     
-    // 📌 แก้ไข: ล้างค่าเก่าทิ้ง และใส่คำว่ากำลังโหลดเป็น Placeholder แทน
     const nickInput = document.getElementById("editProfileNickname");
     const phoneInput = document.getElementById("editProfilePhone");
     nickInput.value = "";
@@ -345,7 +334,6 @@ async function openProfileModal() {
     } catch (error) {
         console.error("โหลดโปรไฟล์ไม่สำเร็จ", error);
     } finally {
-        // 📌 เมื่อโหลดเสร็จ คืนค่า Placeholder ปกติ
         nickInput.placeholder = "เช่น นัท, เฟธ";
         phoneInput.placeholder = "กรอกเบอร์ที่สามารถติดต่อได้";
     }
