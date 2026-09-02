@@ -123,14 +123,6 @@ function renderActiveUserCards(data) {
             formattedIpads = displayGroups.join('');
         }
 
-        let displayName = item.name || "-";
-        let nickNameHtml = "";
-        if (displayName !== "-" && displayName.includes("(")) {
-            let parts = displayName.split("(");
-            displayName = parts[0].trim();
-            nickNameHtml = `<div class="text-secondary mt-1" style="font-size: 0.8rem;">(${parts[1].trim()}</div>`;
-        }
-
         let statusTxt = item.status || "-";
         let actionBtn = "";
         let stepLabel = ""; // 📌 สร้างตัวแปรเก็บชื่อ Step
@@ -168,7 +160,6 @@ function renderActiveUserCards(data) {
                         
                         <div class="fw-bold text-dark ps-2 d-flex align-items-center gap-2" style="font-size: 1.05rem;">
                             ${item.reqId}
-                            <!-- 📌 เพิ่มข้อความ Step ตัวเล็กๆ สีเทาตรงนี้ -->
                             <span class="text-secondary fw-normal" style="font-size: 0.8rem;">(${stepLabel})</span>
                             <span class="collapse-icon text-muted" style="font-size: 0.7rem;">▼</span>
                         </div>
@@ -177,14 +168,14 @@ function renderActiveUserCards(data) {
                     </div>
 
                     <div id="collapse-${safeId}" class="collapse">
-                        <!-- ส่วนเนื้อหาด้านในการ์ด (คงเดิม) -->
+                        <!-- 📌 ส่วนเนื้อหาด้านในการ์ด: เอาส่วนแสดงชื่อผู้ยืมออก และปรับ Layout ใหม่ -->
                         <div class="p-3 pt-2 ps-4 border-top border-light">
-                            <div class="text-muted mb-3" style="font-size: 0.75rem;">📅 ${dateStr}</div>
-                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-start gap-3">
-                                <div style="line-height: 1.2; min-width: 80px;" class="flex-shrink-0">
-                                    <span class="fw-bold text-primary" style="font-size: 0.95rem;">👤 ${displayName}</span>
-                                    ${nickNameHtml}
-                                </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted" style="font-size: 0.8rem;">📅 วัน-เวลาที่ทำรายการ:</span>
+                                <span class="text-dark" style="font-size: 0.85rem;">${dateStr}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <span class="text-muted flex-shrink-0" style="font-size: 0.8rem; margin-top: 2px;">📱 อุปกรณ์ที่ระบุ:</span>
                                 <div class="text-end w-100" style="font-size: 0.9rem;">
                                     ${formattedIpads}
                                 </div>
