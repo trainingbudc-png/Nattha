@@ -9,10 +9,30 @@
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
-        .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        .table-dashboard { white-space: nowrap; border-collapse: collapse; }
-        .table-dashboard td { font-size: 0.85rem; padding: 12px 10px; text-align: center; vertical-align: middle; border: 1px solid #e2e8f0; background-color: white; }
-        .step-cell { color: var(--admin-main); min-width: 110px; line-height: 1.4; font-weight: 500;}
+        .dashboard-container { max-width: 1440px; margin: 0 auto; padding: 20px; }
+        
+        /* 📌 จัดการตารางไม่ให้บีบกันจนพัง */
+        .table-responsive { overflow-x: auto; max-height: 75vh; }
+        .table-dashboard { white-space: nowrap; border-collapse: separate; border-spacing: 0; }
+        .table-dashboard th { 
+            position: sticky; top: 0; z-index: 10; /* แช่แข็งหัวตาราง */
+            background-color: #f8fafc !important; 
+            border-bottom: 2px solid var(--admin-main) !important; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .table-dashboard td { 
+            font-size: 0.85rem; padding: 12px 10px; text-align: center; vertical-align: middle; 
+            border-bottom: 1px solid #e2e8f0; background-color: white; 
+        }
+        
+        /* 📌 ล็อกความกว้างแต่ละคอลัมน์ให้สมดุล */
+        .col-req { min-width: 60px; font-size: 0.9rem; }
+        .col-step { min-width: 130px; font-weight: 600; line-height: 1.2; }
+        .col-status { min-width: 120px; border-left: 2px solid #e2e8f0; }
+        .col-name { min-width: 150px; max-width: 180px; white-space: normal; word-break: break-word; line-height: 1.4; }
+        .col-note { min-width: 180px; max-width: 250px; white-space: normal; word-break: break-word; font-size: 0.8rem; line-height: 1.4; color: #64748b; }
+        .col-em { min-width: 80px; }
+
         .step-cell-empty { background-color: #f8fafc !important; } 
         
         .status-badge { padding: 5px 12px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; display: inline-block; }
@@ -37,7 +57,6 @@
         
         <div class="d-flex justify-content-between align-items-end mb-3">
             <h5 class="fw-bold text-dark m-0">ตารางข้อมูลรายการเบิก-ยืม</h5>
-            <!-- 📌 ปรับปุ่มอัปเดตข้อมูลให้เป็นสไตล์ Light ซอฟต์ๆ ไม่แย่งซีน -->
             <button class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm border" onclick="fetchData()">🔄 อัปเดตข้อมูล</button>
         </div>
 
@@ -64,21 +83,21 @@
             </div>
         </div>
         
-        <div class="table-responsive shadow-sm border rounded bg-white mt-3">
+        <div class="table-responsive shadow-sm border rounded bg-white mt-3 custom-scrollbar">
             <table class="table table-dashboard m-0">
                 <thead>
                     <tr>
-                        <th style="width: 5%;">#</th>
-                        <th>Step 1 | เตรียม</th>
-                        <th>Step 2 | ยืม</th>
-                        <th>Step 3 | ก่อนสอบ</th>
-                        <th>Step 4 | คืน</th>
-                        <th>Step 5 | ตรวจ</th>
-                        <th style="border-left: 2px solid #e2e8f0;">สถานะรวม</th>
-                        <th>ผู้เตรียมเครื่อง</th>
-                        <th style="min-width: 180px;">ผู้ที่จะมารับเครื่อง</th>
-                        <th style="width: 15%;">หมายเหตุ</th>
-                        <th>ยืมฉุกเฉิน</th>
+                        <th class="col-req text-center">#</th>
+                        <th class="col-step text-center">Step 1 | เตรียม</th>
+                        <th class="col-step text-center">Step 2 | ยืม</th>
+                        <th class="col-step text-center">Step 3 | ก่อนสอบ</th>
+                        <th class="col-step text-center">Step 4 | คืน</th>
+                        <th class="col-step text-center">Step 5 | ตรวจ</th>
+                        <th class="col-status text-center">สถานะรวม</th>
+                        <th class="col-name text-center">ผู้เตรียมเครื่อง</th>
+                        <th class="col-name text-start ps-3">ผู้ที่จะมารับเครื่อง</th>
+                        <th class="col-note text-start">หมายเหตุ</th>
+                        <th class="col-em text-center">ฉุกเฉิน</th>
                     </tr>
                 </thead>
                 <tbody id="dashboardBody">
@@ -109,11 +128,15 @@
         fetchData();
     };
 
+    // 📌 ปรับปรุงให้วันที่และเครื่องหมายถูก แยกชั้นกันชัดเจน เพื่อให้อ่านง่าย
     function formatStepCell(text) {
-        if (!text || text.trim() === "") return '<td class="step-cell-empty"></td>';
-        let formatted = text.replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
-        formatted = formatted.replace(/☑/g, `<span style="color:var(--admin-main); font-size:1rem;">☑</span>`);
-        return `<td class="step-cell">${formatted}</td>`;
+        if (!text || text.trim() === "") return '<td class="col-step step-cell-empty"></td>';
+        
+        let parts = text.split(/\\n|\n/);
+        let topPart = parts[0] ? parts[0].replace(/☑/g, `<span style="color: #10b981; font-size: 1.15rem; vertical-align: middle;">☑</span>`) : '';
+        let bottomPart = parts[1] ? `<div class="text-muted" style="font-size: 0.75rem; margin-top: 2px; font-weight: normal;">${parts[1]}</div>` : '';
+        
+        return `<td class="col-step text-center" style="color: var(--admin-main);">${topPart}${bottomPart}</td>`;
     }
 
     function formatStatus(statusText) {
@@ -123,7 +146,7 @@
 
     function formatEmergency(emText) {
         if (!emText || emText.trim() === "" || emText === "☐") return '<span style="color:#adb5bd; font-size:1.2rem;">☐</span>';
-        return `<span style="color:var(--admin-main); font-size:1.2rem; font-weight:bold;">☑</span>`;
+        return `<span class="text-danger" style="font-size:1.25rem; font-weight:bold;">☑</span>`;
     }
 
     function fetchData() {
@@ -183,19 +206,20 @@
         const pageData = filteredData.slice(startIndex, endIndex);
 
         pageData.forEach(item => {
+            // ดึงคลาสมาครอบ td เพื่อป้องกันข้อมูลล้นขอบ
             tbody.innerHTML += `
                 <tr>
-                    <td class="fw-bold text-dark fs-6 bg-light">${item.reqId.replace("REQ-", "")}</td>
+                    <td class="fw-bold text-dark bg-light col-req text-center">${item.reqId.replace("REQ-", "")}</td>
                     ${formatStepCell(item.step1)}
                     ${formatStepCell(item.step2)}
                     ${formatStepCell(item.step3)}
                     ${formatStepCell(item.step4)}
                     ${formatStepCell(item.step5)}
-                    <td style="border-left: 2px solid #e2e8f0;">${formatStatus(item.status)}</td>
-                    <td class="fw-bold text-dark">${item.preparer || "-"}</td>
-                    <td class="fw-bold text-dark text-start ps-3" style="white-space: normal; word-break: break-word;">${item.receiver || "-"}</td>
-                    <td class="text-start text-secondary" style="font-weight: 500; white-space: normal; word-break: break-word;">${item.note || ""}</td>
-                    <td>${formatEmergency(item.emergency)}</td>
+                    <td class="col-status text-center">${formatStatus(item.status)}</td>
+                    <td class="fw-bold text-dark col-name text-center">${item.preparer || "-"}</td>
+                    <td class="fw-bold text-dark col-name text-start ps-3">${item.receiver || "-"}</td>
+                    <td class="col-note text-start">${item.note || ""}</td>
+                    <td class="col-em text-center">${formatEmergency(item.emergency)}</td>
                 </tr>
             `;
         });
