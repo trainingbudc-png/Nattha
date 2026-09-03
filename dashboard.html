@@ -9,7 +9,13 @@
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
-        .dashboard-container { max-width: 1440px; margin: 0 auto; padding: 20px; }
+        /* 📌 ปลดล็อกความกว้างให้เต็มจอ */
+        .dashboard-container { 
+            width: 100%; 
+            max-width: 1920px; /* รองรับจอใหญ่พิเศษ */
+            margin: 0 auto; 
+            padding: 20px 40px; /* ดันขอบซ้าย-ขวาไม่ให้ชิดจอเกินไป */
+        }
         
         /* 📌 จัดการตารางไม่ให้บีบกันจนพัง */
         .table-responsive { overflow-x: auto; max-height: 75vh; }
