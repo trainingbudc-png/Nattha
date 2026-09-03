@@ -196,7 +196,8 @@
         loadUsersAndIpads();
     };
 
-    async function loadUsersAndIpads() {
+    // 📌 ระบบโหลดข้อมูลแบบอึด (Auto-Retry) ยิงซ้ำเมื่อ Google ตัดสาย
+    async function loadUsersAndIpads(retryCount = 3) {
         try {
             const userResponse = await fetch(API_URL, {
                 method: 'POST',
@@ -269,10 +270,15 @@
             }
 
         } catch (error) {
-            console.error("Error loading setup data:", error);
-            document.getElementById("userNameSelect").innerHTML = '<option value="">❌ โหลดข้อมูลล้มเหลว</option>';
-            document.getElementById("ipadNormalContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
-            document.getElementById("ipadAirContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
+            if (retryCount > 0) {
+                console.warn(`[Auto-Retry] โหลดข้อมูลไม่สำเร็จ กำลังพยายามใหม่... (เหลือสิทธิ์อีก ${retryCount} ครั้ง)`);
+                setTimeout(() => loadUsersAndIpads(retryCount - 1), 1500);
+            } else {
+                console.error("Error loading setup data:", error);
+                document.getElementById("userNameSelect").innerHTML = '<option value="">❌ โหลดข้อมูลล้มเหลว</option>';
+                document.getElementById("ipadNormalContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
+                document.getElementById("ipadAirContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
+            }
         }
     }
 
