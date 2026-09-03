@@ -16,26 +16,27 @@
             <span class="d-block d-sm-inline text-light opacity-75" style="font-size: 0.95rem; font-weight: 500;">(ค้างดำเนินการ)</span>
         </div>
         <div>
-            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4">🔙 กลับเมนูแอดมิน</a>
+            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm">🔙 กลับเมนูแอดมิน</a>
         </div>
     </div>
 
-    <div class="container pb-5" style="max-width: 1100px;">
+    <div class="container pb-5" style="max-width: 1200px;">
         <div class="section-title mt-0 mb-3">รายการที่ผู้ใช้งานส่งคืน (รอแอดมินตรวจ)</div>
         <div class="table-card table-responsive shadow-sm">
-            <table class="table table-hover align-middle bg-white">
+            <table class="table table-hover align-middle bg-white m-0">
                 <thead>
                     <tr class="text-center">
-                        <th style="width: 15%;">เลขรายการ</th>
+                        <th style="width: 12%;">เลขรายการ</th>
                         <th style="width: 15%;">วันที่และเวลา</th>
-                        <th style="width: 20%;">อุปกรณ์ที่ยืม</th>
-                        <th style="width: 20%;">เครื่องที่เตรียม</th>
-                        <th style="width: 15%;">สถานะ</th>
-                        <th style="width: 15%;">จัดการ</th>
+                        <th style="width: 18%;">ผู้ส่งคืน</th>
+                        <th style="width: 18%;">อุปกรณ์ที่ยืม</th>
+                        <th style="width: 17%;">เครื่องที่เตรียม</th>
+                        <th style="width: 10%;">สถานะ</th>
+                        <th style="width: 10%;">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody id="requestListBody">
-                    <tr><td colspan="6" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
+                    <tr><td colspan="7" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
@@ -43,21 +44,33 @@
 
 <script src="script.js"></script>    
 <script>
-    window.onload = async function() {
+    window.onload = function() {
         if(localStorage.getItem("userRole") !== "Admin") { window.location.href = "index.html"; return; }
+        loadStep5List();
+    };
 
+    // 📌 ระบบโหลดข้อมูลแบบอึด (Auto-Retry) ป้องกัน Google ตัดสาย
+    async function loadStep5List(retryCount = 3) {
+        const tbody = document.getElementById("requestListBody");
+        
         try {
             const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) });
             const result = await res.json();
-            const tbody = document.getElementById("requestListBody");
             tbody.innerHTML = "";
 
             if (result.status === "success" && result.data.length > 0) {
                 const pendingItems = result.data.filter(item => item.status && item.status.includes("Step[4]"));
-                if (pendingItems.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="text-center fw-bold py-5 text-muted">🎉 ไม่มีรายการรอตรวจรับคืนในขณะนี้</td></tr>'; return; }
+                
+                if (pendingItems.length === 0) { 
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center fw-bold py-5 text-muted">🎉 ไม่มีรายการรอตรวจรับคืนในขณะนี้</td></tr>'; 
+                    return; 
+                }
 
                 pendingItems.forEach(item => {
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
+                    // 📌 ตัดวินาทีทิ้งให้สะอาดตา
+                    dateStr = dateStr.replace(/:\d{2}$/, '');
+
                     let typeHtml = '<span class="text-muted">-</span>', idsHtml = '<span class="text-muted">-</span>';
                     
                     if (item.ipadId && item.ipadId.trim() !== "") {
@@ -68,26 +81,49 @@
                             if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) { airIds.push(num); } else { normalIds.push(num); }
                         });
                         let typeArr = [], idsArr = [];
-                        if (normalIds.length > 0) { typeArr.push(`<div class="fw-bold text-danger mb-1">iPad</div>`); idsArr.push(`<div class="mb-1 text-dark">${normalIds.join(', ')}</div>`); }
-                        if (airIds.length > 0) { typeArr.push(`<div style="color:var(--admin-accent);" class="fw-bold mb-1">Air+APC</div>`); idsArr.push(`<div class="mb-1 text-dark">${airIds.join(', ')}</div>`); }
+                        if (normalIds.length > 0) { typeArr.push(`<div class="fw-bold text-dark mb-1">iPad</div>`); idsArr.push(`<div class="mb-1 text-secondary">${normalIds.join(', ')}</div>`); }
+                        if (airIds.length > 0) { typeArr.push(`<div style="color:var(--admin-accent);" class="fw-bold mb-1">Air+APC</div>`); idsArr.push(`<div class="mb-1 text-secondary">${airIds.join(', ')}</div>`); }
                         typeHtml = typeArr.join(''); idsHtml = idsArr.join('');
+                    }
+
+                    // จัดการชื่อผู้ส่งคืน
+                    let displayName = item.name || "-";
+                    let nickNameHtml = "";
+                    if (displayName !== "-" && displayName.includes("(")) {
+                        let parts = displayName.split("(");
+                        displayName = parts[0].trim();
+                        nickNameHtml = `<div class="text-secondary mt-1" style="font-size: 0.8rem;">(${parts[1].trim()}</div>`;
                     }
 
                     tbody.innerHTML += `
                         <tr class="text-center align-middle">
                             <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
-                            <td data-label="วันที่และเวลา"><div style="font-size: 0.9rem;" class="text-muted">${dateStr}</div></td>
+                            <td data-label="วันที่และเวลา"><div style="font-size: 0.85rem;" class="text-muted">${dateStr}</div></td>
+                            <td data-label="ผู้ส่งคืน" class="text-start ps-3">
+                                <div class="fw-bold text-danger">${displayName}</div>
+                                ${nickNameHtml}
+                            </td>
                             <td data-label="อุปกรณ์ที่ยืม">${typeHtml}</td>
                             <td data-label="เครื่องที่เตรียม">${idsHtml}</td>
-                            <td data-label="สถานะ"><div><span class="badge bg-danger text-white px-3 py-2 rounded-pill shadow-sm">Step[4]</span></div></td>
+                            <td data-label="สถานะ">
+                                <div><span class="badge bg-warning text-dark px-3 py-2 rounded-pill shadow-sm fw-bold">Step[4]</span></div>
+                            </td>
                             <td data-label="จัดการ">
-                                <button class="btn btn-admin btn-sm px-3 shadow-sm w-100" onclick="window.location.href='step5.html?reqId=${item.reqId}'">ตรวจสอบ</button>
+                                <button class="btn btn-sm px-3 shadow-sm w-100 fw-bold text-white rounded-pill" style="background-color: var(--admin-main);" onclick="window.location.href='step5.html?reqId=${item.reqId}'">ตรวจสอบ</button>
                             </td>
                         </tr>
                     `;
                 });
-            } else { tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5">❌ ไม่พบข้อมูลในระบบ</td></tr>'; }
-        } catch (error) { tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาด</td></tr>'; }
+            } else { 
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-5">❌ ไม่พบข้อมูลในระบบ</td></tr>'; 
+            }
+        } catch (error) { 
+            if (retryCount > 0) {
+                setTimeout(() => loadStep5List(retryCount - 1), 1500);
+            } else {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>'; 
+            }
+        }
     };
 </script>
 </body>
