@@ -18,8 +18,10 @@ body { background-color: var(--user-bg) !important; font-family: 'Kanit', sans-s
     background-color: white !important; 
     border-bottom: 2px solid var(--user-border) !important; 
     box-shadow: 0 2px 10px rgba(0,0,0,0.03) !important;
+    display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; position: sticky; top: 0; z-index: 100;
 }
-.nav-title, .text-primary { color: var(--user-dark) !important; }
+.nav-title { font-size: 1.25rem; font-weight: bold; color: var(--user-dark) !important; margin: 0; }
+.text-primary { color: var(--user-dark) !important; }
 
 /* 📌 2. ไฮแจ็คคลาสสีแดงของ Bootstrap ให้เป็นสี Slate Blue ทั้งหมด */
 .bg-danger { background-color: var(--user-main) !important; color: white !important; }
@@ -47,14 +49,49 @@ body { background-color: var(--user-bg) !important; font-family: 'Kanit', sans-s
     color: white !important; 
 }
 
-/* 📌 3. การ์ดและตาราง */
-.section-title { color: var(--user-dark) !important; border-left-color: var(--user-main) !important; }
-.menu-card { border-left-color: var(--user-main) !important; border-color: var(--user-border) !important; }
+/* 📌 3. แก้ไขปุ่มที่ถูก Disable ให้ดูเป็นปุ่ม ไม่กลืนไปกับพื้น */
+.btn:disabled, .btn[disabled] {
+    background-color: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    color: #94a3b8 !important;
+    opacity: 1 !important;
+}
+
+/* 📌 4. การ์ดและตาราง */
+.section-title { font-size: 1.1rem; font-weight: 600; color: var(--user-dark) !important; margin-top: 25px; margin-bottom: 15px; padding-left: 10px; border-left: 4px solid var(--user-main) !important; }
+.menu-card { background: white; border: 1px solid var(--user-border) !important; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 15px; transition: 0.3s; cursor: pointer; height: 100%; border-left: 6px solid var(--user-main) !important; }
 .menu-card:hover { border-left-color: var(--user-dark) !important; transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.05); }
 
-.table th { background-color: var(--user-main) !important; color: white !important; border: none !important; font-weight: 500; }
-.active-task-card, .confirm-card, .table-card { border-color: var(--user-border) !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; }
+/* แก้ไขหัวตารางให้มีมิติ ไม่ลอยแบน */
+.table th { 
+    background-color: #f1f5f9 !important; 
+    color: #475569 !important; 
+    border-bottom: 2px solid #cbd5e1 !important; 
+    font-weight: 600 !important;
+    padding: 15px; text-align: center;
+}
+.table td { vertical-align: middle; padding: 12px 15px; font-size: 0.95rem; text-align: center; border-bottom: 1px solid #f8f9fa; }
+
+.active-task-card, .confirm-card, .table-card { background: white; border-radius: 12px; border: 1px solid var(--user-border) !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; overflow: hidden; }
 .active-task-card:hover { border-color: var(--user-main) !important; box-shadow: 0 4px 15px rgba(100, 116, 139, 0.15) !important; }
 
-/* 📌 4. Checkbox */
+/* 📌 5. ขีดหน้าหัวข้อ (ใช้คลาสใหม่คุม) */
+.accent-bar {
+    width: 4px; 
+    height: 20px; 
+    background-color: var(--user-main) !important; 
+    border-radius: 2px;
+}
+
+/* 📌 6. Checkbox */
 .select-ipad, .check-item, .form-check-input { accent-color: var(--user-main) !important; }
+
+/* Responsive สำหรับมือถือ */
+@media screen and (max-width: 768px) {
+    .table-card { background: transparent; box-shadow: none; border: none; padding: 0; }
+    .table thead { display: none; }
+    .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--user-border); }
+    .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 10px 0; border-bottom: 1px dashed var(--user-border); }
+    .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
+    .table tbody td::before { content: attr(data-label); font-weight: 600; color: #495057; font-size: 0.85rem; text-align: left; margin-right: 15px; }
+}
