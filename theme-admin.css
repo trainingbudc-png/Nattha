@@ -5,59 +5,179 @@
 
 :root {
     --admin-main: #1e3a8a;    /* Blue 900: น้ำเงินกรมท่า */
-    --admin-hover: #172554;   /* Blue 950:สีกรมท่าเข้มข้น */
+    --admin-hover: #172554;   /* Blue 950: กรมท่าเข้มข้น */
     --admin-accent: #3b82f6;  /* Blue 500: ฟ้าสว่าง (ใช้แซม) */
-    --admin-bg: #f1f5f9;      /* Slate 100: พื้นหลัง */
-    --admin-border: #e2e8f0;  /* Slate 200: ขอบ */
+    --admin-bg: #f1f5f9;      /* Slate 100: พื้นหลังระบบ */
+    --admin-border: #e2e8f0;  /* Slate 200: ขอบกล่อง */
 }
 
-body { background-color: var(--admin-bg) !important; font-family: 'Kanit', sans-serif; color: #334155; }
+body { 
+    background-color: var(--admin-bg) !important; 
+    font-family: 'Kanit', sans-serif; 
+    color: #334155; 
+}
 
 /* 📌 1. Navbar & Header */
 .navbar-custom, .nav-header-custom, .main-header-card, .red-header { 
     background-color: var(--admin-main) !important; 
-    border-color: var(--admin-main) !important; 
-    border-bottom: none !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.1) !important;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-.navbar-custom *, .nav-header-custom *, .red-header *, .main-header-card h3 { color: white !important; }
-.nav-title-custom, .admin-name { color: #bfdbfe !important; } /* ฟ้าอ่อน */
+.navbar-custom *, .nav-header-custom *, .red-header *, .main-header-card h3 { 
+    color: white !important; 
+    text-decoration: none; 
+}
+.nav-title-custom, .admin-name { color: #bfdbfe !important; }
 
-/* 📌 2. ไฮแจ็คคลาสสีแดงของ Bootstrap ให้เป็น Navy ทั้งหมด */
+/* 📌 2. ไฮแจ็คสีแดงเป็น Navy (Buttons & Badges) */
 .bg-danger { background-color: var(--admin-main) !important; color: white !important; }
 .text-danger { color: var(--admin-main) !important; }
-.border-danger { border-color: var(--admin-main) !important; }
 
 .btn-danger, .btn-admin, .btn-submit-custom, .btn-confirm { 
     background-color: var(--admin-main) !important; 
     border-color: var(--admin-main) !important; 
     color: white !important; 
+    transition: 0.2s;
 }
 .btn-danger:hover, .btn-admin:hover, .btn-submit-custom:hover, .btn-confirm:hover { 
     background-color: var(--admin-hover) !important; 
+    border-color: var(--admin-hover) !important; 
     box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3) !important;
 }
 
 .btn-outline-danger, .btn-outline-admin { 
     color: var(--admin-main) !important; 
-    border-color: var(--admin-main) !important; 
+    border: 2px solid var(--admin-main) !important; 
     background-color: white !important;
+    font-weight: 600;
 }
 .btn-outline-danger:hover, .btn-outline-admin:hover { 
     background-color: var(--admin-main) !important; 
     color: white !important; 
 }
 
-/* 📌 3. การ์ดและตาราง */
-.section-title { color: var(--admin-hover) !important; border-left-color: var(--admin-accent) !important; }
-.menu-card { border-left-color: var(--admin-main) !important; border-color: var(--admin-border) !important; }
-.menu-card:hover { border-left-color: var(--admin-accent) !important; transform: translateY(-3px); }
-.menu-text h5 { color: var(--admin-main) !important; }
+/* 📌 3. หัวข้อ Section */
+.section-title { 
+    font-size: 1.15rem; 
+    font-weight: 600; 
+    color: var(--admin-main) !important; 
+    margin-top: 30px; 
+    margin-bottom: 15px; 
+    padding-left: 12px; 
+    border-left: 5px solid var(--admin-accent) !important; 
+}
 
-.active-task-card, .confirm-card, .card-custom, .filter-card { border-color: var(--admin-border) !important; border-left-color: var(--admin-accent) !important; }
-.active-task-card:hover { border-color: var(--admin-main) !important; box-shadow: 0 4px 15px rgba(30, 58, 138, 0.15) !important; border-left-color: var(--admin-main) !important; }
+/* 📌 4. กล่องเมนูภาพรวม (Menu Cards) */
+.menu-card { 
+    background: white;
+    border: 1px solid var(--admin-border); 
+    border-radius: 12px; 
+    padding: 20px 25px; 
+    display: flex; 
+    align-items: center; 
+    gap: 20px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03); 
+    transition: all 0.3s ease; 
+    cursor: pointer; 
+    text-decoration: none !important; 
+    height: 100%; 
+    border-left: 6px solid var(--admin-main) !important; 
+}
+.menu-card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 25px rgba(30, 58, 138, 0.1);
+    border-left-color: var(--admin-accent) !important; 
+}
+.menu-icon { font-size: 2.2rem; }
+.menu-text h5 { font-weight: 600; margin: 0 0 5px 0; font-size: 1.1rem; color: var(--admin-main) !important; }
+.menu-text p { margin: 0; font-size: 0.85rem; color: #64748b; }
 
-.table th { background-color: var(--admin-main) !important; color: white !important; border: none !important; font-weight: 500; }
-.table-dashboard th { background-color: white !important; color: var(--admin-main) !important; border-bottom: 2px solid var(--admin-main) !important; }
+/* 📌 5. การ์ดงาน Active และกล่องค้นหา */
+.active-task-card, .confirm-card, .card-custom, .filter-card { 
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--admin-border) !important; 
+    border-left: 4px solid var(--admin-main) !important; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03) !important;
+    transition: 0.3s;
+}
+.active-task-card:hover { 
+    border-color: var(--admin-main) !important; 
+    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.15) !important; 
+}
+.collapse-icon { transition: transform 0.3s ease; display: inline-block; }
+[aria-expanded="true"] .collapse-icon { transform: rotate(180deg); }
 
-/* 📌 4. Checkbox */
+/* 📌 6. ตารางประวัติ (Table) */
+.table-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--admin-border);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    overflow: hidden;
+}
+.table { margin-bottom: 0; width: 100%; }
+.table th { 
+    background-color: var(--admin-main) !important; 
+    color: white !important; 
+    border: none !important; 
+    font-weight: 500; 
+    padding: 15px; 
+    text-align: center; 
+}
+.table td { 
+    vertical-align: middle; 
+    padding: 12px 15px; 
+    font-size: 0.95rem; 
+    text-align: center; 
+    border-bottom: 1px solid #f1f5f9; 
+}
+.table-dashboard th { 
+    background-color: white !important; 
+    color: var(--admin-main) !important; 
+    border-bottom: 2px solid var(--admin-main) !important; 
+}
+
+/* 📌 7. Checkbox และอื่นๆ */
 .select-ipad, .check-item, .form-check-input { accent-color: var(--admin-main) !important; }
+.badge { font-weight: 500; }
+
+/* 📌 8. Responsive (โหมดมือถือ) */
+@media screen and (max-width: 768px) {
+    .navbar-custom, .nav-header-custom { flex-direction: column; gap: 15px; text-align: center; }
+    .navbar-custom > div { justify-content: center; width: 100%; flex-wrap: wrap; }
+    
+    .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; box-shadow: none !important; }
+    .table thead { display: none; }
+    .table tbody tr { 
+        display: block; 
+        background: white; 
+        border-radius: 12px; 
+        margin-bottom: 15px; 
+        padding: 15px; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+        border: 1px solid var(--admin-border); 
+    }
+    .table tbody td { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: flex-start; 
+        text-align: right; 
+        padding: 10px 0; 
+        border-bottom: 1px dashed var(--admin-border); 
+    }
+    .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
+    .table tbody td::before { 
+        content: attr(data-label); 
+        font-weight: 600; 
+        color: var(--admin-main); 
+        font-size: 0.95rem; 
+        text-align: left; 
+        margin-right: 15px; 
+        flex-shrink: 0; 
+    }
+}
