@@ -9,29 +9,31 @@
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
-        /* 📌 ปลดล็อกความกว้างให้เต็มจอ */
         .dashboard-container { 
             width: 100%; 
-            max-width: 1920px; /* รองรับจอใหญ่พิเศษ */
+            max-width: 1920px; 
             margin: 0 auto; 
-            padding: 20px 40px; /* ดันขอบซ้าย-ขวาไม่ให้ชิดจอเกินไป */
+            padding: 20px 40px; 
         }
         
-        /* 📌 จัดการตารางไม่ให้บีบกันจนพัง */
-        .table-responsive { overflow-x: auto; max-height: 75vh; }
+        .table-responsive { overflow-x: auto; max-height: 75vh; border: 1px solid var(--admin-border); }
         .table-dashboard { white-space: nowrap; border-collapse: separate; border-spacing: 0; }
+        
+        /* 📌 1. เปลี่ยนหัวตารางให้เป็น Navy ดึงสายตาและแยกส่วนชัดเจน */
         .table-dashboard th { 
-            position: sticky; top: 0; z-index: 10; /* แช่แข็งหัวตาราง */
-            background-color: #f8fafc !important; 
-            border-bottom: 2px solid var(--admin-main) !important; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 10; 
+            background-color: var(--admin-main) !important; 
+            color: white !important;
+            border-bottom: none !important; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            font-weight: 500;
         }
+        
         .table-dashboard td { 
             font-size: 0.85rem; padding: 12px 10px; text-align: center; vertical-align: middle; 
             border-bottom: 1px solid #e2e8f0; background-color: white; 
         }
         
-        /* 📌 ล็อกความกว้างแต่ละคอลัมน์ให้สมดุล */
         .col-req { min-width: 60px; font-size: 0.9rem; }
         .col-step { min-width: 130px; font-weight: 600; line-height: 1.2; }
         .col-status { min-width: 120px; border-left: 2px solid #e2e8f0; }
@@ -61,9 +63,15 @@
 
     <div class="dashboard-container pb-5 mt-4">
         
-        <div class="d-flex justify-content-between align-items-end mb-3">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-2">
             <h5 class="fw-bold text-dark m-0">ตารางข้อมูลรายการเบิก-ยืม</h5>
-            <button class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm border" onclick="fetchData()">🔄 อัปเดตข้อมูล</button>
+            <div class="d-flex gap-2">
+                <!-- 📌 2. นำปุ่มดาวน์โหลด Excel กลับมาวางคู่กันอย่างเป็นระเบียบ -->
+                <button class="btn btn-success btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="exportToCSV()" style="background-color: #10b981; border-color: #10b981;">
+                    📥 ดาวน์โหลด Excel
+                </button>
+                <button class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm border" onclick="fetchData()">🔄 อัปเดตข้อมูล</button>
+            </div>
         </div>
 
         <div class="filter-card p-4">
@@ -89,7 +97,7 @@
             </div>
         </div>
         
-        <div class="table-responsive shadow-sm border rounded bg-white mt-3 custom-scrollbar">
+        <div class="table-responsive shadow-sm rounded bg-white mt-3 custom-scrollbar">
             <table class="table table-dashboard m-0">
                 <thead>
                     <tr>
@@ -99,7 +107,7 @@
                         <th class="col-step text-center">Step 3 | ก่อนสอบ</th>
                         <th class="col-step text-center">Step 4 | คืน</th>
                         <th class="col-step text-center">Step 5 | ตรวจ</th>
-                        <th class="col-status text-center">สถานะรวม</th>
+                        <th class="col-status text-center" style="border-left: 2px solid rgba(255,255,255,0.2);">สถานะรวม</th>
                         <th class="col-name text-center">ผู้เตรียมเครื่อง</th>
                         <th class="col-name text-start ps-3">ผู้ที่จะมารับเครื่อง</th>
                         <th class="col-note text-start">หมายเหตุ</th>
@@ -122,6 +130,7 @@
 
     </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="script.js"></script>
 <script>
     let allDashboardData = [];
@@ -134,13 +143,17 @@
         fetchData();
     };
 
-    // 📌 ปรับปรุงให้วันที่และเครื่องหมายถูก แยกชั้นกันชัดเจน เพื่อให้อ่านง่าย
     function formatStepCell(text) {
         if (!text || text.trim() === "") return '<td class="col-step step-cell-empty"></td>';
         
         let parts = text.split(/\\n|\n/);
         let topPart = parts[0] ? parts[0].replace(/☑/g, `<span style="color: #10b981; font-size: 1.15rem; vertical-align: middle;">☑</span>`) : '';
-        let bottomPart = parts[1] ? `<div class="text-muted" style="font-size: 0.75rem; margin-top: 2px; font-weight: normal;">${parts[1]}</div>` : '';
+        
+        // 📌 3. ตัด "วินาที" ออกจากวันที่เพื่อให้ตารางคลีน (จาก 9:38:26 เหลือ 9:38)
+        let dateStr = parts[1] || "";
+        dateStr = dateStr.replace(/:\d{2}$/, ''); 
+        
+        let bottomPart = dateStr ? `<div class="text-muted" style="font-size: 0.75rem; margin-top: 2px; font-weight: normal;">${dateStr}</div>` : '';
         
         return `<td class="col-step text-center" style="color: var(--admin-main);">${topPart}${bottomPart}</td>`;
     }
@@ -212,7 +225,6 @@
         const pageData = filteredData.slice(startIndex, endIndex);
 
         pageData.forEach(item => {
-            // ดึงคลาสมาครอบ td เพื่อป้องกันข้อมูลล้นขอบ
             tbody.innerHTML += `
                 <tr>
                     <td class="fw-bold text-dark bg-light col-req text-center">${item.reqId.replace("REQ-", "")}</td>
@@ -251,6 +263,62 @@
         const totalPages = Math.ceil(filteredData.length / itemsPerPage);
         if (page < 1 || page > totalPages) return;
         currentPage = page; renderTable();
+    }
+
+    /* ========================================================
+       📌 ระบบดาวน์โหลดข้อมูลออกเป็น Excel (CSV Format)
+       ======================================================== */
+    function formatForCSV(text) {
+        if (!text) return "";
+        return text.replace(/\n|\\n/g, ' ').replace(/"/g, '""');
+    }
+
+    function exportToCSV() {
+        if (filteredData.length === 0) {
+            Swal.fire("แจ้งเตือน", "ไม่มีข้อมูลสำหรับดาวน์โหลด", "warning");
+            return;
+        }
+
+        let csvContent = "\uFEFF"; 
+        
+        const headers = [
+            "เลขรายการ", "Step 1 | เตรียม", "Step 2 | ยืม", "Step 3 | ก่อนสอบ", 
+            "Step 4 | คืน", "Step 5 | ตรวจ", "สถานะรวม", "ผู้เตรียมเครื่อง", 
+            "ผู้ที่จะมารับเครื่อง", "หมายเหตุ", "ยืมฉุกเฉิน"
+        ];
+        csvContent += headers.map(h => `"${h}"`).join(",") + "\n";
+
+        filteredData.forEach(item => {
+            let emStatus = (item.emergency === "☑") ? "ใช่" : "ไม่ใช่";
+            let row = [
+                item.reqId,
+                formatForCSV(item.step1),
+                formatForCSV(item.step2),
+                formatForCSV(item.step3),
+                formatForCSV(item.step4),
+                formatForCSV(item.step5),
+                item.status,
+                formatForCSV(item.preparer),
+                formatForCSV(item.receiver),
+                formatForCSV(item.note),
+                emStatus
+            ];
+            csvContent += row.map(val => `"${val}"`).join(",") + "\n";
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        
+        const d = new Date();
+        const dateString = `${d.getFullYear()}${(d.getMonth()+1).toString().padStart(2,'0')}${d.getDate().toString().padStart(2,'0')}`;
+        
+        link.setAttribute("href", url);
+        link.setAttribute("download", `iPad_Report_${dateString}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 </script>
 </body>
