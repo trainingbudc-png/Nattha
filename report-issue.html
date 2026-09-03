@@ -7,27 +7,13 @@
     <link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="theme-admin.css">
-    
     <style>
         .alert-box { background-color: #fef9c3; border: 1px solid #fde047; border-left: 4px solid #d97706; color: #92400e; padding: 15px; border-radius: 8px; margin-bottom: 25px; font-size: 0.95rem; }
         .cat-subtitle { font-size: 0.8rem; display: block; margin-top: 5px; transition: 0.2s; }
-        
-        /* เมื่อกดปุ่ม 'แจ้งส่งซ่อม' */
-        .btn-check:checked + .btn-outline-admin { 
-            background-color: var(--admin-main) !important; 
-            color: white !important; 
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
-        }
+        .btn-check:checked + .btn-outline-admin { background-color: var(--admin-main) !important; color: white !important; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3); }
         .btn-check:checked + .btn-outline-admin .cat-subtitle { color: #bfdbfe !important; }
-
-        /* เมื่อกดปุ่ม 'รายงานเฉยๆ' */
         .btn-outline-secondary { border: 2px solid #64748b; color: #475569; background: white; border-radius: 10px;}
-        .btn-check:checked + .btn-outline-secondary { 
-            background-color: #475569 !important; 
-            border-color: #475569 !important; 
-            color: white !important; 
-            box-shadow: 0 4px 12px rgba(71, 85, 105, 0.3);
-        }
+        .btn-check:checked + .btn-outline-secondary { background-color: #475569 !important; border-color: #475569 !important; color: white !important; box-shadow: 0 4px 12px rgba(71, 85, 105, 0.3); }
         .btn-check:checked + .btn-outline-secondary .cat-subtitle { color: #f1f5f9 !important; }
     </style>
 </head>
@@ -35,43 +21,31 @@
     
     <div class="container my-4" style="max-width: 700px;">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold mb-0" style="color: var(--admin-main);">⚠️ แจ้งสถานะเครื่องมีปัญหา</h3>
+            <h3 class="fw-bold mb-0 text-danger">⚠️ แจ้งสถานะเครื่องมีปัญหา</h3>
             <a href="admin.html" class="btn btn-outline-admin px-4 fw-bold rounded-pill">🔙 กลับหน้าแอดมิน</a>
         </div>
         
         <div class="card card-custom p-4 p-md-5 mx-auto">
-            <div class="alert-box">
-                <strong>คำแนะนำ:</strong> ใช้ฟอร์มนี้เพื่ออัปเดตสถานะกรณีพบความเสียหาย หรือต้องการบันทึกประวัติเครื่อง
-            </div>
-
+            <div class="alert-box"><strong>คำแนะนำ:</strong> ใช้ฟอร์มนี้เพื่ออัปเดตสถานะกรณีพบความเสียหาย หรือต้องการบันทึกประวัติเครื่อง</div>
             <form id="issueForm">
                 <div class="mb-4">
                     <label class="form-label fw-bold text-dark">📌 เลือกหมวดหมู่การแจ้ง:</label>
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <input type="radio" class="btn-check" name="reportCategory" id="catRepair" value="repair" checked>
-                            <label class="btn btn-outline-admin w-100 text-start p-3 fw-bold shadow-sm" for="catRepair">
-                                🛠️ แจ้งส่งซ่อม
-                                <span class="cat-subtitle text-muted fw-normal">ระบบจะระงับการยืมเครื่องนี้ และตัดออกจากหน้าเตรียมเครื่อง</span>
-                            </label>
+                            <label class="btn btn-outline-admin w-100 text-start p-3 fw-bold shadow-sm" for="catRepair">🛠️ แจ้งส่งซ่อม<span class="cat-subtitle text-muted fw-normal">ระบบจะระงับการยืมเครื่องนี้ และตัดออกจากหน้าเตรียมเครื่อง</span></label>
                         </div>
                         <div class="col-sm-6">
                             <input type="radio" class="btn-check" name="reportCategory" id="catReport" value="report">
-                            <label class="btn btn-outline-secondary w-100 text-start p-3 fw-bold shadow-sm" for="catReport">
-                                📝 รายงานเฉยๆ
-                                <span class="cat-subtitle text-muted fw-normal">แค่จดประวัติไว้ เครื่องนี้ยังสามารถให้คนอื่นเบิกยืมได้ปกติ</span>
-                            </label>
+                            <label class="btn btn-outline-secondary w-100 text-start p-3 fw-bold shadow-sm" for="catReport">📝 รายงานเฉยๆ<span class="cat-subtitle text-muted fw-normal">แค่จดประวัติไว้ เครื่องนี้ยังสามารถให้คนอื่นเบิกยืมได้ปกติ</span></label>
                         </div>
                     </div>
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label fw-bold text-dark">📱 เลือกรหัส iPad ที่มีปัญหา:</label>
-                    <select id="ipadIdSelect" class="form-select form-select-lg border-2" required>
-                        <option value="">-- กรุณาเลือกรหัส iPad --</option>
-                    </select>
+                    <select id="ipadIdSelect" class="form-select form-select-lg border-2" required><option value="">-- กรุณาเลือกรหัส iPad --</option></select>
                 </div>
-
                 <div class="mb-4">
                     <label class="form-label fw-bold text-dark">🚨 ประเภทของปัญหา:</label>
                     <select id="issueType" class="form-select form-select-lg border-2" required>
@@ -83,12 +57,10 @@
                         <option value="อื่นๆ (ระบุในหมายเหตุ)">📝 อื่นๆ (ระบุในหมายเหตุ)</option>
                     </select>
                 </div>
-
                 <div class="mb-4">
                     <label class="form-label fw-bold text-dark">📝 รายละเอียดเพิ่มเติม / อาการที่พบ:</label>
                     <textarea id="issueNote" class="form-control border-2" rows="4" placeholder="เช่น รอยร้าวที่มุมขวาล่าง, ชาร์จแบตไม่เข้า, หรือชื่อผู้ใช้งานทำหล่น..."></textarea>
                 </div>
-
                 <button type="button" class="btn btn-admin w-100 fs-5 mt-2 shadow fw-bold rounded-3" id="submitBtn" onclick="submitIssue()">💾 บันทึกข้อมูล</button>
             </form>
         </div>
@@ -98,16 +70,12 @@
 <script src="script.js"></script>
 <script>
     window.onload = function() {
-        if(localStorage.getItem("userRole") !== "Admin") { 
-            window.location.href="index.html"; 
-            return; 
-        }
+        if(localStorage.getItem("userRole") !== "Admin") { window.location.href="index.html"; return; }
         generateIpadList();
     };
 
     function generateIpadList() {
         const select = document.getElementById("ipadIdSelect");
-        
         const optgroupNormal = document.createElement("optgroup");
         optgroupNormal.label = "🔹 หมวด iPad (ปกติ)";
         for (let i = 1; i <= 60; i++) {
@@ -117,7 +85,6 @@
             optgroupNormal.appendChild(option);
         }
         select.appendChild(optgroupNormal);
-
         const optgroupAir = document.createElement("optgroup");
         optgroupAir.label = "🔹 หมวด iPad Air + APC";
         for (let i = 61; i <= 80; i++) {
@@ -139,30 +106,18 @@
         if(!issueType) return Swal.fire("แจ้งเตือน", "กรุณาเลือกประเภทปัญหา", "warning");
 
         const btn = document.getElementById("submitBtn");
-        btn.innerHTML = "กำลังบันทึกข้อมูล... ⏳";
-        btn.disabled = true;
+        btn.innerHTML = "กำลังบันทึกข้อมูล... ⏳"; btn.disabled = true;
 
-        const payload = {
-            action: "reportIssue", adminName: adminName, ipadId: ipadId, issueType: issueType, note: note, reportCategory: reportCategory
-        };
+        const payload = { action: "reportIssue", adminName: adminName, ipadId: ipadId, issueType: issueType, note: note, reportCategory: reportCategory };
 
         fetch(API_URL, { method: "POST", body: JSON.stringify(payload) })
         .then(res => res.json())
         .then(res => {
             if(res.status === "success") {
-                Swal.fire({
-                    title: "บันทึกสำเร็จ!",
-                    text: res.message,
-                    icon: "success",
-                    confirmButtonColor: "#1e3a8a",
-                    confirmButtonText: "กลับหน้าแอดมิน",
-                    allowOutsideClick: false
-                }).then(() => { 
-                    window.location.href = "admin.html"; 
-                });
+                Swal.fire({ title: "บันทึกสำเร็จ!", text: res.message, icon: "success", confirmButtonColor: "#1e3a8a", confirmButtonText: "กลับหน้าแอดมิน", allowOutsideClick: false })
+                .then(() => { window.location.href = "admin.html"; });
             } else {
-                Swal.fire("ข้อผิดพลาด", res.message || "ไม่สามารถบันทึกข้อมูลได้", "error");
-                btn.innerHTML = "💾 บันทึกข้อมูล"; btn.disabled = false;
+                Swal.fire("ข้อผิดพลาด", res.message || "ไม่สามารถบันทึกข้อมูลได้", "error"); btn.innerHTML = "💾 บันทึกข้อมูล"; btn.disabled = false;
             }
         });
     }
