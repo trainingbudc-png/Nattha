@@ -15,7 +15,6 @@
         .step-cell { color: var(--admin-main); min-width: 110px; line-height: 1.4; font-weight: 500;}
         .step-cell-empty { background-color: #f8fafc !important; } 
         
-        /* ป้ายสถานะเฉพาะหน้า Dashboard */
         .status-badge { padding: 5px 12px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; display: inline-block; }
         .status-green { background-color: #e2e8f0; color: #475569; border: 1px solid #cbd5e1; } 
         .status-yellow { background-color: #fef9c3; color: #d97706; }
@@ -31,7 +30,7 @@
         <div class="fw-bold fs-5 d-flex align-items-center gap-2 text-white">
             📊 Dashboard ภาพรวมระบบ
         </div>
-        <a href="admin.html" class="btn btn-sm rounded-pill fw-bold px-4 border-0" style="background-color: var(--admin-accent); color: white;">🔙 กลับหน้าแอดมิน</a>
+        <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 border-0">🔙 กลับหน้าแอดมิน</a>
     </nav>
 
     <div class="dashboard-container pb-5 mt-4">
@@ -58,7 +57,7 @@
                 <div class="col-md-3 col-12">
                     <div class="form-check form-switch d-flex align-items-center gap-2 pb-2">
                         <input class="form-check-input" type="checkbox" id="emergencyFilter" style="width: 40px; height: 20px; cursor: pointer;" onchange="applyFilters()">
-                        <label class="form-check-label fw-bold mb-0" for="emergencyFilter" style="font-size: 1rem; cursor: pointer; color: var(--admin-main); padding-top: 2px;">🚨 เฉพาะเคสฉุกเฉิน</label>
+                        <label class="form-check-label fw-bold mb-0 text-danger" for="emergencyFilter" style="font-size: 1rem; cursor: pointer; padding-top: 2px;">🚨 เฉพาะเคสฉุกเฉิน</label>
                     </div>
                 </div>
             </div>
@@ -158,7 +157,6 @@
 
             let matchStatus = true;
             if (statusVal !== "all") matchStatus = item.status && item.status.includes(statusVal);
-
             let matchEm = true;
             if (emCheck) matchEm = item.emergency === "☑";
 
@@ -194,45 +192,34 @@
                     ${formatStepCell(item.step5)}
                     <td style="border-left: 2px solid #e2e8f0;">${formatStatus(item.status)}</td>
                     <td class="fw-bold text-dark">${item.preparer}</td>
-                    <td class="fw-bold" style="color: var(--admin-main);">${item.receiver}</td>
-                    <td class="text-start" style="color: var(--admin-main); font-weight: 500;">${item.note || ""}</td>
+                    <td class="fw-bold text-danger">${item.receiver}</td>
+                    <td class="text-start text-danger" style="font-weight: 500;">${item.note || ""}</td>
                     <td>${formatEmergency(item.emergency)}</td>
                 </tr>
             `;
         });
 
-        document.getElementById("pageInfo").innerHTML = `แสดงรายการ <span class="fw-bold" style="color: var(--admin-main);">${startIndex + 1}</span> ถึง <span class="fw-bold" style="color: var(--admin-main);">${endIndex}</span> จากทั้งหมด <span class="fw-bold" style="color: var(--admin-main);">${filteredData.length}</span> รายการ`;
+        document.getElementById("pageInfo").innerHTML = `แสดงรายการ <span class="fw-bold text-danger">${startIndex + 1}</span> ถึง <span class="fw-bold text-danger">${endIndex}</span> จากทั้งหมด <span class="fw-bold text-danger">${filteredData.length}</span> รายการ`;
         renderPaginationControls(totalPages);
     }
 
     function renderPaginationControls(totalPages) {
         const paginationEl = document.getElementById("paginationControls");
         let html = '';
-
-        html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})">«</a>
-                 </li>`;
-
+        html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})">«</a></li>`;
         let startPage = Math.max(1, currentPage - 2);
         let endPage = Math.min(totalPages, currentPage + 2);
-        
         for (let i = startPage; i <= endPage; i++) {
-            html += `<li class="page-item ${currentPage === i ? 'active' : ''}">
-                        <a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>
-                     </li>`;
+            html += `<li class="page-item ${currentPage === i ? 'active' : ''}"><a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a></li>`;
         }
-
-        html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})">»</a>
-                 </li>`;
+        html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}"><a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})">»</a></li>`;
         paginationEl.innerHTML = html;
     }
 
     function changePage(page) {
         const totalPages = Math.ceil(filteredData.length / itemsPerPage);
         if (page < 1 || page > totalPages) return;
-        currentPage = page;
-        renderTable();
+        currentPage = page; renderTable();
     }
 </script>
 </body>
