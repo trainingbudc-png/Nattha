@@ -1,30 +1,63 @@
 /* =========================================
-   🔴 ธีมแอดมิน (แดงตัดขาว)
+   ⚓ ธีม Admin (Control Panel: น้ำเงินกรมท่า Navy)
    ========================================= */
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
 
-body { background: #fdf2f2; font-family: 'Kanit', sans-serif; color: #333; }
+:root {
+    --admin-main: #1e3a8a;    /* Blue 900: น้ำเงินกรมท่า */
+    --admin-hover: #172554;   /* Blue 950:สีกรมท่าเข้มข้น */
+    --admin-accent: #3b82f6;  /* Blue 500: ฟ้าสว่าง (ใช้แซม) */
+    --admin-bg: #f1f5f9;      /* Slate 100: พื้นหลัง */
+    --admin-border: #e2e8f0;  /* Slate 200: ขอบ */
+}
 
-/* Navbar */
-.navbar-custom { background: white; border-bottom: 4px solid #dc3545; box-shadow: 0 4px 15px rgba(220,53,69,0.1); padding: 15px 30px; position: sticky; top: 0; z-index: 100; }
-.navbar-custom .fs-5 { color: #dc3545 !important; }
-.admin-name { color: #dc3545; font-weight: 600; margin-right: 15px; }
+body { background-color: var(--admin-bg) !important; font-family: 'Kanit', sans-serif; color: #334155; }
 
-/* หัวข้อ Section */
-.section-title { font-size: 1.1rem; font-weight: 600; color: #b91c1c; margin-top: 30px; margin-bottom: 15px; padding-left: 10px; border-left: 4px solid #dc3545; }
+/* 📌 1. Navbar & Header */
+.navbar-custom, .nav-header-custom, .main-header-card, .red-header { 
+    background-color: var(--admin-main) !important; 
+    border-color: var(--admin-main) !important; 
+    border-bottom: none !important;
+}
+.navbar-custom *, .nav-header-custom *, .red-header *, .main-header-card h3 { color: white !important; }
+.nav-title-custom, .admin-name { color: #bfdbfe !important; } /* ฟ้าอ่อน */
 
-/* การ์ดเมนู */
-.menu-card { background: white; border: 1px solid #fecaca; border-radius: 12px; padding: 20px 25px; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 15px rgba(220,53,69,0.05); transition: 0.3s; cursor: pointer; text-decoration: none; color: inherit; height: 100%; border-left: 6px solid #dc3545; }
-.menu-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(220,53,69,0.2); }
-.menu-icon { font-size: 2.2rem; }
-.menu-text h5 { font-weight: 600; margin: 0 0 5px 0; font-size: 1.1rem; color: #991b1b; }
-.menu-text p { margin: 0; font-size: 0.85rem; color: #7f1d1d; }
+/* 📌 2. ไฮแจ็คคลาสสีแดงของ Bootstrap ให้เป็น Navy ทั้งหมด */
+.bg-danger { background-color: var(--admin-main) !important; color: white !important; }
+.text-danger { color: var(--admin-main) !important; }
+.border-danger { border-color: var(--admin-main) !important; }
 
-/* ตาราง */
-.table-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(220,53,69,0.05); overflow: hidden; border: 1px solid #fecaca; }
-.table { margin-bottom: 0; }
-.table th { background: #dc3545; font-size: 0.9rem; font-weight: 600; color: white; padding: 15px; text-align: center; }
-.table td { vertical-align: middle; padding: 12px 15px; font-size: 0.95rem; text-align: center; border-bottom: 1px solid #fee2e2; }
+.btn-danger, .btn-admin, .btn-submit-custom, .btn-confirm { 
+    background-color: var(--admin-main) !important; 
+    border-color: var(--admin-main) !important; 
+    color: white !important; 
+}
+.btn-danger:hover, .btn-admin:hover, .btn-submit-custom:hover, .btn-confirm:hover { 
+    background-color: var(--admin-hover) !important; 
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3) !important;
+}
 
-/* ป้าย Tag iPad */
-.ipad-tag { background-color: #fef2f2; color: #dc3545; border: 1px solid #fca5a5; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; display: inline-block; margin: 3px; font-weight: 500; }
+.btn-outline-danger, .btn-outline-admin { 
+    color: var(--admin-main) !important; 
+    border-color: var(--admin-main) !important; 
+    background-color: white !important;
+}
+.btn-outline-danger:hover, .btn-outline-admin:hover { 
+    background-color: var(--admin-main) !important; 
+    color: white !important; 
+}
+
+/* 📌 3. การ์ดและตาราง */
+.section-title { color: var(--admin-hover) !important; border-left-color: var(--admin-accent) !important; }
+.menu-card { border-left-color: var(--admin-main) !important; border-color: var(--admin-border) !important; }
+.menu-card:hover { border-left-color: var(--admin-accent) !important; transform: translateY(-3px); }
+.menu-text h5 { color: var(--admin-main) !important; }
+
+.active-task-card, .confirm-card, .card-custom, .filter-card { border-color: var(--admin-border) !important; border-left-color: var(--admin-accent) !important; }
+.active-task-card:hover { border-color: var(--admin-main) !important; box-shadow: 0 4px 15px rgba(30, 58, 138, 0.15) !important; border-left-color: var(--admin-main) !important; }
+
+.table th { background-color: var(--admin-main) !important; color: white !important; border: none !important; font-weight: 500; }
+.table-dashboard th { background-color: white !important; color: var(--admin-main) !important; border-bottom: 2px solid var(--admin-main) !important; }
+
+/* 📌 4. Checkbox */
+.select-ipad, .check-item, .form-check-input { accent-color: var(--admin-main) !important; }
