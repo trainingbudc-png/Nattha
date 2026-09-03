@@ -11,7 +11,6 @@
 </head>
 <body>
 
-    <!-- 🟢 Navbar -->
     <nav class="navbar-custom">
         <div class="fw-bold fs-5 d-flex align-items-center gap-2">
             <img src="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" alt="Logo" style="width: 32px; height: 32px; object-fit: contain;">
@@ -28,10 +27,8 @@
 
     <div class="container pb-5 mt-4" style="max-width: 1100px;">
         
-        <!-- 📌 ส่วนที่ 1: รายการที่กำลังดำเนินการ (Active) -->
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-2">
             <div class="section-title mt-0 mb-0">รายการที่กำลังดำเนินการ (Active)</div>
-            <!-- 📌 เปลี่ยนปุ่มเป็น btn-light text-dark เพื่อไม่ให้แย่งซีนการ์ดงานหลัก -->
             <button class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="loadAdminTableData()">🔄 โหลดใหม่</button>
         </div>
         
@@ -39,7 +36,6 @@
             <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>
         </div>
 
-        <!-- 📌 ส่วนภาพรวมระบบ -->
         <div class="section-title">ภาพรวมระบบ</div>
         <div class="row g-3 mb-4">
             <div class="col-12">
@@ -53,7 +49,6 @@
             </div>
         </div>
 
-        <!-- 📌 ส่วนระบบจัดการ -->
         <div class="section-title mt-4">ระบบจัดการ</div>
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-6">
@@ -76,7 +71,6 @@
             </div>
         </div>
 
-        <!-- 📌 ส่วนระบบแจ้งเตือนปัญหา -->
         <div class="section-title mt-4">ระบบแจ้งเตือนปัญหา</div>
         <div class="row g-3 mb-5">
             <div class="col-12">
@@ -90,7 +84,6 @@
             </div>
         </div>
 
-        <!-- 📌 ส่วนที่ 2: ประวัติรายการ (เสร็จสิ้น / ยกเลิก) -->
         <div class="d-flex justify-content-between align-items-end mt-5 mb-3">
             <div class="section-title mt-0 mb-0">ประวัติรายการ (เสร็จสิ้น / ยกเลิก)</div>
         </div>
@@ -248,13 +241,14 @@
             let statusTxt = item.status || "-";
             let statusHtml = "";
             if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
-                statusHtml = `<button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 2">Step[1]</button>`;
+                statusHtml = `<button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ไป Step 2">Step[1]</button>`;
             } else if(statusTxt.includes("Step[2]")) {
-                statusHtml = `<button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 3">Step[2]</button>`;
+                statusHtml = `<button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'" title="ไป Step 3">Step[2]</button>`;
             } else if(statusTxt.includes("Step[3]")) {
-                statusHtml = `<button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'" title="ทำแทนผู้ใช้: ไปยัง Step 4">Step[3]</button>`;
+                statusHtml = `<button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'" title="ไป Step 4">Step[3]</button>`;
             } else if(statusTxt.includes("Step[4]")) {
-                statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'" title="ตรวจสอบรับคืน: Step 5">ตรวจรับคืน (Step 5)</button>`;
+                // 📌 ปรับข้อความให้กระชับขึ้น: ตัดคำว่า (Step 5) ออก เหลือแค่ "ตรวจรับคืน" ปุ่มจะสวยพอดีเป๊ะ
+                statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'" title="ตรวจสอบรับคืน">ตรวจรับคืน</button>`;
             } else {
                 statusHtml = `<span class="badge bg-light text-dark border px-3 py-2 rounded-pill">${statusTxt}</span>`;
             }
