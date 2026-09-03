@@ -149,13 +149,21 @@
         loadAdminTableData();
     };
 
-    function loadAdminTableData() {
-        document.getElementById("activeCardsContainer").innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>';
-        document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
+    // 📌 ระบบโหลดข้อมูลแบบอึด (Auto-Retry) ยิงซ้ำเมื่อ Google ตัดสาย
+    async function loadAdminTableData(retryCount = 3) {
+        if (retryCount === 3) {
+            document.getElementById("activeCardsContainer").innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>';
+            document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
+        }
         
-        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
-        .then(res => res.json())
-        .then(res => {
+        try {
+            const response = await fetch(API_URL, { 
+                method: "POST", 
+                body: JSON.stringify({ action: "getData" }) 
+            });
+            
+            const res = await response.json();
+
             if (res.status === "success" && res.data && res.data.length > 0) {
                 globalLogData = res.data.filter(item => item.reqId !== "ReqID" && item.reqId !== "เลขรายการ");
                 filterTable(); 
@@ -163,10 +171,20 @@
                 globalLogData = [];
                 filterTable();
             }
-        }).catch(err => {
-            document.getElementById("activeCardsContainer").innerHTML = '<div class="col-12 text-center text-danger py-5 bg-white rounded-4 border">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
-            document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
-        });
+        } catch (err) {
+            if (retryCount > 0) {
+                console.warn(`[Auto-Retry] โหลดข้อมูลไม่สำเร็จ กำลังพยายามใหม่... (เหลือสิทธิ์อีก ${retryCount} ครั้ง)`);
+                setTimeout(() => loadAdminTableData(retryCount - 1), 1500); 
+            } else {
+                document.getElementById("activeCardsContainer").innerHTML = `
+                    <div class="col-12 text-center text-danger py-5 bg-white rounded-4 border">
+                        <div class="fw-bold fs-5 mb-2">❌ เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์</div>
+                        <div class="text-muted small mb-3">Google Apps Script ไม่ตอบสนอง กรุณาลองใหม่อีกครั้ง</div>
+                        <button class="btn btn-outline-danger btn-sm rounded-pill px-4 fw-bold shadow-sm" onclick="loadAdminTableData()">🔄 โหลดข้อมูลใหม่</button>
+                    </div>`;
+                document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5">❌ โหลดข้อมูลล้มเหลว</td></tr>';
+            }
+        }
     }
 
     function filterTable() {
@@ -247,7 +265,6 @@
             } else if(statusTxt.includes("Step[3]")) {
                 statusHtml = `<button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'" title="ไป Step 4">Step[3]</button>`;
             } else if(statusTxt.includes("Step[4]")) {
-                // 📌 ปรับข้อความให้กระชับขึ้น: ตัดคำว่า (Step 5) ออก เหลือแค่ "ตรวจรับคืน" ปุ่มจะสวยพอดีเป๊ะ
                 statusHtml = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'" title="ตรวจสอบรับคืน">ตรวจรับคืน</button>`;
             } else {
                 statusHtml = `<span class="badge bg-light text-dark border px-3 py-2 rounded-pill">${statusTxt}</span>`;
