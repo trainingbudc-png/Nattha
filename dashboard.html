@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard ภาพรวม</title>
+    <title>Dashboard ภาพรวมระบบ</title>
     <link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="theme-admin.css">
@@ -11,7 +11,7 @@
     <style>
         .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
         .table-dashboard { white-space: nowrap; border-collapse: collapse; }
-        .table-dashboard td { font-size: 0.85rem; padding: 10px; text-align: center; vertical-align: middle; border: 1px solid #e2e8f0; background-color: white; }
+        .table-dashboard td { font-size: 0.85rem; padding: 12px 10px; text-align: center; vertical-align: middle; border: 1px solid #e2e8f0; background-color: white; }
         .step-cell { color: var(--admin-main); min-width: 110px; line-height: 1.4; font-weight: 500;}
         .step-cell-empty { background-color: #f8fafc !important; } 
         
@@ -30,14 +30,15 @@
         <div class="fw-bold fs-5 d-flex align-items-center gap-2 text-white">
             📊 Dashboard ภาพรวมระบบ
         </div>
-        <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 border-0">🔙 กลับหน้าแอดมิน</a>
+        <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm">🔙 กลับหน้าแอดมิน</a>
     </nav>
 
     <div class="dashboard-container pb-5 mt-4">
         
         <div class="d-flex justify-content-between align-items-end mb-3">
             <h5 class="fw-bold text-dark m-0">ตารางข้อมูลรายการเบิก-ยืม</h5>
-            <button class="btn btn-admin btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="fetchData()">🔄 อัปเดตข้อมูล</button>
+            <!-- 📌 ปรับปุ่มอัปเดตข้อมูลให้เป็นสไตล์ Light ซอฟต์ๆ ไม่แย่งซีน -->
+            <button class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm border" onclick="fetchData()">🔄 อัปเดตข้อมูล</button>
         </div>
 
         <div class="filter-card p-4">
@@ -49,7 +50,7 @@
                 <div class="col-md-4 col-12">
                     <label class="form-label text-muted fw-bold mb-1" style="font-size: 0.85rem;">📊 กรองตามสถานะระบบ</label>
                     <select id="statusFilter" class="form-select fw-bold border-2" onchange="applyFilters()">
-                        <option value="all"> โชว์ทุกสถานะ (ทั้งหมด)</option>
+                        <option value="all">โชว์ทุกสถานะ (ทั้งหมด)</option>
                         <option value="ไม่ครบ">⚠️ ค้างดำเนินการ (ไม่ครบ)</option>
                         <option value="จบขั้นตอน">✔️ เสร็จสมบูรณ์ (จบขั้นตอน)</option>
                     </select>
@@ -63,7 +64,7 @@
             </div>
         </div>
         
-        <div class="table-responsive shadow-sm border rounded">
+        <div class="table-responsive shadow-sm border rounded bg-white mt-3">
             <table class="table table-dashboard m-0">
                 <thead>
                     <tr>
@@ -75,7 +76,7 @@
                         <th>Step 5 | ตรวจ</th>
                         <th style="border-left: 2px solid #e2e8f0;">สถานะรวม</th>
                         <th>ผู้เตรียมเครื่อง</th>
-                        <th>ผู้ที่จะมารับเครื่อง</th>
+                        <th style="min-width: 180px;">ผู้ที่จะมารับเครื่อง</th>
                         <th style="width: 15%;">หมายเหตุ</th>
                         <th>ยืมฉุกเฉิน</th>
                     </tr>
@@ -191,9 +192,9 @@
                     ${formatStepCell(item.step4)}
                     ${formatStepCell(item.step5)}
                     <td style="border-left: 2px solid #e2e8f0;">${formatStatus(item.status)}</td>
-                    <td class="fw-bold text-dark">${item.preparer}</td>
-                    <td class="fw-bold text-danger">${item.receiver}</td>
-                    <td class="text-start text-danger" style="font-weight: 500;">${item.note || ""}</td>
+                    <td class="fw-bold text-dark">${item.preparer || "-"}</td>
+                    <td class="fw-bold text-dark text-start ps-3" style="white-space: normal; word-break: break-word;">${item.receiver || "-"}</td>
+                    <td class="text-start text-secondary" style="font-weight: 500; white-space: normal; word-break: break-word;">${item.note || ""}</td>
                     <td>${formatEmergency(item.emergency)}</td>
                 </tr>
             `;
