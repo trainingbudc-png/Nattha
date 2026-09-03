@@ -4,65 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แจ้งสถานะเครื่องมีปัญหา</title>
-	<link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
+    <link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme-admin.css">
     
     <style>
-        body { font-family: 'Kanit', sans-serif; background-color: #fdf2f2; padding: 20px; color: #333; }
-        .card-custom { background: white; border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(220,53,69,0.05); border-top: 6px solid #dc3545; }
-        .form-label { font-weight: 600; color: #495057; }
-        
-        .btn-submit-custom { background-color: #dc3545; color: white; font-weight: bold; border: none; border-radius: 8px; padding: 12px; transition: 0.3s; }
-        .btn-submit-custom:hover { background-color: #b91c1c; color: white; }
-
-        .alert-box { background-color: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #dc3545; color: #991b1b; padding: 15px; border-radius: 8px; margin-bottom: 25px; font-size: 0.95rem; }
-
-        /* 📌 ปรับแต่งปุ่มตัวเลือกให้ไฮไลท์ชัดเจน */
-        .btn-outline-danger, .btn-outline-secondary { transition: 0.2s; border-width: 2px; border-radius: 10px; background-color: white; }
+        .alert-box { background-color: #fef9c3; border: 1px solid #fde047; border-left: 4px solid #d97706; color: #92400e; padding: 15px; border-radius: 8px; margin-bottom: 25px; font-size: 0.95rem; }
         .cat-subtitle { font-size: 0.8rem; display: block; margin-top: 5px; transition: 0.2s; }
         
-        /* 🔴 เมื่อกดปุ่ม 'แจ้งส่งซ่อม' (สีแดงทึบ) */
-        .btn-check:checked + .btn-outline-danger { 
-            background-color: #dc3545 !important; 
-            border-color: #dc3545 !important; 
+        /* เมื่อกดปุ่ม 'แจ้งส่งซ่อม' */
+        .btn-check:checked + .btn-outline-admin { 
+            background-color: var(--admin-main) !important; 
             color: white !important; 
-            box-shadow: 0 4px 12px rgba(220,53,69,0.3);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
         }
-        .btn-check:checked + .btn-outline-danger .cat-subtitle { color: #f8d7da !important; }
+        .btn-check:checked + .btn-outline-admin .cat-subtitle { color: #bfdbfe !important; }
 
-        /* ⚪ เมื่อกดปุ่ม 'รายงานเฉยๆ' (สีเทาทึบ) */
+        /* เมื่อกดปุ่ม 'รายงานเฉยๆ' */
+        .btn-outline-secondary { border: 2px solid #64748b; color: #475569; background: white; border-radius: 10px;}
         .btn-check:checked + .btn-outline-secondary { 
-            background-color: #dc3545 !important; 
-            border-color: #dc3545 !important; 
+            background-color: #475569 !important; 
+            border-color: #475569 !important; 
             color: white !important; 
-            box-shadow: 0 4px 12px rgba(73,80,87,0.3);
+            box-shadow: 0 4px 12px rgba(71, 85, 105, 0.3);
         }
-        .btn-check:checked + .btn-outline-secondary .cat-subtitle { color: #e9ecef !important; }
+        .btn-check:checked + .btn-outline-secondary .cat-subtitle { color: #f1f5f9 !important; }
     </style>
 </head>
 <body>
     
     <div class="container my-4" style="max-width: 700px;">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="text-danger fw-bold mb-0">⚠️ แจ้งสถานะเครื่องมีปัญหา</h3>
-            <a href="admin.html" class="btn btn-outline-danger px-4 fw-bold rounded-pill border-2">🔙 กลับหน้าแอดมิน</a>
+            <h3 class="fw-bold mb-0" style="color: var(--admin-main);">⚠️ แจ้งสถานะเครื่องมีปัญหา</h3>
+            <a href="admin.html" class="btn btn-outline-admin px-4 fw-bold rounded-pill">🔙 กลับหน้าแอดมิน</a>
         </div>
         
         <div class="card card-custom p-4 p-md-5 mx-auto">
-            
             <div class="alert-box">
                 <strong>คำแนะนำ:</strong> ใช้ฟอร์มนี้เพื่ออัปเดตสถานะกรณีพบความเสียหาย หรือต้องการบันทึกประวัติเครื่อง
             </div>
 
             <form id="issueForm">
-                
                 <div class="mb-4">
-                    <label class="form-label">📌 เลือกหมวดหมู่การแจ้ง:</label>
+                    <label class="form-label fw-bold text-dark">📌 เลือกหมวดหมู่การแจ้ง:</label>
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <input type="radio" class="btn-check" name="reportCategory" id="catRepair" value="repair" checked>
-                            <label class="btn btn-outline-danger w-100 text-start p-3 fw-bold shadow-sm" for="catRepair">
+                            <label class="btn btn-outline-admin w-100 text-start p-3 fw-bold shadow-sm" for="catRepair">
                                 🛠️ แจ้งส่งซ่อม
                                 <span class="cat-subtitle text-muted fw-normal">ระบบจะระงับการยืมเครื่องนี้ และตัดออกจากหน้าเตรียมเครื่อง</span>
                             </label>
@@ -78,15 +66,15 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label">📱 เลือกรหัส iPad ที่มีปัญหา:</label>
-                    <select id="ipadIdSelect" class="form-select form-select-lg" required>
+                    <label class="form-label fw-bold text-dark">📱 เลือกรหัส iPad ที่มีปัญหา:</label>
+                    <select id="ipadIdSelect" class="form-select form-select-lg border-2" required>
                         <option value="">-- กรุณาเลือกรหัส iPad --</option>
                     </select>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label">🚨 ประเภทของปัญหา:</label>
-                    <select id="issueType" class="form-select form-select-lg" required>
+                    <label class="form-label fw-bold text-dark">🚨 ประเภทของปัญหา:</label>
+                    <select id="issueType" class="form-select form-select-lg border-2" required>
                         <option value="">-- เลือกประเภทปัญหา --</option>
                         <option value="หน้าจอแตก/เสียหาย">📱 หน้าจอแตก / เสียหาย</option>
                         <option value="แบตเตอรี่เสื่อม/เปิดไม่ติด">🔋 แบตเตอรี่เสื่อม / เปิดไม่ติด</option>
@@ -97,29 +85,27 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label">📝 รายละเอียดเพิ่มเติม / อาการที่พบ:</label>
-                    <textarea id="issueNote" class="form-control" rows="4" placeholder="เช่น รอยร้าวที่มุมขวาล่าง, ชาร์จแบตไม่เข้า, หรือชื่อผู้ใช้งานทำหล่น..."></textarea>
+                    <label class="form-label fw-bold text-dark">📝 รายละเอียดเพิ่มเติม / อาการที่พบ:</label>
+                    <textarea id="issueNote" class="form-control border-2" rows="4" placeholder="เช่น รอยร้าวที่มุมขวาล่าง, ชาร์จแบตไม่เข้า, หรือชื่อผู้ใช้งานทำหล่น..."></textarea>
                 </div>
 
-                <button type="button" class="btn btn-submit-custom w-100 fs-5 mt-2 shadow" id="submitBtn" onclick="submitIssue()">💾 บันทึกข้อมูล</button>
+                <button type="button" class="btn btn-admin w-100 fs-5 mt-2 shadow fw-bold rounded-3" id="submitBtn" onclick="submitIssue()">💾 บันทึกข้อมูล</button>
             </form>
         </div>
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="script.js"></script>
-	<script>
-
-    
+<script>
     window.onload = function() {
         if(localStorage.getItem("userRole") !== "Admin") { 
-            Swal.fire("ปฏิเสธการเข้าถึง", "เฉพาะแอดมินเท่านั้น", "error").then(() => window.location.href="index.html"); 
+            window.location.href="index.html"; 
             return; 
         }
         generateIpadList();
     };
 
-function generateIpadList() {
+    function generateIpadList() {
         const select = document.getElementById("ipadIdSelect");
         
         const optgroupNormal = document.createElement("optgroup");
@@ -127,7 +113,6 @@ function generateIpadList() {
         for (let i = 1; i <= 60; i++) {
             let num = i.toString().padStart(2, '0');
             let option = document.createElement("option");
-            // ✅ เติมเคาะเว้นวรรคให้ตรงกับฐานข้อมูลในคลัง
             option.value = `IPad ${num}`; option.text = `IPad ${num}`; 
             optgroupNormal.appendChild(option);
         }
@@ -142,6 +127,7 @@ function generateIpadList() {
         }
         select.appendChild(optgroupAir);
     }
+    
     function submitIssue() {
         const reportCategory = document.querySelector('input[name="reportCategory"]:checked').value;
         const ipadId = document.getElementById("ipadIdSelect").value;
@@ -164,13 +150,12 @@ function generateIpadList() {
         .then(res => res.json())
         .then(res => {
             if(res.status === "success") {
-                // 📌 อัปเดต Pop-up ให้ตรงกับมาตรฐานของระบบใหม่
                 Swal.fire({
                     title: "บันทึกสำเร็จ!",
                     text: res.message,
                     icon: "success",
-                    confirmButtonColor: "#dc3545",
-                    confirmButtonText: "OK",
+                    confirmButtonColor: "#1e3a8a",
+                    confirmButtonText: "กลับหน้าแอดมิน",
                     allowOutsideClick: false
                 }).then(() => { 
                     window.location.href = "admin.html"; 
@@ -179,9 +164,6 @@ function generateIpadList() {
                 Swal.fire("ข้อผิดพลาด", res.message || "ไม่สามารถบันทึกข้อมูลได้", "error");
                 btn.innerHTML = "💾 บันทึกข้อมูล"; btn.disabled = false;
             }
-        }).catch(err => {
-            Swal.fire("ขัดข้อง", "ระบบขัดข้องในการเชื่อมต่อเซิร์ฟเวอร์", "error");
-            btn.innerHTML = "💾 บันทึกข้อมูล"; btn.disabled = false;
         });
     }
 </script>
