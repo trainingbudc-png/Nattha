@@ -12,10 +12,10 @@
     <div class="nav-header-custom shadow-sm mb-4">
         <div class="nav-title-custom fw-bold">
             ⚙️ จัดการรายการเตรียมเครื่อง
-            <span class="d-block d-sm-inline text-muted" style="font-size: 0.95rem; font-weight: 500;">(ค้างดำเนินการ)</span>
+            <span class="d-block d-sm-inline text-light opacity-75" style="font-size: 0.95rem; font-weight: 500;">(ค้างดำเนินการ)</span>
         </div>
         <div>
-            <a href="admin.html" class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4">🔙 กลับเมนูแอดมิน</a>
+            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4">🔙 กลับเมนูแอดมิน</a>
         </div>
     </div>
 
@@ -71,7 +71,6 @@
             tbody.innerHTML = ""; 
             if (res.status === "success" && res.data && res.data.length > 0) {
                 const pendingData = res.data.filter(item => item.status && item.status.includes("รอแอดมินยืนยัน"));
-
                 if (pendingData.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="5" class="text-center text-success fw-bold py-5">🎉 ไม่มีรายการที่รอยืนยันในขณะนี้</td></tr>';
                     return;
@@ -95,7 +94,6 @@
                             <td data-label="ผู้ยืม" class="fw-bold text-dark" style="line-height: 1.5;">${displayName}</td>
                             <td data-label="จัดการ">
                                 <div class="d-flex flex-column gap-2 px-1">
-                                    <!-- ปุ่มยืนยันใช้สีเขียวมาตรฐานของ Bootstrap เพราะสื่อถึงการผ่าน/ตกลง -->
                                     <button class="btn btn-success btn-sm fw-bold rounded-pill shadow-sm py-2" onclick="confirmStep1('${item.reqId}')">✅ ยืนยัน</button>
                                     <button class="btn btn-outline-admin btn-sm fw-bold rounded-pill bg-white py-2" onclick="cancelStep1('${item.reqId}')">❌ ปฏิเสธ</button>
                                 </div>
@@ -121,7 +119,7 @@
         });
         let displayGroups = [];
         if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-        if (airIds.length > 0) displayGroups.push(`<span class="text-primary fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
+        if (airIds.length > 0) displayGroups.push(`<span style="color:var(--admin-accent);" class="fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
         return displayGroups.join('<br>');
     }
 
