@@ -5,76 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>จัดการรอยืนยัน (Admin)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-admin.css">
-    <style>
-        body { background-color: #fdf2f2; font-family: 'Kanit', sans-serif; }
-        
-        .container-main { max-width: 1100px; margin: 0 auto; }
-        
-        /* 📌 กรอบขาวด้านบนแบบเดียวกับในรูปเป๊ะๆ (มีเส้นดำหนาด้านล่าง) */
-        .nav-header-custom {
-            background-color: #ffffff;
-            max-width: 1100px;
-            margin: 20px auto 30px auto;
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 4px solid #212529; /* เส้นดำหนา */
-        }
-        
-        .nav-title-custom {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #212529;
-            line-height: 1.2;
-        }
-
-        /* 📌 ตกแต่งตารางให้อ่านง่ายและสีตรงกับตีม */
-        .table-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(220,53,69,0.05); border: 1px solid #fecaca; }
-        .table { margin-bottom: 0; }
-        .table th { background-color: #dc3545; color: white; border: none; padding: 15px; font-weight: 600; text-align: center; white-space: nowrap; }
-        .table td { vertical-align: middle; text-align: center; padding: 15px 10px; border-bottom: 1px solid #fee2e2; }
-
-        @media screen and (max-width: 768px) {
-            .nav-header-custom { flex-direction: column; gap: 15px; text-align: center; padding: 20px 15px; }
-            .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; box-shadow: none !important; }
-            .table thead { display: none; }
-            .table tbody tr { display: block; background: white; border-radius: 12px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(220,53,69,0.1); border: 1px solid #fecaca; }
-            .table tbody td { display: flex; justify-content: space-between; align-items: flex-start; text-align: right; padding: 10px 0; border-bottom: 1px dashed #fee2e2; }
-            .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
-            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #b91c1c; font-size: 0.95rem; text-align: left; margin-right: 15px; flex-shrink: 0; }
-            .btn-sm { padding: 10px !important; margin-top: 5px; width: 100%; }
-        }
-    </style>
 </head>
 <body>
 
-    <!-- 📌 กรอบขาวด้านบน (จำลองแบบเป๊ะๆ ตามในรูปเรฟเฟอเรนซ์) -->
-    <div class="nav-header-custom">
-        <div class="nav-title-custom">
+    <div class="nav-header-custom shadow-sm mb-4">
+        <div class="nav-title-custom fw-bold">
             ⚙️ จัดการรายการเตรียมเครื่อง
-            <span class="d-block d-sm-inline" style="font-size: 0.95rem; color: #6c757d; font-weight: 500;">(ค้างดำเนินการ)</span>
+            <span class="d-block d-sm-inline text-muted" style="font-size: 0.95rem; font-weight: 500;">(ค้างดำเนินการ)</span>
         </div>
         <div>
-            <a href="admin.html" class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-4 border-2">🔙 กลับเมนูแอดมิน</a>
+            <a href="admin.html" class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4">🔙 กลับเมนูแอดมิน</a>
         </div>
     </div>
 
-    <div class="container container-main pb-5">
-        
-        <!-- 📌 ย้ายปุ่มรีเฟรชมาไว้เหนือตาราง ชิดขวาตรงกับคอลัมน์จัดการ (ตามหลัก Proximity UX) -->
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-3 px-1">
+    <div class="container pb-5" style="max-width: 1100px;">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-3 px-1">
             <div>
-                <div class="fw-bold text-danger fs-5 mb-2 border-start border-danger border-4 ps-2">รายการที่ "รอแอดมินยืนยันการเตรียม"</div>
+                <div class="section-title mt-0 mb-2">รายการที่ "รอแอดมินยืนยันการเตรียม"</div>
                 <p class="text-muted mb-0" style="font-size: 0.9rem; line-height: 1.6;">
                     * เมื่อคุณกดยืนยัน ระบบจะส่งข้อความแจ้งเตือนไปที่ LINE ของผู้ขอเบิกยืมทันที <br>
                     * หากกดยกเลิก ระบบจะคืนสถานะอุปกรณ์เหล่านั้นกลับเป็น "ว่าง"
                 </p>
             </div>
-            <!-- 📌 เปลี่ยนปุ่มเป็นแบบมีกรอบ (Outline) พร้อมพื้นหลังขาวและขอบหนา -->
-            <button class="btn btn-outline-dark btn-sm rounded-pill fw-bold px-4 py-2 border-2 shadow-sm align-self-end bg-white" onclick="loadPendingData()">
+            <button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm align-self-end bg-white" onclick="loadPendingData()">
                 🔄 รีเฟรช
             </button>
         </div>
@@ -87,10 +41,10 @@
                         <th style="width: 20%;">วัน-เวลา</th>
                         <th style="width: 30%;">รหัส iPad</th>
                         <th style="width: 15%;">ผู้ยืม</th>
-                        <th style="width: 20%;">จัดการ (ยืนยัน/ยกเลิก)</th>
+                        <th style="width: 20%;">จัดการ</th>
                     </tr>
                 </thead>
-                <tbody id="manageTableBody">
+                <tbody id="manageTableBody" class="bg-white">
                     <tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
@@ -99,21 +53,16 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="script.js"></script> 
-
 <script>
     const currentAdmin = localStorage.getItem("userName") || "Admin";
 
     window.onload = function() {
-        if(localStorage.getItem("userRole") !== "Admin") {
-            window.location.href = "index.html"; 
-            return;
-        }
+        if(localStorage.getItem("userRole") !== "Admin") { window.location.href = "index.html"; return; }
         loadPendingData();
     };
 
     function loadPendingData() {
         const tbody = document.getElementById("manageTableBody");
-        
         tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted fw-bold">กำลังโหลดข้อมูลล่าสุด... ⏳</td></tr>'; 
         
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
@@ -128,18 +77,14 @@
                     return;
                 }
 
-pendingData.forEach(item => {
+                pendingData.forEach(item => {
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
                     let formattedIpads = formatIpadText(item.ipadId);
 
-                    // 📌 UX: จัดระเบียบชื่อผู้ยืม แยกชื่อหลักกับ(ชื่อเล่น) ให้อยู่คนละบรรทัด
                     let displayName = item.name || "-";
                     if (displayName !== "-" && displayName.includes("(")) {
                         let parts = displayName.split("(");
-                        let mainName = parts[0].trim();
-                        let nickName = "(" + parts[1].trim();
-                        // บังคับขึ้นบรรทัดใหม่ และทำชื่อเล่นให้สีอ่อนลง/เล็กลงนิดนึง
-                        displayName = `${mainName}<br><span class="text-secondary fw-normal" style="font-size: 0.85rem;">${nickName}</span>`;
+                        displayName = `${parts[0].trim()}<br><span class="text-secondary fw-normal" style="font-size: 0.85rem;">(${parts[1].trim()}</span>`;
                     }
 
                     tbody.innerHTML += `
@@ -147,11 +92,12 @@ pendingData.forEach(item => {
                             <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
                             <td data-label="วัน-เวลา" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
                             <td data-label="รหัส iPad" style="max-width: 100%; line-height: 1.6;">${formattedIpads}</td>
-                            <td data-label="ผู้ยืม" class="fw-bold text-primary" style="line-height: 1.5;">${displayName}</td>
+                            <td data-label="ผู้ยืม" class="fw-bold text-dark" style="line-height: 1.5;">${displayName}</td>
                             <td data-label="จัดการ">
                                 <div class="d-flex flex-column gap-2 px-1">
+                                    <!-- ปุ่มยืนยันใช้สีเขียวมาตรฐานของ Bootstrap เพราะสื่อถึงการผ่าน/ตกลง -->
                                     <button class="btn btn-success btn-sm fw-bold rounded-pill shadow-sm py-2" onclick="confirmStep1('${item.reqId}')">✅ ยืนยัน</button>
-                                    <button class="btn btn-outline-danger btn-sm fw-bold rounded-pill bg-white border-2 py-2" onclick="cancelStep1('${item.reqId}')">❌ ปฏิเสธ</button>
+                                    <button class="btn btn-outline-admin btn-sm fw-bold rounded-pill bg-white py-2" onclick="cancelStep1('${item.reqId}')">❌ ปฏิเสธ</button>
                                 </div>
                             </td>
                         </tr>
@@ -160,8 +106,6 @@ pendingData.forEach(item => {
             } else {
                 tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
             }
-        }).catch(err => {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
         });
     }
 
@@ -177,7 +121,7 @@ pendingData.forEach(item => {
         });
         let displayGroups = [];
         if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-        if (airIds.length > 0) displayGroups.push(`<span class="text-dark fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
+        if (airIds.length > 0) displayGroups.push(`<span class="text-primary fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
         return displayGroups.join('<br>');
     }
 
@@ -201,7 +145,7 @@ pendingData.forEach(item => {
             text: `อุปกรณ์ทั้งหมดในรายการ ${reqId} จะถูกเปลี่ยนสถานะเป็น "ว่าง" และกลับคืนสู่คลังทันที`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#dc3545",
+            confirmButtonColor: "#1e3a8a",
             cancelButtonColor: "#6c757d",
             confirmButtonText: "ใช่, ยกเลิกและคืนคลัง!"
         }).then((result) => {
@@ -221,12 +165,6 @@ pendingData.forEach(item => {
                 Swal.fire("สำเร็จ!", successText, "success").then(() => loadPendingData());
             } else {
                 Swal.fire("เกิดข้อผิดพลาด", res.message, "error");
-            }
-        }).catch(err => {
-            if(navigator.onLine) {
-                 Swal.fire("สำเร็จ!", successText + " (แต่อาจใช้เวลาอัปเดตสักครู่)", "success").then(() => loadPendingData());
-            } else {
-                 Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่ออินเทอร์เน็ตได้", "error");
             }
         });
     }
