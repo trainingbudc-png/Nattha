@@ -27,13 +27,11 @@ body {
     justify-content: space-between;
     align-items: center;
 }
-.navbar-custom *, .nav-header-custom *, .red-header *, .main-header-card h3 { 
-    color: white !important; 
-    text-decoration: none; 
-}
-.nav-title-custom, .admin-name { color: #bfdbfe !important; }
+/* แก้บั๊กข้อความขาวทับปุ่ม โดยระบุให้ชัดเจน */
+.navbar-custom .fs-5, .nav-title-custom, .main-header-card h3, .red-header span { color: white !important; text-decoration: none; }
+.admin-name { color: #bfdbfe !important; }
 
-/* 📌 2. ไฮแจ็คสีแดงเป็น Navy (Buttons & Badges) */
+/* 📌 2. ปุ่มกด (Buttons & Badges) */
 .bg-danger { background-color: var(--admin-main) !important; color: white !important; }
 .text-danger { color: var(--admin-main) !important; }
 
@@ -45,7 +43,6 @@ body {
 }
 .btn-danger:hover, .btn-admin:hover, .btn-submit-custom:hover, .btn-confirm:hover { 
     background-color: var(--admin-hover) !important; 
-    border-color: var(--admin-hover) !important; 
     box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3) !important;
 }
 
@@ -62,122 +59,52 @@ body {
 
 /* 📌 3. หัวข้อ Section */
 .section-title { 
-    font-size: 1.15rem; 
-    font-weight: 600; 
-    color: var(--admin-main) !important; 
-    margin-top: 30px; 
-    margin-bottom: 15px; 
-    padding-left: 12px; 
+    font-size: 1.15rem; font-weight: 600; color: var(--admin-main) !important; 
+    margin-top: 30px; margin-bottom: 15px; padding-left: 12px; 
     border-left: 5px solid var(--admin-accent) !important; 
 }
 
 /* 📌 4. กล่องเมนูภาพรวม (Menu Cards) */
 .menu-card { 
-    background: white;
-    border: 1px solid var(--admin-border); 
-    border-radius: 12px; 
-    padding: 20px 25px; 
-    display: flex; 
-    align-items: center; 
-    gap: 20px; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03); 
-    transition: all 0.3s ease; 
-    cursor: pointer; 
-    text-decoration: none !important; 
-    height: 100%; 
+    background: white; border: 1px solid var(--admin-border) !important; 
+    border-radius: 12px; padding: 20px 25px; 
+    display: flex; align-items: center; gap: 20px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: all 0.3s ease; 
+    text-decoration: none !important; height: 100%; 
     border-left: 6px solid var(--admin-main) !important; 
 }
-.menu-card:hover { 
-    transform: translateY(-5px); 
-    box-shadow: 0 8px 25px rgba(30, 58, 138, 0.1);
-    border-left-color: var(--admin-accent) !important; 
-}
+.menu-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(30, 58, 138, 0.1); border-left-color: var(--admin-accent) !important; }
 .menu-icon { font-size: 2.2rem; }
 .menu-text h5 { font-weight: 600; margin: 0 0 5px 0; font-size: 1.1rem; color: var(--admin-main) !important; }
 .menu-text p { margin: 0; font-size: 0.85rem; color: #64748b; }
 
-/* 📌 5. การ์ดงาน Active และกล่องค้นหา */
+/* 📌 5. การ์ดงาน Active */
 .active-task-card, .confirm-card, .card-custom, .filter-card { 
-    background: white;
-    border-radius: 12px;
-    border: 1px solid var(--admin-border) !important; 
-    border-left: 4px solid var(--admin-main) !important; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03) !important;
-    transition: 0.3s;
+    background: white; border-radius: 12px; border: 1px solid var(--admin-border) !important; 
+    border-left: 4px solid var(--admin-main) !important; box-shadow: 0 4px 10px rgba(0,0,0,0.03) !important; transition: 0.3s;
 }
-.active-task-card:hover { 
-    border-color: var(--admin-main) !important; 
-    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.15) !important; 
-}
+.active-task-card:hover { border-color: var(--admin-main) !important; box-shadow: 0 4px 15px rgba(30, 58, 138, 0.15) !important; }
+
+/* 📌 6. ตารางประวัติ (Table) */
+.table-card { background: white; border-radius: 12px; border: 1px solid var(--admin-border); box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
+.table { margin-bottom: 0; width: 100%; }
+.table th { background-color: var(--admin-main) !important; color: white !important; border: none !important; font-weight: 500; padding: 15px; text-align: center; }
+.table td { vertical-align: middle; padding: 12px 15px; font-size: 0.95rem; text-align: center; border-bottom: 1px solid #f1f5f9; }
+.table-dashboard th { background-color: white !important; color: var(--admin-main) !important; border-bottom: 2px solid var(--admin-main) !important; }
+
+/* 📌 7. Checkbox และ Utilities */
+.select-ipad, .check-item, .form-check-input { accent-color: var(--admin-main) !important; }
+.badge { font-weight: 500; }
 .collapse-icon { transition: transform 0.3s ease; display: inline-block; }
 [aria-expanded="true"] .collapse-icon { transform: rotate(180deg); }
 
-/* 📌 6. ตารางประวัติ (Table) */
-.table-card {
-    background: white;
-    border-radius: 12px;
-    border: 1px solid var(--admin-border);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    overflow: hidden;
-}
-.table { margin-bottom: 0; width: 100%; }
-.table th { 
-    background-color: var(--admin-main) !important; 
-    color: white !important; 
-    border: none !important; 
-    font-weight: 500; 
-    padding: 15px; 
-    text-align: center; 
-}
-.table td { 
-    vertical-align: middle; 
-    padding: 12px 15px; 
-    font-size: 0.95rem; 
-    text-align: center; 
-    border-bottom: 1px solid #f1f5f9; 
-}
-.table-dashboard th { 
-    background-color: white !important; 
-    color: var(--admin-main) !important; 
-    border-bottom: 2px solid var(--admin-main) !important; 
-}
-
-/* 📌 7. Checkbox และอื่นๆ */
-.select-ipad, .check-item, .form-check-input { accent-color: var(--admin-main) !important; }
-.badge { font-weight: 500; }
-
 /* 📌 8. Responsive (โหมดมือถือ) */
 @media screen and (max-width: 768px) {
-    .navbar-custom, .nav-header-custom { flex-direction: column; gap: 15px; text-align: center; }
-    .navbar-custom > div { justify-content: center; width: 100%; flex-wrap: wrap; }
-    
+    .navbar-custom, .nav-header-custom, .main-header-card { flex-direction: column; gap: 15px; text-align: center; }
     .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; box-shadow: none !important; }
     .table thead { display: none; }
-    .table tbody tr { 
-        display: block; 
-        background: white; 
-        border-radius: 12px; 
-        margin-bottom: 15px; 
-        padding: 15px; 
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
-        border: 1px solid var(--admin-border); 
-    }
-    .table tbody td { 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: flex-start; 
-        text-align: right; 
-        padding: 10px 0; 
-        border-bottom: 1px dashed var(--admin-border); 
-    }
+    .table tbody tr { display: block; background: white; border-radius: 12px; margin-bottom: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--admin-border); }
+    .table tbody td { display: flex; justify-content: space-between; align-items: flex-start; text-align: right; padding: 10px 0; border-bottom: 1px dashed var(--admin-border); }
     .table tbody td:last-child { border-bottom: none; padding-bottom: 0; }
-    .table tbody td::before { 
-        content: attr(data-label); 
-        font-weight: 600; 
-        color: var(--admin-main); 
-        font-size: 0.95rem; 
-        text-align: left; 
-        margin-right: 15px; 
-        flex-shrink: 0; 
-    }
+    .table tbody td::before { content: attr(data-label); font-weight: 600; color: var(--admin-main); font-size: 0.95rem; text-align: left; margin-right: 15px; flex-shrink: 0; }
 }
