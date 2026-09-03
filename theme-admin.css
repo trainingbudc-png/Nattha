@@ -27,14 +27,17 @@ body {
     justify-content: space-between;
     align-items: center;
 }
-/* แก้บั๊กข้อความขาวทับปุ่ม โดยระบุให้ชัดเจน */
-.navbar-custom .fs-5, .nav-title-custom, .main-header-card h3, .red-header span { color: white !important; text-decoration: none; }
+.navbar-custom .fs-5, .nav-title-custom, .main-header-card h3, .red-header span { 
+    color: white !important; 
+    text-decoration: none; 
+}
 .admin-name { color: #bfdbfe !important; }
 
 /* 📌 2. ปุ่มกด (Buttons & Badges) */
 .bg-danger { background-color: var(--admin-main) !important; color: white !important; }
 .text-danger { color: var(--admin-main) !important; }
 
+/* ปุ่มหลัก (Step 5, ยืนยัน) */
 .btn-danger, .btn-admin, .btn-submit-custom, .btn-confirm { 
     background-color: var(--admin-main) !important; 
     border-color: var(--admin-main) !important; 
@@ -43,18 +46,34 @@ body {
 }
 .btn-danger:hover, .btn-admin:hover, .btn-submit-custom:hover, .btn-confirm:hover { 
     background-color: var(--admin-hover) !important; 
+    border-color: var(--admin-hover) !important; 
     box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3) !important;
 }
 
+/* ปุ่ม Outline (Step 1-3) */
 .btn-outline-danger, .btn-outline-admin { 
-    color: var(--admin-main) !important; 
+    background-color: #f8fafc !important; 
     border: 2px solid var(--admin-main) !important; 
-    background-color: white !important;
+    color: var(--admin-main) !important; 
     font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
 }
 .btn-outline-danger:hover, .btn-outline-admin:hover { 
     background-color: var(--admin-main) !important; 
     color: white !important; 
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2) !important;
+}
+
+/* ปุ่มรอง */
+.btn-light.text-dark {
+    background-color: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #475569 !important;
+    transition: 0.2s;
+}
+.btn-light.text-dark:hover {
+    background-color: #e2e8f0 !important;
+    color: var(--admin-main) !important;
 }
 
 /* 📌 3. หัวข้อ Section */
@@ -68,13 +87,25 @@ body {
 .menu-card { 
     background: white; border: 1px solid var(--admin-border) !important; 
     border-radius: 12px; padding: 20px 25px; 
-    display: flex; align-items: center; gap: 20px; 
+    display: flex; align-items: center !important; gap: 20px; 
     box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: all 0.3s ease; 
     text-decoration: none !important; height: 100%; 
     border-left: 6px solid var(--admin-main) !important; 
 }
-.menu-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(30, 58, 138, 0.1); border-left-color: var(--admin-accent) !important; }
-.menu-icon { font-size: 2.2rem; }
+.menu-card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 25px rgba(30, 58, 138, 0.1); 
+    border-left-color: var(--admin-accent) !important; 
+}
+
+.menu-icon { 
+    font-size: 2.8rem !important; 
+    line-height: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.9;
+}
 .menu-text h5 { font-weight: 600; margin: 0 0 5px 0; font-size: 1.1rem; color: var(--admin-main) !important; }
 .menu-text p { margin: 0; font-size: 0.85rem; color: #64748b; }
 
