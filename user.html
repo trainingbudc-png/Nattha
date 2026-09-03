@@ -21,17 +21,7 @@
             padding-left: 20px !important;
             padding-right: 20px !important;
         }
-        .table th { padding: 12px !important; font-size: 0.95rem; }
-        .table td { padding: 8px 12px !important; font-size: 0.9rem; vertical-align: middle; }
         
-        .active-task-card {
-            border: 1px solid #fecaca;
-            transition: box-shadow 0.2s ease, border-color 0.2s ease;
-        }
-        .active-task-card:hover {
-            box-shadow: 0 4px 15px rgba(220,53,69,0.1) !important;
-            border-color: #dc3545;
-        }
         .collapse-icon {
             transition: transform 0.3s ease;
             display: inline-block;
@@ -43,13 +33,11 @@
 </head>
 <body>
 
-<!-- 🟢 Navbar ปรับให้มีเงาบางๆ และขอบล่างสีเทาอ่อนมากแทนเส้นดำทึบ -->
-    <nav class="nav-header bg-white shadow-sm" style="border-bottom: 1px solid #f8f9fa;">
-        <div class="nav-title d-flex align-items-center gap-2">
+    <nav class="nav-header">
+        <div class="nav-title">
             <img src="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" alt="Logo" style="width: 28px; height: 28px; object-fit: contain;">
             เมนูผู้ใช้งาน
         </div>
-        <!-- (ส่วนปุ่มด้านขวาคงเดิม) -->
 
         <div class="d-flex align-items-center gap-2">
             <span class="text-primary fw-bold d-none d-sm-inline">สวัสดี, <span id="showName">Loading...</span></span>
@@ -66,7 +54,7 @@
         
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mt-4 mb-3 gap-2">
             <div class="d-flex align-items-center gap-2">
-                <div style="width: 4px; height: 20px; background-color: #dc3545; border-radius: 2px;"></div>
+                <div class="accent-bar"></div>
                 <h5 class="fw-bold m-0 text-dark">รายการที่กำลังดำเนินการ (Active)</h5>
             </div>
             <button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold bg-white shadow-sm border-2" onclick="loadUserTableData()">🔄 อัปเดต</button>
@@ -77,19 +65,18 @@
         </div>
 
         <div class="d-flex align-items-center gap-2 mb-3">
-            <div style="width: 4px; height: 20px; background-color: #212529; border-radius: 2px;"></div>
+            <div class="accent-bar"></div>
             <h5 class="fw-bold m-0 text-dark">ประวัติอุปกรณ์ของฉัน (เสร็จสิ้น)</h5>
         </div>
         
-        <div class="table-card table-responsive shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid #e9ecef;">
+        <div class="table-card table-responsive shadow-sm">
             <table class="table table-hover align-middle mb-0">
-<!-- 📌 บังคับหัวตารางให้เป็นสีเทาอ่อน เพื่อไม่ให้เด่นแย่งซีนงานปัจจุบัน -->
-                <thead style="border-bottom: 2px solid #dee2e6;">
+                <thead>
                     <tr class="text-center">
-                        <th style="width: 20%; padding: 15px; font-weight: 600; background-color: #f8f9fa !important; color: #6c757d !important;">เลขรายการ</th>
-                        <th style="width: 20%; padding: 15px; font-weight: 600; background-color: #f8f9fa !important; color: #6c757d !important;">อุปกรณ์ที่ยืม</th>
-                        <th style="width: 40%; padding: 15px; font-weight: 600; background-color: #f8f9fa !important; color: #6c757d !important;">เครื่องที่เตรียม</th>
-                        <th style="width: 20%; padding: 15px; font-weight: 600; background-color: #f8f9fa !important; color: #6c757d !important;">สถานะปัจจุบัน</th>
+                        <th style="width: 20%;">เลขรายการ</th>
+                        <th style="width: 20%;">อุปกรณ์ที่ยืม</th>
+                        <th style="width: 40%;">เครื่องที่เตรียม</th>
+                        <th style="width: 20%;">สถานะปัจจุบัน</th>
                     </tr>
                 </thead>
                 <tbody id="historyTableBody" class="bg-white">
