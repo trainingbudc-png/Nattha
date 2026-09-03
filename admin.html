@@ -17,7 +17,8 @@
     <!-- 🟢 Navbar -->
     <nav class="navbar-custom">
         <div class="fw-bold fs-5 d-flex align-items-center gap-2">
-            <img src="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" alt="Logo" style="width: 32px; height: 32px; object-fit: contain; filter: brightness(0) invert(1);">
+            <!-- 📌 แก้ไขโลโก้ เอา filter: invert ออก เพื่อให้สีกลับมาเป็นปกติ -->
+            <img src="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" alt="Logo" style="width: 32px; height: 32px; object-fit: contain;">
             เมนูผู้ดูแล (Admin)
             <a href="admin-manage.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-3 ms-2 shadow-sm d-flex align-items-center gap-1">
                 ⚙️ จัดการ
@@ -31,6 +32,7 @@
 
     <div class="container pb-5 mt-4" style="max-width: 1100px;">
         
+        <!-- 📌 ส่วนที่ 1: รายการที่กำลังดำเนินการ (Active) -->
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-2">
             <div class="section-title mt-0 mb-0">รายการที่กำลังดำเนินการ (Active)</div>
             <button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="loadAdminTableData()">🔄 โหลดใหม่</button>
@@ -40,54 +42,58 @@
             <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>
         </div>
 
+        <!-- 📌 ส่วนภาพรวมระบบ (แก้ Layout การ์ด) -->
         <div class="section-title">ภาพรวมระบบ</div>
         <div class="row g-3 mb-4">
             <div class="col-12">
-                <a href="dashboard.html" class="menu-card">
-                    <div class="menu-icon">📊</div>
+                <a href="dashboard.html" class="menu-card d-flex align-items-center gap-3 text-decoration-none">
+                    <div class="menu-icon" style="font-size: 2.5rem; line-height: 1;">📊</div>
                     <div class="menu-text">
-                        <h5>Dashboard</h5>
-                        <p>ดูสถิติและสถานะการตรวจสอบทุกขั้นตอน</p>
+                        <h5 class="fw-bold mb-1" style="color: var(--admin-main);">Dashboard</h5>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">ดูสถิติและสถานะการตรวจสอบทุกขั้นตอน</p>
                     </div>
                 </a>
             </div>
         </div>
 
+        <!-- 📌 ส่วนระบบจัดการ (แก้ Layout การ์ด) -->
         <div class="section-title mt-4">ระบบจัดการ</div>
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-6">
-                <a href="step1.html" class="menu-card h-100">
-                    <div class="menu-icon">📦</div>
+                <a href="step1.html" class="menu-card h-100 d-flex align-items-center gap-3 text-decoration-none">
+                    <div class="menu-icon" style="font-size: 2.5rem; line-height: 1;">📦</div>
                     <div class="menu-text">
-                        <h5>Step 1 | เตรียมเครื่อง</h5>
-                        <p>เตรียมเครื่องให้ผู้ใช้</p>
+                        <h5 class="fw-bold mb-1" style="color: var(--admin-main);">Step 1 | เตรียมเครื่อง</h5>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">เตรียมเครื่องให้ผู้ใช้</p>
                     </div>
                 </a>
             </div>
             <div class="col-6 col-md-6">
-                <a href="step5-list.html" class="menu-card h-100"> 
-                    <div class="menu-icon">🔍</div>
+                <a href="step5-list.html" class="menu-card h-100 d-flex align-items-center gap-3 text-decoration-none"> 
+                    <div class="menu-icon" style="font-size: 2.5rem; line-height: 1;">🔍</div>
                     <div class="menu-text">
-                        <h5>Step 5 | ตรวจรับคืน</h5>
-                        <p>ตรวจสอบหลังใช้งาน</p>
+                        <h5 class="fw-bold mb-1" style="color: var(--admin-main);">Step 5 | ตรวจรับคืน</h5>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">ตรวจสอบหลังใช้งาน</p>
                     </div>
                 </a>
             </div>
         </div>
 
+        <!-- 📌 ส่วนระบบแจ้งเตือนปัญหา (แก้ Layout การ์ด) -->
         <div class="section-title mt-4">ระบบแจ้งเตือนปัญหา</div>
         <div class="row g-3 mb-5">
             <div class="col-12">
-                <a href="report-issue.html" class="menu-card">
-                    <div class="menu-icon">⚠️</div>
+                <a href="report-issue.html" class="menu-card d-flex align-items-center gap-3 text-decoration-none">
+                    <div class="menu-icon" style="font-size: 2.5rem; line-height: 1;">⚠️</div>
                     <div class="menu-text">
-                        <h5>แจ้งสถานะเครื่องมีปัญหา</h5>
-                        <p>อัปเดตประวัติ / ส่งซ่อม</p>
+                        <h5 class="fw-bold mb-1" style="color: var(--admin-main);">แจ้งสถานะเครื่องมีปัญหา</h5>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">อัปเดตประวัติ / ส่งซ่อม</p>
                     </div>
                 </a>
             </div>
         </div>
 
+        <!-- 📌 ส่วนที่ 2: ประวัติรายการ (เสร็จสิ้น / ยกเลิก) -->
         <div class="d-flex justify-content-between align-items-end mt-5 mb-3">
             <div class="section-title mt-0 mb-0">ประวัติรายการ (เสร็จสิ้น / ยกเลิก)</div>
         </div>
