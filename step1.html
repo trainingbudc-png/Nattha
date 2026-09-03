@@ -51,10 +51,11 @@
         .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid var(--admin-border); color: #1e293b; font-weight: 500; font-size: 0.95rem; }
         .table tbody tr:hover { background-color: #f8fafc; }
 
-        .form-check-input { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: var(--admin-main); }
+        /* 📌 เพิ่มความหนาและสีขอบ Checkbox ให้ชัดเจนขึ้น เล็งง่ายขึ้น */
+        .form-check-input { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: var(--admin-main); border: 2px solid #94a3b8 !important; }
         
-        /* 📌 ปรับปุ่ม 'ติ๊กครบ' เป็น Navy */
-        .btn-shortcut { background: white; color: var(--admin-main); border: 2px solid var(--admin-main); transition: 0.2s; border-radius: 50rem; font-size: 0.85rem; font-weight: 600;}
+        /* 📌 ปรับปุ่ม 'ติ๊กครบ' เป็นทรงโค้ง (Rounded) ให้เข้ากับตารางและปุ่ม iPad */
+        .btn-shortcut { background: white; color: var(--admin-main); border: 2px solid var(--admin-main); transition: 0.2s; border-radius: 8px; font-size: 0.85rem; font-weight: 600;}
         .btn-shortcut:hover { background: var(--admin-main); color: white; }
         
         .btn-submit-custom { background-color: var(--admin-main); color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 25px; transition: 0.3s; border: none; font-size: 1.1rem; }
@@ -82,14 +83,12 @@
     <div class="confirm-card my-3 mb-5">
         <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
             <h4 class="fw-bold mb-0" style="color: var(--admin-main);">📦 Step 1 | เตรียมเครื่อง</h4>
-            <!-- 📌 เปลี่ยนปุ่มกลับเมนูเป็นสไตล์ Navy -->
             <a href="admin.html" class="btn btn-outline-admin px-4 fw-bold rounded-pill border-2 btn-sm">🔙 กลับเมนูแอดมิน</a>
         </div>
         
         <form id="step1Form">
             <div class="mb-4">
                 <label class="form-label">📌 เลขรายการ <span class="text-muted fw-normal">(ID อ้างอิงจากระบบหลัก)</span></label>
-                <!-- 📌 เปลี่ยนสี text-danger เป็นข้อความสี Navy เข้ม -->
                 <input type="text" id="reqIdInput" class="form-control form-control-lg bg-light fw-bold" style="color: var(--admin-main);" readonly placeholder="ระบบจะสร้างให้อัตโนมัติหากไม่มีการระบุมา">
             </div>
 
@@ -103,7 +102,6 @@
             <div class="mb-4">
                 <label class="form-label d-flex justify-content-between align-items-end mb-3">
                     <span>📱 เลือกเครื่องที่ว่าง <span class="text-muted fw-normal">(กดเลือกได้หลายเครื่อง)</span></span>
-                    <!-- 📌 เปลี่ยนป้ายกำกับเป็น Navy -->
                     <span class="badge fs-6" style="background-color: var(--admin-main);" id="selectedCount">เลือกแล้ว 0 เครื่อง</span>
                 </label>
                 
@@ -127,7 +125,6 @@
             </div>
 
             <div id="dynamicChecklistContainer" class="mb-4 d-none">
-                <!-- 📌 เปลี่ยนหัวข้อเป็นสี Navy -->
                 <label class="form-label fw-bold mb-3" style="color: var(--admin-main);">✅ สิ่งที่แอดมินต้องเตรียม <span class="text-muted fw-normal">(เช็คให้ครบทุกเครื่อง)</span></label>
                 <div class="table-responsive bg-white">
                     <table class="table align-middle">
@@ -147,7 +144,6 @@
                 </div>
             </div>
 
-            <!-- 📌 กรณีเบิกยืมฉุกเฉิน คงสีแดงไว้เพื่อดึงความสนใจพิเศษ -->
             <div class="mb-4 p-4 rounded-4 emergency-box">
                 <div class="form-check form-switch d-flex align-items-center gap-3">
                     <input class="form-check-input m-0" type="checkbox" id="emergencyCheck" style="width: 45px !important; height: 24px !important; cursor: pointer; accent-color: #dc3545;" onchange="toggleEmergencyNote()">
@@ -256,7 +252,6 @@
 
                 invRes.data.forEach(id => { 
                     const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
-                    // 📌 เปลี่ยนคลาสของ Label ให้เป็น btn-outline-admin
                     const btnHtml = `
                         <input type="checkbox" class="btn-check ipad-checkbox" id="btn-${safeId}" value="${id}" data-safeid="${safeId}" onchange="handleIpadSelection(this)">
                         <label class="btn btn-outline-admin shadow-sm" for="btn-${safeId}" title="${id}">${id}</label>
