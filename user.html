@@ -43,7 +43,7 @@
             <span class="text-primary fw-bold d-none d-sm-inline">สวัสดี, <span id="showName">Loading...</span></span>
             
             <button class="btn btn-light btn-sm rounded-circle shadow-sm border" onclick="openProfileModal()" title="แก้ไขข้อมูลส่วนตัว" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
-                ⚙️
+                👤
             </button>
             
             <button class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" onclick="logoutSystem()">ออกจากระบบ</button>
@@ -87,12 +87,14 @@
 
     </div>
 
+    <!-- Modal แก้ไขข้อมูลส่วนตัว -->
     <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                 <div class="modal-header border-0 pb-0 mt-3 d-flex flex-column align-items-center position-relative">
                     <button type="button" class="btn-close position-absolute top-0 end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <h4 class="modal-title fw-bold text-dark">⚙️ แก้ไขข้อมูลส่วนตัว</h4>
+                    <!-- 📌 เปลี่ยนหัวข้อเป็นสีตามธีมหลัก และเอาฟันเฟืองออก -->
+                    <h4 class="modal-title fw-bold" style="color: var(--user-dark);">ข้อมูลส่วนตัว</h4>
                     <p class="text-muted mb-0" style="font-size: 0.9rem;">อัปเดตข้อมูลของคุณให้เป็นปัจจุบัน</p>
                 </div>
                 <div class="modal-body p-4 pt-3">
@@ -122,7 +124,8 @@
                         <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">เบอร์ติดต่อภายใน (หรือมือถือ)</label>
                         <input type="tel" id="editProfilePhone" class="form-control" placeholder="กรอกเบอร์ที่สามารถติดต่อได้" style="border-radius: 8px;">
                     </div>
-                    <button type="button" class="btn w-100 fw-bold py-2 shadow-sm" id="btnSaveProfile" onclick="saveProfileData()" style="background-color: #212529; color: white; border-radius: 8px; font-size: 1.05rem; transition: 0.2s;">
+                    <!-- 📌 เปลี่ยนเป็นคลาส btn-action เพื่อดึงสี Slate Blue จาก CSS มาใช้ -->
+                    <button type="button" class="btn btn-action w-100 fw-bold py-2 shadow-sm" id="btnSaveProfile" onclick="saveProfileData()" style="border-radius: 8px; font-size: 1.05rem;">
                         บันทึกข้อมูลส่วนตัว
                     </button>
                 </div>
