@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
-        body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding: 20px; }
+        body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding: 20px;[cite: 2] }
         
         .confirm-card { 
             background: white; 
@@ -46,18 +46,18 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* 📌 ขอบ Checkbox ชัดเจน เล็งง่าย (เปลี่ยนเป็นสีเขียว #198754) */
+        /* 📌 ขอบ Checkbox สีน้ำเงิน (ตามธีมเดิม) */
         .form-check-input { 
             width: 24px !important; 
             height: 24px !important; 
             cursor: pointer; 
-            accent-color: #198754; 
+            accent-color: var(--admin-main); 
             border: 2px solid #94a3b8 !important; 
             transition: all 0.2s;
         }
         .form-check-input:checked {
-            border-color: #198754 !important;
-            background-color: #198754 !important;
+            border-color: var(--admin-main) !important;
+            background-color: var(--admin-main) !important;
         }
 
         /* 📌 ปุ่มติ๊กครบ (ทรง Pill) */
@@ -292,7 +292,6 @@
             try {
                 result = JSON.parse(rawText);
             } catch (parseErr) {
-                // ดักจับกรณี Google ตัดสาย แต่ข้อมูลเข้า Sheet ไปแล้ว
                 if (navigator.onLine) {
                     Swal.fire({
                         title: "สำเร็จ!",
