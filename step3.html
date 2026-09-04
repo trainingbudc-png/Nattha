@@ -114,13 +114,11 @@
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep2Data", reqId: reqId }) })
         .then(res => res.json())
         .then(res => {
-            if (res.reqStatus && res.reqStatus !== "Step[2]") {
-                Swal.fire("แจ้งเตือน", `รายการนี้ตรวจสอบก่อนสอบไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => {
-                    window.location.href = isAdmin ? "admin.html" : "user.html";
-                });
-                return;
-            }
-
+if (res.reqStatus && res.reqStatus !== "Step[2]") {
+    let nextPage = isAdmin ? "admin.html" : "user.html";
+    showNavyAlert("แจ้งเตือน", `รายการนี้ตรวจสอบก่อนสอบไปแล้ว (สถานะ: ${res.reqStatus})`, "warning", nextPage);
+    return;
+}
             const container = document.getElementById('itemList');
             container.innerHTML = "";
             if(res.data && res.data.length > 0) {
