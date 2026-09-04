@@ -245,18 +245,10 @@ if (res.reqStatus && res.reqStatus !== "Step[2]") {
         try {
             const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "saveStep3", reqId: reqId, items: items, exam: examValue, note: noteValue, name: inspector }) });
             const result = await res.json();
-            if(result.status === "success") {
-                Swal.fire({
-                    title: "ตรวจก่อนสอบสำเร็จ!",
-                    html: `หมายเลขรายการ: <b>${reqId}</b><br>บันทึกข้อมูล Check List จำนวน ${items.length} เครื่องเรียบร้อยแล้ว`,
-                    icon: "success",
-                    confirmButtonColor: "#212529",
-                    confirmButtonText: "OK",
-                    allowOutsideClick: false
-                }).then(() => {
-                    window.location.href = isAdmin ? "admin.html" : "user.html";
-                });
-            }
+if(result.status === "success") {
+            let nextPage = isAdmin ? "admin.html" : "user.html";
+            showNavyAlert("ตรวจก่อนสอบสำเร็จ!", `หมายเลขรายการ: <b>${reqId}</b><br>บันทึกข้อมูล Check List จำนวน ${items.length} เครื่องเรียบร้อยแล้ว`, "success", nextPage);
+        }
             else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); btn.innerText = originalText; btn.disabled = false; }
         } catch (error) {
             Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); btn.innerText = originalText; btn.disabled = false;
