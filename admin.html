@@ -40,7 +40,7 @@
             border-color: var(--admin-hover);
         }
 
-        /* 📌 สไตล์สำหรับปุ่มเมนูทางลัด (แบบเดียวกับหน้า User) */
+        /* 📌 สไตล์สำหรับปุ่มเมนูทางลัด */
         .shortcut-card {
             background-color: white;
             border-radius: 12px;
@@ -90,8 +90,6 @@
         </div>
     </nav>
 
-    <!-- 📌 เปลี่ยนเป็น container-wide ให้กว้างเท่าหน้า User -->
-<!-- 📌 เปลี่ยนเป็น container-wide ให้กว้างเท่าหน้า User -->
     <div class="container-wide pb-5 mt-4">
         
         <!-- 📊 โซนที่ 1: จัดการและวิเคราะห์ระบบ (Management & Analytics) -->
@@ -100,7 +98,6 @@
         </div>
         <div class="row g-3 mb-4">
             <div class="col-12 col-md-6">
-                <!-- การ์ด Dashboard ทำเป็นแนวยาวให้เด่น -->
                 <a href="dashboard.html" class="shortcut-card h-100 d-flex align-items-center justify-content-center gap-3 p-4" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; border: none;">
                     <div class="shortcut-icon m-0 fs-1">📊</div>
                     <div class="text-start">
@@ -110,7 +107,6 @@
                 </a>
             </div>
             <div class="col-12 col-md-6">
-                <!-- การ์ดแจ้งซ่อม แยกมาให้เห็นชัดเจนแต่ไม่แย่งซีน -->
                 <a href="report-issue.html" class="shortcut-card h-100 d-flex align-items-center justify-content-center gap-3 p-4" style="border: 2px dashed #ef4444; background-color: #fef2f2;">
                     <div class="shortcut-icon m-0 fs-1">⚠️</div>
                     <div class="text-start">
@@ -125,7 +121,6 @@
         <div class="section-title mt-4">ขั้นตอนการดำเนินการ (Workflow)</div>
         <div class="row g-3 mb-5">
             <div class="col-6">
-                <!-- การ์ด Step 1 -->
                 <a href="step1.html" class="shortcut-card h-100">
                     <div class="shortcut-icon text-primary">📦</div>
                     <div class="shortcut-title fs-5">Step 1 | เตรียมเครื่อง</div>
@@ -133,7 +128,6 @@
                 </a>
             </div>
             <div class="col-6">
-                <!-- การ์ด Step 5 -->
                 <a href="step5-list.html" class="shortcut-card h-100">
                     <div class="shortcut-icon text-success">🔍</div>
                     <div class="shortcut-title fs-5">Step 5 | ตรวจรับคืน</div>
@@ -171,7 +165,8 @@
                         <option value="ยกเลิก">❌ ยกเลิกรายการ</option>
                     </select>
                 </div>
-                <div class="col-md-3 text-md-end text-center mt-3 mt-md-0">
+                <!-- แก้ไข UI ให้เลขผลลัพธ์แสดงบรรทัดเดียวสวยๆ ในจอมือถือ -->
+                <div class="col-md-3 text-md-end text-start mt-2 mt-md-0">
                     <span class="badge bg-danger fs-6 px-4 py-2 rounded-pill shadow-sm" id="resultCountLabel">พบ 0 รายการ</span>
                 </div>
             </div>
@@ -218,7 +213,6 @@
         loadAdminTableData();
     };
 
-    // 📌 ระบบโหลดข้อมูลแบบอึด (Auto-Retry) ยิงซ้ำเมื่อ Google ตัดสาย
     async function loadAdminTableData(retryCount = 3) {
         if (retryCount === 3) {
             document.getElementById("activeCardsContainer").innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>';
@@ -298,7 +292,6 @@
 
         data.forEach(item => {
             let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
-            // ตัดวินาทีทิ้ง
             dateStr = dateStr.replace(/:\d{2}$/, '');
 
             let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
@@ -328,8 +321,8 @@
                 nickNameHtml = `<div class="text-secondary mt-1" style="font-size: 0.8rem;">(${parts[1].trim()}</div>`;
             }
 
-            // 📌 เปลี่ยนปุ่มสถานะให้เป็นธีม Navy แบบสมบูรณ์
-let statusTxt = item.status || "-";
+            // 📌 โค้ดปุ่มแบบดั้งเดิม 100% ตามที่คุณกำหนดไว้
+            let statusTxt = item.status || "-";
             let statusHtml = "";
             if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
                 statusHtml = `<button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ไป Step 2">Step[1]</button>`;
