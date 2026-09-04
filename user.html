@@ -1,445 +1,240 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>หน้าผู้ใช้งาน | ระบบ iPad</title>
-    
-    <link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="theme-user.css">
+// ==========================================
+// 📌 โค้ด JavaScript เต็ม สำหรับหน้าผู้ใช้งาน
+// ==========================================
 
-    <style>
-        .container-wide, .nav-header {
-            max-width: 1280px !important;
-            margin: 0 auto !important;
-        }
-        .container-wide {
-            padding-left: 20px !important;
-            padding-right: 20px !important;
-        }
+let myActiveData = [];
+let myHistoryData = [];
+
+window.onload = function() {
+    const userName = localStorage.getItem("userName");
+    if (!userName) {
+        window.location.replace("index.html");
+        return;
+    }
+    document.getElementById("showName").innerText = userName;
+    verifyRoleSilently(); // ฟังก์ชันนี้เรียกใช้งานจาก script.js หลัก
+    loadUserTableData();
+};
+
+// 📌 ระบบโหลดข้อมูลแบบอึด (Auto-Retry) ยิงซ้ำ 3 รอบเมื่อ Google ตัดสาย
+async function loadUserTableData(retryCount = 3) {
+    if (retryCount === 3) {
+        document.getElementById("activeCardsContainer").innerHTML = '<div class="col-12 text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</div>';
+        document.getElementById("historyTableBody").innerHTML = '<tr><td colspan="4" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
+    }
+
+    const userId = localStorage.getItem("userId");
+    const userName = localStorage.getItem("userName");
+
+    try {
+        const response = await fetch(API_URL, { 
+            method: "POST", 
+            body: JSON.stringify({ action: "getData" }) 
+        });
         
-        .collapse-icon {
-            transition: transform 0.3s ease;
-            display: inline-block;
-        }
-        [aria-expanded="true"] .collapse-icon {
-            transform: rotate(180deg);
-        }
+        const res = await response.json();
 
-        /* 📌 สไตล์สำหรับปุ่มเมนูทางลัด (Menu Cards) */
-        .shortcut-card {
-            background-color: white;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid #e2e8f0;
-            transition: all 0.2s ease-in-out;
-            cursor: pointer;
-            display: block;
-            text-decoration: none;
-            color: inherit;
-        }
-        .shortcut-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-            border-color: #cbd5e1;
-        }
-        .shortcut-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-        .shortcut-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 5px;
-        }
-        .shortcut-desc {
-            font-size: 0.8rem;
-            color: #64748b;
-        }
-    </style>
-</head>
-<body>
+        if (res.status === "success" && res.data) {
+            // กรองเฉพาะงานของตัวเอง
+            let myData = res.data.filter(item => item.userId === userId || item.name === userName);
 
-    <nav class="nav-header">
-        <div class="nav-title">
-            <img src="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" alt="Logo" style="width: 28px; height: 28px; object-fit: contain;">
-            เมนูผู้ใช้งาน
-        </div>
+            myActiveData = [];
+            myHistoryData = [];
 
-        <div class="d-flex align-items-center gap-2">
-            <span class="text-primary fw-bold d-none d-sm-inline">สวัสดี, <span id="showName">Loading...</span></span>
-            
-            <button class="btn btn-light btn-sm rounded-circle shadow-sm border" onclick="openProfileModal()" title="แก้ไขข้อมูลส่วนตัว" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
-                👤
-            </button>
-            
-            <button class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" onclick="logoutSystem()">ออกจากระบบ</button>
-        </div>
-    </nav>
-
-    <div class="container-wide pb-5">
-
-        <!-- 📌 เมนูทางลัด (Shortcuts) สำหรับผู้ใช้งาน -->
-        <div class="d-flex align-items-center gap-2 mt-4 mb-3">
-            <div class="accent-bar"></div>
-            <h5 class="fw-bold m-0 text-dark">เมนูจัดการอุปกรณ์</h5>
-        </div>
-        
-        <div class="row g-3 mb-5">
-            <div class="col-6 col-md-4">
-                <a href="step2-list.html" class="shortcut-card h-100">
-                    <div class="shortcut-icon">📲</div>
-                    <div class="shortcut-title">Step 2 | รับเครื่อง</div>
-                    <div class="shortcut-desc">ยืนยันรับเครื่องจากแอดมิน</div>
-                </a>
-            </div>
-            <div class="col-6 col-md-4">
-                <a href="step3-list.html" class="shortcut-card h-100">
-                    <div class="shortcut-icon">📝</div>
-                    <div class="shortcut-title">Step 3 | ตรวจก่อนสอบ</div>
-                    <div class="shortcut-desc">เช็คความพร้อมก่อนเข้าสอบ</div>
-                </a>
-            </div>
-            <div class="col-12 col-md-4">
-                <a href="step4-list.html" class="shortcut-card h-100">
-                    <div class="shortcut-icon">📤</div>
-                    <div class="shortcut-title">Step 4 | ส่งคืน</div>
-                    <div class="shortcut-desc">ส่งคืนอุปกรณ์เมื่อใช้งานเสร็จ</div>
-                </a>
-            </div>
-        </div>
-        
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-2">
-            <div class="d-flex align-items-center gap-2">
-                <div class="accent-bar"></div>
-                <h5 class="fw-bold m-0 text-dark">รายการที่กำลังดำเนินการ (Active)</h5>
-            </div>
-            <button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold bg-white shadow-sm border-2" onclick="loadUserTableData()">🔄 อัปเดต</button>
-        </div>
-        
-        <div class="row g-3 mb-5" id="activeCardsContainer">
-            <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border shadow-sm">กำลังโหลดข้อมูล... ⏳</div>
-        </div>
-
-        <div class="d-flex align-items-center gap-2 mb-3">
-            <div class="accent-bar"></div>
-            <h5 class="fw-bold m-0 text-dark">ประวัติอุปกรณ์ของฉัน (เสร็จสิ้น)</h5>
-        </div>
-        
-        <div class="table-card table-responsive shadow-sm">
-            <table class="table table-hover align-middle mb-0">
-                <thead>
-                    <tr class="text-center">
-                        <th style="width: 20%;">เลขรายการ</th>
-                        <th style="width: 20%;">อุปกรณ์ที่ยืม</th>
-                        <th style="width: 40%;">เครื่องที่เตรียม</th>
-                        <th style="width: 20%;">สถานะปัจจุบัน</th>
-                    </tr>
-                </thead>
-                <tbody id="historyTableBody" class="bg-white">
-                    <tr><td colspan="4" class="text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-
-    <!-- Modal แก้ไขข้อมูลส่วนตัว -->
-    <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                <div class="modal-header border-0 pb-0 mt-3 d-flex flex-column align-items-center position-relative">
-                    <button type="button" class="btn-close position-absolute top-0 end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <h4 class="modal-title fw-bold" style="color: var(--user-dark);">ข้อมูลส่วนตัว</h4>
-                    <p class="text-muted mb-0" style="font-size: 0.9rem;">อัปเดตข้อมูลของคุณให้เป็นปัจจุบัน</p>
-                </div>
-                <div class="modal-body p-4 pt-3">
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">ชื่อจริง</label>
-                            <input type="text" id="editProfileFirstName" class="form-control" style="border-radius: 8px;">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">นามสกุล</label>
-                            <input type="text" id="editProfileLastName" class="form-control" style="border-radius: 8px;">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">
-                            ชื่อเล่น <span class="fw-normal text-muted" style="font-size: 0.8rem;">(เปลี่ยนได้ ไม่มีผลกับระบบ)</span>
-                        </label>
-                        <input type="text" id="editProfileNickname" class="form-control" placeholder="เช่น นัท, เฟธ" style="border-radius: 8px;">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">ฝ่าย / แผนก</label>
-                        <select id="editProfileDept" class="form-select" style="border-radius: 8px;">
-                            <option value="">-- กรุณาเลือกแผนกของคุณ --</option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">เบอร์ติดต่อภายใน (หรือมือถือ)</label>
-                        <input type="tel" id="editProfilePhone" class="form-control" placeholder="กรอกเบอร์ที่สามารถติดต่อได้" style="border-radius: 8px;">
-                    </div>
-                    <button type="button" class="btn btn-action w-100 fw-bold py-2 shadow-sm" id="btnSaveProfile" onclick="saveProfileData()" style="border-radius: 8px; font-size: 1.05rem;">
-                        บันทึกข้อมูลส่วนตัว
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <!-- 📌 นำเข้าแค่แกนกลาง (script.js) และยกเลิกการใช้ user.js ไปเลย -->
-    <script src="script.js"></script>
-
-    <script>
-        let myActiveData = [];
-        let myHistoryData = [];
-
-        window.onload = function() {
-            const userName = localStorage.getItem("userName");
-            if (!userName) {
-                window.location.replace("index.html");
-                return;
-            }
-            document.getElementById("showName").innerText = userName;
-            verifyRoleSilently();
-            loadUserTableData();
-        };
-
-        // 📌 ระบบโหลดข้อมูลแบบอึด (Auto-Retry) ยิงซ้ำเมื่อ Google ตัดสาย
-        async function loadUserTableData(retryCount = 3) {
-            if (retryCount === 3) {
-                document.getElementById("activeCardsContainer").innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border shadow-sm">กำลังโหลดข้อมูล... ⏳</div>';
-                document.getElementById("historyTableBody").innerHTML = '<tr><td colspan="4" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
-            }
-
-            const userId = localStorage.getItem("userId");
-            const userName = localStorage.getItem("userName");
-
-            try {
-                const response = await fetch(API_URL, { 
-                    method: "POST", 
-                    body: JSON.stringify({ action: "getData" }) 
-                });
-                
-                const res = await response.json();
-
-                if (res.status === "success" && res.data) {
-                    // กรองเฉพาะงานของตัวเอง
-                    let myData = res.data.filter(item => item.userId === userId || item.name === userName);
-
-                    myActiveData = [];
-                    myHistoryData = [];
-
-                    myData.forEach(item => {
-                        let statusTxt = item.status || "";
-                        if (statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์") || statusTxt.includes("ยกเลิก")) {
-                            myHistoryData.push(item);
-                        } else {
-                            myActiveData.push(item);
-                        }
-                    });
-
-                    renderActiveCards();
-                    renderHistoryTable();
+            myData.forEach(item => {
+                let statusTxt = item.status || "";
+                if (statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์") || statusTxt.includes("ยกเลิก")) {
+                    myHistoryData.push(item);
                 } else {
-                    renderActiveCards();
-                    renderHistoryTable();
+                    myActiveData.push(item);
                 }
-            } catch (err) {
-                if (retryCount > 0) {
-                    console.warn(`[Auto-Retry] โหลดข้อมูลไม่สำเร็จ ลองใหม่... (เหลือ ${retryCount} ครั้ง)`);
-                    setTimeout(() => loadUserTableData(retryCount - 1), 1500); 
-                } else {
-                    document.getElementById("activeCardsContainer").innerHTML = `
-                        <div class="col-12 text-center text-danger py-5 bg-white rounded-4 border shadow-sm">
-                            <div class="fw-bold fs-5 mb-2">❌ เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ (Google ไม่ตอบสนอง)</div>
-                            <button class="btn btn-outline-danger btn-sm rounded-pill px-4 fw-bold shadow-sm mt-2" onclick="loadUserTableData()">🔄 โหลดใหม่</button>
-                        </div>`;
-                    document.getElementById("historyTableBody").innerHTML = '<tr><td colspan="4" class="text-center text-danger py-5">❌ โหลดข้อมูลล้มเหลว</td></tr>';
-                }
-            }
+            });
+
+            renderActiveCards();
+            renderHistoryTable();
+        } else {
+            renderActiveCards();
+            renderHistoryTable();
+        }
+    } catch (err) {
+        // 🚨 พระเอกอยู่ตรงนี้: ถ้าพัง จะยังไม่โชว์กากบาทแดง แต่จะลองดึงใหม่ก่อน
+        if (retryCount > 0) {
+            console.warn(`[Auto-Retry] โหลดข้อมูลไม่สำเร็จ ลองใหม่... (เหลือ ${retryCount} ครั้ง)`);
+            setTimeout(() => loadUserTableData(retryCount - 1), 1500); 
+        } else {
+            // ❌ ถ้ายิงซ้ำ 3 รอบแล้วยังพังจริงๆ ค่อยโชว์กากบาทสีแดงให้เหมือนภาพต้นฉบับของคุณ
+            document.getElementById("activeCardsContainer").innerHTML = `
+                <div class="col-12 text-center text-muted py-5">
+                    ❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล
+                </div>`;
+            document.getElementById("historyTableBody").innerHTML = '<tr><td colspan="4" class="text-center text-muted py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
+        }
+    }
+}
+
+function renderActiveCards() {
+    const container = document.getElementById("activeCardsContainer");
+    container.innerHTML = ""; 
+    
+    if (myActiveData.length === 0) {
+        container.innerHTML = '<div class="col-12 text-center text-muted py-5">🎉 ไม่มีรายการที่กำลังดำเนินการ</div>';
+        return;
+    }
+
+    myActiveData.forEach(item => {
+        let statusTxt = item.status || "-";
+        let statusHtml = `<span class="badge bg-warning text-dark border px-3 py-2 rounded-pill">⏳ ${statusTxt}</span>`;
+
+        // แปลงข้อความสถานะให้เข้าใจง่ายสำหรับ User
+        if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
+            statusHtml = `<span class="badge bg-primary text-white border px-3 py-2 rounded-pill">รอรับเครื่อง (แอดมินเตรียมเสร็จแล้ว)</span>`;
+        } else if(statusTxt.includes("Step[2]")) {
+            statusHtml = `<span class="badge bg-info text-dark border px-3 py-2 rounded-pill">เครื่องอยู่กับคุณ</span>`;
+        } else if(statusTxt.includes("Step[3]")) {
+            statusHtml = `<span class="badge bg-warning text-dark border px-3 py-2 rounded-pill">พร้อมเข้าสอบ</span>`;
+        } else if(statusTxt.includes("Step[4]")) {
+            statusHtml = `<span class="badge bg-secondary text-white border px-3 py-2 rounded-pill">ส่งคืนแล้ว (รอแอดมินตรวจสอบ)</span>`;
         }
 
-        function renderActiveCards() {
-            const container = document.getElementById("activeCardsContainer");
-            container.innerHTML = ""; 
-            
-            if (myActiveData.length === 0) {
-                container.innerHTML = '<div class="col-12 text-center text-muted py-5 bg-white rounded-4 border shadow-sm">🎉 ไม่มีรายการที่กำลังดำเนินการ</div>';
-                return;
-            }
+        let formattedIpads = item.ipadId || "-";
 
-            myActiveData.forEach(item => {
-                let statusTxt = item.status || "-";
-                let statusHtml = `<span class="badge bg-warning text-dark border px-3 py-2 rounded-pill shadow-sm">⏳ ${statusTxt}</span>`;
-
-                // แปลงข้อความสถานะให้เข้าใจง่ายสำหรับ User
-                if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
-                    statusHtml = `<span class="badge bg-primary text-white border px-3 py-2 rounded-pill shadow-sm">รอรับเครื่อง (แอดมินเตรียมเสร็จแล้ว)</span>`;
-                } else if(statusTxt.includes("Step[2]")) {
-                    statusHtml = `<span class="badge bg-info text-dark border px-3 py-2 rounded-pill shadow-sm">เครื่องอยู่กับคุณ</span>`;
-                } else if(statusTxt.includes("Step[3]")) {
-                    statusHtml = `<span class="badge bg-warning text-dark border px-3 py-2 rounded-pill shadow-sm">พร้อมเข้าสอบ</span>`;
-                } else if(statusTxt.includes("Step[4]")) {
-                    statusHtml = `<span class="badge bg-secondary text-white border px-3 py-2 rounded-pill shadow-sm">ส่งคืนแล้ว (รอแอดมินตรวจสอบ)</span>`;
-                }
-
-                let formattedIpads = item.ipadId || "-";
-
-                container.innerHTML += `
-                    <div class="col-12 col-md-6">
-                        <div class="card border-0 shadow-sm rounded-4 h-100" style="border: 1px solid #e2e8f0 !important;">
-                            <div class="card-body p-4">
-                                <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <div>
-                                        <div class="text-muted small fw-bold mb-1">เลขรายการ</div>
-                                        <div class="fw-bold text-dark fs-5">${item.reqId}</div>
-                                    </div>
-                                    <div>${statusHtml}</div>
-                                </div>
-                                <div class="mb-0">
-                                    <div class="text-muted small fw-bold mb-1">อุปกรณ์ที่ยืม</div>
-                                    <div class="fw-bold text-primary" style="word-break: break-word;">${formattedIpads}</div>
-                                </div>
+        container.innerHTML += `
+            <div class="col-12 col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100" style="border: 1px solid #e2e8f0 !important;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <div class="text-muted small fw-bold mb-1">เลขรายการ</div>
+                                <div class="fw-bold text-dark fs-5">${item.reqId}</div>
                             </div>
+                            <div>${statusHtml}</div>
+                        </div>
+                        <div class="mb-0">
+                            <div class="text-muted small fw-bold mb-1">อุปกรณ์ที่ยืม</div>
+                            <div class="fw-bold text-primary" style="word-break: break-word;">${formattedIpads}</div>
                         </div>
                     </div>
-                `;
-            });
-        }
+                </div>
+            </div>
+        `;
+    });
+}
 
-        function renderHistoryTable() {
-            const tbody = document.getElementById("historyTableBody");
-            tbody.innerHTML = ""; 
-            
-            if (myHistoryData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-5">🔍 ไม่มีประวัติการยืม</td></tr>';
-                return;
-            }
+function renderHistoryTable() {
+    const tbody = document.getElementById("historyTableBody");
+    tbody.innerHTML = ""; 
+    
+    if (myHistoryData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-5">🔍 ไม่มีประวัติการยืม</td></tr>';
+        return;
+    }
 
-            myHistoryData.forEach(item => {
-                let statusTxt = item.status || "-";
-                let statusHtml = `<span class="badge bg-light text-secondary border px-3 py-2 rounded-pill shadow-sm">✔️ เสร็จสิ้น</span>`;
-                
-                if(statusTxt.includes("ยกเลิก")) {
-                    statusHtml = `<span class="badge bg-light text-danger border border-danger px-3 py-2 rounded-pill shadow-sm">❌ ยกเลิก</span>`;
-                }
-
-                let formattedIpads = item.ipadId || "-";
-
-                tbody.innerHTML += `
-                    <tr class="text-center align-middle">
-                        <td class="fw-bold text-dark">${item.reqId}</td>
-                        <td class="text-muted">iPad</td>
-                        <td class="fw-bold text-primary">${formattedIpads}</td>
-                        <td>${statusHtml}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        /* =======================================
-           📌 ระบบแก้ไขข้อมูลส่วนตัว (Profile Modal)
-           ======================================= */
-        let isProfileLoaded = false;
+    myHistoryData.forEach(item => {
+        let statusTxt = item.status || "-";
+        let statusHtml = `<span class="badge bg-light text-secondary border px-3 py-2 rounded-pill">✔️ เสร็จสิ้น</span>`;
         
-        async function openProfileModal() {
-            const modal = new bootstrap.Modal(document.getElementById('profileModal'));
-            modal.show();
-            
-            if(isProfileLoaded) return; // โหลดครั้งเดียวพอ ไม่ต้องโหลดซ้ำ
-            
-            const btn = document.getElementById("btnSaveProfile");
-            btn.innerHTML = "กำลังโหลดข้อมูล...";
-            btn.disabled = true;
-
-            try {
-                // โหลดแผนก
-                const deptRes = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "getDepartments" }) }).then(r=>r.json());
-                if(deptRes.status === "success") {
-                    const select = document.getElementById("editProfileDept");
-                    select.innerHTML = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>';
-                    deptRes.data.forEach(d => { select.innerHTML += `<option value="${d}">${d}</option>`; });
-                }
-
-                // โหลดประวัติผู้ใช้
-                const userName = localStorage.getItem("userName");
-                const userRes = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "getUserProfile", name: userName }) }).then(r=>r.json());
-                
-                if(userRes.status === "success") {
-                    let parts = userName.split(" ");
-                    document.getElementById("editProfileFirstName").value = parts[0] || "";
-                    document.getElementById("editProfileLastName").value = parts.slice(1).join(" ") || "";
-                    document.getElementById("editProfileDept").value = userRes.dept || "";
-                    document.getElementById("editProfilePhone").value = userRes.phone || "";
-                    document.getElementById("editProfileNickname").value = userRes.nickname || "";
-                    isProfileLoaded = true;
-                }
-            } catch(e) {
-                console.error("Profile load error", e);
-            }
-            btn.innerHTML = "บันทึกข้อมูลส่วนตัว";
-            btn.disabled = false;
+        if(statusTxt.includes("ยกเลิก")) {
+            statusHtml = `<span class="badge bg-light text-danger border border-danger px-3 py-2 rounded-pill">❌ ยกเลิก</span>`;
         }
 
-        async function saveProfileData() {
-            const firstName = document.getElementById("editProfileFirstName").value.trim();
-            const lastName = document.getElementById("editProfileLastName").value.trim();
-            const dept = document.getElementById("editProfileDept").value;
-            const phone = document.getElementById("editProfilePhone").value.trim();
-            const nickname = document.getElementById("editProfileNickname").value.trim();
-            
-            if(!firstName || !lastName || !dept || !phone) {
-                return Swal.fire("แจ้งเตือน", "กรุณากรอกข้อมูลสำคัญให้ครบถ้วน", "warning");
-            }
+        let formattedIpads = item.ipadId || "-";
 
-            const fullName = firstName + " " + lastName;
-            const userId = localStorage.getItem("userId");
+        tbody.innerHTML += `
+            <tr class="text-center align-middle">
+                <td class="fw-bold text-dark">${item.reqId}</td>
+                <td class="text-muted">iPad</td>
+                <td class="fw-bold text-primary">${formattedIpads}</td>
+                <td>${statusHtml}</td>
+            </tr>
+        `;
+    });
+}
 
-            const btn = document.getElementById("btnSaveProfile");
-            btn.innerHTML = "กำลังบันทึก... ⏳";
-            btn.disabled = true;
+/* =======================================
+   📌 ระบบแก้ไขข้อมูลส่วนตัว (Profile Modal)
+   ======================================= */
+let isProfileLoaded = false;
 
-            try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: "updateUserProfile",
-                        userId: userId,
-                        name: fullName,
-                        dept: dept,
-                        phone: phone,
-                        nickname: nickname
-                    })
-                }).then(r=>r.json());
+async function openProfileModal() {
+    const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+    modal.show();
+    
+    if(isProfileLoaded) return; 
+    
+    const btn = document.getElementById("btnSaveProfile");
+    btn.innerHTML = "กำลังโหลดข้อมูล...";
+    btn.disabled = true;
 
-                if(res.status === "success") {
-                    localStorage.setItem("userName", fullName);
-                    document.getElementById("showName").innerText = fullName;
-                    bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
-                    Swal.fire({ title: "สำเร็จ", text: "อัปเดตข้อมูลส่วนตัวเรียบร้อย", icon: "success", timer: 1500, showConfirmButton: false });
-                } else {
-                    Swal.fire("ผิดพลาด", res.message || "ไม่สามารถบันทึกข้อมูลได้", "error");
-                }
-            } catch(e) {
-                Swal.fire("ผิดพลาด", "การเชื่อมต่อขัดข้อง กรุณาลองใหม่", "error");
-            }
-            
-            btn.innerHTML = "บันทึกข้อมูลส่วนตัว";
-            btn.disabled = false;
+    try {
+        const deptRes = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "getDepartments" }) }).then(r=>r.json());
+        if(deptRes.status === "success") {
+            const select = document.getElementById("editProfileDept");
+            select.innerHTML = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>';
+            deptRes.data.forEach(d => { select.innerHTML += `<option value="${d}">${d}</option>`; });
         }
-    </script>
 
-</body>
-</html>
+        const userName = localStorage.getItem("userName");
+        const userRes = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "getUserProfile", name: userName }) }).then(r=>r.json());
+        
+        if(userRes.status === "success") {
+            let parts = userName.split(" ");
+            document.getElementById("editProfileFirstName").value = parts[0] || "";
+            document.getElementById("editProfileLastName").value = parts.slice(1).join(" ") || "";
+            document.getElementById("editProfileDept").value = userRes.dept || "";
+            document.getElementById("editProfilePhone").value = userRes.phone || "";
+            document.getElementById("editProfileNickname").value = userRes.nickname || "";
+            isProfileLoaded = true;
+        }
+    } catch(e) {
+        console.error("Profile load error", e);
+    }
+    btn.innerHTML = "บันทึกข้อมูลส่วนตัว";
+    btn.disabled = false;
+}
+
+async function saveProfileData() {
+    const firstName = document.getElementById("editProfileFirstName").value.trim();
+    const lastName = document.getElementById("editProfileLastName").value.trim();
+    const dept = document.getElementById("editProfileDept").value;
+    const phone = document.getElementById("editProfilePhone").value.trim();
+    const nickname = document.getElementById("editProfileNickname").value.trim();
+    
+    if(!firstName || !lastName || !dept || !phone) {
+        return Swal.fire("แจ้งเตือน", "กรุณากรอกข้อมูลสำคัญให้ครบถ้วน", "warning");
+    }
+
+    const fullName = firstName + " " + lastName;
+    const userId = localStorage.getItem("userId");
+
+    const btn = document.getElementById("btnSaveProfile");
+    btn.innerHTML = "กำลังบันทึก... ⏳";
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: "updateUserProfile",
+                userId: userId,
+                name: fullName,
+                dept: dept,
+                phone: phone,
+                nickname: nickname
+            })
+        }).then(r=>r.json());
+
+        if(res.status === "success") {
+            localStorage.setItem("userName", fullName);
+            document.getElementById("showName").innerText = fullName;
+            bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
+            Swal.fire({ title: "สำเร็จ", text: "อัปเดตข้อมูลส่วนตัวเรียบร้อย", icon: "success", timer: 1500, showConfirmButton: false });
+        } else {
+            Swal.fire("ผิดพลาด", res.message || "ไม่สามารถบันทึกข้อมูลได้", "error");
+        }
+    } catch(e) {
+        Swal.fire("ผิดพลาด", "การเชื่อมต่อขัดข้อง กรุณาลองใหม่", "error");
+    }
+    
+    btn.innerHTML = "บันทึกข้อมูลส่วนตัว";
+    btn.disabled = false;
+}
