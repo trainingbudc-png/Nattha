@@ -7,14 +7,35 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background: #f8fafc; font-family: 'Kanit', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px 0; }
-        .main-card { background: white; padding: 50px 40px; border-radius: 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.06); width: 100%; max-width: 450px; text-align: center; }
+        /* 📌 ธีมสี Enterprise Navy */
+        :root {
+            --primary-navy: #1e3a8a;
+            --primary-hover: #172554;
+            --bg-color: #f8fafc;
+            --border-color: #cbd5e1;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body { background: var(--bg-color); font-family: 'Kanit', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px 0; }
+        
+        .main-card { 
+            background: white; 
+            padding: 50px 40px; 
+            border-radius: 20px; /* ปรับมุมให้โค้งเข้ากับหน้าเว็บอื่นๆ */
+            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.08); /* เปลี่ยนสีเงาเป็นโทน Navy */
+            width: 100%; 
+            max-width: 450px; 
+            text-align: center; 
+            border: 1px solid var(--border-color);
+        }
         
         .loading-section { display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
         .logo-wrapper { position: relative; margin-bottom: 25px; display: inline-flex; align-items: center; justify-content: center; }
         .line-icon { width: 85px; height: 85px; position: relative; z-index: 2; }
         
+        /* วงแหวน Loading คงสีเขียว LINE ไว้เพื่อความสมจริง */
         .pulse-ring {
             position: absolute;
             width: 85px; height: 85px;
@@ -41,15 +62,45 @@
             40% { transform: scale(1); }
         }
 
-        #mainText { font-size: 1.3rem; letter-spacing: 0.5px; }
-        #subText { font-size: 0.95rem; }
+        #mainText { font-size: 1.3rem; letter-spacing: 0.5px; color: var(--primary-navy) !important; font-weight: 700 !important; }
+        #subText { font-size: 0.95rem; color: var(--text-muted); }
 
         .register-section { display: none; text-align: left; }
-        .form-control, .form-select { border-radius: 12px; padding: 14px; border: 1px solid #e2e8f0; font-size: 1rem; }
-        .form-control:focus, .form-select:focus { border-color: #10b981; box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25); }
-        .btn-success { background: #10b981; border: none; border-radius: 12px; padding: 14px; font-weight: bold; font-size: 1.1rem; width: 100%; transition: 0.3s; margin-top: 20px; }
-        .btn-success:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(16,185,129,0.2); }
-        .form-label { font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 8px; }
+        
+        /* 📌 ปรับสไตล์ Input ให้ล้อไปกับหน้าอื่น */
+        .form-control, .form-select { 
+            border-radius: 10px; 
+            padding: 12px 15px; 
+            border: 1px solid var(--border-color); 
+            font-size: 0.95rem; 
+            color: var(--text-dark);
+        }
+        .form-control:focus, .form-select:focus { 
+            border-color: var(--primary-navy); 
+            box-shadow: 0 0 0 0.25rem rgba(30, 58, 138, 0.15); 
+        }
+        
+        /* 📌 เปลี่ยนปุ่มลงทะเบียนเป็น Navy */
+        .btn-register { 
+            background: var(--primary-navy); 
+            color: white;
+            border: none; 
+            border-radius: 10px; 
+            padding: 14px; 
+            font-weight: 600; 
+            font-size: 1.05rem; 
+            width: 100%; 
+            transition: all 0.3s ease; 
+            margin-top: 20px; 
+        }
+        .btn-register:hover { 
+            background: var(--primary-hover); 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 15px rgba(30, 58, 138, 0.3); 
+            color: white;
+        }
+        
+        .form-label { font-weight: 600; color: var(--text-dark); font-size: 0.9rem; margin-bottom: 6px; }
     </style>
 </head>
 <body>
@@ -60,16 +111,16 @@
             <div class="pulse-ring" id="pulseRing"></div>
             <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="LINE" class="line-icon">
         </div>
-        <h4 class="fw-bold text-dark" id="mainText">กำลังตรวจสอบบัญชี</h4>
+        <h4 class="fw-bold" id="mainText">กำลังตรวจสอบบัญชี</h4>
         <div class="loading-dots" id="spinnerIcon">
             <span></span><span></span><span></span>
         </div>
-        <p class="text-muted mt-2" id="subText">ระบบกำลังเชื่อมต่อข้อมูลกับแอป LINE</p>
+        <p class="mt-2" id="subText">ระบบกำลังเชื่อมต่อข้อมูลกับแอป LINE</p>
     </div>
 
     <div id="registerSection" class="register-section">
         <div class="text-center mb-4">
-            <h4 class="fw-bold text-dark mb-1">📝 ข้อมูลผู้ใช้งานครั้งแรก</h4>
+            <h4 class="fw-bold mb-1" style="color: var(--primary-navy);">📝 ข้อมูลผู้ใช้งานครั้งแรก</h4>
             <p class="text-muted" style="font-size: 0.85rem;">กรุณาเติมข้อมูลให้ครบถ้วนเพื่อเปิดใช้งานระบบ</p>
         </div>
         
@@ -103,7 +154,7 @@
             <input type="text" id="regPhone" class="form-control" placeholder="กรอกเบอร์ที่สามารถติดต่อได้">
         </div>
         
-        <button class="btn btn-success" id="btnRegister" onclick="submitRegistration()">✅ ยืนยันข้อมูล & เข้าใช้งาน</button>
+        <button class="btn-register" id="btnRegister" onclick="submitRegistration()">✅ ยืนยันข้อมูล & เข้าใช้งาน</button>
     </div>
 </div>
 
