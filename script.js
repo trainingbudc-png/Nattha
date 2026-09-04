@@ -57,8 +57,7 @@ function logoutSystem() {
             confirmButtonColor: "#ef4444",
             cancelButtonColor: "#64748b",
             confirmButtonText: "ออกจากระบบ",
-            cancelButtonText: "ยกเลิก",
-            borderRadios: "16px"
+            cancelButtonText: "ยกเลิก"
         }).then((result) => {
             if (result.isConfirmed) executeLogout();
         });
@@ -99,5 +98,31 @@ function verifyRoleSilently() {
                 }
             }
         }).catch(e => console.log("Silent role check failed:", e));
+    }
+}
+
+// -----------------------------------------
+// 5. ระบบแจ้งเตือน (Global Alert) คุมธีม Navy ทั้งระบบ
+// -----------------------------------------
+function showNavyAlert(title, htmlText, iconType, redirectUrl = null) {
+    if(typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: title,
+            html: htmlText,
+            icon: iconType,
+            confirmButtonColor: "#1e3a8a", // 📌 ล็อกสีกรมท่าไว้ที่นี่ที่เดียวจบ!
+            confirmButtonText: "OK",
+            allowOutsideClick: false
+        }).then(() => {
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            }
+        });
+    } else {
+        // Fallback กรณี SweetAlert โหลดไม่ขึ้น
+        alert(title + "\n" + htmlText.replace(/<[^>]*>?/gm, '')); 
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+        }
     }
 }
