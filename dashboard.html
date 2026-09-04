@@ -8,7 +8,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="theme-admin.css">
     
-    <!-- 📌 เพิ่มไลบรารี SheetJS สำหรับสร้างไฟล์ Excel (.xlsx) -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     
     <style>
@@ -40,7 +39,7 @@
         .col-step { min-width: 130px; font-weight: 600; line-height: 1.2; }
         .col-status { min-width: 120px; border-left: 2px solid #e2e8f0; }
         .col-name { min-width: 150px; max-width: 180px; white-space: normal; word-break: break-word; line-height: 1.4; }
-        .col-note { min-width: 180px; max-width: 250px; white-space: normal; word-break: break-word; font-size: 0.8rem; line-height: 1.4; color: #64748b; }
+        .col-note { min-width: 150px; max-width: 200px; white-space: normal; word-break: break-word; font-size: 0.8rem; line-height: 1.4; color: #64748b; }
         .col-em { min-width: 80px; }
 
         .step-cell-empty { background-color: #f8fafc !important; } 
@@ -68,7 +67,6 @@
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-2">
             <h5 class="fw-bold text-dark m-0">ตารางข้อมูลรายการเบิก-ยืม</h5>
             <div class="d-flex gap-2">
-                <!-- 📌 เปลี่ยนปุ่มให้เรียกใช้งาน exportToExcel() -->
                 <button class="btn btn-success btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="exportToExcel()" style="background-color: #10b981; border-color: #10b981;">
                     📥 ดาวน์โหลด Excel (.xlsx)
                 </button>
@@ -112,12 +110,14 @@
                         <th class="col-status text-center" style="border-left: 2px solid rgba(255,255,255,0.2);">สถานะรวม</th>
                         <th class="col-name text-center">ผู้เตรียมเครื่อง</th>
                         <th class="col-name text-start ps-3">ผู้ที่จะมารับเครื่อง</th>
-                        <th class="col-note text-start">หมายเหตุ</th>
+                        <!-- 📌 เปลี่ยนหัวตารางให้มีหมายเหตุ 2 ช่อง -->
+                        <th class="col-note text-start">หมายเหตุ (เตรียม)</th>
+                        <th class="col-note text-start">หมายเหตุ (ก่อนสอบ)</th>
                         <th class="col-em text-center">ฉุกเฉิน</th>
                     </tr>
                 </thead>
                 <tbody id="dashboardBody">
-                    <tr><td colspan="11" class="text-center py-5 text-muted">กำลังดึงและประกอบข้อมูล... ⏳</td></tr>
+                    <tr><td colspan="12" class="text-center py-5 text-muted">กำลังดึงและประกอบข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
@@ -172,7 +172,7 @@
 
     function fetchData() {
         const tbody = document.getElementById("dashboardBody");
-        tbody.innerHTML = '<tr><td colspan="11" class="text-center py-5 text-muted">กำลังประมวลผลข้อมูล... ⏳</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="12" class="text-center py-5 text-muted">กำลังประมวลผลข้อมูล... ⏳</td></tr>';
         
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getDashboardData" }) })
         .then(res => res.json())
@@ -181,7 +181,7 @@
                 allDashboardData = res.data;
                 applyFilters(); 
             } else {
-                tbody.innerHTML = '<tr><td colspan="11" class="text-center text-muted py-5">ยังไม่มีข้อมูลรายการ</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-muted py-5">ยังไม่มีข้อมูลรายการ</td></tr>';
             }
         });
     }
@@ -216,7 +216,7 @@
         tbody.innerHTML = "";
 
         if (filteredData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="11" class="text-center text-danger fw-bold py-5">❌ ไม่พบรายการที่ตรงกับเงื่อนไข</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="12" class="text-center text-danger fw-bold py-5">❌ ไม่พบรายการที่ตรงกับเงื่อนไข</td></tr>';
             document.getElementById("paginationControls").innerHTML = "";
             return;
         }
@@ -238,7 +238,9 @@
                     <td class="col-status text-center">${formatStatus(item.status)}</td>
                     <td class="fw-bold text-dark col-name text-center">${item.preparer || "-"}</td>
                     <td class="fw-bold text-dark col-name text-start ps-3">${item.receiver || "-"}</td>
-                    <td class="col-note text-start">${item.note || ""}</td>
+                    <!-- 📌 โชว์หมายเหตุแยก 2 คอลัมน์ -->
+                    <td class="col-note text-start" style="color: var(--admin-main);">${item.note1 || ""}</td>
+                    <td class="col-note text-start text-warning">${item.note3 || ""}</td>
                     <td class="col-em text-center">${formatEmergency(item.emergency)}</td>
                 </tr>
             `;
@@ -261,12 +263,6 @@
         paginationEl.innerHTML = html;
     }
 
-    function changePage(page) {
-        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-        if (page < 1 || page > totalPages) return;
-        currentPage = page; renderTable();
-    }
-
     /* ========================================================
        📌 ระบบดาวน์โหลดออกเป็นไฟล์ Excel แท้ (.xlsx)
        ======================================================== */
@@ -276,14 +272,12 @@
             return;
         }
 
-        // ฟังก์ชันคลีนข้อความ: ลบแท็ก <br> และโค้ดขยะออกให้หมด
         const cleanText = (text) => {
             if (!text) return "";
-            // แทนที่ <br> ด้วย 1 เคาะ (space) และลบแท็ก HTML อื่นๆ ทิ้ง
             return text.replace(/<br\s*\/?>/gi, ' ').replace(/\\n|\n/g, ' ').replace(/<[^>]*>?/gm, '').trim();
         };
 
-        // จัดเตรียมข้อมูลสำหรับ SheetJS
+        // 📌 ปรับข้อมูลที่จะลง Excel ให้มีคอลัมน์หมายเหตุ 2 อัน
         const exportData = filteredData.map(item => ({
             "เลขรายการ": item.reqId,
             "Step 1 | เตรียม": cleanText(item.step1),
@@ -294,14 +288,14 @@
             "สถานะรวม": item.status,
             "ผู้เตรียมเครื่อง": cleanText(item.preparer),
             "ผู้ที่จะมารับเครื่อง": cleanText(item.receiver),
-            "หมายเหตุ": cleanText(item.note),
+            "หมายเหตุ (เตรียม)": cleanText(item.note1),
+            "หมายเหตุ (ก่อนสอบ)": cleanText(item.note3),
             "ยืมฉุกเฉิน": (item.emergency === "☑" || item.emergency === "✅") ? "ใช่" : "ไม่ใช่"
         }));
 
-        // สร้าง Worksheet
         const worksheet = XLSX.utils.json_to_sheet(exportData);
 
-        // 📌 ตั้งค่าความกว้างให้แต่ละคอลัมน์อัตโนมัติ (เปิด Excel มาแล้วสวยเลย)
+        // 📌 เพิ่มจำนวนคอลัมน์กว้างยาวให้ตรงกัน (12 คอลัมน์)
         const wscols = [
             {wch: 12}, // เลขรายการ
             {wch: 22}, // Step 1
@@ -312,16 +306,15 @@
             {wch: 15}, // สถานะรวม
             {wch: 25}, // ผู้เตรียมเครื่อง
             {wch: 35}, // ผู้รับเครื่อง
-            {wch: 35}, // หมายเหตุ
+            {wch: 25}, // หมายเหตุ (เตรียม)
+            {wch: 25}, // หมายเหตุ (ก่อนสอบ)
             {wch: 12}  // ฉุกเฉิน
         ];
         worksheet['!cols'] = wscols;
 
-        // สร้าง Workbook
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Dashboard_Data");
 
-        // ดาวน์โหลดไฟล์ .xlsx
         const d = new Date();
         const dateString = `${d.getFullYear()}${(d.getMonth()+1).toString().padStart(2,'0')}${d.getDate().toString().padStart(2,'0')}`;
         XLSX.writeFile(workbook, `iPad_Report_${dateString}.xlsx`);
