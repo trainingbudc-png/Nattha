@@ -46,19 +46,19 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* 📌 ขอบ Checkbox ชัดเจน เล็งง่าย */
+        /* 📌 ขอบ Checkbox ชัดเจน เล็งง่าย (เปลี่ยนเป็นสีเขียว #198754) */
         .form-check-input { 
             width: 24px !important; 
             height: 24px !important; 
             cursor: pointer; 
-            accent-color: var(--admin-main); 
+            accent-color: #198754; 
             border: 2px solid #94a3b8 !important; 
             transition: all 0.2s;
         }
         .form-check-input:checked {
-    border-color: #198754 !important;
-    background-color: #198754 !important;
-}
+            border-color: #198754 !important;
+            background-color: #198754 !important;
+        }
 
         /* 📌 ปุ่มติ๊กครบ (ทรง Pill) */
         .btn-shortcut { 
@@ -91,7 +91,7 @@
 <body>
     
     <div class="container pb-5">
-<!-- 📌 เปลี่ยนจาก text-start เป็น text-end เพื่อชิดขวา -->
+        <!-- 📌 เปลี่ยนจาก text-start เป็น text-end เพื่อชิดขวา -->
         <div class="text-end" style="max-width: 850px; margin: 0 auto 15px auto;">
             <button class="btn bg-white shadow-sm fw-bold rounded-pill px-4" style="color: var(--admin-main); border: 2px solid var(--admin-main);" onclick="window.location.href='step5-list.html'">🔙 กลับไปหน้ารายการ</button>
         </div>
