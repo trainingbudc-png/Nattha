@@ -22,8 +22,8 @@
         .main-card { 
             background: white; 
             padding: 50px 40px; 
-            border-radius: 20px; /* ปรับมุมให้โค้งเข้ากับหน้าเว็บอื่นๆ */
-            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.08); /* เปลี่ยนสีเงาเป็นโทน Navy */
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.08); 
             width: 100%; 
             max-width: 450px; 
             text-align: center; 
@@ -63,7 +63,7 @@
         }
 
         #mainText { font-size: 1.3rem; letter-spacing: 0.5px; color: var(--primary-navy) !important; font-weight: 700 !important; }
-        #subText { font-size: 0.95rem; color: var(--text-muted); }
+        #subText { font-size: 0.95rem; color: var(--text-muted); transition: all 0.3s ease; }
 
         .register-section { display: none; text-align: left; }
         
@@ -165,7 +165,7 @@
 
 <script>
     window.onload = async () => {
-        // ⚡ ระบบ Fast Login
+        // ⚡ ระบบ Fast Login (ข้ามหน้าโหลดใน 0.5 วิ)
         const savedUserId = localStorage.getItem("userId");
         const savedRole = localStorage.getItem("userRole");
         const savedName = localStorage.getItem("userName");
@@ -195,6 +195,8 @@
             const userId = profile.userId; 
 
             document.getElementById('subText').innerText = `สวัสดีคุณ ${displayName} กำลังตรวจสอบสิทธิ์...`;
+            
+            // 📌 เริ่มฟังก์ชันยิง API
             checkUserInDatabase(userId, displayName);
 
         } catch (err) {
@@ -203,13 +205,22 @@
         }
     };
 
-    async function checkUserInDatabase(userId, displayName) {
+    // 📌 ฟังก์ชันตรวจสอบสิทธิ์พร้อมระบบ Smart Feedback & Auto-Retry
+    async function checkUserInDatabase(userId, displayName, retryCount = 3) {
+        
+        // 💡 UX Trick: ถ้าใช้เวลาโหลดนานเกิน 2.5 วินาที ให้เปลี่ยนข้อความบอกผู้ใช้
+        const slowLoadTimer = setTimeout(() => {
+            document.getElementById('subText').innerHTML = `กำลังปลุกเซิร์ฟเวอร์ฐานข้อมูล... ⏳<br><span style="font-size: 0.8rem; color: #94a3b8;">(อาจใช้เวลา 3-5 วินาที)</span>`;
+        }, 2500);
+
         try {
             const res = await fetch(API_URL, {
                 method: "POST",
                 body: JSON.stringify({ action: "checkRole", userId: userId })
             });
             const data = await res.json();
+
+            clearTimeout(slowLoadTimer); // ยกเลิกการเปลี่ยนข้อความถ้าโหลดเสร็จก่อน 2.5 วิ
 
             if (data.success) {
                 document.getElementById('mainText').innerText = "✅ ยืนยันตัวตนสำเร็จ";
@@ -234,7 +245,7 @@
                 document.getElementById('regFirstName').value = nameParts[0] || "";
                 document.getElementById('regLastName').value = nameParts.slice(1).join(" ") || "";
                 
-                // 📌 นำรายชื่อแผนกที่ส่งมาพร้อมกัน มาสร้าง Dropdown ได้เลยทันที (ไม่ต้องยิง API ใหม่)
+                // 📌 สร้าง Dropdown ทันทีไม่ต้องรอ
                 const selectDept = document.getElementById('regDept');
                 if (data.departments && data.departments.length > 0) {
                     selectDept.innerHTML = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>';
@@ -246,7 +257,14 @@
                 }
             }
         } catch (error) {
-            showError("เซิร์ฟเวอร์ไม่ตอบสนอง", "ไม่สามารถตรวจสอบข้อมูลกับฐานข้อมูลได้");
+            clearTimeout(slowLoadTimer);
+            if (retryCount > 0) {
+                // แอบ Retry ใหม่ถ้าขัดข้อง
+                document.getElementById('subText').innerText = `สัญญาณขัดข้อง กำลังลองใหม่... (เหลือ ${retryCount} ครั้ง)`;
+                setTimeout(() => checkUserInDatabase(userId, displayName, retryCount - 1), 1500);
+            } else {
+                showError("เซิร์ฟเวอร์ไม่ตอบสนอง", "ไม่สามารถตรวจสอบข้อมูลกับฐานข้อมูลได้");
+            }
         }
     }
 
