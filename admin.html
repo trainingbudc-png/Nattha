@@ -331,15 +331,16 @@
             // 📌 เปลี่ยนปุ่มสถานะให้เป็นธีม Navy แบบสมบูรณ์
             let statusTxt = item.status || "-";
             let statusHtml = "";
-            if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
-                statusHtml = `<button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ไป Step 2">Step[1]</button>`;
-            } else if(statusTxt.includes("Step[2]")) {
-                statusHtml = `<button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'" title="ไป Step 3">Step[2]</button>`;
-            } else if(statusTxt.includes("Step[3]")) {
-                statusHtml = `<button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'" title="ไป Step 4">Step[3]</button>`;
-            } else if(statusTxt.includes("Step[4]")) {
-                statusHtml = `<button class="btn btn-admin btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'" title="ตรวจสอบรับคืน">ตรวจรับคืน</button>`;
-            } else {
+// โค้ดเดิมของคุณในไฟล์ admin.html
+if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
+    statusHtml = `<button class="btn btn-outline-admin btn-sm..." onclick="window.location.href='step2.html?reqId=${item.reqId}'" title="ไป Step 2">Step[1]</button>`;
+} else if(statusTxt.includes("Step[2]")) {
+    statusHtml = `<button class="btn btn-outline-admin btn-sm..." onclick="window.location.href='step3.html?reqId=${item.reqId}'" title="ไป Step 3">Step[2]</button>`;
+} else if(statusTxt.includes("Step[3]")) {
+    statusHtml = `<button class="btn btn-outline-admin btn-sm..." onclick="window.location.href='step4.html?reqId=${item.reqId}'" title="ไป Step 4">Step[3]</button>`;
+} else if(statusTxt.includes("Step[4]")) {
+                    statusHtml = `<button class="btn btn-admin btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'" title="ตรวจสอบรับคืน">ตรวจรับคืน</button>`;
+                } else {
                 statusHtml = `<span class="badge bg-light text-dark border px-3 py-2 rounded-pill">${statusTxt}</span>`;
             }
 
