@@ -195,18 +195,11 @@
         try {
             const response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "updateStatus", reqId: reqId, items: items, note: "", name: currentLoggerName }) });
             const result = await response.json();
-            if (result.status === "success") {
-                Swal.fire({
-                    title: "รับเครื่องเรียบร้อย!",
-                    html: `หมายเลขรายการ : <b>${reqId}</b><br>ระบบบันทึกการรับเครื่องจำนวน : ${items.length} เครื่อง`,
-                    icon: "success",
-                    confirmButtonColor: "#212529",
-                    confirmButtonText: "OK",
-                    allowOutsideClick: false
-                }).then(() => {
-                    window.location.href = isAdmin ? "admin.html" : "user.html";
-                });
-            }
+ if (result.status === "success") {
+            // เรียกใช้ Global Alert บรรทัดเดียวจบ!
+            let nextPage = isAdmin ? "admin.html" : "user.html";
+            showNavyAlert("รับเครื่องเรียบร้อย!", `หมายเลขรายการ : <b>${reqId}</b><br>ระบบบันทึกการรับเครื่องจำนวน : ${items.length} เครื่อง`, "success", nextPage);
+        }
             else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message || "ในการบันทึกข้อมูล", "error"); btn.innerText = "ยืนยันการรับเครื่อง"; btn.disabled = false; }
         } catch (error) {
             Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); btn.innerText = "ยืนยันการรับเครื่อง"; btn.disabled = false;
