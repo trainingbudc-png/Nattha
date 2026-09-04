@@ -91,37 +91,53 @@
     </nav>
 
     <!-- 📌 เปลี่ยนเป็น container-wide ให้กว้างเท่าหน้า User -->
+<!-- 📌 เปลี่ยนเป็น container-wide ให้กว้างเท่าหน้า User -->
     <div class="container-wide pb-5 mt-4">
         
-        <!-- 📌 เมนูจัดการระบบของ Admin (แบบการ์ดกว้างๆ เรียง 4 ช่อง) -->
-        <div class="section-title mt-0">ภาพรวมและการจัดการระบบ</div>
+        <!-- 📊 โซนที่ 1: จัดการและวิเคราะห์ระบบ (Management & Analytics) -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="section-title mt-0 mb-0">ภาพรวมและการจัดการระบบ</div>
+        </div>
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-6">
+                <!-- การ์ด Dashboard ทำเป็นแนวยาวให้เด่น -->
+                <a href="dashboard.html" class="shortcut-card h-100 d-flex align-items-center justify-content-center gap-3 p-4" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; border: none;">
+                    <div class="shortcut-icon m-0 fs-1">📊</div>
+                    <div class="text-start">
+                        <div class="fs-4 fw-bold mb-1 text-white">Dashboard สถิติ</div>
+                        <div class="text-white-50" style="font-size: 0.9rem;">ดูภาพรวมและสถานะอุปกรณ์ทั้งหมด</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-12 col-md-6">
+                <!-- การ์ดแจ้งซ่อม แยกมาให้เห็นชัดเจนแต่ไม่แย่งซีน -->
+                <a href="report-issue.html" class="shortcut-card h-100 d-flex align-items-center justify-content-center gap-3 p-4" style="border: 2px dashed #ef4444; background-color: #fef2f2;">
+                    <div class="shortcut-icon m-0 fs-1">⚠️</div>
+                    <div class="text-start">
+                        <div class="fs-4 fw-bold mb-1 text-danger">แจ้งเครื่องมีปัญหา</div>
+                        <div class="text-danger opacity-75" style="font-size: 0.9rem;">บันทึกประวัติเครื่องชำรุด หรือส่งซ่อม</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 🚀 โซนที่ 2: ขั้นตอนการทำงานหลัก (Workflow Actions) -->
+        <div class="section-title mt-4">ขั้นตอนการดำเนินการ (Workflow)</div>
         <div class="row g-3 mb-5">
-            <div class="col-6 col-md-3">
-                <a href="dashboard.html" class="shortcut-card h-100">
-                    <div class="shortcut-icon">📊</div>
-                    <div class="shortcut-title">Dashboard</div>
-                    <div class="shortcut-desc">ดูสถิติและสถานะภาพรวม</div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
+            <div class="col-6">
+                <!-- การ์ด Step 1 -->
                 <a href="step1.html" class="shortcut-card h-100">
-                    <div class="shortcut-icon">📦</div>
-                    <div class="shortcut-title">Step 1 | เตรียมเครื่อง</div>
-                    <div class="shortcut-desc">เตรียมอุปกรณ์ให้ผู้ใช้</div>
+                    <div class="shortcut-icon text-primary">📦</div>
+                    <div class="shortcut-title fs-5">Step 1 | เตรียมเครื่อง</div>
+                    <div class="shortcut-desc">เตรียมอุปกรณ์และสร้างรายการให้ผู้ใช้</div>
                 </a>
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-6">
+                <!-- การ์ด Step 5 -->
                 <a href="step5-list.html" class="shortcut-card h-100">
-                    <div class="shortcut-icon">🔍</div>
-                    <div class="shortcut-title">Step 5 | ตรวจรับคืน</div>
-                    <div class="shortcut-desc">ตรวจสอบเครื่องหลังใช้งาน</div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="report-issue.html" class="shortcut-card h-100" style="border-color: #fca5a5;">
-                    <div class="shortcut-icon">⚠️</div>
-                    <div class="shortcut-title text-danger">แจ้งเครื่องมีปัญหา</div>
-                    <div class="shortcut-desc">อัปเดตประวัติ / ส่งซ่อม</div>
+                    <div class="shortcut-icon text-success">🔍</div>
+                    <div class="shortcut-title fs-5">Step 5 | ตรวจรับคืน</div>
+                    <div class="shortcut-desc">ตรวจสอบเครื่องเมื่อใช้งานเสร็จสิ้น</div>
                 </a>
             </div>
         </div>
