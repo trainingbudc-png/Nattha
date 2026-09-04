@@ -124,7 +124,7 @@
         </div>
         
         <div class="row g-3 mb-5" id="activeCardsContainer">
-            <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>
+            <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border shadow-sm">กำลังโหลดข้อมูล... ⏳</div>
         </div>
 
         <div class="d-flex align-items-center gap-2 mb-3">
@@ -156,7 +156,6 @@
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                 <div class="modal-header border-0 pb-0 mt-3 d-flex flex-column align-items-center position-relative">
                     <button type="button" class="btn-close position-absolute top-0 end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <!-- 📌 เปลี่ยนหัวข้อเป็นสีตามธีมหลัก และเอาฟันเฟืองออก -->
                     <h4 class="modal-title fw-bold" style="color: var(--user-dark);">ข้อมูลส่วนตัว</h4>
                     <p class="text-muted mb-0" style="font-size: 0.9rem;">อัปเดตข้อมูลของคุณให้เป็นปัจจุบัน</p>
                 </div>
@@ -187,7 +186,6 @@
                         <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">เบอร์ติดต่อภายใน (หรือมือถือ)</label>
                         <input type="tel" id="editProfilePhone" class="form-control" placeholder="กรอกเบอร์ที่สามารถติดต่อได้" style="border-radius: 8px;">
                     </div>
-                    <!-- 📌 เปลี่ยนเป็นคลาส btn-action เพื่อดึงสี Slate Blue จาก CSS มาใช้ -->
                     <button type="button" class="btn btn-action w-100 fw-bold py-2 shadow-sm" id="btnSaveProfile" onclick="saveProfileData()" style="border-radius: 8px; font-size: 1.05rem;">
                         บันทึกข้อมูลส่วนตัว
                     </button>
@@ -200,8 +198,248 @@
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    <!-- 📌 นำเข้าแค่แกนกลาง (script.js) และยกเลิกการใช้ user.js ไปเลย -->
     <script src="script.js"></script>
-    <script src="user.js"></script>
+
+    <script>
+        let myActiveData = [];
+        let myHistoryData = [];
+
+        window.onload = function() {
+            const userName = localStorage.getItem("userName");
+            if (!userName) {
+                window.location.replace("index.html");
+                return;
+            }
+            document.getElementById("showName").innerText = userName;
+            verifyRoleSilently();
+            loadUserTableData();
+        };
+
+        // 📌 ระบบโหลดข้อมูลแบบอึด (Auto-Retry) ยิงซ้ำเมื่อ Google ตัดสาย
+        async function loadUserTableData(retryCount = 3) {
+            if (retryCount === 3) {
+                document.getElementById("activeCardsContainer").innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border shadow-sm">กำลังโหลดข้อมูล... ⏳</div>';
+                document.getElementById("historyTableBody").innerHTML = '<tr><td colspan="4" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
+            }
+
+            const userId = localStorage.getItem("userId");
+            const userName = localStorage.getItem("userName");
+
+            try {
+                const response = await fetch(API_URL, { 
+                    method: "POST", 
+                    body: JSON.stringify({ action: "getData" }) 
+                });
+                
+                const res = await response.json();
+
+                if (res.status === "success" && res.data) {
+                    // กรองเฉพาะงานของตัวเอง
+                    let myData = res.data.filter(item => item.userId === userId || item.name === userName);
+
+                    myActiveData = [];
+                    myHistoryData = [];
+
+                    myData.forEach(item => {
+                        let statusTxt = item.status || "";
+                        if (statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์") || statusTxt.includes("ยกเลิก")) {
+                            myHistoryData.push(item);
+                        } else {
+                            myActiveData.push(item);
+                        }
+                    });
+
+                    renderActiveCards();
+                    renderHistoryTable();
+                } else {
+                    renderActiveCards();
+                    renderHistoryTable();
+                }
+            } catch (err) {
+                if (retryCount > 0) {
+                    console.warn(`[Auto-Retry] โหลดข้อมูลไม่สำเร็จ ลองใหม่... (เหลือ ${retryCount} ครั้ง)`);
+                    setTimeout(() => loadUserTableData(retryCount - 1), 1500); 
+                } else {
+                    document.getElementById("activeCardsContainer").innerHTML = `
+                        <div class="col-12 text-center text-danger py-5 bg-white rounded-4 border shadow-sm">
+                            <div class="fw-bold fs-5 mb-2">❌ เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ (Google ไม่ตอบสนอง)</div>
+                            <button class="btn btn-outline-danger btn-sm rounded-pill px-4 fw-bold shadow-sm mt-2" onclick="loadUserTableData()">🔄 โหลดใหม่</button>
+                        </div>`;
+                    document.getElementById("historyTableBody").innerHTML = '<tr><td colspan="4" class="text-center text-danger py-5">❌ โหลดข้อมูลล้มเหลว</td></tr>';
+                }
+            }
+        }
+
+        function renderActiveCards() {
+            const container = document.getElementById("activeCardsContainer");
+            container.innerHTML = ""; 
+            
+            if (myActiveData.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center text-muted py-5 bg-white rounded-4 border shadow-sm">🎉 ไม่มีรายการที่กำลังดำเนินการ</div>';
+                return;
+            }
+
+            myActiveData.forEach(item => {
+                let statusTxt = item.status || "-";
+                let statusHtml = `<span class="badge bg-warning text-dark border px-3 py-2 rounded-pill shadow-sm">⏳ ${statusTxt}</span>`;
+
+                // แปลงข้อความสถานะให้เข้าใจง่ายสำหรับ User
+                if(statusTxt.includes("รอแอดมินยืนยัน") || statusTxt.includes("Step[1]")) {
+                    statusHtml = `<span class="badge bg-primary text-white border px-3 py-2 rounded-pill shadow-sm">รอรับเครื่อง (แอดมินเตรียมเสร็จแล้ว)</span>`;
+                } else if(statusTxt.includes("Step[2]")) {
+                    statusHtml = `<span class="badge bg-info text-dark border px-3 py-2 rounded-pill shadow-sm">เครื่องอยู่กับคุณ</span>`;
+                } else if(statusTxt.includes("Step[3]")) {
+                    statusHtml = `<span class="badge bg-warning text-dark border px-3 py-2 rounded-pill shadow-sm">พร้อมเข้าสอบ</span>`;
+                } else if(statusTxt.includes("Step[4]")) {
+                    statusHtml = `<span class="badge bg-secondary text-white border px-3 py-2 rounded-pill shadow-sm">ส่งคืนแล้ว (รอแอดมินตรวจสอบ)</span>`;
+                }
+
+                let formattedIpads = item.ipadId || "-";
+
+                container.innerHTML += `
+                    <div class="col-12 col-md-6">
+                        <div class="card border-0 shadow-sm rounded-4 h-100" style="border: 1px solid #e2e8f0 !important;">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <div class="text-muted small fw-bold mb-1">เลขรายการ</div>
+                                        <div class="fw-bold text-dark fs-5">${item.reqId}</div>
+                                    </div>
+                                    <div>${statusHtml}</div>
+                                </div>
+                                <div class="mb-0">
+                                    <div class="text-muted small fw-bold mb-1">อุปกรณ์ที่ยืม</div>
+                                    <div class="fw-bold text-primary" style="word-break: break-word;">${formattedIpads}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderHistoryTable() {
+            const tbody = document.getElementById("historyTableBody");
+            tbody.innerHTML = ""; 
+            
+            if (myHistoryData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-5">🔍 ไม่มีประวัติการยืม</td></tr>';
+                return;
+            }
+
+            myHistoryData.forEach(item => {
+                let statusTxt = item.status || "-";
+                let statusHtml = `<span class="badge bg-light text-secondary border px-3 py-2 rounded-pill shadow-sm">✔️ เสร็จสิ้น</span>`;
+                
+                if(statusTxt.includes("ยกเลิก")) {
+                    statusHtml = `<span class="badge bg-light text-danger border border-danger px-3 py-2 rounded-pill shadow-sm">❌ ยกเลิก</span>`;
+                }
+
+                let formattedIpads = item.ipadId || "-";
+
+                tbody.innerHTML += `
+                    <tr class="text-center align-middle">
+                        <td class="fw-bold text-dark">${item.reqId}</td>
+                        <td class="text-muted">iPad</td>
+                        <td class="fw-bold text-primary">${formattedIpads}</td>
+                        <td>${statusHtml}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        /* =======================================
+           📌 ระบบแก้ไขข้อมูลส่วนตัว (Profile Modal)
+           ======================================= */
+        let isProfileLoaded = false;
+        
+        async function openProfileModal() {
+            const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+            modal.show();
+            
+            if(isProfileLoaded) return; // โหลดครั้งเดียวพอ ไม่ต้องโหลดซ้ำ
+            
+            const btn = document.getElementById("btnSaveProfile");
+            btn.innerHTML = "กำลังโหลดข้อมูล...";
+            btn.disabled = true;
+
+            try {
+                // โหลดแผนก
+                const deptRes = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "getDepartments" }) }).then(r=>r.json());
+                if(deptRes.status === "success") {
+                    const select = document.getElementById("editProfileDept");
+                    select.innerHTML = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>';
+                    deptRes.data.forEach(d => { select.innerHTML += `<option value="${d}">${d}</option>`; });
+                }
+
+                // โหลดประวัติผู้ใช้
+                const userName = localStorage.getItem("userName");
+                const userRes = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "getUserProfile", name: userName }) }).then(r=>r.json());
+                
+                if(userRes.status === "success") {
+                    let parts = userName.split(" ");
+                    document.getElementById("editProfileFirstName").value = parts[0] || "";
+                    document.getElementById("editProfileLastName").value = parts.slice(1).join(" ") || "";
+                    document.getElementById("editProfileDept").value = userRes.dept || "";
+                    document.getElementById("editProfilePhone").value = userRes.phone || "";
+                    document.getElementById("editProfileNickname").value = userRes.nickname || "";
+                    isProfileLoaded = true;
+                }
+            } catch(e) {
+                console.error("Profile load error", e);
+            }
+            btn.innerHTML = "บันทึกข้อมูลส่วนตัว";
+            btn.disabled = false;
+        }
+
+        async function saveProfileData() {
+            const firstName = document.getElementById("editProfileFirstName").value.trim();
+            const lastName = document.getElementById("editProfileLastName").value.trim();
+            const dept = document.getElementById("editProfileDept").value;
+            const phone = document.getElementById("editProfilePhone").value.trim();
+            const nickname = document.getElementById("editProfileNickname").value.trim();
+            
+            if(!firstName || !lastName || !dept || !phone) {
+                return Swal.fire("แจ้งเตือน", "กรุณากรอกข้อมูลสำคัญให้ครบถ้วน", "warning");
+            }
+
+            const fullName = firstName + " " + lastName;
+            const userId = localStorage.getItem("userId");
+
+            const btn = document.getElementById("btnSaveProfile");
+            btn.innerHTML = "กำลังบันทึก... ⏳";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "updateUserProfile",
+                        userId: userId,
+                        name: fullName,
+                        dept: dept,
+                        phone: phone,
+                        nickname: nickname
+                    })
+                }).then(r=>r.json());
+
+                if(res.status === "success") {
+                    localStorage.setItem("userName", fullName);
+                    document.getElementById("showName").innerText = fullName;
+                    bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
+                    Swal.fire({ title: "สำเร็จ", text: "อัปเดตข้อมูลส่วนตัวเรียบร้อย", icon: "success", timer: 1500, showConfirmButton: false });
+                } else {
+                    Swal.fire("ผิดพลาด", res.message || "ไม่สามารถบันทึกข้อมูลได้", "error");
+                }
+            } catch(e) {
+                Swal.fire("ผิดพลาด", "การเชื่อมต่อขัดข้อง กรุณาลองใหม่", "error");
+            }
+            
+            btn.innerHTML = "บันทึกข้อมูลส่วนตัว";
+            btn.disabled = false;
+        }
+    </script>
 
 </body>
 </html>
