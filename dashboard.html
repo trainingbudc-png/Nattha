@@ -239,8 +239,8 @@
                     <td class="fw-bold text-dark col-name text-center">${item.preparer || "-"}</td>
                     <td class="fw-bold text-dark col-name text-start ps-3">${item.receiver || "-"}</td>
                     <!-- 📌 โชว์หมายเหตุแยก 2 คอลัมน์ -->
-                    <td class="col-note text-start" style="color: var(--admin-main);">${item.note1 || ""}</td>
-                    <td class="col-note text-start text-warning">${item.note3 || ""}</td>
+<td class="col-note text-start" style="color: var(--admin-main);">${item.note1 || '<span class="text-muted fw-normal">-</span>'}</td>
+<td class="col-note text-start text-warning">${item.note3 || '<span class="text-muted fw-normal">-</span>'}</td>
                     <td class="col-em text-center">${formatEmergency(item.emergency)}</td>
                 </tr>
             `;
