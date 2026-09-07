@@ -107,7 +107,7 @@
         });
     }
 
-    function formatIpadText(ipadText) {
+function formatIpadText(ipadText) {
         if (!ipadText || ipadText.trim() === "") return "-";
         let rawIpads = ipadText.split(',').map(id => id.trim());
         let normalIds = [], airIds = [];
@@ -118,8 +118,8 @@
             else normalIds.push(num);
         });
         let displayGroups = [];
-        if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span> ${normalIds.join(', ')}`);
-        if (airIds.length > 0) displayGroups.push(`<span style="color:var(--admin-accent);" class="fw-bold">[Air+APC]</span> ${airIds.join(', ')}`);
+        if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span><br>${normalIds.join(', ')}`);
+        if (airIds.length > 0) displayGroups.push(`<span style="color:var(--admin-accent);" class="fw-bold">[Air+APC]</span><br>${airIds.join(', ')}`);
         return displayGroups.join('<br>');
     }
 
