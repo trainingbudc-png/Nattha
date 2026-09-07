@@ -88,16 +88,20 @@ function renderActiveUserCards(data) {
     container.innerHTML = ""; 
     
     if (data.length === 0) {
-        container.innerHTML = '<div class="col-12 text-center text-muted py-5 bg-white rounded-4 border">🎉 ไม่มีรายการที่กำลังดำเนินการ</div>';
+        container.innerHTML = '<div class="col-12 text-center text-muted py-5 bg-white rounded-4 border shadow-sm">🎉 ไม่มีรายการที่กำลังดำเนินการ</div>';
         return;
     }
 
     data.forEach(item => {
         let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
+        // ตัดวินาทีออกให้ดูคลีนขึ้นบนมือถือ
+        dateStr = dateStr.replace(/:\d{2}$/, '');
+
         let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
 
-        // 📌 1. ปรับการสร้างข้อมูล iPad ให้แยกประเภทและตัวเลขออกจากกันเป็นกล่อง (Card-style)
-        let formattedIpads = '<div class="text-muted py-2 text-center">-</div>';
+        // 📌 ปรับการแสดงผล "แยกประเภท" กับ "เลขอุปกรณ์" ให้อยู่คนละบรรทัด (คลีนๆ)
+        let formattedIpads = '<div class="d-flex justify-content-between"><span class="text-muted" style="font-size: 0.85rem;">อุปกรณ์:</span><span class="text-dark">-</span></div>';
+        
         if (item.ipadId && item.ipadId.trim() !== "") {
             let rawIpads = item.ipadId.split(',').map(id => id.trim());
             let normalIds = [], airIds = [];
@@ -109,31 +113,33 @@ function renderActiveUserCards(data) {
             });
             
             let displayGroups = [];
+            
             if (normalIds.length > 0) {
                 displayGroups.push(`
-                    <div class="d-flex justify-content-between align-items-center bg-white border p-2 rounded-3 mb-2 shadow-sm">
-                        <span class="badge bg-danger text-white px-3 py-2 rounded-pill" style="font-size: 0.8rem;">iPad</span>
-                        <span class="fw-bold text-dark fs-6">${normalIds.join(', ')}</span>
+                    <div class="d-flex justify-content-between align-items-center mt-2 mb-1">
+                        <span class="text-muted" style="font-size: 0.85rem;">ประเภท:</span>
+                        <span class="text-danger fw-bold" style="font-size: 0.85rem;">iPad</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="text-muted flex-shrink-0" style="font-size: 0.85rem;">เลขอุปกรณ์:</span>
+                        <span class="text-dark fw-bold text-end w-100 ps-3" style="font-size: 0.95rem;">${normalIds.join(', ')}</span>
                     </div>
                 `);
             }
             if (airIds.length > 0) {
                 displayGroups.push(`
-                    <div class="d-flex justify-content-between align-items-center bg-white border p-2 rounded-3 mb-2 shadow-sm">
-                        <span class="badge bg-primary text-white px-3 py-2 rounded-pill" style="font-size: 0.8rem;">Air + APC</span>
-                        <span class="fw-bold text-dark fs-6">${airIds.join(', ')}</span>
+                    <div class="d-flex justify-content-between align-items-center mt-2 mb-1">
+                        <span class="text-muted" style="font-size: 0.85rem;">ประเภท:</span>
+                        <span class="text-primary fw-bold" style="font-size: 0.85rem;">Air+APC</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="text-muted flex-shrink-0" style="font-size: 0.85rem;">เลขอุปกรณ์:</span>
+                        <span class="text-dark fw-bold text-end w-100 ps-3" style="font-size: 0.95rem;">${airIds.join(', ')}</span>
                     </div>
                 `);
             }
-            formattedIpads = displayGroups.join('');
-        }
-
-        let displayName = item.name || "-";
-        let nickNameHtml = "";
-        if (displayName !== "-" && displayName.includes("(")) {
-            let parts = displayName.split("(");
-            displayName = parts[0].trim();
-            nickNameHtml = `<div class="text-secondary mt-1" style="font-size: 0.8rem;">(${parts[1].trim()}</div>`;
+            // เชื่อมรายการเข้าด้วยกัน ถ้ามีการยืมทั้ง 2 ประเภทจะมีเส้นคั่นจางๆ
+            formattedIpads = displayGroups.join('<div class="border-bottom my-2 opacity-25"></div>');
         }
 
         let statusTxt = item.status || "-";
@@ -141,56 +147,61 @@ function renderActiveUserCards(data) {
         let stepLabel = ""; 
 
         if (statusTxt.includes("Step[1]")) {
-            stepLabel = "Step 1";
-            actionBtn = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step2.html?reqId=${item.reqId}'">รับเครื่อง</button>`;
+            stepLabel = "แอดมินเตรียมเสร็จแล้ว";
+            actionBtn = `<button class="btn btn-danger btn-sm rounded-pill fw-bold w-100 py-2 shadow-sm" style="font-size: 1rem;" onclick="window.location.href='step2.html?reqId=${item.reqId}'">📲 กดรับเครื่อง</button>`;
         } else if (statusTxt.includes("Step[2]")) {
-            stepLabel = "Step 2";
-            actionBtn = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step3.html?reqId=${item.reqId}'">ก่อนสอบ</button>`;
+            stepLabel = "เครื่องอยู่กับคุณ";
+            actionBtn = `<button class="btn btn-primary btn-sm rounded-pill fw-bold w-100 py-2 shadow-sm" style="font-size: 1rem; background-color: #0ea5e9; border-color: #0ea5e9;" onclick="window.location.href='step3.html?reqId=${item.reqId}'">📝 ตรวจก่อนสอบ</button>`;
         } else if (statusTxt.includes("Step[3]")) {
-            stepLabel = "Step 3";
-            actionBtn = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'">ส่งคืน</button>`;
+            stepLabel = "พร้อมเข้าสอบ";
+            actionBtn = `<button class="btn btn-success btn-sm rounded-pill fw-bold w-100 py-2 shadow-sm" style="font-size: 1rem; background-color: #10b981; border-color: #10b981;" onclick="window.location.href='step4.html?reqId=${item.reqId}'">📤 ส่งคืนอุปกรณ์</button>`;
         } else if (statusTxt.includes("Step[4]")) {
-            stepLabel = "Step 4";
-            actionBtn = `<button class="btn btn-light border text-secondary btn-sm fw-bold rounded-pill px-3" disabled>รอตรวจคืน</button>`;
+            stepLabel = "ส่งคืนเรียบร้อย";
+            actionBtn = `<button class="btn btn-light border text-secondary btn-sm fw-bold rounded-pill w-100 py-2" style="font-size: 1rem;" disabled>⏳ รอแอดมินตรวจรับ</button>`;
         } else {
             stepLabel = statusTxt;
-            actionBtn = `<span class="badge bg-secondary text-white px-3 py-2 rounded-pill">${statusTxt}</span>`;
+            actionBtn = `<span class="badge bg-secondary text-white px-3 py-2 rounded-pill w-100 fs-6 d-block">${statusTxt}</span>`;
         }
 
-        // 📌 2. นำข้อมูลที่จัดใหม่มาประกอบเข้ากับการ์ด
         container.innerHTML += `
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="active-task-card bg-white rounded-4 shadow-sm position-relative overflow-hidden">
+                <div class="active-task-card bg-white rounded-4 shadow-sm position-relative overflow-hidden" style="border: 1px solid #e2e8f0;">
                     <div class="position-absolute top-0 start-0 bottom-0 bg-danger" style="width: 4px;"></div>
                     
-                    <div class="p-3 d-flex justify-content-between align-items-center" 
+                    <div class="p-3 ps-4 d-flex justify-content-between align-items-center" 
                          style="cursor: pointer; user-select: none;" 
                          data-bs-toggle="collapse" 
                          data-bs-target="#collapse-${safeId}" 
                          aria-expanded="false"
                          onclick="closeOtherAccordions('collapse-${safeId}')">
                         
-                        <div class="fw-bold text-dark ps-2 d-flex align-items-center gap-2" style="font-size: 1.05rem;">
-                            ${item.reqId}
-                            <span class="text-secondary fw-normal" style="font-size: 0.8rem;">(${stepLabel})</span>
-                            <span class="collapse-icon text-muted" style="font-size: 0.7rem;">▼</span>
+                        <div>
+                            <div class="fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 1.15rem;">
+                                ${item.reqId}
+                                <span class="collapse-icon text-muted" style="font-size: 0.75rem;">▼</span>
+                            </div>
+                            <div class="text-secondary mt-1" style="font-size: 0.85rem; font-weight: 500;">
+                                สถานะ: <span class="text-danger">${stepLabel}</span>
+                            </div>
                         </div>
-                        
-                        <div onclick="event.stopPropagation();">${actionBtn}</div>
+                    </div>
+
+                    <div class="px-3 pb-3 ps-4">
+                        <div onclick="event.stopPropagation();">
+                            ${actionBtn}
+                        </div>
                     </div>
 
                     <div id="collapse-${safeId}" class="collapse">
                         <div class="p-3 pt-3 ps-4 border-top border-light bg-light bg-opacity-50">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="text-muted" style="font-size: 0.85rem;">📅 เวลา:</span>
                                 <span class="text-dark" style="font-size: 0.85rem; font-weight: 500;">${dateStr}</span>
                             </div>
                             
-                            <!-- 📱 ส่วนแสดงอุปกรณ์ที่แยกกล่องชัดเจน -->
-                            <div>
-                                <div class="text-muted mb-2" style="font-size: 0.85rem;">📱 อุปกรณ์ที่ดำเนินการ:</div>
-                                ${formattedIpads}
-                            </div>
+                            <!-- 📌 ข้อมูลอุปกรณ์ที่จัดบรรทัดใหม่ -->
+                            ${formattedIpads}
+                            
                         </div>
                     </div>
                 </div>
@@ -198,7 +209,6 @@ function renderActiveUserCards(data) {
         `;
     });
 }
-
 function closeOtherAccordions(targetId) {
     document.querySelectorAll('#activeCardsContainer .collapse.show').forEach(el => {
         if (el.id !== targetId) {
