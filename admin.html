@@ -212,10 +212,11 @@
         loadAdminTableData();
     };
 
-    async function loadAdminTableData(retryCount = 3) {
+   async function loadAdminTableData(retryCount = 3) {
         if (retryCount === 3) {
             document.getElementById("activeCardsContainer").innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>';
-            document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
+            // 📌 เติม style="display: block; text-align: center; width: 100%;" จัดกึ่งกลางบนมือถือ
+            document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted" style="display: block; text-align: center; width: 100%;">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
         }
         
         try {
@@ -244,7 +245,8 @@
                         <div class="text-muted small mb-3">Google Apps Script ไม่ตอบสนอง กรุณาลองใหม่อีกครั้ง</div>
                         <button class="btn btn-outline-danger btn-sm rounded-pill px-4 fw-bold shadow-sm" onclick="loadAdminTableData()">🔄 โหลดข้อมูลใหม่</button>
                     </div>`;
-                document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5">❌ โหลดข้อมูลล้มเหลว</td></tr>';
+                // 📌 เติม style="display: block; text-align: center; width: 100%;"
+                document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5" style="display: block; text-align: center; width: 100%;">❌ โหลดข้อมูลล้มเหลว</td></tr>';
             }
         }
     }
@@ -430,13 +432,14 @@ function renderActiveCards(data) {
         });
     }
 
-    function renderTable(data, targetTbodyId, countLabelId) {
+  function renderTable(data, targetTbodyId, countLabelId) {
         const tbody = document.getElementById(targetTbodyId);
         if (countLabelId) document.getElementById(countLabelId).innerText = `พบ ${data.length} รายการ`;
         tbody.innerHTML = ""; 
         
         if (data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5">🔍 ไม่พบข้อมูล</td></tr>';
+            // 📌 เติม style="display: block; text-align: center; width: 100%;" จัดกึ่งกลางเป๊ะๆ บนมือถือ
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5" style="display: block; text-align: center; width: 100%; border: none;">🔍 ไม่พบข้อมูล</td></tr>';
             return;
         }
 
@@ -481,7 +484,7 @@ function renderActiveCards(data) {
             let statusHtml = "";
             if(statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์")) {
                 statusHtml = `<span class="badge bg-light text-secondary border px-3 py-2 rounded-pill shadow-sm">✔️ เสร็จสิ้น</span>`;
-            } else if(statusTxt.includes("ยกเลิกรายการ")) {
+            } else if(statusTxt.includes("ยกเลิกรายการ") || statusTxt.includes("ยกเลิก")) {
                 statusHtml = `<span class="badge bg-light text-secondary border px-3 py-2 rounded-pill shadow-sm">❌ ยกเลิก</span>`;
             } else if(statusTxt.includes("ซ่อม") || statusTxt.includes("ชำรุด") || statusTxt.includes("ปัญหา")) {
                 statusHtml = `<span class="badge bg-danger text-white px-3 py-2 rounded-pill shadow-sm">⚠️ มีปัญหา</span>`;
