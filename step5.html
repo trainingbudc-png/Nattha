@@ -141,6 +141,7 @@
     };
 
     // 📌 ดึงข้อมูลจากฐานข้อมูลมาแสดงผล (พร้อม Auto-Retry สู้ Google)
+// 📌 ดึงข้อมูลจากฐานข้อมูลมาแสดงผล (พร้อม Auto-Retry สู้ Google)
     async function loadStep5Data(retryCount = 3) {
         const urlParams = new URLSearchParams(window.location.search);
         const reqId = urlParams.get('reqId');
@@ -180,22 +181,32 @@
                                 </div>
                                 <button type="button" class="btn btn-shortcut px-4 py-1 rounded-pill" onclick="tickAllRow('${safeId}')">ติ๊กครบ</button>
                             </div>
-                            <div class="row text-center p-4">
-                                <div class="col-3">
-                                    <div class="small fw-bold mb-3 text-dark">G-Drive</div>
-                                    <input type="checkbox" class="form-check-input sub-check-${safeId} mx-auto">
+                            
+                            <!-- 📌 แก้ไขสำหรับมือถือ: ใช้ row-cols-2 (บนมือถือเรียง 2) และ row-cols-sm-4 (บนคอมเรียง 4) -->
+                            <div class="p-4 row row-cols-2 row-cols-sm-4 g-4 text-center">
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark d-flex align-items-end justify-content-center" style="font-size: 0.95rem; min-height: 25px;">G-Drive</span>
+                                        <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
+                                    </label>
                                 </div>
-                                <div class="col-3">
-                                    <div class="small fw-bold mb-3 text-dark">File</div>
-                                    <input type="checkbox" class="form-check-input sub-check-${safeId} mx-auto">
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark d-flex align-items-end justify-content-center" style="font-size: 0.95rem; min-height: 25px;">File</span>
+                                        <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
+                                    </label>
                                 </div>
-                                <div class="col-3">
-                                    <div class="small fw-bold mb-3 text-dark">รูปภาพ</div>
-                                    <input type="checkbox" class="form-check-input sub-check-${safeId} mx-auto">
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark d-flex align-items-end justify-content-center" style="font-size: 0.95rem; min-height: 25px;">รูปภาพ</span>
+                                        <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
+                                    </label>
                                 </div>
-                                <div class="col-3">
-                                    <div class="small fw-bold mb-3 text-dark">Safari</div>
-                                    <input type="checkbox" class="form-check-input sub-check-${safeId} mx-auto">
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark d-flex align-items-end justify-content-center" style="font-size: 0.95rem; min-height: 25px;">Safari</span>
+                                        <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
+                                    </label>
                                 </div>
                             </div>
                         </div>`;
