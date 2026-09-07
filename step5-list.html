@@ -36,7 +36,8 @@
                     </tr>
                 </thead>
                 <tbody id="requestListBody">
-                    <tr><td colspan="7" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
+                    <!-- 📌 ใช้ style="justify-content: center !important;" บังคับกึ่งกลางบนมือถือ -->
+                    <tr><td colspan="7" class="text-center py-5 text-muted" style="justify-content: center !important;">กำลังโหลดข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
@@ -62,7 +63,8 @@
                 const pendingItems = result.data.filter(item => item.status && item.status.includes("Step[4]"));
                 
                 if (pendingItems.length === 0) { 
-<td colspan="7" class="text-center fw-bold py-5 text-muted" style="justify-content: center !important;">🎉 ไม่มีรายการรอตรวจรับคืนในขณะนี้</td>
+                    // 📌 บังคับกึ่งกลางเด็ดขาดด้วย !important
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center fw-bold py-5 text-muted" style="justify-content: center !important;">🎉 ไม่มีรายการรอตรวจรับคืนในขณะนี้</td></tr>'; 
                     return; 
                 }
 
@@ -115,13 +117,13 @@
                     `;
                 });
             } else { 
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-5">❌ ไม่พบข้อมูลในระบบ</td></tr>'; 
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-5" style="justify-content: center !important;">❌ ไม่พบข้อมูลในระบบ</td></tr>'; 
             }
         } catch (error) { 
             if (retryCount > 0) {
                 setTimeout(() => loadStep5List(retryCount - 1), 1500);
             } else {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>'; 
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-5" style="justify-content: center !important;">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>'; 
             }
         }
     };
