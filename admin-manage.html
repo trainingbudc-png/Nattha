@@ -39,13 +39,15 @@
                     <tr>
                         <th style="width: 15%;">เลขรายการ</th>
                         <th style="width: 20%;">วัน-เวลา</th>
-                        <th style="width: 30%;">รหัส iPad</th>
+                        <!-- เปลี่ยนหัวตารางตรงนี้ แยกเป็น 2 คอลัมน์ -->
+                        <th style="width: 15%;">อุปกรณ์</th>
+                        <th style="width: 15%;">เลขอุปกรณ์</th>
                         <th style="width: 15%;">ผู้ยืม</th>
                         <th style="width: 20%;">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody id="manageTableBody" class="bg-white">
-                    <tr><td colspan="5" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
+                    <tr><td colspan="6" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
@@ -63,7 +65,7 @@
 
     function loadPendingData() {
         const tbody = document.getElementById("manageTableBody");
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted fw-bold">กำลังโหลดข้อมูลล่าสุด... ⏳</td></tr>'; 
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted fw-bold">กำลังโหลดข้อมูลล่าสุด... ⏳</td></tr>'; 
         
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
         .then(res => res.json())
@@ -72,13 +74,14 @@
             if (res.status === "success" && res.data && res.data.length > 0) {
                 const pendingData = res.data.filter(item => item.status && item.status.includes("รอแอดมินยืนยัน"));
                 if (pendingData.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-success fw-bold py-5">🎉 ไม่มีรายการที่รอยืนยันในขณะนี้</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-success fw-bold py-5">🎉 ไม่มีรายการที่รอยืนยันในขณะนี้</td></tr>';
                     return;
                 }
 
                 pendingData.forEach(item => {
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
-                    let formattedIpads = formatIpadText(item.ipadId);
+                    // ดึงค่าที่แยกแล้วจากฟังก์ชัน
+                    let ipadData = parseIpadData(item.ipadId);
 
                     let displayName = item.name || "-";
                     if (displayName !== "-" && displayName.includes("(")) {
@@ -90,7 +93,8 @@
                         <tr>
                             <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
                             <td data-label="วัน-เวลา" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
-                            <td data-label="รหัส iPad" style="max-width: 100%; line-height: 1.6;">${formattedIpads}</td>
+                            <td data-label="อุปกรณ์">${ipadData.type}</td>
+                            <td data-label="เลขอุปกรณ์"><span class="badge bg-light border text-dark fs-6">${ipadData.numbers}</span></td>
                             <td data-label="ผู้ยืม" class="fw-bold text-dark" style="line-height: 1.5;">${displayName}</td>
                             <td data-label="จัดการ">
                                 <div class="d-flex flex-column gap-2 px-1">
@@ -102,14 +106,14 @@
                     `;
                 });
             } else {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
             }
         });
     }
 
-    // แก้ไขฟังก์ชันนี้ให้แยกแถว อุปกรณ์ และ เลขอุปกรณ์ ออกจากกันชัดเจน
-    function formatIpadText(ipadText) {
-        if (!ipadText || ipadText.trim() === "") return "-";
+    // ฟังก์ชันใหม่: แยกประเภทอุปกรณ์ กับ เลขอุปกรณ์ ออกจากกัน
+    function parseIpadData(ipadText) {
+        if (!ipadText || ipadText.trim() === "") return { type: "-", numbers: "-" };
         let rawIpads = ipadText.split(',').map(id => id.trim());
         let normalIds = [], airIds = [];
         
@@ -123,37 +127,23 @@
             }
         });
         
-        let displayGroups = [];
+        let types = [];
+        let numbers = [];
         
-        // รูปแบบสำหรับ iPad ธรรมดา
         if (normalIds.length > 0) {
-            displayGroups.push(`
-                <div class="mb-2 bg-light p-2 rounded border" style="font-size: 0.9rem;">
-                    <div class="text-secondary mb-1">
-                        <span class="text-danger fw-bold">■ อุปกรณ์:</span> iPad
-                    </div>
-                    <div>
-                        <span class="text-dark fw-bold">■ เลขอุปกรณ์:</span> <span class="badge bg-white text-dark border fs-6">${normalIds.join(', ')}</span>
-                    </div>
-                </div>
-            `);
+            types.push(`<span class="text-danger fw-bold">iPad</span>`);
+            numbers.push(normalIds.join(', '));
         }
         
-        // รูปแบบสำหรับ iPad Air+APC
         if (airIds.length > 0) {
-            displayGroups.push(`
-                <div class="bg-light p-2 rounded border" style="font-size: 0.9rem;">
-                    <div class="text-secondary mb-1">
-                        <span style="color:var(--admin-accent);" class="fw-bold">■ อุปกรณ์:</span> iPad Air + APC
-                    </div>
-                    <div>
-                        <span class="text-dark fw-bold">■ เลขอุปกรณ์:</span> <span class="badge bg-white text-dark border fs-6">${airIds.join(', ')}</span>
-                    </div>
-                </div>
-            `);
+            types.push(`<span style="color:var(--admin-accent);" class="fw-bold">iPad Air+APC</span>`);
+            numbers.push(airIds.join(', '));
         }
         
-        return displayGroups.join('');
+        return {
+            type: types.join('<br>'),
+            numbers: numbers.join('<br>')
+        };
     }
 
     function confirmStep1(reqId) {
