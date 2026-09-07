@@ -93,13 +93,11 @@
     <div class="container-wide pb-5 mt-4">
         
         <!-- 📊 โซนที่ 1: จัดการและวิเคราะห์ระบบ (Management & Analytics) -->
-<!-- 📊 โซนที่ 1: จัดการและวิเคราะห์ระบบ (Management & Analytics) -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="section-title mt-0 mb-0">ภาพรวมและการจัดการระบบ</div>
         </div>
         <div class="row g-3 mb-4">
             <div class="col-12 col-md-6">
-                <!-- Dashboard: ขาวคลีน คุมโทน Navy -->
                 <a href="dashboard.html" class="shortcut-card h-100 py-4 border-2">
                     <div class="shortcut-icon m-0 fs-1 mb-2">📊</div>
                     <div class="shortcut-title fs-5" style="color: var(--admin-main);">Dashboard สถิติ</div>
@@ -107,7 +105,6 @@
                 </a>
             </div>
             <div class="col-12 col-md-6">
-                <!-- แจ้งปัญหา: กรอบทึบสีแดงอ่อน คลีนๆ ไม่ใช้เส้นประ -->
                 <a href="report-issue.html" class="shortcut-card h-100 py-4" style="border: 2px solid #fecaca; background-color: #fffbfb;">
                     <div class="shortcut-icon m-0 fs-1 mb-2">⚠️</div>
                     <div class="shortcut-title fs-5 text-danger">แจ้งเครื่องมีปัญหา</div>
@@ -164,7 +161,6 @@
                         <option value="ยกเลิก">❌ ยกเลิกรายการ</option>
                     </select>
                 </div>
-                <!-- แก้ไข UI ให้เลขผลลัพธ์แสดงบรรทัดเดียวสวยๆ ในจอมือถือ -->
                 <div class="col-md-3 text-md-end text-start mt-2 mt-md-0">
                     <span class="badge bg-danger fs-6 px-4 py-2 rounded-pill shadow-sm" id="resultCountLabel">พบ 0 รายการ</span>
                 </div>
@@ -184,7 +180,7 @@
                     </tr>
                 </thead>
                 <tbody id="adminTableBody" class="bg-white">
-                    <tr><td colspan="6" class="text-center py-5 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>
+                    <tr><td colspan="6" class="text-center py-5 text-muted" style="justify-content: center;">กำลังโหลดข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
@@ -212,11 +208,11 @@
         loadAdminTableData();
     };
 
-   async function loadAdminTableData(retryCount = 3) {
+    async function loadAdminTableData(retryCount = 3) {
         if (retryCount === 3) {
             document.getElementById("activeCardsContainer").innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>';
-            // 📌 เติม style="display: block; text-align: center; width: 100%;" จัดกึ่งกลางบนมือถือ
-            document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted" style="display: block; text-align: center; width: 100%;">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
+            // 📌 ใช้ justify-content: center เพื่อไม่ให้กระทบ Desktop แต่จัดกลางใน Mobile
+            document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted" style="justify-content: center;">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
         }
         
         try {
@@ -245,8 +241,7 @@
                         <div class="text-muted small mb-3">Google Apps Script ไม่ตอบสนอง กรุณาลองใหม่อีกครั้ง</div>
                         <button class="btn btn-outline-danger btn-sm rounded-pill px-4 fw-bold shadow-sm" onclick="loadAdminTableData()">🔄 โหลดข้อมูลใหม่</button>
                     </div>`;
-                // 📌 เติม style="display: block; text-align: center; width: 100%;"
-                document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5" style="display: block; text-align: center; width: 100%;">❌ โหลดข้อมูลล้มเหลว</td></tr>';
+                document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5" style="justify-content: center;">❌ โหลดข้อมูลล้มเหลว</td></tr>';
             }
         }
     }
@@ -282,7 +277,7 @@
         renderTable(finalHistoryData, "adminTableBody", "resultCountLabel"); 
     }
 
-function renderActiveCards(data) {
+    function renderActiveCards(data) {
         const container = document.getElementById("activeCardsContainer");
         container.innerHTML = ""; 
         
@@ -297,7 +292,7 @@ function renderActiveCards(data) {
 
             let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
 
-            // 📌 1. จัดรูปแบบอุปกรณ์ให้แยก "ประเภท" กับ "เลขอุปกรณ์" ไว้คนละบรรทัด (เหมือนฝั่ง User)
+            // 📌 1. จัดรูปแบบอุปกรณ์ให้แยก "ประเภท" กับ "เลขอุปกรณ์"
             let formattedIpads = '<div class="d-flex justify-content-between"><span class="text-muted" style="font-size: 0.85rem;">อุปกรณ์:</span><span class="text-dark">-</span></div>';
             
             if (item.ipadId && item.ipadId.trim() !== "") {
@@ -347,7 +342,7 @@ function renderActiveCards(data) {
                 nickNameHtml = `<span class="text-secondary ms-1 fw-normal" style="font-size: 0.8rem;">(${parts[1].trim()})</span>`;
             }
 
-            // 📌 2. เปลี่ยนปุ่มกดของแอดมินให้เป็นปุ่มกว้างเต็มบรรทัด (w-100) เหมือนในรูปเป๊ะ
+            // 📌 2. เปลี่ยนปุ่มกดแอดมิน (w-100)
             let statusTxt = item.status || "-";
             let actionBtn = "";
             let stepLabel = "";
@@ -369,11 +364,10 @@ function renderActiveCards(data) {
                 actionBtn = `<span class="badge bg-light text-dark border px-3 py-2 rounded-pill w-100 fs-6 d-block">${statusTxt}</span>`;
             }
 
-            // 📌 3. ประกอบการ์ดพร้อมโครงสร้างใหม่ทั้งหมด (สถานะอยู่ใต้ REQ, ปุ่มอยู่บรรทัดถัดไป)
+            // 📌 3. ประกอบการ์ด
             container.innerHTML += `
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="active-task-card position-relative overflow-hidden" style="border: 1px solid #e2e8f0;">
-                        <!-- ขีดสีน้ำเงินด้านซ้าย (ดึงจาก CSS) -->
                         <div class="position-absolute top-0 start-0 bottom-0" style="width: 4px; background-color: var(--admin-main);"></div>
                         
                         <div class="p-3 ps-4 d-flex justify-content-between align-items-center" 
@@ -394,14 +388,12 @@ function renderActiveCards(data) {
                             </div>
                         </div>
 
-                        <!-- 📌 ส่วนปุ่ม Action กว้างเต็มบรรทัด -->
                         <div class="px-3 pb-3 ps-4">
                             <div onclick="event.stopPropagation();">
                                 ${actionBtn}
                             </div>
                         </div>
 
-                        <!-- 📌 ส่วนรายละเอียดเวลาคลิกขยาย -->
                         <div id="collapse-${safeId}" class="collapse">
                             <div class="p-3 pt-3 ps-4 border-top border-light bg-light bg-opacity-50">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
@@ -413,7 +405,6 @@ function renderActiveCards(data) {
                                     <span class="text-dark text-end w-100 ps-3" style="font-size: 0.85rem; font-weight: 500;">${displayName} ${nickNameHtml}</span>
                                 </div>
                                 
-                                <!-- ข้อมูลอุปกรณ์แยกบรรทัด -->
                                 ${formattedIpads}
                             </div>
                         </div>
@@ -432,14 +423,14 @@ function renderActiveCards(data) {
         });
     }
 
-  function renderTable(data, targetTbodyId, countLabelId) {
+    function renderTable(data, targetTbodyId, countLabelId) {
         const tbody = document.getElementById(targetTbodyId);
         if (countLabelId) document.getElementById(countLabelId).innerText = `พบ ${data.length} รายการ`;
         tbody.innerHTML = ""; 
         
         if (data.length === 0) {
-            // 📌 เติม style="display: block; text-align: center; width: 100%;" จัดกึ่งกลางเป๊ะๆ บนมือถือ
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5" style="display: block; text-align: center; width: 100%; border: none;">🔍 ไม่พบข้อมูล</td></tr>';
+            // 📌 ใช้ justify-content: center ตรงนี้
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5" style="justify-content: center; border: none;">🔍 ไม่พบข้อมูล</td></tr>';
             return;
         }
 
