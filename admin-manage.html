@@ -117,10 +117,17 @@ function formatIpadText(ipadText) {
             if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num);
             else normalIds.push(num);
         });
+        
         let displayGroups = [];
-        if (normalIds.length > 0) displayGroups.push(`<span class="text-danger fw-bold">[iPad]</span><br>${normalIds.join(', ')}`);
-        if (airIds.length > 0) displayGroups.push(`<span style="color:var(--admin-accent);" class="fw-bold">[Air+APC]</span><br>${airIds.join(', ')}`);
-        return displayGroups.join('<br>');
+        if (normalIds.length > 0) {
+            displayGroups.push(`<span class="text-danger fw-bold">อุปกรณ์ "iPad"</span><br>เลขอุปกรณ์ "${normalIds.join(', ')}"`);
+        }
+        if (airIds.length > 0) {
+            displayGroups.push(`<span style="color:var(--admin-accent);" class="fw-bold">อุปกรณ์ "Air+APC"</span><br>เลขอุปกรณ์ "${airIds.join(', ')}"`);
+        }
+        
+        // ใช้ <br><br> เพื่อเว้นบรรทัดให้ชัดเจนขึ้นกรณีที่มีทั้งสองแบบ
+        return displayGroups.join('<br><br>');
     }
 
     function confirmStep1(reqId) {
