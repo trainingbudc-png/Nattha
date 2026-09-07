@@ -96,7 +96,8 @@ function renderActiveUserCards(data) {
         let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
         let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
 
-        let formattedIpads = '<span class="text-muted">-</span>';
+        // 📌 1. ปรับการสร้างข้อมูล iPad ให้แยกประเภทและตัวเลขออกจากกันเป็นกล่อง (Card-style)
+        let formattedIpads = '<div class="text-muted py-2 text-center">-</div>';
         if (item.ipadId && item.ipadId.trim() !== "") {
             let rawIpads = item.ipadId.split(',').map(id => id.trim());
             let normalIds = [], airIds = [];
@@ -106,13 +107,23 @@ function renderActiveUserCards(data) {
                 if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num);
                 else normalIds.push(num);
             });
-            let displayGroups = [];
             
+            let displayGroups = [];
             if (normalIds.length > 0) {
-                displayGroups.push(`<div class="mb-1"><span class="text-danger fw-bold">[iPad]</span> <span class="text-dark" style="font-weight: 500;">${normalIds.join(', ')}</span></div>`);
+                displayGroups.push(`
+                    <div class="d-flex justify-content-between align-items-center bg-white border p-2 rounded-3 mb-2 shadow-sm">
+                        <span class="badge bg-danger text-white px-3 py-2 rounded-pill" style="font-size: 0.8rem;">iPad</span>
+                        <span class="fw-bold text-dark fs-6">${normalIds.join(', ')}</span>
+                    </div>
+                `);
             }
             if (airIds.length > 0) {
-                displayGroups.push(`<div class="mb-1"><span class="text-primary fw-bold">[Air+APC]</span> <span class="text-dark" style="font-weight: 500;">${airIds.join(', ')}</span></div>`);
+                displayGroups.push(`
+                    <div class="d-flex justify-content-between align-items-center bg-white border p-2 rounded-3 mb-2 shadow-sm">
+                        <span class="badge bg-primary text-white px-3 py-2 rounded-pill" style="font-size: 0.8rem;">Air + APC</span>
+                        <span class="fw-bold text-dark fs-6">${airIds.join(', ')}</span>
+                    </div>
+                `);
             }
             formattedIpads = displayGroups.join('');
         }
@@ -140,13 +151,13 @@ function renderActiveUserCards(data) {
             actionBtn = `<button class="btn btn-danger btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="window.location.href='step4.html?reqId=${item.reqId}'">ส่งคืน</button>`;
         } else if (statusTxt.includes("Step[4]")) {
             stepLabel = "Step 4";
-            // 📌 เอาอีโมจิ ⏳ ออก เพื่อความคลีนและต่อเนื่องกับปุ่มอื่น
             actionBtn = `<button class="btn btn-light border text-secondary btn-sm fw-bold rounded-pill px-3" disabled>รอตรวจคืน</button>`;
         } else {
             stepLabel = statusTxt;
             actionBtn = `<span class="badge bg-secondary text-white px-3 py-2 rounded-pill">${statusTxt}</span>`;
         }
 
+        // 📌 2. นำข้อมูลที่จัดใหม่มาประกอบเข้ากับการ์ด
         container.innerHTML += `
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="active-task-card bg-white rounded-4 shadow-sm position-relative overflow-hidden">
@@ -169,16 +180,16 @@ function renderActiveUserCards(data) {
                     </div>
 
                     <div id="collapse-${safeId}" class="collapse">
-                        <div class="p-3 pt-2 ps-4 border-top border-light">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-muted" style="font-size: 0.8rem;">📅 เวลา:</span>
+                        <div class="p-3 pt-3 ps-4 border-top border-light bg-light bg-opacity-50">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted" style="font-size: 0.85rem;">📅 เวลา:</span>
                                 <span class="text-dark" style="font-size: 0.85rem; font-weight: 500;">${dateStr}</span>
                             </div>
-                            <div class="d-flex justify-content-between align-items-start mt-2">
-                                <span class="text-muted flex-shrink-0" style="font-size: 0.8rem; padding-top: 2px;">📱 อุปกรณ์:</span>
-                                <div class="text-end w-100 ps-3" style="font-size: 0.9rem;">
-                                    ${formattedIpads}
-                                </div>
+                            
+                            <!-- 📱 ส่วนแสดงอุปกรณ์ที่แยกกล่องชัดเจน -->
+                            <div>
+                                <div class="text-muted mb-2" style="font-size: 0.85rem;">📱 อุปกรณ์ที่ดำเนินการ:</div>
+                                ${formattedIpads}
                             </div>
                         </div>
                     </div>
