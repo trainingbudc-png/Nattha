@@ -36,8 +36,14 @@
                     </tr>
                 </thead>
                 <tbody id="requestListBody">
-                    <!-- 📌 เติม justify-content: center ให้ข้อความตอนเริ่มโหลด -->
-                    <tr><td colspan="7" class="text-center py-5 text-muted" style="justify-content: center; border: none;">กำลังโหลดข้อมูล... ⏳</td></tr>
+                    <!-- 📌 ใช้ <div> ครอบข้อความ และสั่ง d-flex justify-content-center เพื่อจัดกึ่งกลางเป๊ะทั้งคอมและมือถือ -->
+                    <tr>
+                        <td colspan="7" class="border-0 p-0">
+                            <div class="w-100 d-flex justify-content-center py-5 text-muted">
+                                กำลังโหลดข้อมูล... ⏳
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -50,7 +56,6 @@
         loadStep5List();
     };
 
-    // 📌 ระบบโหลดข้อมูลแบบอึด (Auto-Retry) ป้องกัน Google ตัดสาย
     async function loadStep5List(retryCount = 3) {
         const tbody = document.getElementById("requestListBody");
         
@@ -63,14 +68,21 @@
                 const pendingItems = result.data.filter(item => item.status && item.status.includes("Step[4]"));
                 
                 if (pendingItems.length === 0) { 
-                    // 📌 เติม justify-content: center ให้ตรงกลางเป๊ะเวลาไม่มีข้อมูล
-                    tbody.innerHTML = '<tr><td colspan="7" class="text-center fw-bold py-5 text-muted" style="justify-content: center; border: none;">🎉 ไม่มีรายการรอตรวจรับคืนในขณะนี้</td></tr>'; 
+                    // 📌 แก้เป็นโครงสร้าง <div> จัดกึ่งกลางเด็ดขาด
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="border-0 p-0">
+                                <div class="w-100 d-flex justify-content-center py-5 text-muted fw-bold">
+                                    🎉 ไม่มีรายการรอตรวจรับคืนในขณะนี้
+                                </div>
+                            </td>
+                        </tr>
+                    `; 
                     return; 
                 }
 
                 pendingItems.forEach(item => {
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
-                    // 📌 ตัดวินาทีทิ้งให้สะอาดตา
                     dateStr = dateStr.replace(/:\d{2}$/, '');
 
                     let typeHtml = '<span class="text-muted">-</span>', idsHtml = '<span class="text-muted">-</span>';
@@ -88,7 +100,6 @@
                         typeHtml = typeArr.join(''); idsHtml = idsArr.join('');
                     }
 
-                    // จัดการชื่อผู้ส่งคืน
                     let displayName = item.name || "-";
                     let nickNameHtml = "";
                     if (displayName !== "-" && displayName.includes("(")) {
@@ -117,15 +128,31 @@
                     `;
                 });
             } else { 
-                // 📌 เติม justify-content: center กรณีเชื่อมต่อสำเร็จแต่ไม่มีข้อมูล
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-5" style="justify-content: center; border: none;">❌ ไม่พบข้อมูลในระบบ</td></tr>'; 
+                // 📌 จัดกึ่งกลางกรณีไม่พบข้อมูล
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="border-0 p-0">
+                            <div class="w-100 d-flex justify-content-center py-5 text-danger fw-bold">
+                                ❌ ไม่พบข้อมูลในระบบ
+                            </div>
+                        </td>
+                    </tr>
+                `; 
             }
         } catch (error) { 
             if (retryCount > 0) {
                 setTimeout(() => loadStep5List(retryCount - 1), 1500);
             } else {
-                // 📌 เติม justify-content: center กรณีโหลดไม่ขึ้นเลย
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-5" style="justify-content: center; border: none;">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>'; 
+                // 📌 จัดกึ่งกลางกรณีโหลดล้มเหลว
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="border-0 p-0">
+                            <div class="w-100 d-flex justify-content-center py-5 text-danger fw-bold">
+                                ❌ เกิดข้อผิดพลาดในการโหลดข้อมูล
+                            </div>
+                        </td>
+                    </tr>
+                `; 
             }
         }
     };
