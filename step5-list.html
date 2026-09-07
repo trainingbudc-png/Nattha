@@ -62,7 +62,7 @@
                 const pendingItems = result.data.filter(item => item.status && item.status.includes("Step[4]"));
                 
                 if (pendingItems.length === 0) { 
-                    tbody.innerHTML = '<tr><td colspan="7" class="text-center fw-bold py-5 text-muted">🎉 ไม่มีรายการรอตรวจรับคืนในขณะนี้</td></tr>'; 
+<td colspan="7" class="text-center fw-bold py-5 text-muted" style="justify-content: center !important;">🎉 ไม่มีรายการรอตรวจรับคืนในขณะนี้</td>
                     return; 
                 }
 
