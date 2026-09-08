@@ -89,17 +89,18 @@
             }
             
             /* 1. แถวแสดงชื่อ iPad (เต็มบรรทัด) */
+/* 1. แถวแสดงชื่อ iPad (เต็มบรรทัดและใส่สีพื้นหลังธีม) */
             .table tbody td[data-label="รหัส iPad"] {
-                width: 100%;
+                width: calc(100% + 24px); /* ขยายให้ชนขอบการ์ดซ้าย-ขวา */
+                margin: -12px -12px 12px -12px; /* ดึงแถบให้ไปติดขอบบนสุดของการ์ด */
+                padding: 12px 16px !important;
                 justify-content: space-between;
-                border-bottom: 1px dashed #cbd5e1 !important;
-                padding-bottom: 10px;
-                margin-bottom: 8px;
-                padding-left: 0 !important; /* ดันข้อความชิดซ้าย */
-                padding-right: 0 !important; /* ดันข้อความชิดขวา */
+                background-color: #f1f5f9; /* 🚨 ใส่สีพื้นหลังธีมฟ้าอ่อน */
+                border-bottom: 2px solid var(--admin-main) !important; /* 🚨 เส้นขอบล่างสีกรมท่าชัดเจน */
+                border-radius: 14px 14px 0 0; /* โค้งมุมบนให้พอดีกับการ์ด */
             }
             .table tbody td[data-label="รหัส iPad"]::before { content: "📱 " attr(data-label); color: var(--admin-main); font-size: 0.95rem; }
-            .table tbody td[data-label="รหัส iPad"] .fw-bold { font-size: 1.1rem !important; }
+            .table tbody td[data-label="รหัส iPad"] .fw-bold { font-size: 1.15rem !important; color: var(--admin-main) !important; }
 
             /* 2. แก๊ง Checkbox (ปรับใหม่ให้คลีน จัดซ้าย-ขวา เป๊ะๆ) */
             .table tbody td[data-label="G-Drive"],
