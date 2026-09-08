@@ -6,6 +6,111 @@
     <title>จัดการรอยืนยัน (Admin)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="theme-admin.css">
+    <style>
+        /* 📌 ปรับแต่ง UX/UI เฉพาะหน้าจัดการ */
+        body {
+            background-color: #f8fafc;
+        }
+        
+        .instruction-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+            overflow: hidden; /* ให้ขอบมนคลุมถึงหัวตาราง */
+        }
+
+        .table-custom {
+            margin-bottom: 0;
+        }
+
+        /* 📌 หัวตารางสีกรมท่าตามดีไซน์ */
+        .table-custom thead {
+            background-color: var(--admin-main);
+        }
+        .table-custom thead th {
+            color: white !important;
+            font-weight: 500;
+            border: none;
+            padding: 15px;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        .table-custom tbody tr {
+            transition: all 0.2s ease;
+        }
+        .table-custom tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        .table-custom tbody td {
+            vertical-align: middle;
+            padding: 15px 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* 📌 ป้ายเลขอุปกรณ์ */
+        .badge-device {
+            background-color: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 8px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        /* 📌 ปรับแต่งปุ่ม Action */
+        .btn-action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 140px;
+            margin: 0 auto;
+        }
+        .btn-approve {
+            background-color: #16a34a;
+            color: white;
+            border: none;
+            transition: 0.2s;
+        }
+        .btn-approve:hover {
+            background-color: #15803d;
+            color: white;
+            box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
+        }
+        .btn-reject {
+            background-color: white;
+            color: #dc2626;
+            border: 2px solid #f87171;
+            transition: 0.2s;
+        }
+        .btn-reject:hover {
+            background-color: #dc2626;
+            color: white;
+            border-color: #dc2626;
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2);
+        }
+
+        /* 📌 เส้นขีดหน้าหัวข้อ */
+        .accent-bar-admin {
+            width: 5px;
+            height: 24px;
+            background-color: var(--admin-accent);
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
 
@@ -20,29 +125,34 @@
     </div>
 
     <div class="container pb-5" style="max-width: 1100px;">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-3 px-1">
+        
+        <!-- 📌 ส่วนคำแนะนำ (Instruction) ปรับให้ดูคลีนขึ้น -->
+        <div class="instruction-section mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
             <div>
-                <div class="section-title mt-0 mb-2">รายการที่ "รอแอดมินยืนยันการเตรียม"</div>
-                <p class="text-muted mb-0" style="font-size: 0.9rem; line-height: 1.6;">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="accent-bar-admin"></div>
+                    <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ "รอแอดมินยืนยันการเตรียม"</h5>
+                </div>
+                <p class="text-muted mb-0 ps-3" style="font-size: 0.9rem; line-height: 1.6;">
                     * เมื่อคุณกดยืนยัน ระบบจะส่งข้อความแจ้งเตือนไปที่ LINE ของผู้ขอเบิกยืมทันที <br>
                     * หากกดยกเลิก ระบบจะคืนสถานะอุปกรณ์เหล่านั้นกลับเป็น "ว่าง"
                 </p>
             </div>
-            <button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm align-self-end bg-white" onclick="loadPendingData()">
+            <button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm bg-white" onclick="loadPendingData()">
                 🔄 รีเฟรช
             </button>
         </div>
         
+        <!-- 📌 ส่วนตาราง (Table) -->
         <div class="table-card table-responsive">
-            <table class="table table-hover align-middle">
+            <table class="table table-custom text-center align-middle">
                 <thead>
                     <tr>
                         <th style="width: 15%;">เลขรายการ</th>
-                        <th style="width: 20%;">วัน-เวลา</th>
-                        <!-- เปลี่ยนหัวตารางตรงนี้ แยกเป็น 2 คอลัมน์ -->
+                        <th style="width: 15%;">วัน-เวลา</th>
                         <th style="width: 15%;">อุปกรณ์</th>
                         <th style="width: 15%;">เลขอุปกรณ์</th>
-                        <th style="width: 15%;">ผู้ยืม</th>
+                        <th style="width: 20%;">ผู้ยืม</th>
                         <th style="width: 20%;">จัดการ</th>
                     </tr>
                 </thead>
@@ -80,26 +190,35 @@
 
                 pendingData.forEach(item => {
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
-                    // ดึงค่าที่แยกแล้วจากฟังก์ชัน
+                    // ตัดวินาทีออกให้ดูสะอาดตา
+                    dateStr = dateStr.replace(/:\d{2}$/, '');
+                    
                     let ipadData = parseIpadData(item.ipadId);
 
                     let displayName = item.name || "-";
                     if (displayName !== "-" && displayName.includes("(")) {
                         let parts = displayName.split("(");
-                        displayName = `${parts[0].trim()}<br><span class="text-secondary fw-normal" style="font-size: 0.85rem;">(${parts[1].trim()}</span>`;
+                        displayName = `<div class="fw-bold text-dark text-truncate" style="max-width: 160px; margin: 0 auto;">${parts[0].trim()}</div>
+                                       <div class="text-secondary mt-1" style="font-size: 0.85rem;">(${parts[1].trim()}</div>`;
+                    } else {
+                        displayName = `<div class="fw-bold text-dark text-truncate" style="max-width: 160px; margin: 0 auto;">${displayName}</div>`;
                     }
 
                     tbody.innerHTML += `
                         <tr>
-                            <td data-label="เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
+                            <td data-label="เลขรายการ" class="fw-bold text-dark fs-6">${item.reqId}</td>
                             <td data-label="วัน-เวลา" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
                             <td data-label="อุปกรณ์">${ipadData.type}</td>
-                            <td data-label="เลขอุปกรณ์"><span class="badge bg-light border text-dark fs-6">${ipadData.numbers}</span></td>
-                            <td data-label="ผู้ยืม" class="fw-bold text-dark" style="line-height: 1.5;">${displayName}</td>
+                            <td data-label="เลขอุปกรณ์">${ipadData.numbers}</td>
+                            <td data-label="ผู้ยืม" style="line-height: 1.2;">${displayName}</td>
                             <td data-label="จัดการ">
-                                <div class="d-flex flex-column gap-2 px-1">
-                                    <button class="btn btn-success btn-sm fw-bold rounded-pill shadow-sm py-2" onclick="confirmStep1('${item.reqId}')">✔️ ยืนยัน</button>
-                                    <button class="btn btn-outline-danger btn-sm fw-bold rounded-pill bg-white py-2" onclick="cancelStep1('${item.reqId}')">❌ ปฏิเสธ</button>
+                                <div class="btn-action-group">
+                                    <button class="btn btn-approve btn-sm fw-bold rounded-pill shadow-sm py-2" onclick="confirmStep1('${item.reqId}')">
+                                        ✔️ ยืนยัน
+                                    </button>
+                                    <button class="btn btn-reject btn-sm fw-bold rounded-pill py-2 shadow-sm" onclick="cancelStep1('${item.reqId}')">
+                                        ❌ ปฏิเสธ
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -111,9 +230,8 @@
         });
     }
 
-    // ฟังก์ชันใหม่: แยกประเภทอุปกรณ์ กับ เลขอุปกรณ์ ออกจากกัน
     function parseIpadData(ipadText) {
-        if (!ipadText || ipadText.trim() === "") return { type: "-", numbers: "-" };
+        if (!ipadText || ipadText.trim() === "") return { type: '<span class="text-muted">-</span>', numbers: '<span class="text-muted">-</span>' };
         let rawIpads = ipadText.split(',').map(id => id.trim());
         let normalIds = [], airIds = [];
         
@@ -131,18 +249,18 @@
         let numbers = [];
         
         if (normalIds.length > 0) {
-            types.push(`<span class="text-danger fw-bold">iPad</span>`);
-            numbers.push(normalIds.join(', '));
+            types.push(`<div class="fw-bold" style="color: var(--admin-main); margin-bottom: 4px;">iPad</div>`);
+            numbers.push(`<div class="mb-2"><span class="badge-device">${normalIds.join(', ')}</span></div>`);
         }
         
         if (airIds.length > 0) {
-            types.push(`<span style="color:var(--admin-accent);" class="fw-bold">iPad Air+APC</span>`);
-            numbers.push(airIds.join(', '));
+            types.push(`<div class="fw-bold" style="color: var(--admin-accent); margin-bottom: 4px;">Air+APC</div>`);
+            numbers.push(`<div><span class="badge-device">${airIds.join(', ')}</span></div>`);
         }
         
         return {
-            type: types.join('<br>'),
-            numbers: numbers.join('<br>')
+            type: types.join(''),
+            numbers: numbers.join('')
         };
     }
 
@@ -152,8 +270,8 @@
             text: `ระบบจะส่งข้อความแจ้งเตือนไปให้ผู้ยืมผ่าน LINE ทันที`,
             icon: "info",
             showCancelButton: true,
-            confirmButtonColor: "#198754",
-            cancelButtonColor: "#6c757d",
+            confirmButtonColor: "#16a34a",
+            cancelButtonColor: "#64748b",
             confirmButtonText: "ใช่, ยืนยันเลย!"
         }).then((result) => {
             if (result.isConfirmed) processAction("confirmStep1", reqId, "กำลังส่งแจ้งเตือน... ⏳", "ส่งข้อความ LINE สำเร็จ!");
@@ -166,8 +284,8 @@
             text: `อุปกรณ์ทั้งหมดในรายการ ${reqId} จะถูกเปลี่ยนสถานะเป็น "ว่าง" และกลับคืนสู่คลังทันที`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#1e3a8a",
-            cancelButtonColor: "#6c757d",
+            confirmButtonColor: "#dc2626",
+            cancelButtonColor: "#64748b",
             confirmButtonText: "ใช่, ยกเลิกและคืนคลัง!"
         }).then((result) => {
             if (result.isConfirmed) processAction("cancelStep1", reqId, "กำลังยกเลิกและคืนเครื่อง... ⏳", "ยกเลิกรายการสำเร็จ!");
