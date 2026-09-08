@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายการรอตรวจสอบรับคืน (Admin)</title>
+    <title>Step 5 List | ตรวจรับคืน</title>
     <link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,33 +21,6 @@
             border: 1px solid #e2e8f0;
         }
 
-        .table-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            border: 1px solid #e2e8f0;
-            overflow: hidden; 
-        }
-
-        .table-custom { margin-bottom: 0; }
-        .table-custom thead { background-color: var(--admin-main); }
-        .table-custom thead th {
-            color: white !important;
-            font-weight: 500;
-            border: none;
-            padding: 15px;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-        }
-
-        .table-custom tbody tr { transition: all 0.2s ease; }
-        .table-custom tbody tr:hover { background-color: #f8fafc; }
-        .table-custom tbody td {
-            vertical-align: middle;
-            padding: 15px 10px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
         .accent-bar-admin {
             width: 5px; height: 24px;
             background-color: var(--admin-accent);
@@ -56,104 +29,75 @@
             margin-right: 10px;
         }
 
-        .btn-check-device {
+        /* 📱 โครงสร้าง Card แท้สำหรับมือถือและจอคอม (ไม่ใช้ตาราง) */
+        .step5-item-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            min-width: 110px;
+            text-align: left;
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            color: #1e293b;
+            text-align: right;
+            word-break: break-word;
+            flex-grow: 1;
+        }
+
+        .status-badge-custom {
+            background-color: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
+            padding: 3px 12px;
+            border-radius: 50rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .btn-submit-action {
             background-color: var(--admin-main);
             color: white;
             border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
             transition: 0.2s;
         }
-        .btn-check-device:hover {
+
+        .btn-submit-action:hover {
             background-color: var(--admin-hover);
             color: white;
-            box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
-        }
-        
-        .status-badge {
-            background-color: #f59e0b;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 50rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        /* 📱 โหมดมือถือ: จัดระเบียบขั้นเด็ดขาด ป้องกันการเบี้ยวทุกกรณี */
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            .table-card { background: transparent; box-shadow: none; border: none; overflow: visible; }
-            .table-custom thead { display: none; }
-            .table-custom tbody tr {
-                display: block;
-                background: #ffffff;
-                border-radius: 16px;
-                margin-bottom: 16px;
-                padding: 16px 20px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-                border: 1px solid #e2e8f0;
-            }
-            .table-custom tbody td {
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: flex-start !important; /* ให้ข้อความเริ่มจากด้านบนตรงกัน */
-                padding: 12px 0 !important;
-                border-bottom: 1px dashed #e2e8f0 !important;
-                gap: 15px; /* บังคับระยะห่างระหว่างซ้าย-ขวา */
-            }
-            
-            /* 🚨 ล็อกหัวข้อให้อยู่ซ้ายเสมอ */
-            .table-custom tbody td::before {
-                content: attr(data-label);
-                font-weight: 600;
-                color: #64748b;
-                font-size: 0.95rem;
-                text-align: left;
-                flex-shrink: 0;
-                margin-top: 2px;
-            }
-            
-            /* 🚨 ล็อกข้อมูลทั้งหมดให้อยู่ขวา และเรียงจากบนลงล่าง */
-            .table-custom tbody td .right-content {
-                display: flex;
-                flex-direction: column; /* บังคับให้ชื่อกับวงเล็บซ้อนกัน */
-                align-items: flex-end; /* ชิดขวาสุด */
-                text-align: right;
-                word-break: break-word;
-                width: 100%;
-            }
-
-            /* ตกแต่งเลขรายการให้เด่นชัด */
-            .table-custom tbody td[data-label="เลขรายการ"] {
-                border-bottom: 2px solid var(--admin-main) !important;
-                padding-bottom: 12px !important;
-                margin-bottom: 8px;
-            }
-            .table-custom tbody td[data-label="เลขรายการ"]::before {
-                content: attr(data-label);
-                color: var(--admin-main);
-                font-weight: 700;
-            }
-
-            /* ปุ่มจัดการขยายเต็มจอ */
-            .table-custom tbody td[data-label="จัดการ"] {
-                border-bottom: none !important;
-                padding-bottom: 0 !important;
-                padding-top: 16px !important;
-                display: block !important;
-            }
-            .table-custom tbody td[data-label="จัดการ"]::before { display: none; }
-            .table-custom tbody td[data-label="จัดการ"] .btn {
-                width: 100%;
-                padding: 14px !important;
-                font-size: 1.05rem !important;
-                border-radius: 10px;
-            }
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
         }
     </style>
 </head>
 <body>
 
     <div class="nav-header-custom shadow-sm mb-4">
-        <div class="nav-title-custom fw-bold">
+        <div class="nav-title-custom fw-bold text-white">
             🔍 Step 5 | ตรวจรับคืน
             <span class="d-block d-sm-inline text-light opacity-75" style="font-size: 0.95rem; font-weight: 500;">(ค้างดำเนินการ)</span>
         </div>
@@ -162,38 +106,24 @@
         </div>
     </div>
 
-    <div class="container" style="max-width: 1100px;">
+    <div class="container" style="max-width: 650px;">
         
-        <div class="instruction-section mb-4">
-            <div class="d-flex align-items-center mb-2">
+        <div class="instruction-section mb-3">
+            <div class="d-flex align-items-center mb-1">
                 <div class="accent-bar-admin"></div>
                 <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ผู้ใช้งานส่งคืน (รอแอดมินตรวจ)</h5>
             </div>
         </div>
         
-        <div class="text-end mb-2">
-            <button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm bg-white" onclick="loadStep5List()">
-                🔄 รีเฟรชข้อมูลล่าสุด
+        <div class="text-end mb-3">
+            <button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm bg-white border" onclick="loadStep5List()">
+                🔄 รีเฟรชข้อมูล
             </button>
         </div>
         
-        <div class="table-card table-responsive">
-            <table class="table table-custom text-center align-middle">
-                <thead>
-                    <tr>
-                        <th style="width: 12%;">เลขรายการ</th>
-                        <th style="width: 15%;">วันที่และเวลา</th>
-                        <th style="width: 20%;">ผู้ส่งคืน</th>
-                        <th style="width: 13%;">อุปกรณ์ที่ยืม</th>
-                        <th style="width: 15%;">เครื่องที่เตรียม</th>
-                        <th style="width: 10%;">สถานะ</th>
-                        <th style="width: 15%;">จัดการ</th>
-                    </tr>
-                </thead>
-                <tbody id="listTableBody" class="bg-white">
-                    <tr><td colspan="7" class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</td></tr>
-                </tbody>
-            </table>
+        <!-- รายการการ์ดจะถูกใส่ตรงนี้ -->
+        <div id="listContainer">
+            <div class="text-center py-5 text-muted fw-bold bg-white rounded-4 border">กำลังเชื่อมต่อข้อมูล... ⏳</div>
         </div>
     </div>
 
@@ -206,70 +136,82 @@
     };
 
     function loadStep5List() {
-        const tbody = document.getElementById("listTableBody");
-        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-5 text-muted fw-bold" style="justify-content: center !important;">กำลังดึงข้อมูลรายการที่รอตรวจ... ⏳</td></tr>'; 
+        const container = document.getElementById("listContainer");
+        container.innerHTML = '<div class="text-center py-5 text-muted fw-bold bg-white rounded-4 border">กำลังดึงข้อมูล... ⏳</div>'; 
         
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
         .then(res => res.json())
         .then(res => {
-            tbody.innerHTML = ""; 
+            container.innerHTML = ""; 
             if (res.status === "success" && res.data && res.data.length > 0) {
                 
                 const pendingData = res.data.filter(item => 
-                    item.status && (item.status.includes("รอตรวจสอบ") || item.status.includes("รอแอดมินตรวจ") || item.status.includes("รอตรวจรับ"))
+                    item.status && (item.status.includes("รอตรวจสอบ") || item.status.includes("รอแอดมินตรวจ") || item.status.includes("รอตรวจรับ") || item.status.includes("Step[4]"))
                 );
 
                 if (pendingData.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-success fw-bold py-5" style="justify-content: center !important;">🎉 ไม่มีรายการรอตรวจสอบรับคืนในขณะนี้</td></tr>';
+                    container.innerHTML = '<div class="text-center text-success fw-bold py-5 bg-white rounded-4 border shadow-sm">🎉 ไม่มีรายการรอตรวจสอบรับคืนในขณะนี้</div>';
                     return;
                 }
 
                 pendingData.forEach(item => {
-                    // จัดการเวลา
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
                     dateStr = dateStr.replace(/:\d{2}$/, '');
                     
-                    // แยกประเภทอุปกรณ์ และ เลขเครื่อง (ตามภาพที่ต้องการให้แยกกัน)
                     let deviceData = parseDeviceData(item.ipadId);
 
-                    // 🚨 โครงสร้างชื่อใหม่ที่ป้องกันการเบี้ยวในมือถือ
-                    let displayName = item.name || "-";
-                    if (displayName !== "-" && displayName.includes("(")) {
-                        let parts = displayName.split("(");
-                        displayName = `<div class="right-content">
-                                         <div class="fw-bold text-dark" style="font-size: 1rem; line-height: 1.2;">${parts[0].trim()}</div>
-                                         <div class="text-secondary mt-1" style="font-size: 0.85rem;">(${parts[1].trim()}</div>
-                                       </div>`;
-                    } else {
-                        displayName = `<div class="right-content fw-bold text-dark">${displayName}</div>`;
-                    }
+                    // รวมชื่อจริงกับวงเล็บชื่อเล่นให้อยู่ในก้อนเดียวกัน ไม่ให้แตกแถว
+                    let fullName = item.name || "-";
+                    let nameHtml = `<div class="fw-bold text-dark">${fullName}</div>`;
 
-                    // ดึงสถานะมาทำ Badge ถ้ามี
-                    let statusHtml = `<div class="right-content"><span class="status-badge">Step[4]</span></div>`;
+                    container.innerHTML += `
+                        <div class="step5-item-card">
+                            <div class="info-row" style="border-bottom: 2px solid var(--admin-main); padding-top: 0;">
+                                <div class="info-label" style="color: var(--admin-main); font-weight: 700;">เลขรายการ</div>
+                                <div class="info-value" style="color: var(--admin-main); font-weight: 700; font-size: 1.15rem;">${item.reqId}</div>
+                            </div>
+                            
+                            <div class="info-row">
+                                <div class="info-label">วันที่และเวลา</div>
+                                <div class="info-value text-muted">${dateStr}</div>
+                            </div>
 
-                    tbody.innerHTML += `
-                        <tr>
-                            <td data-label="เลขรายการ"><div class="right-content fw-bold text-dark fs-6">${item.reqId}</div></td>
-                            <td data-label="วันที่และเวลา"><div class="right-content text-muted" style="font-size: 0.9rem;">${dateStr}</div></td>
-                            <td data-label="ผู้ส่งคืน">${displayName}</td>
-                            <td data-label="อุปกรณ์ที่ยืม"><div class="right-content fw-bold text-dark">${deviceData.type}</div></td>
-                            <td data-label="เครื่องที่เตรียม"><div class="right-content text-secondary">${deviceData.number}</div></td>
-                            <td data-label="สถานะ">${statusHtml}</td>
-                            <td data-label="จัดการ">
-                                <button class="btn btn-check-device btn-sm fw-bold rounded-pill shadow-sm py-2 px-4 w-100" onclick="goToStep5('${item.reqId}')">
+                            <div class="info-row">
+                                <div class="info-label">ผู้ส่งคืน</div>
+                                <div class="info-value">${nameHtml}</div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-label">อุปกรณ์ที่ยืม</div>
+                                <div class="info-value fw-bold text-dark">${deviceData.type}</div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-label">เครื่องที่เตรียม</div>
+                                <div class="info-value fw-bold" style="color: #2563eb;">${deviceData.number}</div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-label">สถานะ</div>
+                                <div class="info-value">
+                                    <span class="status-badge-custom">Step[4]</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-3">
+                                <button class="btn-submit-action shadow-sm" onclick="goToStep5('${item.reqId}')">
                                     ตรวจสอบ
                                 </button>
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     `;
                 });
             } else {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-5" style="justify-content: center !important;">ไม่มีข้อมูลในระบบ</td></tr>';
+                container.innerHTML = '<div class="text-center text-muted py-5 bg-white rounded-4 border">ไม่มีข้อมูลในระบบ</div>';
             }
         });
     }
 
-    // ฟังก์ชันแยกคำว่า "iPad" กับ "หมายเลข" ออกจากกัน เพื่อแสดงคนละคอลัมน์
     function parseDeviceData(ipadText) {
         if (!ipadText || ipadText.trim() === "") return { type: "-", number: "-" };
         
