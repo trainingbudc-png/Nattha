@@ -22,7 +22,7 @@ async function loadUserTableData() {
     const historyTbody = document.getElementById("historyTableBody");
     
     activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>';
-    historyTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted">กำลังโหลดข้อมูล... ⏳</td></tr>';
+    historyTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted" style="justify-content: center !important;">กำลังโหลดข้อมูล... ⏳</td></tr>';
     
     const currentUserId = localStorage.getItem("userId");
     const currentUserName = localStorage.getItem("userName"); 
