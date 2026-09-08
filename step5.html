@@ -3,358 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Step 5 | ตรวจสอบรับคืนเครื่อง</title>
+    <title>รายการรอตรวจสอบรับคืน (Admin)</title>
     <link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
-        body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding: 20px; }
+        body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
         
-        .confirm-card { 
-            background: white; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.08); 
-            max-width: 850px; 
-            margin: auto; 
-            border: 1px solid var(--admin-border); 
-            overflow: hidden;
+        .instruction-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
         }
 
-        .card-header-navy {
-            background-color: var(--admin-main);
-            color: white;
-            padding: 18px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+            overflow: hidden; 
         }
 
-        .badge-req {
-            background-color: white !important;
-            color: var(--admin-main) !important;
-            border: 1px solid #cbd5e1;
+        .table-custom { margin-bottom: 0; }
+        .table-custom thead { background-color: var(--admin-main); }
+        .table-custom thead th {
+            color: white !important;
+            font-weight: 500;
+            border: none;
+            padding: 15px;
             font-size: 0.95rem;
-            font-weight: 700;
-            padding: 8px 16px;
-            border-radius: 50rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            letter-spacing: 0.5px;
         }
 
-        .form-check-input { 
-            cursor: pointer; 
-            accent-color: var(--admin-main) !important; 
-            border: 2px solid #94a3b8 !important; 
-            transition: all 0.2s;
-        }
-        .form-check-input:checked {
-            border-color: var(--admin-main) !important; 
-            background-color: var(--admin-main) !important; 
+        .table-custom tbody tr { transition: all 0.2s ease; }
+        .table-custom tbody tr:hover { background-color: #f8fafc; }
+        .table-custom tbody td {
+            vertical-align: middle;
+            padding: 15px 10px;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        .btn-shortcut { 
-            background: white; 
-            color: var(--admin-main); 
-            border: 2px solid var(--admin-main); 
-            font-weight: 600;
-            transition: 0.2s;
-        }
-        .btn-shortcut:hover { 
-            background: var(--admin-main); 
-            color: white; 
+        .accent-bar-admin {
+            width: 5px; height: 24px;
+            background-color: var(--admin-accent);
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 10px;
         }
 
-        .btn-admin-solid {
+        .btn-check-device {
             background-color: var(--admin-main);
             color: white;
             border: none;
-            transition: 0.3s;
+            transition: 0.2s;
         }
-        .btn-admin-solid:hover {
+        .btn-check-device:hover {
             background-color: var(--admin-hover);
             color: white;
-            box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4);
+            box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
         }
 
-        /* 📌 สไตล์การ์ด และ Checkbox ถอดแบบมาจาก Step 1 */
-        .ipad-card-header {
-            background-color: #f1f5f9;
-            border-bottom: 2px solid var(--admin-main) !important;
-            padding: 12px 16px;
-        }
-        .step5-check-tile { 
-            background-color: #f8fafc; 
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 10px !important;
-            padding: 12px 14px !important;
-        }
-        .step5-check-tile:hover { 
-            background-color: #e2e8f0; 
-            border-color: #cbd5e1 !important; 
-        }
-
+        /* 📱 โหมดมือถือ: แปลงตารางเป็นการ์ด + จัดระเบียบตัวอักษรเป๊ะๆ */
         @media (max-width: 768px) {
             body { padding: 10px; }
-            .confirm-card { padding-bottom: 20px; }
-            .card-header-navy { padding: 15px; flex-direction: column; gap: 10px; text-align: center; }
+            .table-card { background: transparent; box-shadow: none; border: none; overflow: visible; }
+            .table-custom thead { display: none; }
+            .table-custom tbody tr {
+                display: block;
+                background: #ffffff;
+                border-radius: 16px;
+                margin-bottom: 16px;
+                padding: 16px 20px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+                border: 1px solid #e2e8f0;
+            }
+            .table-custom tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+                padding: 12px 0;
+                border-bottom: 1px dashed #e2e8f0;
+            }
+            
+            /* ดันหัวข้อให้ชิดซ้ายเสมอ */
+            .table-custom tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #64748b;
+                font-size: 0.9rem;
+                text-align: left;
+                margin-right: 15px;
+                flex-shrink: 0;
+            }
+            
+            /* ดันข้อมูลให้ชิดขวาเสมอ */
+            .table-custom tbody td .user-name-box,
+            .table-custom tbody td .ipad-data-box {
+                margin: 0 0 0 auto !important;
+                text-align: right !important;
+            }
+
+            /* 🚨 ตกแต่งแถว เลขรายการ ให้เด่นๆ แยกการ์ดชัดเจน */
+            .table-custom tbody td[data-label="เลขรายการ"] {
+                border-bottom: 2px solid var(--admin-main) !important;
+                padding-bottom: 12px;
+                margin-bottom: 8px;
+            }
+            .table-custom tbody td[data-label="เลขรายการ"]::before {
+                content: "📌 " attr(data-label);
+                color: var(--admin-main);
+                font-size: 0.95rem;
+            }
+            .table-custom tbody td[data-label="เลขรายการ"] .fw-bold {
+                font-size: 1.15rem !important;
+                color: var(--admin-main) !important;
+            }
+
+            /* ปุ่มจัดการ ขยายเต็มจอ */
+            .table-custom tbody td:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+                padding-top: 16px;
+                display: block;
+            }
+            .table-custom tbody td:last-child::before { display: none; }
+            .table-custom tbody td:last-child .btn {
+                width: 100%;
+                padding: 12px !important;
+                font-size: 1.05rem !important;
+                border-radius: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    
-    <div class="container pb-5">
-        <div class="text-end" style="max-width: 850px; margin: 0 auto 15px auto;">
-            <button class="btn bg-white shadow-sm fw-bold rounded-pill px-4" style="color: var(--admin-main); border: 2px solid var(--admin-main);" onclick="window.location.href='step5-list.html'">🔙 กลับ</button>
+
+    <div class="nav-header-custom shadow-sm mb-4">
+        <div class="nav-title-custom fw-bold">
+            ⚙️ รายการรอตรวจสอบรับคืน
+            <span class="d-block d-sm-inline text-light opacity-75" style="font-size: 0.95rem; font-weight: 500;">(Step 5)</span>
         </div>
-
-        <div class="confirm-card">
-            <div class="card-header-navy">
-                <h5 class="m-0 fw-bold">📱 iPad ที่ส่งคืน</h5>
-                <div class="badge-req">รายการ: <span id="reqIdDisplay">กำลังโหลด...</span></div>
-            </div>
-            
-            <div class="p-3 p-md-4 p-lg-5">
-                <div class="row text-center mb-4 pb-3 border-bottom g-2">
-                    <div class="col-6 border-end px-2">
-                        <div class="text-muted small fw-bold mb-1">👤 ผู้ขอเบิกยืม</div>
-                        <div class="fw-bold text-truncate" style="color: var(--admin-main); font-size: 1.05rem;" id="borrowerNameDisplay">-</div>
-                    </div>
-                    <div class="col-6 px-2">
-                        <div class="text-muted small fw-bold mb-1">👮 แอดมินผู้เตรียม</div>
-                        <div class="fw-bold text-truncate" style="color: var(--admin-main); font-size: 1.05rem;" id="adminNameDisplay">-</div>
-                    </div>
-                </div>
-
-                <div id="ipadListContainer">
-                    <div class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</div>
-                </div>
-
-                <button type="button" class="btn btn-admin-solid w-100 py-3 mt-4 fw-bold fs-5 rounded-3 shadow-sm" id="btnSubmit" onclick="submitStep5()">ยืนยันการตรวจสอบเสร็จสมบูรณ์</button>
-            </div>
+        <div>
+            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4">🔙 กลับเมนูแอดมิน</a>
         </div>
     </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="script.js"></script>
+    <div class="container" style="max-width: 1100px;">
+        
+        <div class="instruction-section mb-4">
+            <div class="d-flex align-items-center mb-2">
+                <div class="accent-bar-admin"></div>
+                <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ผู้ใช้ "ส่งคืนแล้ว" (รอแอดมินตรวจ)</h5>
+            </div>
+            <p class="text-muted mb-0 ps-3" style="font-size: 0.9rem; line-height: 1.6;">
+                * กรุณาตรวจสอบอุปกรณ์ ล้างข้อมูล และเช็คสภาพเครื่องให้เรียบร้อยก่อนปิดรายการ <br>
+                * การกดตรวจสอบรับคืน จะทำให้รายการนี้ถือว่าเสร็จสิ้นกระบวนการ (จบขั้นตอน) ทันที
+            </p>
+        </div>
+        
+        <div class="text-end mb-2">
+            <button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm bg-white" onclick="loadStep5List()">
+                🔄 รีเฟรชข้อมูลล่าสุด
+            </button>
+        </div>
+        
+        <div class="table-card table-responsive">
+            <table class="table table-custom text-center align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">เลขรายการ</th>
+                        <th style="width: 15%;">วัน-เวลา (คืน)</th>
+                        <th style="width: 25%;">เลขอุปกรณ์</th>
+                        <th style="width: 20%;">ผู้ส่งคืน</th>
+                        <th style="width: 25%;">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="listTableBody" class="bg-white">
+                    <tr><td colspan="5" class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="script.js"></script> 
 <script>
     window.onload = function() {
-        if(localStorage.getItem("userRole") !== "Admin") { 
-            window.location.href="index.html"; 
-            return; 
-        }
-        loadStep5Data();
+        if(localStorage.getItem("userRole") !== "Admin") { window.location.href = "index.html"; return; }
+        loadStep5List();
     };
 
-    async function loadStep5Data(retryCount = 3) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const reqId = urlParams.get('reqId');
+    function loadStep5List() {
+        const tbody = document.getElementById("listTableBody");
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted fw-bold" style="justify-content: center !important;">กำลังดึงข้อมูลรายการที่รอตรวจ... ⏳</td></tr>'; 
         
-        if(!reqId) {
-            Swal.fire("ข้อผิดพลาด", "ไม่พบหมายเลขรายการ", "error").then(() => window.location.href="step5-list.html");
-            return;
-        }
-        
-        document.getElementById("reqIdDisplay").innerText = reqId;
-
-        try {
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: "getStep1Data", reqId: reqId })
-            });
-            const result = await res.json();
-
-            if(result.status === "success") {
-                document.getElementById("borrowerNameDisplay").innerText = result.userName || "-";
-                document.getElementById("adminNameDisplay").innerText = result.adminName || "-";
+        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
+        .then(res => res.json())
+        .then(res => {
+            tbody.innerHTML = ""; 
+            if (res.status === "success" && res.data && res.data.length > 0) {
                 
-                const container = document.getElementById("ipadListContainer");
-                container.innerHTML = "";
+                // 🚨 กรองเฉพาะรายการที่สถานะรอแอดมินตรวจรับ (หรือ Step 4 เสร็จแล้วแต่ Step 5 ยังว่าง)
+                // สามารถแก้คำว่า "รอตรวจสอบ" ให้ตรงกับสถานะใน Sheet ของคุณได้เลย
+                const pendingData = res.data.filter(item => 
+                    item.status && (item.status.includes("รอตรวจสอบ") || item.status.includes("รอแอดมินตรวจ") || item.status.includes("รอตรวจรับ"))
+                );
 
-                if(result.data && result.data.length > 0) {
-                    result.data.forEach(item => {
-                        let id = item.ipadId;
-                        let safeId = id.replace(/[^a-zA-Z0-9]/g, '');
-                        
-                        // 📌 โครงสร้างการ์ด และ Checkbox เลียนแบบ Step 1 (แบบเป๊ะๆ)
-                        container.innerHTML += `
-                        <div class="border rounded-4 mb-4 overflow-hidden shadow-sm bg-white" style="border-color: var(--admin-border) !important;">
-<div class="ipad-card-header">
-                                <label for="main-${safeId}" class="m-0 fw-bold d-flex justify-content-between align-items-center w-100" style="color: var(--admin-main); font-size: 1.15rem; cursor: pointer;">
-                                    <span>📱 ${id}</span>
-                                    <input type="checkbox" class="form-check-input main-check m-0 shadow-sm" id="main-${safeId}" value="${id}" onchange="toggleSubChecks('${safeId}')" style="width: 24px !important; height: 24px !important; flex-shrink: 0;">
-                                </label>
-                            </div>
-                            
-                            <div class="p-3">
-                                <!-- กล่อง Checklist เรียง 2x2 ในมือถือ และ 4 ในคอม -->
-                                <div class="row row-cols-2 row-cols-lg-4 g-2">
-                                    <div class="col">
-                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
-                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">G-Drive</span>
-                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
-                                        </label>
-                                    </div>
-                                    <div class="col">
-                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
-                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">File</span>
-                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
-                                        </label>
-                                    </div>
-                                    <div class="col">
-                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
-                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">รูปภาพ</span>
-                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
-                                        </label>
-                                    </div>
-                                    <div class="col">
-                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
-                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">Safari</span>
-                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
-                                        </label>
-                                    </div>
-                                </div>
-                                
-                                <!-- ปุ่มติ๊กครบ ย้ายมาอยู่ด้านล่างเต็มบรรทัดเหมือน Step 1 -->
-                                <div class="mt-2 pt-1">
-                                    <button type="button" class="btn btn-shortcut w-100 py-2" style="border-radius: 10px; font-size: 1rem;" onclick="tickAllRow('${safeId}')">ติ๊กครบ</button>
-                                </div>
-                            </div>
-                        </div>`;
-                    });
-                } else {
-                    container.innerHTML = '<div class="text-danger fw-bold text-center py-4 fs-5">❌ ไม่พบข้อมูลอุปกรณ์ในระบบ</div>';
-                }
-            }
-        } catch(e) {
-            if (retryCount > 0) {
-                document.getElementById("ipadListContainer").innerHTML = `<div class="text-center py-5 text-muted fw-bold">สัญญาณขัดข้อง กำลังลองใหม่... (${retryCount}) ⏳</div>`;
-                setTimeout(() => loadStep5Data(retryCount - 1), 1500);
-            } else {
-                document.getElementById("ipadListContainer").innerHTML = '<div class="text-danger fw-bold text-center py-4 fs-5">❌ ขัดข้อง: ไม่สามารถเชื่อมต่อฐานข้อมูลได้</div>';
-            }
-        }
-    }
-
-    function tickAllRow(safeId) {
-        document.getElementById(`main-${safeId}`).checked = true;
-        const checkboxes = document.querySelectorAll(`.sub-check-${safeId}`);
-        checkboxes.forEach(cb => cb.checked = true);
-    }
-
-    function toggleSubChecks(safeId) {
-        const isChecked = document.getElementById(`main-${safeId}`).checked;
-        const checkboxes = document.querySelectorAll(`.sub-check-${safeId}`);
-        checkboxes.forEach(cb => cb.checked = isChecked);
-    }
-
-    async function submitStep5() {
-        const reqId = document.getElementById("reqIdDisplay").innerText;
-        const adminName = localStorage.getItem("userName") || "Admin";
-        const borrowerName = document.getElementById("borrowerNameDisplay").innerText;
-
-        const mainChecks = document.querySelectorAll('.main-check');
-        let allChecked = true;
-        let items = [];
-
-        if (mainChecks.length === 0) {
-            return Swal.fire("แจ้งเตือน", "ไม่มีข้อมูลอุปกรณ์ให้ตรวจสอบ", "warning");
-        }
-
-        mainChecks.forEach(cb => {
-            const id = cb.value;
-            const safeId = cb.id.replace('main-', '');
-            const subs = document.querySelectorAll(`.sub-check-${safeId}`);
-            
-            let c1 = subs[0].checked ? "✅" : "☐";
-            let c2 = subs[1].checked ? "✅" : "☐";
-            let c3 = subs[2].checked ? "✅" : "☐";
-            let c4 = subs[3].checked ? "✅" : "☐";
-
-            if(!cb.checked || !subs[0].checked || !subs[1].checked || !subs[2].checked || !subs[3].checked) {
-                allChecked = false;
-            }
-
-            items.push({ ipadId: id, checks: [c1, c2, c3, c4] });
-        });
-
-        if(!allChecked) {
-            return Swal.fire({
-                title: "ข้อมูลไม่ครบถ้วน",
-                text: "กรุณาติ๊กทำเครื่องหมายถูก ให้ครบทุกช่องและทุกเครื่องครับ",
-                icon: "warning",
-                confirmButtonColor: "#1e3a8a"
-            });
-        }
-
-        const btn = document.getElementById("btnSubmit");
-        btn.innerHTML = "กำลังบันทึกข้อมูล... ⏳";
-        btn.disabled = true;
-
-        try {
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: "saveStep5",
-                    reqId: reqId,
-                    name: adminName,
-                    borrowerName: borrowerName,
-                    items: items,
-                    userId: localStorage.getItem("userId") 
-                })
-            });
-            
-            const rawText = await res.text();
-            let result;
-            
-            try {
-                result = JSON.parse(rawText);
-            } catch (parseErr) {
-                if (navigator.onLine) {
-                    Swal.fire({
-                        title: "สำเร็จ!",
-                        text: "ตรวจสอบรับคืนเรียบร้อย ปิดรายการสมบูรณ์",
-                        icon: "success",
-                        confirmButtonColor: "#1e3a8a",
-                        allowOutsideClick: false
-                    }).then(() => window.location.href = "step5-list.html");
+                if (pendingData.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-success fw-bold py-5" style="justify-content: center !important;">🎉 ไม่มีรายการรอตรวจสอบรับคืนในขณะนี้</td></tr>';
                     return;
                 }
-            }
 
-            if(result && result.status === "success") {
-                Swal.fire({
-                    title: "สำเร็จ!",
-                    text: "ตรวจสอบรับคืนเรียบร้อย ปิดรายการสมบูรณ์",
-                    icon: "success",
-                    confirmButtonColor: "#1e3a8a",
-                    allowOutsideClick: false
-                }).then(() => window.location.href = "step5-list.html");
+                pendingData.forEach(item => {
+                    // จัดการเวลา
+                    let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
+                    dateStr = dateStr.replace(/:\d{2}$/, '');
+                    
+                    // จัดการการแสดงผลชื่อเครื่อง
+                    let ipadData = parseIpadData(item.ipadId);
+
+                    // จัดการการแสดงผลชื่อคนคืน
+                    let displayName = item.name || "-";
+                    if (displayName !== "-" && displayName.includes("(")) {
+                        let parts = displayName.split("(");
+                        displayName = `<div class="user-name-box">
+                                         <div class="fw-bold text-dark text-truncate">${parts[0].trim()}</div>
+                                         <div class="text-secondary mt-1" style="font-size: 0.85rem;">(${parts[1].trim()}</div>
+                                       </div>`;
+                    } else {
+                        displayName = `<div class="user-name-box fw-bold text-dark text-truncate">${displayName}</div>`;
+                    }
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td data-label="เลขรายการ" class="fw-bold text-dark fs-6">${item.reqId}</td>
+                            <td data-label="วัน-เวลา (คืน)" class="text-muted" style="font-size: 0.85rem;">${dateStr}</td>
+                            <td data-label="เลขอุปกรณ์" class="ipad-data-box">${ipadData}</td>
+                            <td data-label="ผู้ส่งคืน" style="line-height: 1.2;">${displayName}</td>
+                            <td data-label="จัดการ">
+                                <button class="btn btn-check-device btn-sm fw-bold rounded-pill shadow-sm py-2 px-4 w-100" onclick="goToStep5('${item.reqId}')">
+                                    🔍 ตรวจสอบรับคืน
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
             } else {
-                Swal.fire("ข้อผิดพลาด", result.message || "เกิดข้อผิดพลาดในการบันทึก", "error");
-                btn.innerHTML = "ยืนยันการตรวจสอบเสร็จสมบูรณ์"; 
-                btn.disabled = false;
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5" style="justify-content: center !important;">ไม่มีข้อมูลในระบบ</td></tr>';
             }
-        } catch(e) {
-            if (navigator.onLine) {
-                Swal.fire({
-                    title: "สำเร็จ!",
-                    text: "ตรวจสอบรับคืนเรียบร้อย ปิดรายการสมบูรณ์ (ข้อมูลถูกบันทึกแล้ว)",
-                    icon: "success",
-                    confirmButtonColor: "#1e3a8a",
-                    allowOutsideClick: false
-                }).then(() => window.location.href = "step5-list.html");
+        });
+    }
+
+    // จัดระเบียบข้อความอธิบาย iPad
+    function parseIpadData(ipadText) {
+        if (!ipadText || ipadText.trim() === "") return '<span class="text-muted">-</span>';
+        let rawIpads = ipadText.split(',').map(id => id.trim());
+        let normalIds = [], airIds = [];
+        
+        rawIpads.forEach(id => {
+            let numMatch = id.match(/\d+/); 
+            let num = numMatch ? numMatch[0] : id; 
+            if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) {
+                airIds.push(num);
             } else {
-                Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่ออินเทอร์เน็ตได้", "error");
-                btn.innerHTML = "ยืนยันการตรวจสอบเสร็จสมบูรณ์"; 
-                btn.disabled = false;
+                normalIds.push(num);
             }
+        });
+        
+        let result = [];
+        if (normalIds.length > 0) {
+            result.push(`<div class="fw-bold text-dark" style="font-size: 0.9rem;">iPad: <span class="text-secondary">${normalIds.join(', ')}</span></div>`);
         }
+        if (airIds.length > 0) {
+            result.push(`<div class="fw-bold text-dark mt-1" style="font-size: 0.9rem;">Air+APC: <span class="text-secondary">${airIds.join(', ')}</span></div>`);
+        }
+        return result.join('');
+    }
+
+    // ฟังก์ชันเปลี่ยนหน้าไปทำ Step 5
+    function goToStep5(reqId) {
+        window.location.href = `step5.html?reqId=${reqId}`;
     }
 </script>
 </body>
