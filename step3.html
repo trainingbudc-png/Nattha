@@ -271,11 +271,13 @@
             const res = await fetch(API_URL, { 
                 method: "POST", 
                 body: JSON.stringify({ 
-                    action: "saveStep4", 
+                    action: "saveStep3", 
                     reqId: reqId, 
                     items: items, 
-                    name: currentLoggerName,
-                    userId: localStorage.getItem("userId") // 🚨 เพิ่มบรรทัดนี้
+                    exam: examValue, 
+                    note: noteValue, 
+                    name: inspector,
+                    userId: localStorage.getItem("userId") 
                 }) 
             });
             const result = await res.json();
