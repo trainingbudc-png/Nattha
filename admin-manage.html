@@ -25,7 +25,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.04);
             border: 1px solid #e2e8f0;
-            overflow: hidden; /* ให้ขอบมนคลุมถึงหัวตาราง */
+            overflow: hidden; 
         }
 
         .table-custom {
@@ -55,18 +55,6 @@
             vertical-align: middle;
             padding: 15px 10px;
             border-bottom: 1px solid #f1f5f9;
-        }
-
-        /* 📌 ป้ายเลขอุปกรณ์ */
-        .badge-device {
-            background-color: #f1f5f9;
-            color: #334155;
-            border: 1px solid #cbd5e1;
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 6px 16px;
-            border-radius: 8px;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
         }
 
         /* 📌 ปรับแต่งปุ่ม Action */
@@ -126,7 +114,7 @@
 
     <div class="container pb-5" style="max-width: 1100px;">
         
-        <!-- 📌 ส่วนคำแนะนำ (Instruction) ปรับให้ดูคลีนขึ้น -->
+        <!-- 📌 ส่วนคำแนะนำ (Instruction) -->
         <div class="instruction-section mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
             <div>
                 <div class="d-flex align-items-center mb-2">
@@ -190,7 +178,6 @@
 
                 pendingData.forEach(item => {
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
-                    // ตัดวินาทีออกให้ดูสะอาดตา
                     dateStr = dateStr.replace(/:\d{2}$/, '');
                     
                     let ipadData = parseIpadData(item.ipadId);
@@ -230,6 +217,7 @@
         });
     }
 
+    // 📌 เอาโครงกรอบออก เปลี่ยนเป็นข้อความธรรมดาแต่เน้นหนาขึ้น
     function parseIpadData(ipadText) {
         if (!ipadText || ipadText.trim() === "") return { type: '<span class="text-muted">-</span>', numbers: '<span class="text-muted">-</span>' };
         let rawIpads = ipadText.split(',').map(id => id.trim());
@@ -250,12 +238,12 @@
         
         if (normalIds.length > 0) {
             types.push(`<div class="fw-bold" style="color: var(--admin-main); margin-bottom: 4px;">iPad</div>`);
-            numbers.push(`<div class="mb-2"><span class="badge-device">${normalIds.join(', ')}</span></div>`);
+            numbers.push(`<div class="mb-2 fw-bold text-dark fs-6">${normalIds.join(', ')}</div>`);
         }
         
         if (airIds.length > 0) {
             types.push(`<div class="fw-bold" style="color: var(--admin-accent); margin-bottom: 4px;">Air+APC</div>`);
-            numbers.push(`<div><span class="badge-device">${airIds.join(', ')}</span></div>`);
+            numbers.push(`<div class="fw-bold text-dark fs-6">${airIds.join(', ')}</div>`);
         }
         
         return {
