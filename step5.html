@@ -45,8 +45,6 @@
         }
 
         .form-check-input { 
-            width: 24px !important; 
-            height: 24px !important; 
             cursor: pointer; 
             accent-color: var(--admin-main) !important; 
             border: 2px solid #94a3b8 !important; 
@@ -61,7 +59,6 @@
             background: white; 
             color: var(--admin-main); 
             border: 2px solid var(--admin-main); 
-            font-size: 0.85rem; 
             font-weight: 600;
             transition: 0.2s;
         }
@@ -82,10 +79,17 @@
             box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4);
         }
 
-        /* 📌 สไตล์สำหรับปุ่ม Checkbox ที่ปรับให้กดง่ายขึ้น */
+        /* 📌 สไตล์การ์ด และ Checkbox ถอดแบบมาจาก Step 1 */
+        .ipad-card-header {
+            background-color: #f1f5f9;
+            border-bottom: 2px solid var(--admin-main) !important;
+            padding: 12px 16px;
+        }
         .step5-check-tile { 
             background-color: #f8fafc; 
-            border: 1px solid #e2e8f0;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            padding: 12px 14px !important;
         }
         .step5-check-tile:hover { 
             background-color: #e2e8f0; 
@@ -112,8 +116,7 @@
                 <div class="badge-req">รายการ: <span id="reqIdDisplay">กำลังโหลด...</span></div>
             </div>
             
-            <div class="p-3 p-md-5">
-                <!-- 📌 ส่วนผู้เบิกและแอดมิน (ลดขนาดและป้องกันชื่อล้น) -->
+            <div class="p-3 p-md-4 p-lg-5">
                 <div class="row text-center mb-4 pb-3 border-bottom g-2">
                     <div class="col-6 border-end px-2">
                         <div class="text-muted small fw-bold mb-1">👤 ผู้ขอเบิกยืม</div>
@@ -178,43 +181,48 @@
                         let id = item.ipadId;
                         let safeId = id.replace(/[^a-zA-Z0-9]/g, '');
                         
-                        // 📌 เปลี่ยนเลย์เอาต์ Checkbox ให้เป็นแบบ List ซ้าย-ขวา ในมือถือ
+                        // 📌 โครงสร้างการ์ด และ Checkbox เลียนแบบ Step 1 (แบบเป๊ะๆ)
                         container.innerHTML += `
                         <div class="border rounded-4 mb-4 overflow-hidden shadow-sm bg-white" style="border-color: var(--admin-border) !important;">
-                            <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-light">
-                                <div class="fw-bold text-dark d-flex align-items-center gap-3">
-                                    <input type="checkbox" class="form-check-input main-check m-0 shadow-sm" id="main-${safeId}" value="${id}" onchange="toggleSubChecks('${safeId}')">
-                                    <label for="main-${safeId}" class="m-0 fs-5" style="color: var(--admin-main); cursor: pointer;">${id}</label>
+                            <div class="ipad-card-header d-flex justify-content-between align-items-center">
+                                <div class="fw-bold d-flex align-items-center gap-3 w-100">
+                                    <input type="checkbox" class="form-check-input main-check m-0 shadow-sm" id="main-${safeId}" value="${id}" onchange="toggleSubChecks('${safeId}')" style="width: 24px !important; height: 24px !important; flex-shrink: 0;">
+                                    <label for="main-${safeId}" class="m-0 fw-bold w-100" style="color: var(--admin-main); font-size: 1.15rem; cursor: pointer;">📱 ${id}</label>
                                 </div>
-                                <button type="button" class="btn btn-shortcut px-4 py-1 rounded-pill" onclick="tickAllRow('${safeId}')">ติ๊กครบ</button>
                             </div>
                             
-                            <div class="p-3 px-md-4 py-md-4">
-                                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-2 g-md-3">
+                            <div class="p-3">
+                                <!-- กล่อง Checklist เรียง 2x2 ในมือถือ และ 4 ในคอม -->
+                                <div class="row row-cols-2 row-cols-lg-4 g-2">
                                     <div class="col">
-                                        <label class="d-flex justify-content-between align-items-center p-3 border rounded-3 w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
-                                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">G-Drive</span>
-                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
+                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
+                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">G-Drive</span>
+                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
                                         </label>
                                     </div>
                                     <div class="col">
-                                        <label class="d-flex justify-content-between align-items-center p-3 border rounded-3 w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
-                                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">File</span>
-                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
+                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
+                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">File</span>
+                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
                                         </label>
                                     </div>
                                     <div class="col">
-                                        <label class="d-flex justify-content-between align-items-center p-3 border rounded-3 w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
-                                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">รูปภาพ</span>
-                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
+                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
+                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">รูปภาพ</span>
+                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
                                         </label>
                                     </div>
                                     <div class="col">
-                                        <label class="d-flex justify-content-between align-items-center p-3 border rounded-3 w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
-                                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">Safari</span>
-                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
+                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
+                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">Safari</span>
+                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
                                         </label>
                                     </div>
+                                </div>
+                                
+                                <!-- ปุ่มติ๊กครบ ย้ายมาอยู่ด้านล่างเต็มบรรทัดเหมือน Step 1 -->
+                                <div class="mt-2 pt-1">
+                                    <button type="button" class="btn btn-shortcut w-100 py-2" style="border-radius: 10px; font-size: 1rem;" onclick="tickAllRow('${safeId}')">ติ๊กครบ</button>
                                 </div>
                             </div>
                         </div>`;
