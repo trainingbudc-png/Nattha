@@ -19,36 +19,48 @@
         }
         
         .table-responsive { overflow-x: auto; max-height: 75vh; border: 1px solid var(--admin-border); border-radius: 8px; }
-        .table-dashboard { white-space: nowrap; border-collapse: separate; border-spacing: 0; }
+        
+        /* 📌 ปรับปรุงตาราง Desktop ให้อ่านง่ายและเส้นชัดเจน */
+        .table-dashboard { 
+            white-space: nowrap; 
+            border-collapse: collapse; /* เปลี่ยนเป็น Collapse เพื่อให้ขอบต่อกันเนียน */
+            width: 100%;
+        }
         
         .table-dashboard th { 
             position: sticky; top: 0; z-index: 10; 
             background-color: var(--admin-main) !important; 
             color: white !important;
-            border-bottom: none !important; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             font-weight: 500;
             padding: 14px 10px;
+            border-right: 1px solid #172554; /* เส้นคั่นหัวตาราง */
         }
-        
-        .table-dashboard tr {
-            border-bottom: 1px solid #e2e8f0;
-        }
+        .table-dashboard th:last-child { border-right: none; }
         
         .table-dashboard td { 
             font-size: 0.85rem; 
             padding: 12px 10px; 
             text-align: center; 
             vertical-align: middle; 
-            border-bottom: 1px solid #e2e8f0; 
-            border-right: 1px solid #f1f5f9; 
+            border-bottom: 1px solid #cbd5e1; /* 🚨 เส้นแบ่งแนวนอนเข้มขึ้นให้อ่านง่าย */
+            border-right: 1px solid #e2e8f0; /* 🚨 เส้นแบ่งแนวตั้ง */
             background-color: white; 
+            transition: background-color 0.1s;
+        }
+        .table-dashboard td:last-child { border-right: none; }
+
+        /* 🚨 ไฮไลต์สลับสีบรรทัด (Zebra Striping) เพื่อไม่ให้หลงบรรทัด */
+        .table-dashboard tbody tr:nth-child(even) td {
+            background-color: #f8fafc;
         }
 
+        /* 🚨 ไฮไลต์สีฟ้าอ่อนเมื่อเอาเมาส์ชี้ */
         .table-dashboard tbody tr:hover td {
-            background-color: #f1f5f9 !important;
+            background-color: #eff6ff !important; 
         }
         
+        /* ความกว้างแต่ละคอลัมน์ */
         .col-req { min-width: 60px; font-size: 0.9rem; }
         .col-step { min-width: 130px; font-weight: 600; line-height: 1.2; }
         .col-status { min-width: 120px; border-left: 2px solid #cbd5e1; }
@@ -85,10 +97,9 @@
                 transition: 0.3s;
             }
             
-            /* 📌 ตั้งค่า Grid 3 คอลัมน์สำหรับมือถือโดยเฉพาะ */
             .dash-step-row {
                 display: grid;
-                grid-template-columns: 110px 1fr 105px; /* ล็อกความกว้างซ้าย/ขวา ตรงกลางยืดหยุ่น */
+                grid-template-columns: 110px 1fr 105px;
                 align-items: center;
                 padding: 10px 0;
                 border-bottom: 1px dashed #cbd5e1;
@@ -107,7 +118,7 @@
         <div class="fw-bold fs-5 d-flex align-items-center gap-2 text-white">
             📊 Dashboard ภาพรวมระบบ
         </div>
-        <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm">🔙 กลับ</a>
+        <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm">🔙 กลับหน้าแอดมิน</a>
     </nav>
 
     <div class="dashboard-container pb-5 mt-4">
@@ -288,7 +299,7 @@
         pageData.forEach(item => {
             tbody.innerHTML += `
                 <tr>
-                    <td class="fw-bold text-dark bg-light col-req text-center">${item.reqId.replace("REQ-", "")}</td>
+                    <td class="fw-bold text-dark col-req text-center">${item.reqId.replace("REQ-", "")}</td>
                     ${formatStepCell(item.step1)}
                     ${formatStepCell(item.step2)}
                     ${formatStepCell(item.step3)}
@@ -308,7 +319,6 @@
         renderPaginationControls(totalPages);
     }
 
-    // 📌 ฟังก์ชันจัดรูปแบบ Step สำหรับมือถือโดยเฉพาะ
     function renderMobileCards() {
         const container = document.getElementById("mobileCardContainer");
         container.innerHTML = "";
@@ -322,7 +332,6 @@
         const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
         const pageData = filteredData.slice(startIndex, endIndex);
 
-        // 📌 ฟังก์ชันแยกข้อความให้อยู่คนละคอลัมน์ (สถานะ, เวลา)
         const formatMobileStep = (text) => {
             if (!text || text.trim() === "") {
                 return `
@@ -331,15 +340,11 @@
                 `;
             }
             
-            // แยกบรรทัดที่ 1 (สถานะ ✅[1/1]) และ บรรทัดที่ 2 (วันที่และเวลา)
             let parts = text.split(/<br\s*\/?>|\\n|\n/);
             let statusPart = parts[0] ? parts[0].trim() : ""; 
             let timePart = parts[1] ? parts[1].trim() : "";   
             
-            // ตัดวินาทีออกเพื่อประหยัดพื้นที่บนจอมือถือ
             timePart = timePart.replace(/:\d{2}$/, '');
-            
-            // เปลี่ยนติ๊กถูกให้เป็นสีเขียวชัดเจน
             statusPart = statusPart.replace(/✅/g, '<span style="color: #10b981; font-size:1.05rem;">✅</span>');
 
             return `
@@ -357,7 +362,6 @@
 
             container.innerHTML += `
                 <div class="dash-mobile-card p-3">
-                    <!-- Header -->
                     <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
                         <div>
                             <div class="fw-bold text-dark" style="font-size: 1.25rem; line-height: 1.2;">${item.reqId}</div>
@@ -368,7 +372,6 @@
                         </div>
                     </div>
 
-                    <!-- User & Admin Info -->
                     <div class="row g-2 mb-3">
                         <div class="col-6 border-end">
                             <div class="text-muted mb-1" style="font-size: 0.75rem; font-weight: 600;">👤 ผู้รับเครื่อง</div>
@@ -380,18 +383,15 @@
                         </div>
                     </div>
 
-                    <!-- Toggle Button -->
                     <button class="btn btn-light border w-100 rounded-pill fw-bold py-2 shadow-sm text-secondary d-flex justify-content-between align-items-center px-4" 
                         type="button" data-bs-toggle="collapse" data-bs-target="#mobile-collapse-${safeId}" aria-expanded="false" style="font-size: 0.9rem; background-color: #f8fafc;">
                         <span>📋 ดูสถานะ Steps & หมายเหตุ</span>
                         <span class="fs-6" style="color: var(--admin-main);">▼</span>
                     </button>
 
-                    <!-- Collapsed Content -->
                     <div class="collapse" id="mobile-collapse-${safeId}">
                         <div class="bg-light p-3 rounded-4 mt-2 border">
                             
-                            <!-- โซน Steps (เรียงเป็นตาราง Grid สวยงาม) -->
                             <div class="dash-step-row">
                                 <div class="dash-step-label">Step 1 (เตรียม)</div>
                                 ${formatMobileStep(item.step1)}
@@ -413,7 +413,6 @@
                                 ${formatMobileStep(item.step5)}
                             </div>
                             
-                            <!-- โซนหมายเหตุ -->
                             <div class="mt-3 p-3 bg-white rounded-3 border shadow-sm">
                                 <div class="mb-3 pb-2 border-bottom">
                                     <div class="text-danger fw-bold mb-1" style="font-size: 0.8rem;">📝 หมายเหตุ (เตรียม):</div>
