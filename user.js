@@ -51,7 +51,7 @@ async function loadUserTableData() {
 
             if (myData.length === 0) {
                 activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">🎉 ไม่มีรายการที่กำลังดำเนินการ</div>';
-                historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">ยังไม่มีประวัติการยืม-คืน</td></tr>';
+                historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4" style="justify-content: center !important;">ยังไม่มีประวัติการยืม-คืน</td></tr>';
                 return;
             }
 
