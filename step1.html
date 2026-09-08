@@ -88,20 +88,20 @@
                 font-size: 0.85rem; 
             }
             
-/* 1. แถวแสดงชื่อ iPad (เต็มบรรทัด) */
+            /* 1. แถวแสดงชื่อ iPad (เต็มบรรทัด) */
             .table tbody td[data-label="รหัส iPad"] {
                 width: 100%;
                 justify-content: space-between;
                 border-bottom: 1px dashed #cbd5e1 !important;
                 padding-bottom: 10px;
                 margin-bottom: 8px;
-                padding-left: 0 !important; /* 🚨 เพิ่มบรรทัดนี้: ดันหัวข้อให้ชิดซ้ายสุด */
-                padding-right: 0 !important; /* 🚨 เพิ่มบรรทัดนี้: ดันชื่อ iPad ให้ชิดขวาสุด */
+                padding-left: 0 !important; /* ดันข้อความชิดซ้าย */
+                padding-right: 0 !important; /* ดันข้อความชิดขวา */
             }
             .table tbody td[data-label="รหัส iPad"]::before { content: "📱 " attr(data-label); color: var(--admin-main); font-size: 0.95rem; }
             .table tbody td[data-label="รหัส iPad"] .fw-bold { font-size: 1.1rem !important; }
 
-            /* 🚨 2. แก๊ง Checkbox (ปรับใหม่ให้คลีน จัดซ้าย-ขวา เป๊ะๆ) */
+            /* 2. แก๊ง Checkbox (ปรับใหม่ให้คลีน จัดซ้าย-ขวา เป๊ะๆ) */
             .table tbody td[data-label="G-Drive"],
             .table tbody td[data-label="ไฟล์เอกสาร"],
             .table tbody td[data-label="ไฟล์รูปภาพ"],
@@ -166,10 +166,14 @@
                 </select>
             </div>
 
+            <!-- 🚨 แก้ไขหัวข้อให้ปัดบรรทัดเมื่อจอแคบ -->
             <div class="mb-4">
-                <label class="form-label d-flex justify-content-between align-items-end mb-3">
-                    <span>📱 เลือกเครื่องที่ว่าง <span class="text-muted fw-normal">(กดเลือกได้หลายเครื่อง)</span></span>
-                    <span class="badge fs-6" style="background-color: var(--admin-main);" id="selectedCount">เลือกแล้ว 0 เครื่อง</span>
+                <label class="form-label d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="fw-bold text-dark">📱 เลือกเครื่องที่ว่าง</span>
+                        <span class="d-block text-muted fw-normal mt-1" style="font-size: 0.85rem;">(กดเลือกได้หลายเครื่อง)</span>
+                    </div>
+                    <span class="badge fs-6 mt-1" style="background-color: var(--admin-main);" id="selectedCount">เลือกแล้ว 0 เครื่อง</span>
                 </label>
                 
                 <div class="category-header" data-bs-toggle="collapse" data-bs-target="#collapseNormal" aria-expanded="true">
@@ -191,8 +195,12 @@
                 </div>
             </div>
 
+            <!-- 🚨 แก้ไขหัวข้อให้ปัดบรรทัดเมื่อจอแคบ -->
             <div id="dynamicChecklistContainer" class="mb-4 d-none">
-                <label class="form-label fw-bold mb-3" style="color: var(--admin-main);">✅ สิ่งที่แอดมินต้องเตรียม <span class="text-muted fw-normal">(เช็คให้ครบทุกเครื่อง)</span></label>
+                <label class="form-label fw-bold mb-3" style="color: var(--admin-main);">
+                    ✅ สิ่งที่แอดมินต้องเตรียม 
+                    <span class="d-block text-muted fw-normal mt-1" style="font-size: 0.85rem;">(เช็คให้ครบทุกเครื่อง)</span>
+                </label>
                 <div class="table-responsive bg-white">
                     <table class="table align-middle">
                         <thead>
@@ -400,17 +408,17 @@
         if (maxLimit > 0) {
             badge.innerText = `เลือกแล้ว ${count}/${maxLimit} เครื่อง`;
             if (count === maxLimit) {
-                badge.className = "badge fs-6"; 
+                badge.className = "badge fs-6 mt-1"; 
                 badge.style.backgroundColor = "#10b981"; 
             } else if (count > 0) {
-                badge.className = "badge fs-6";
+                badge.className = "badge fs-6 mt-1";
                 badge.style.backgroundColor = "var(--admin-main)"; 
             } else {
-                badge.className = "badge bg-secondary fs-6";
+                badge.className = "badge bg-secondary fs-6 mt-1";
             }
         } else {
             badge.innerText = `เลือกแล้ว ${count} เครื่อง`;
-            badge.className = count > 0 ? "badge fs-6" : "badge bg-secondary fs-6";
+            badge.className = count > 0 ? "badge fs-6 mt-1" : "badge bg-secondary fs-6 mt-1";
             if(count > 0) badge.style.backgroundColor = "var(--admin-main)";
         }
         
