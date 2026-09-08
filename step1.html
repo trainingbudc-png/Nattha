@@ -15,20 +15,16 @@
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
-        /* 📌 ปรับพื้นหลังและโครงสร้างหลัก */
         body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding: 20px; }
         .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(30, 58, 138, 0.05); max-width: 950px; margin: auto; border: 1px solid var(--admin-border); }
         .form-label { font-weight: 600; color: #475569; font-size: 0.95rem; }
         
-        /* 📌 ปรับสี Input ให้อ่อนโยน ไม่เป็นสีแดง */
         .form-control, .form-select { border-radius: 10px; border: 1px solid #cbd5e1; padding: 12px 15px; color: #1e293b; }
         .form-control:focus, .form-select:focus { border-color: var(--admin-accent); box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); }
         
-        /* 📌 ปรับสี Select2 */
         .select2-container--bootstrap-5 .select2-selection { border-radius: 10px !important; border: 1px solid #cbd5e1 !important; min-height: 50px !important; font-size: 1.1rem; display: flex; align-items: center; }
         .select2-container--bootstrap-5.select2-container--focus .select2-selection { border-color: var(--admin-accent) !important; box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important; }
 
-        /* 📌 ปรับแถบ Category ให้ดู Professional */
         .category-header { background-color: #f8fafc; color: var(--admin-main); padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; margin-bottom: 5px; border: 1px solid var(--admin-border); }
         .category-header:hover { background-color: #e2e8f0; }
         .category-header::after { content: '▼'; font-size: 0.8rem; transition: transform 0.3s ease; }
@@ -39,29 +35,24 @@
         .grid-layout .btn { width: 100%; margin: 0 !important; padding: 8px 5px !important; font-size: 0.95rem; text-align: center; white-space: normal; line-height: 1.2; display: flex; align-items: center; justify-content: center; min-height: 45px; border-radius: 8px; }
         .grid-full-width { grid-column: 1 / -1; text-align: center; padding: 10px 0; }
 
-        /* 📌 เปลี่ยนปุ่มเลือก iPad จากแดงเป็น Navy */
         .btn-outline-admin { color: #475569; border: 1px solid #cbd5e1; font-weight: 600; background-color: white; }
         .btn-outline-admin:hover { background-color: #f1f5f9; border-color: var(--admin-main); color: var(--admin-main); }
         .btn-check:checked + .btn-outline-admin { background-color: var(--admin-main) !important; color: white !important; border-color: var(--admin-main) !important; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3); }
 
-        /* 📌 ปรับตารางติ๊กของให้เป็นโทน Navy */
         .table-responsive { border-radius: 12px; border: 1px solid var(--admin-border); overflow: hidden; }
         .table { margin-bottom: 0; }
         .table th { background-color: var(--admin-bg); color: var(--admin-main); font-weight: 600; text-align: center; padding: 15px; border-bottom: 2px solid var(--admin-main); font-size: 0.95rem; white-space: nowrap; }
         .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid var(--admin-border); color: #1e293b; font-weight: 500; font-size: 0.95rem; }
         .table tbody tr:hover { background-color: #f8fafc; }
 
-        /* 📌 เพิ่มความหนาและสีขอบ Checkbox ให้ชัดเจนขึ้น เล็งง่ายขึ้น */
         .form-check-input { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: var(--admin-main); border: 2px solid #94a3b8 !important; }
         
-        /* 📌 ปรับปุ่ม 'ติ๊กครบ' เป็นทรงโค้ง (Rounded) ให้เข้ากับตารางและปุ่ม iPad */
         .btn-shortcut { background: white; color: var(--admin-main); border: 2px solid var(--admin-main); transition: 0.2s; border-radius: 8px; font-size: 0.85rem; font-weight: 600;}
         .btn-shortcut:hover { background: var(--admin-main); color: white; }
         
         .btn-submit-custom { background-color: var(--admin-main); color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 25px; transition: 0.3s; border: none; font-size: 1.1rem; }
         .btn-submit-custom:hover { background-color: var(--admin-hover); color: white; box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4); }
 
-        /* 📌 ปุ่มกรณีฉุกเฉิน (คงสีแดงไว้ให้เด่น) */
         .emergency-box { background-color: #fff5f5; border: 1px dashed #fca5a5; }
 
         @media (max-width: 768px) {
@@ -152,7 +143,8 @@
                 
                 <div id="emergencyNoteContainer" class="mt-3" style="display: none;">
                     <label class="form-label text-danger fw-bold fs-6 mb-2">ระบุเหตุผลการยืมฉุกเฉิน <span class="text-muted fw-normal" style="font-size: 0.85rem;">(บังคับกรอก)</span></label>
-<input type="text" id="emergencyNote" class="form-control border-danger" placeholder="เช่น เครื่องเดิมชำรุดกะทันหัน, อาจารย์ขอเพิ่มด่วน..." required>                </div>
+                    <input type="text" id="emergencyNote" class="form-control border-danger" placeholder="เช่น เครื่องเดิมชำรุดกะทันหัน, อาจารย์ขอเพิ่มด่วน..." required>
+                </div>
             </div>
 
             <button type="button" class="btn btn-submit-custom shadow-sm" id="submitBtn" onclick="submitStep1()">ยืนยันการเตรียมเครื่อง</button>
@@ -195,7 +187,6 @@
         loadUsersAndIpads();
     };
 
-    // 📌 ระบบโหลดข้อมูลแบบอึด (Auto-Retry) ยิงซ้ำเมื่อ Google ตัดสาย
     async function loadUsersAndIpads(retryCount = 3) {
         try {
             const userResponse = await fetch(API_URL, {
@@ -405,7 +396,7 @@
         btn.innerHTML = "กำลังบันทึกข้อมูล... ⏳";
         btn.disabled = true;
 
-let finalNote = "-"; // 🚨 แก้ให้ค่าเริ่มต้นเป็นแค่ขีดกลาง
+        let finalNote = "-";
         if(isEmergency) {
             finalNote = `🚨 [ยืมฉุกเฉิน] เหตุผล: ${emergencyNote}`;
         }
