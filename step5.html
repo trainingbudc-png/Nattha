@@ -184,11 +184,11 @@
                         // 📌 โครงสร้างการ์ด และ Checkbox เลียนแบบ Step 1 (แบบเป๊ะๆ)
                         container.innerHTML += `
                         <div class="border rounded-4 mb-4 overflow-hidden shadow-sm bg-white" style="border-color: var(--admin-border) !important;">
-                            <div class="ipad-card-header d-flex justify-content-between align-items-center">
-                                <div class="fw-bold d-flex align-items-center gap-3 w-100">
+<div class="ipad-card-header">
+                                <label for="main-${safeId}" class="m-0 fw-bold d-flex justify-content-between align-items-center w-100" style="color: var(--admin-main); font-size: 1.15rem; cursor: pointer;">
+                                    <span>📱 ${id}</span>
                                     <input type="checkbox" class="form-check-input main-check m-0 shadow-sm" id="main-${safeId}" value="${id}" onchange="toggleSubChecks('${safeId}')" style="width: 24px !important; height: 24px !important; flex-shrink: 0;">
-                                    <label for="main-${safeId}" class="m-0 fw-bold w-100" style="color: var(--admin-main); font-size: 1.15rem; cursor: pointer;">📱 ${id}</label>
-                                </div>
+                                </label>
                             </div>
                             
                             <div class="p-3">
