@@ -3,242 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Step 5 List | ตรวจรับคืน</title>
+    <title>Step 5 | ตรวจสอบรับคืนเครื่อง</title>
     <link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
-        body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
+        body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding: 20px; }
         
-        .instruction-section {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            border: 1px solid #e2e8f0;
+        .confirm-card { 
+            background: white; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.08); 
+            max-width: 850px; 
+            margin: auto; 
+            border: 1px solid var(--admin-border); 
+            overflow: hidden;
         }
 
-        .accent-bar-admin {
-            width: 5px; height: 24px;
-            background-color: var(--admin-accent);
-            border-radius: 4px;
-            display: inline-block;
-            margin-right: 10px;
-        }
-
-        /* 📱 โครงสร้าง Card แท้สำหรับมือถือและจอคอม (ไม่ใช้ตาราง) */
-        .step5-item-card {
-            background: #ffffff;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 10px 0;
-            border-bottom: 1px dashed #e2e8f0;
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.95rem;
-            flex-shrink: 0;
-            min-width: 110px;
-            text-align: left;
-        }
-
-        .info-value {
-            font-size: 0.95rem;
-            color: #1e293b;
-            text-align: right;
-            word-break: break-word;
-            flex-grow: 1;
-        }
-
-        .status-badge-custom {
-            background-color: #fef3c7;
-            color: #d97706;
-            border: 1px solid #fde68a;
-            padding: 3px 12px;
-            border-radius: 50rem;
-            font-size: 0.85rem;
-            font-weight: 700;
-            display: inline-block;
-        }
-
-        .btn-submit-action {
+        .card-header-navy {
             background-color: var(--admin-main);
             color: white;
-            border: none;
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 1.05rem;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge-req {
+            background-color: white !important;
+            color: var(--admin-main) !important;
+            border: 1px solid #cbd5e1;
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 50rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .form-check-input { 
+            cursor: pointer; 
+            accent-color: var(--admin-main) !important; 
+            border: 2px solid #94a3b8 !important; 
+            transition: all 0.2s;
+        }
+        .form-check-input:checked {
+            border-color: var(--admin-main) !important; 
+            background-color: var(--admin-main) !important; 
+        }
+
+        .btn-shortcut { 
+            background: white; 
+            color: var(--admin-main); 
+            border: 2px solid var(--admin-main); 
             font-weight: 600;
             transition: 0.2s;
         }
+        .btn-shortcut:hover { 
+            background: var(--admin-main); 
+            color: white; 
+        }
 
-        .btn-submit-action:hover {
+        .btn-admin-solid {
+            background-color: var(--admin-main);
+            color: white;
+            border: none;
+            transition: 0.3s;
+        }
+        .btn-admin-solid:hover {
             background-color: var(--admin-hover);
             color: white;
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+            box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4);
+        }
+
+        /* 📌 สไตล์การ์ด และ Checkbox ถอดแบบมาจาก Step 1 */
+        .ipad-card-header {
+            background-color: #f1f5f9;
+            border-bottom: 2px solid var(--admin-main) !important;
+            padding: 12px 16px;
+        }
+        .step5-check-tile { 
+            background-color: #f8fafc; 
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            padding: 12px 14px !important;
+        }
+        .step5-check-tile:hover { 
+            background-color: #e2e8f0; 
+            border-color: #cbd5e1 !important; 
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .confirm-card { padding-bottom: 20px; }
+            .card-header-navy { padding: 15px; flex-direction: column; gap: 10px; text-align: center; }
         }
     </style>
 </head>
 <body>
-
-    <div class="nav-header-custom shadow-sm mb-4">
-        <div class="nav-title-custom fw-bold text-white">
-            🔍 Step 5 | ตรวจรับคืน
-            <span class="d-block d-sm-inline text-light opacity-75" style="font-size: 0.95rem; font-weight: 500;">(ค้างดำเนินการ)</span>
+    
+    <div class="container pb-5">
+        <div class="text-end" style="max-width: 850px; margin: 0 auto 15px auto;">
+            <button class="btn bg-white shadow-sm fw-bold rounded-pill px-4" style="color: var(--admin-main); border: 2px solid var(--admin-main);" onclick="window.location.href='step5-list.html'">🔙 กลับ</button>
         </div>
-        <div>
-            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm">🔙 กลับเมนูแอดมิน</a>
-        </div>
-    </div>
 
-    <div class="container" style="max-width: 650px;">
-        
-        <div class="instruction-section mb-3">
-            <div class="d-flex align-items-center mb-1">
-                <div class="accent-bar-admin"></div>
-                <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ผู้ใช้งานส่งคืน (รอแอดมินตรวจ)</h5>
+        <div class="confirm-card">
+            <div class="card-header-navy">
+                <h5 class="m-0 fw-bold">📱 iPad ที่ส่งคืน</h5>
+                <div class="badge-req">รายการ: <span id="reqIdDisplay">กำลังโหลด...</span></div>
+            </div>
+            
+            <div class="p-3 p-md-4 p-lg-5">
+                <div class="row text-center mb-4 pb-3 border-bottom g-2">
+                    <div class="col-6 border-end px-2">
+                        <div class="text-muted small fw-bold mb-1">👤 ผู้ขอเบิกยืม</div>
+                        <div class="fw-bold text-truncate" style="color: var(--admin-main); font-size: 1.05rem;" id="borrowerNameDisplay">-</div>
+                    </div>
+                    <div class="col-6 px-2">
+                        <div class="text-muted small fw-bold mb-1">👮 แอดมินผู้เตรียม</div>
+                        <div class="fw-bold text-truncate" style="color: var(--admin-main); font-size: 1.05rem;" id="adminNameDisplay">-</div>
+                    </div>
+                </div>
+
+                <div id="ipadListContainer">
+                    <div class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</div>
+                </div>
+
+                <button type="button" class="btn btn-admin-solid w-100 py-3 mt-4 fw-bold fs-5 rounded-3 shadow-sm" id="btnSubmit" onclick="submitStep5()">ยืนยันการตรวจสอบเสร็จสมบูรณ์</button>
             </div>
         </div>
-        
-        <div class="text-end mb-3">
-            <button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm bg-white border" onclick="loadStep5List()">
-                🔄 รีเฟรชข้อมูล
-            </button>
-        </div>
-        
-        <!-- รายการการ์ดจะถูกใส่ตรงนี้ -->
-        <div id="listContainer">
-            <div class="text-center py-5 text-muted fw-bold bg-white rounded-4 border">กำลังเชื่อมต่อข้อมูล... ⏳</div>
-        </div>
     </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="script.js"></script> 
+<script src="script.js"></script>
+
 <script>
     window.onload = function() {
-        if(localStorage.getItem("userRole") !== "Admin") { window.location.href = "index.html"; return; }
-        loadStep5List();
+        if(localStorage.getItem("userRole") !== "Admin") { 
+            window.location.href="index.html"; 
+            return; 
+        }
+        loadStep5Data();
     };
 
-    function loadStep5List() {
-        const container = document.getElementById("listContainer");
-        container.innerHTML = '<div class="text-center py-5 text-muted fw-bold bg-white rounded-4 border">กำลังดึงข้อมูล... ⏳</div>'; 
+    async function loadStep5Data(retryCount = 3) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const reqId = urlParams.get('reqId');
         
-        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
-        .then(res => res.json())
-        .then(res => {
-            container.innerHTML = ""; 
-            if (res.status === "success" && res.data && res.data.length > 0) {
+        if(!reqId) {
+            Swal.fire("ข้อผิดพลาด", "ไม่พบหมายเลขรายการ", "error").then(() => window.location.href="step5-list.html");
+            return;
+        }
+        
+        document.getElementById("reqIdDisplay").innerText = reqId;
+
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "getStep1Data", reqId: reqId })
+            });
+            const result = await res.json();
+
+            if(result.status === "success") {
+                document.getElementById("borrowerNameDisplay").innerText = result.userName || "-";
+                document.getElementById("adminNameDisplay").innerText = result.adminName || "-";
                 
-                const pendingData = res.data.filter(item => 
-                    item.status && (item.status.includes("รอตรวจสอบ") || item.status.includes("รอแอดมินตรวจ") || item.status.includes("รอตรวจรับ") || item.status.includes("Step[4]"))
-                );
+                const container = document.getElementById("ipadListContainer");
+                container.innerHTML = "";
 
-                if (pendingData.length === 0) {
-                    container.innerHTML = '<div class="text-center text-success fw-bold py-5 bg-white rounded-4 border shadow-sm">🎉 ไม่มีรายการรอตรวจสอบรับคืนในขณะนี้</div>';
-                    return;
-                }
-
-                pendingData.forEach(item => {
-                    let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
-                    dateStr = dateStr.replace(/:\d{2}$/, '');
-                    
-                    let deviceData = parseDeviceData(item.ipadId);
-
-                    // รวมชื่อจริงกับวงเล็บชื่อเล่นให้อยู่ในก้อนเดียวกัน ไม่ให้แตกแถว
-                    let fullName = item.name || "-";
-                    let nameHtml = `<div class="fw-bold text-dark">${fullName}</div>`;
-
-                    container.innerHTML += `
-                        <div class="step5-item-card">
-                            <div class="info-row" style="border-bottom: 2px solid var(--admin-main); padding-top: 0;">
-                                <div class="info-label" style="color: var(--admin-main); font-weight: 700;">เลขรายการ</div>
-                                <div class="info-value" style="color: var(--admin-main); font-weight: 700; font-size: 1.15rem;">${item.reqId}</div>
+                if(result.data && result.data.length > 0) {
+                    result.data.forEach(item => {
+                        let id = item.ipadId;
+                        let safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+                        
+                        container.innerHTML += `
+                        <div class="border rounded-4 mb-4 overflow-hidden shadow-sm bg-white" style="border-color: var(--admin-border) !important;">
+                            <!-- 📌 หัวการ์ดที่มีชื่อ iPad ชิดซ้าย กล่องติ๊กอยู่ขวา -->
+                            <div class="ipad-card-header">
+                                <label for="main-${safeId}" class="m-0 fw-bold d-flex justify-content-between align-items-center w-100" style="color: var(--admin-main); font-size: 1.15rem; cursor: pointer;">
+                                    <span>📱 ${id}</span>
+                                    <input type="checkbox" class="form-check-input main-check m-0 shadow-sm" id="main-${safeId}" value="${id}" onchange="toggleSubChecks('${safeId}')" style="width: 24px !important; height: 24px !important; flex-shrink: 0;">
+                                </label>
                             </div>
                             
-                            <div class="info-row">
-                                <div class="info-label">วันที่และเวลา</div>
-                                <div class="info-value text-muted">${dateStr}</div>
-                            </div>
-
-                            <div class="info-row">
-                                <div class="info-label">ผู้ส่งคืน</div>
-                                <div class="info-value">${nameHtml}</div>
-                            </div>
-
-                            <div class="info-row">
-                                <div class="info-label">อุปกรณ์ที่ยืม</div>
-                                <div class="info-value fw-bold text-dark">${deviceData.type}</div>
-                            </div>
-
-                            <div class="info-row">
-                                <div class="info-label">เครื่องที่เตรียม</div>
-                                <div class="info-value fw-bold" style="color: #2563eb;">${deviceData.number}</div>
-                            </div>
-
-                            <div class="info-row">
-                                <div class="info-label">สถานะ</div>
-                                <div class="info-value">
-                                    <span class="status-badge-custom">Step[4]</span>
+                            <div class="p-3">
+                                <!-- กล่อง Checklist เรียง 2x2 ในมือถือ และ 4 ในคอม -->
+                                <div class="row row-cols-2 row-cols-lg-4 g-2">
+                                    <div class="col">
+                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
+                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">G-Drive</span>
+                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
+                                        </label>
+                                    </div>
+                                    <div class="col">
+                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
+                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">File</span>
+                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
+                                        </label>
+                                    </div>
+                                    <div class="col">
+                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
+                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">รูปภาพ</span>
+                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
+                                        </label>
+                                    </div>
+                                    <div class="col">
+                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
+                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">Safari</span>
+                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <!-- ปุ่มติ๊กครบ ย้ายมาอยู่ด้านล่างเต็มบรรทัด -->
+                                <div class="mt-2 pt-1">
+                                    <button type="button" class="btn btn-shortcut w-100 py-2" style="border-radius: 10px; font-size: 1rem;" onclick="tickAllRow('${safeId}')">ติ๊กครบ</button>
                                 </div>
                             </div>
-
-                            <div class="pt-3">
-                                <button class="btn-submit-action shadow-sm" onclick="goToStep5('${item.reqId}')">
-                                    ตรวจสอบ
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                });
-            } else {
-                container.innerHTML = '<div class="text-center text-muted py-5 bg-white rounded-4 border">ไม่มีข้อมูลในระบบ</div>';
+                        </div>`;
+                    });
+                } else {
+                    container.innerHTML = '<div class="text-danger fw-bold text-center py-4 fs-5">❌ ไม่พบข้อมูลอุปกรณ์ในระบบ</div>';
+                }
             }
-        });
+        } catch(e) {
+            if (retryCount > 0) {
+                document.getElementById("ipadListContainer").innerHTML = `<div class="text-center py-5 text-muted fw-bold">สัญญาณขัดข้อง กำลังลองใหม่... (${retryCount}) ⏳</div>`;
+                setTimeout(() => loadStep5Data(retryCount - 1), 1500);
+            } else {
+                document.getElementById("ipadListContainer").innerHTML = '<div class="text-danger fw-bold text-center py-4 fs-5">❌ ขัดข้อง: ไม่สามารถเชื่อมต่อฐานข้อมูลได้</div>';
+            }
+        }
     }
 
-    function parseDeviceData(ipadText) {
-        if (!ipadText || ipadText.trim() === "") return { type: "-", number: "-" };
-        
-        let typeStr = [];
-        let numStr = [];
-        let rawIpads = ipadText.split(',').map(id => id.trim());
-        
-        rawIpads.forEach(id => {
-            let numMatch = id.match(/\d+/); 
-            let num = numMatch ? numMatch[0] : id; 
+    function tickAllRow(safeId) {
+        document.getElementById(`main-${safeId}`).checked = true;
+        const checkboxes = document.querySelectorAll(`.sub-check-${safeId}`);
+        checkboxes.forEach(cb => cb.checked = true);
+    }
+
+    function toggleSubChecks(safeId) {
+        const isChecked = document.getElementById(`main-${safeId}`).checked;
+        const checkboxes = document.querySelectorAll(`.sub-check-${safeId}`);
+        checkboxes.forEach(cb => cb.checked = isChecked);
+    }
+
+    async function submitStep5() {
+        const reqId = document.getElementById("reqIdDisplay").innerText;
+        const adminName = localStorage.getItem("userName") || "Admin";
+        const borrowerName = document.getElementById("borrowerNameDisplay").innerText;
+
+        const mainChecks = document.querySelectorAll('.main-check');
+        let allChecked = true;
+        let items = [];
+
+        if (mainChecks.length === 0) {
+            return Swal.fire("แจ้งเตือน", "ไม่มีข้อมูลอุปกรณ์ให้ตรวจสอบ", "warning");
+        }
+
+        mainChecks.forEach(cb => {
+            const id = cb.value;
+            const safeId = cb.id.replace('main-', '');
+            const subs = document.querySelectorAll(`.sub-check-${safeId}`);
             
-            if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) {
-                if(!typeStr.includes("iPad Air")) typeStr.push("iPad Air");
-            } else {
-                if(!typeStr.includes("iPad")) typeStr.push("iPad");
-            }
-            numStr.push(num);
-        });
-        
-        return {
-            type: typeStr.join(', '),
-            number: numStr.join(', ')
-        };
-    }
+            let c1 = subs[0].checked ? "✅" : "☐";
+            let c2 = subs[1].checked ? "✅" : "☐";
+            let c3 = subs[2].checked ? "✅" : "☐";
+            let c4 = subs[3].checked ? "✅" : "☐";
 
-    function goToStep5(reqId) {
-        window.location.href = `step5.html?reqId=${reqId}`;
+            if(!cb.checked || !subs[0].checked || !subs[1].checked || !subs[2].checked || !subs[3].checked) {
+                allChecked = false;
+            }
+
+            items.push({ ipadId: id, checks: [c1, c2, c3, c4] });
+        });
+
+        if(!allChecked) {
+            return Swal.fire({
+                title: "ข้อมูลไม่ครบถ้วน",
+                text: "กรุณาติ๊กทำเครื่องหมายถูก ให้ครบทุกช่องและทุกเครื่องครับ",
+                icon: "warning",
+                confirmButtonColor: "#1e3a8a"
+            });
+        }
+
+        const btn = document.getElementById("btnSubmit");
+        btn.innerHTML = "กำลังบันทึกข้อมูล... ⏳";
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: "saveStep5",
+                    reqId: reqId,
+                    name: adminName,
+                    borrowerName: borrowerName,
+                    items: items,
+                    userId: localStorage.getItem("userId") 
+                })
+            });
+            
+            const rawText = await res.text();
+            let result;
+            
+            try {
+                result = JSON.parse(rawText);
+            } catch (parseErr) {
+                if (navigator.onLine) {
+                    Swal.fire({
+                        title: "สำเร็จ!",
+                        text: "ตรวจสอบรับคืนเรียบร้อย ปิดรายการสมบูรณ์",
+                        icon: "success",
+                        confirmButtonColor: "#1e3a8a",
+                        allowOutsideClick: false
+                    }).then(() => window.location.href = "step5-list.html");
+                    return;
+                }
+            }
+
+            if(result && result.status === "success") {
+                Swal.fire({
+                    title: "สำเร็จ!",
+                    text: "ตรวจสอบรับคืนเรียบร้อย ปิดรายการสมบูรณ์",
+                    icon: "success",
+                    confirmButtonColor: "#1e3a8a",
+                    allowOutsideClick: false
+                }).then(() => window.location.href = "step5-list.html");
+            } else {
+                Swal.fire("ข้อผิดพลาด", result.message || "เกิดข้อผิดพลาดในการบันทึก", "error");
+                btn.innerHTML = "ยืนยันการตรวจสอบเสร็จสมบูรณ์"; 
+                btn.disabled = false;
+            }
+        } catch(e) {
+            if (navigator.onLine) {
+                Swal.fire({
+                    title: "สำเร็จ!",
+                    text: "ตรวจสอบรับคืนเรียบร้อย ปิดรายการสมบูรณ์ (ข้อมูลถูกบันทึกแล้ว)",
+                    icon: "success",
+                    confirmButtonColor: "#1e3a8a",
+                    allowOutsideClick: false
+                }).then(() => window.location.href = "step5-list.html");
+            } else {
+                Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่ออินเทอร์เน็ตได้", "error");
+                btn.innerHTML = "ยืนยันการตรวจสอบเสร็จสมบูรณ์"; 
+                btn.disabled = false;
+            }
+        }
     }
 </script>
 </body>
