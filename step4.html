@@ -216,8 +216,17 @@
         const btn = document.querySelector('.btn-confirm');
         const originalText = btn.innerText; btn.innerText = "⏳ กำลังบันทึก..."; btn.disabled = true;
 
-        try {
-            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "saveStep4", reqId: reqId, items: items, name: currentLoggerName }) });
+       try {
+            const res = await fetch(API_URL, { 
+                method: "POST", 
+                body: JSON.stringify({ 
+                    action: "saveStep4", 
+                    reqId: reqId, 
+                    items: items, 
+                    name: currentLoggerName,
+                    userId: localStorage.getItem("userId") // 🚨 เพิ่มบรรทัดนี้
+                }) 
+            });
             const result = await res.json();
 if(result.status === "success") {
             let nextPage = isAdmin ? "admin.html" : "user.html";
