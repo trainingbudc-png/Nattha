@@ -142,17 +142,11 @@
         
         document.getElementById("reqIdDisplay").innerText = reqId;
 
-       try {
+        try {
+            // 🚨 แก้ไขการดึงข้อมูลให้ถูกต้อง (ใช้ getStep1Data เพื่อดึงรายการเครื่อง)
             const res = await fetch(API_URL, {
                 method: 'POST',
-                body: JSON.stringify({
-                    action: "saveStep5",
-                    reqId: reqId,
-                    name: adminName,
-                    borrowerName: borrowerName,
-                    items: items,
-                    userId: localStorage.getItem("userId") // 🚨 เพิ่มบรรทัดนี้ (Admin ID)
-                })
+                body: JSON.stringify({ action: "getStep1Data", reqId: reqId })
             });
             const result = await res.json();
 
@@ -276,6 +270,7 @@
         btn.disabled = true;
 
         try {
+            // 🚨 แก้ไขการส่งข้อมูลเพื่อบันทึก พร้อมส่ง userId ของแอดมินไปด้วย
             const res = await fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -283,7 +278,8 @@
                     reqId: reqId,
                     name: adminName,
                     borrowerName: borrowerName,
-                    items: items
+                    items: items,
+                    userId: localStorage.getItem("userId") 
                 })
             });
             
