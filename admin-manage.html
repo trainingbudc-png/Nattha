@@ -115,19 +115,22 @@
     <div class="container pb-5" style="max-width: 1100px;">
         
         <!-- 📌 ส่วนคำแนะนำ (Instruction) -->
-        <div class="instruction-section mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-            <div>
-                <div class="d-flex align-items-center mb-2">
-                    <div class="accent-bar-admin"></div>
-                    <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ "รอแอดมินยืนยันการเตรียม"</h5>
-                </div>
-                <p class="text-muted mb-0 ps-3" style="font-size: 0.9rem; line-height: 1.6;">
-                    * เมื่อคุณกดยืนยัน ระบบจะส่งข้อความแจ้งเตือนไปที่ LINE ของผู้ขอเบิกยืมทันที <br>
-                    * หากกดยกเลิก ระบบจะคืนสถานะอุปกรณ์เหล่านั้นกลับเป็น "ว่าง"
-                </p>
+<!-- 📌 ส่วนคำแนะนำ (Instruction) -->
+        <div class="instruction-section mb-4">
+            <div class="d-flex align-items-center mb-2">
+                <div class="accent-bar-admin"></div>
+                <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ "รอแอดมินยืนยันการเตรียม"</h5>
             </div>
+            <p class="text-muted mb-0 ps-3" style="font-size: 0.9rem; line-height: 1.6;">
+                * เมื่อคุณกดยืนยัน ระบบจะส่งข้อความแจ้งเตือนไปที่ LINE ของผู้ขอเบิกยืมทันที <br>
+                * หากกดยกเลิก ระบบจะคืนสถานะอุปกรณ์เหล่านั้นกลับเป็น "ว่าง"
+            </p>
+        </div>
+        
+        <!-- 📌 ปุ่มรีเฟรชบนหัวตาราง -->
+        <div class="text-end mb-2">
             <button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm bg-white" onclick="loadPendingData()">
-                🔄 รีเฟรช
+                🔄 รีเฟรชข้อมูลตาราง
             </button>
         </div>
         
