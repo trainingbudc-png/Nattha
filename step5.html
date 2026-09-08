@@ -48,13 +48,13 @@
             width: 24px !important; 
             height: 24px !important; 
             cursor: pointer; 
-            accent-color: #0d6efd !important; 
+            accent-color: var(--admin-main) !important; 
             border: 2px solid #94a3b8 !important; 
             transition: all 0.2s;
         }
         .form-check-input:checked {
-            border-color: #0d6efd !important; 
-            background-color: #0d6efd !important; 
+            border-color: var(--admin-main) !important; 
+            background-color: var(--admin-main) !important; 
         }
 
         .btn-shortcut { 
@@ -81,6 +81,22 @@
             color: white;
             box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4);
         }
+
+        /* 📌 สไตล์สำหรับปุ่ม Checkbox ที่ปรับให้กดง่ายขึ้น */
+        .step5-check-tile { 
+            background-color: #f8fafc; 
+            border: 1px solid #e2e8f0;
+        }
+        .step5-check-tile:hover { 
+            background-color: #e2e8f0; 
+            border-color: #cbd5e1 !important; 
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .confirm-card { padding-bottom: 20px; }
+            .card-header-navy { padding: 15px; flex-direction: column; gap: 10px; text-align: center; }
+        }
     </style>
 </head>
 <body>
@@ -96,15 +112,16 @@
                 <div class="badge-req">รายการ: <span id="reqIdDisplay">กำลังโหลด...</span></div>
             </div>
             
-            <div class="p-4 p-md-5">
-                <div class="row text-center mb-4 pb-4 border-bottom">
-                    <div class="col-6 border-end">
+            <div class="p-3 p-md-5">
+                <!-- 📌 ส่วนผู้เบิกและแอดมิน (ลดขนาดและป้องกันชื่อล้น) -->
+                <div class="row text-center mb-4 pb-3 border-bottom g-2">
+                    <div class="col-6 border-end px-2">
                         <div class="text-muted small fw-bold mb-1">👤 ผู้ขอเบิกยืม</div>
-                        <div class="fw-bold fs-5" style="color: var(--admin-main);" id="borrowerNameDisplay">-</div>
+                        <div class="fw-bold text-truncate" style="color: var(--admin-main); font-size: 1.05rem;" id="borrowerNameDisplay">-</div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-6 px-2">
                         <div class="text-muted small fw-bold mb-1">👮 แอดมินผู้เตรียม</div>
-                        <div class="fw-bold fs-5" style="color: var(--admin-main);" id="adminNameDisplay">-</div>
+                        <div class="fw-bold text-truncate" style="color: var(--admin-main); font-size: 1.05rem;" id="adminNameDisplay">-</div>
                     </div>
                 </div>
 
@@ -112,7 +129,7 @@
                     <div class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</div>
                 </div>
 
-                <button type="button" class="btn btn-admin-solid w-100 py-3 mt-4 fw-bold fs-5 rounded-3 shadow-sm" id="btnSubmit" onclick="submitStep5()">ยืนยันการตรวจสอบเครื่องเสร็จสมบูรณ์</button>
+                <button type="button" class="btn btn-admin-solid w-100 py-3 mt-4 fw-bold fs-5 rounded-3 shadow-sm" id="btnSubmit" onclick="submitStep5()">ยืนยันการตรวจสอบเสร็จสมบูรณ์</button>
             </div>
         </div>
     </div>
@@ -143,7 +160,6 @@
         document.getElementById("reqIdDisplay").innerText = reqId;
 
         try {
-            // 🚨 แก้ไขการดึงข้อมูลให้ถูกต้อง (ใช้ getStep1Data เพื่อดึงรายการเครื่อง)
             const res = await fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action: "getStep1Data", reqId: reqId })
@@ -162,6 +178,7 @@
                         let id = item.ipadId;
                         let safeId = id.replace(/[^a-zA-Z0-9]/g, '');
                         
+                        // 📌 เปลี่ยนเลย์เอาต์ Checkbox ให้เป็นแบบ List ซ้าย-ขวา ในมือถือ
                         container.innerHTML += `
                         <div class="border rounded-4 mb-4 overflow-hidden shadow-sm bg-white" style="border-color: var(--admin-border) !important;">
                             <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-light">
@@ -172,30 +189,32 @@
                                 <button type="button" class="btn btn-shortcut px-4 py-1 rounded-pill" onclick="tickAllRow('${safeId}')">ติ๊กครบ</button>
                             </div>
                             
-                            <div class="p-4 row row-cols-2 row-cols-sm-4 g-4 text-center">
-                                <div class="col">
-                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark d-flex align-items-end justify-content-center" style="font-size: 0.95rem; min-height: 25px;">G-Drive</span>
-                                        <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
-                                    </label>
-                                </div>
-                                <div class="col">
-                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark d-flex align-items-end justify-content-center" style="font-size: 0.95rem; min-height: 25px;">File</span>
-                                        <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
-                                    </label>
-                                </div>
-                                <div class="col">
-                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark d-flex align-items-end justify-content-center" style="font-size: 0.95rem; min-height: 25px;">รูปภาพ</span>
-                                        <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
-                                    </label>
-                                </div>
-                                <div class="col">
-                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark d-flex align-items-end justify-content-center" style="font-size: 0.95rem; min-height: 25px;">Safari</span>
-                                        <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
-                                    </label>
+                            <div class="p-3 px-md-4 py-md-4">
+                                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-2 g-md-3">
+                                    <div class="col">
+                                        <label class="d-flex justify-content-between align-items-center p-3 border rounded-3 w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
+                                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">G-Drive</span>
+                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
+                                        </label>
+                                    </div>
+                                    <div class="col">
+                                        <label class="d-flex justify-content-between align-items-center p-3 border rounded-3 w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
+                                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">File</span>
+                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
+                                        </label>
+                                    </div>
+                                    <div class="col">
+                                        <label class="d-flex justify-content-between align-items-center p-3 border rounded-3 w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
+                                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">รูปภาพ</span>
+                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
+                                        </label>
+                                    </div>
+                                    <div class="col">
+                                        <label class="d-flex justify-content-between align-items-center p-3 border rounded-3 w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
+                                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">Safari</span>
+                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0">
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>`;
@@ -270,7 +289,6 @@
         btn.disabled = true;
 
         try {
-            // 🚨 แก้ไขการส่งข้อมูลเพื่อบันทึก พร้อมส่ง userId ของแอดมินไปด้วย
             const res = await fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -311,7 +329,7 @@
                 }).then(() => window.location.href = "step5-list.html");
             } else {
                 Swal.fire("ข้อผิดพลาด", result.message || "เกิดข้อผิดพลาดในการบันทึก", "error");
-                btn.innerHTML = "ยืนยันการตรวจสอบเครื่องเสร็จสมบูรณ์"; 
+                btn.innerHTML = "ยืนยันการตรวจสอบเสร็จสมบูรณ์"; 
                 btn.disabled = false;
             }
         } catch(e) {
@@ -325,7 +343,7 @@
                 }).then(() => window.location.href = "step5-list.html");
             } else {
                 Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่ออินเทอร์เน็ตได้", "error");
-                btn.innerHTML = "ยืนยันการตรวจสอบเครื่องเสร็จสมบูรณ์"; 
+                btn.innerHTML = "ยืนยันการตรวจสอบเสร็จสมบูรณ์"; 
                 btn.disabled = false;
             }
         }
