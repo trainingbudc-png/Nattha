@@ -284,7 +284,7 @@
             
             if(result.status === "success") {
                 let nextPage = isAdmin ? "admin.html" : "user.html";
-                showNavyAlert("ตรวจก่อนสอบสำเร็จ!", `หมายเลขรายการ: <b>${reqId}</b><br>บันทึกข้อมูล Check List จำนวน ${items.length} เครื่องเรียบร้อยแล้ว`, "success", nextPage);
+                showNavyAlert("ตรวจก่อนสอบสำเร็จ!", `หมายเลขรายการ: <b>${reqId}</b><br>Check List จำนวน ${items.length} เครื่องเรียบร้อยแล้ว`, "success", nextPage);
             }
             else { 
                 Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); 
