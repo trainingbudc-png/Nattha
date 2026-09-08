@@ -57,7 +57,7 @@
             border-bottom: 1px solid #f1f5f9;
         }
 
-        /* 📌 ปรับแต่งปุ่ม Action */
+        /* 📌 ปรับแต่งปุ่ม Action สำหรับ Desktop */
         .btn-action-group {
             display: flex;
             flex-direction: column;
@@ -66,30 +66,29 @@
             margin: 0 auto;
         }
         .btn-approve {
-            background-color: #16a34a;
+            background-color: #10b981; /* เขียวสดใสขึ้น */
             color: white;
             border: none;
             transition: 0.2s;
         }
         .btn-approve:hover {
-            background-color: #15803d;
+            background-color: #059669;
             color: white;
-            box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
         }
         .btn-reject {
             background-color: white;
-            color: #dc2626;
-            border: 2px solid #f87171;
+            color: #ef4444;
+            border: 2px solid #ef4444;
             transition: 0.2s;
         }
         .btn-reject:hover {
-            background-color: #dc2626;
+            background-color: #ef4444;
             color: white;
-            border-color: #dc2626;
-            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2);
+            border-color: #ef4444;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
         }
 
-        /* 📌 เส้นขีดหน้าหัวข้อ */
         .accent-bar-admin {
             width: 5px;
             height: 24px;
@@ -97,6 +96,64 @@
             border-radius: 4px;
             display: inline-block;
             margin-right: 10px;
+        }
+
+        /* 📱 โหมดมือถือ: แปลงตารางเป็นการ์ด + ปุ่มเรียงแนวนอน */
+        @media (max-width: 768px) {
+            .table-card { background: transparent; box-shadow: none; border: none; overflow: visible; }
+            .table-custom thead { display: none; }
+            .table-custom tbody tr {
+                display: block;
+                background: #ffffff;
+                border-radius: 16px;
+                margin-bottom: 16px;
+                padding: 16px 20px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+                border: 1px solid #e2e8f0;
+            }
+            .table-custom tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+                padding: 12px 0;
+                border-bottom: 1px dashed #e2e8f0;
+            }
+            .table-custom tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #64748b;
+                font-size: 0.9rem;
+                text-align: left;
+                margin-right: 15px;
+                flex-shrink: 0;
+            }
+            /* จัดการกล่องที่ครอบชื่อคนยืมบนมือถือให้อยู่ชิดขวา */
+            .table-custom tbody td .user-name-box {
+                margin: 0 0 0 auto !important;
+                text-align: right !important;
+            }
+            .table-custom tbody td:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+                padding-top: 16px;
+                display: block;
+            }
+            .table-custom tbody td:last-child::before {
+                display: none; 
+            }
+            
+            /* เปลี่ยนปุ่มเป็นแนวนอน 2 ปุ่มเต็มจอ */
+            .btn-action-group {
+                flex-direction: row;
+                max-width: 100%;
+                gap: 10px;
+            }
+            .btn-action-group button {
+                flex: 1;
+                padding: 12px !important;
+                font-size: 1.05rem !important;
+            }
         }
     </style>
 </head>
@@ -108,14 +165,13 @@
             <span class="d-block d-sm-inline text-light opacity-75" style="font-size: 0.95rem; font-weight: 500;">(ค้างดำเนินการ)</span>
         </div>
         <div>
-            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4">🔙 กลับเมนู</a>
+            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4">🔙 กลับเมนูแอดมิน</a>
         </div>
     </div>
 
     <div class="container pb-5" style="max-width: 1100px;">
         
         <!-- 📌 ส่วนคำแนะนำ (Instruction) -->
-<!-- 📌 ส่วนคำแนะนำ (Instruction) -->
         <div class="instruction-section mb-4">
             <div class="d-flex align-items-center mb-2">
                 <div class="accent-bar-admin"></div>
@@ -166,7 +222,8 @@
 
     function loadPendingData() {
         const tbody = document.getElementById("manageTableBody");
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted fw-bold">กำลังโหลดข้อมูลล่าสุด... ⏳</td></tr>'; 
+        // แก้ไขให้โหลดกึ่งกลางในมือถือ
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted fw-bold" style="justify-content: center !important;">กำลังโหลดข้อมูลล่าสุด... ⏳</td></tr>'; 
         
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
         .then(res => res.json())
@@ -175,7 +232,7 @@
             if (res.status === "success" && res.data && res.data.length > 0) {
                 const pendingData = res.data.filter(item => item.status && item.status.includes("รอแอดมินยืนยัน"));
                 if (pendingData.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-success fw-bold py-5">🎉 ไม่มีรายการที่รอยืนยันในขณะนี้</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-success fw-bold py-5" style="justify-content: center !important;">🎉 ไม่มีรายการที่รอยืนยันในขณะนี้</td></tr>';
                     return;
                 }
 
@@ -188,10 +245,13 @@
                     let displayName = item.name || "-";
                     if (displayName !== "-" && displayName.includes("(")) {
                         let parts = displayName.split("(");
-                        displayName = `<div class="fw-bold text-dark text-truncate" style="max-width: 160px; margin: 0 auto;">${parts[0].trim()}</div>
-                                       <div class="text-secondary mt-1" style="font-size: 0.85rem;">(${parts[1].trim()}</div>`;
+                        // เปลี่ยน margin จาก auto เป็น CSS Class เพื่อให้รองรับมือถือ
+                        displayName = `<div class="user-name-box" style="max-width: 160px; margin: 0 auto;">
+                                         <div class="fw-bold text-dark text-truncate">${parts[0].trim()}</div>
+                                         <div class="text-secondary mt-1" style="font-size: 0.85rem;">(${parts[1].trim()}</div>
+                                       </div>`;
                     } else {
-                        displayName = `<div class="fw-bold text-dark text-truncate" style="max-width: 160px; margin: 0 auto;">${displayName}</div>`;
+                        displayName = `<div class="user-name-box fw-bold text-dark text-truncate" style="max-width: 160px; margin: 0 auto;">${displayName}</div>`;
                     }
 
                     tbody.innerHTML += `
@@ -215,7 +275,7 @@
                     `;
                 });
             } else {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5" style="justify-content: center !important;">ไม่มีข้อมูลในระบบ</td></tr>';
             }
         });
     }
@@ -261,7 +321,7 @@
             text: `ระบบจะส่งข้อความแจ้งเตือนไปให้ผู้ยืมผ่าน LINE ทันที`,
             icon: "info",
             showCancelButton: true,
-            confirmButtonColor: "#16a34a",
+            confirmButtonColor: "#10b981", // สีเขียวให้ตรงกับปุ่ม
             cancelButtonColor: "#64748b",
             confirmButtonText: "ใช่, ยืนยันเลย!"
         }).then((result) => {
@@ -275,7 +335,7 @@
             text: `อุปกรณ์ทั้งหมดในรายการ ${reqId} จะถูกเปลี่ยนสถานะเป็น "ว่าง" และกลับคืนสู่คลังทันที`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#dc2626",
+            confirmButtonColor: "#ef4444", // สีแดงให้ตรงกับปุ่ม
             cancelButtonColor: "#64748b",
             confirmButtonText: "ใช่, ยกเลิกและคืนคลัง!"
         }).then((result) => {
