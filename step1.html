@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
-        /* 📌 ปรับพื้นหลังและโครงสร้างหลัก */
         body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding: 20px; }
         .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(30, 58, 138, 0.05); max-width: 950px; margin: auto; border: 1px solid var(--admin-border); }
         .form-label { font-weight: 600; color: #475569; font-size: 0.95rem; }
@@ -61,11 +60,9 @@
             body { padding: 10px; }
             .confirm-card { padding: 15px; border-radius: 16px; margin-top: 5px; }
             
-            /* ล็อก Grid เลือกเครื่องให้เป็น 3 คอลัมน์พอดีเป๊ะ */
             .grid-layout { grid-template-columns: repeat(3, 1fr); gap: 8px; }
             .grid-layout .btn { font-size: 0.85rem; min-height: 40px; padding: 6px !important; }
             
-            /* ปรับตารางเป็นรูปแบบการ์ด Card View */
             .table-responsive { border: none; background: transparent; padding: 0; overflow: visible; }
             .table thead { display: none; }
             .table tbody tr { 
@@ -102,35 +99,44 @@
             .table tbody td[data-label="รหัส iPad"]::before { content: "📱 " attr(data-label); color: var(--admin-main); font-size: 0.95rem; }
             .table tbody td[data-label="รหัส iPad"] .fw-bold { font-size: 1.1rem !important; }
 
-            /* 2. แก๊ง Checkbox (แปลงร่างเป็นปุ่ม Tile 2x2) */
+            /* 🚨 2. แก๊ง Checkbox (ปรับใหม่ให้คลีน จัดซ้าย-ขวา เป๊ะๆ) */
             .table tbody td[data-label="G-Drive"],
             .table tbody td[data-label="ไฟล์เอกสาร"],
             .table tbody td[data-label="ไฟล์รูปภาพ"],
             .table tbody td[data-label="Safari"] {
-                width: 48%; /* กว้างเกือบครึ่งนึง */
-                flex-direction: column; /* วางชื่อไว้บน Checkbox ไว้ล่าง */
-                justify-content: center;
-                gap: 8px;
-                padding: 12px 10px;
+                width: calc(50% - 6px); /* แบ่งครึ่งเป๊ะๆ ลบขอบ 6px */
+                margin: 3px; 
+                flex-direction: row; /* จัดวางแนวนอน */
+                justify-content: space-between; /* ดันข้อความไปซ้าย ติ๊กไปขวา */
+                align-items: center;
+                padding: 12px 14px;
                 background: #f8fafc;
                 border: 1px solid #e2e8f0 !important;
-                border-radius: 8px;
-                margin: 1%;
+                border-radius: 10px;
             }
             .table tbody td[data-label="G-Drive"]::before,
             .table tbody td[data-label="ไฟล์เอกสาร"]::before,
             .table tbody td[data-label="ไฟล์รูปภาพ"]::before,
             .table tbody td[data-label="Safari"]::before {
-                margin-right: 0;
+                margin-right: 10px;
                 color: #1e293b;
                 font-size: 0.9rem;
+                font-weight: 600;
+            }
+
+            /* ป้องกัน Checkbox บีบเบี้ยว */
+            .table tbody td input[type="checkbox"] {
+                width: 22px !important;
+                height: 22px !important;
+                margin: 0 !important;
+                flex-shrink: 0;
             }
 
             /* 3. ปุ่มกดติ๊กครบ (เต็มบรรทัด) */
             .table tbody td[data-label="ปุ่มลัด"] {
                 width: 100%;
-                margin-top: 5px;
-                padding-top: 10px;
+                margin-top: 8px;
+                padding: 0 3px;
             }
             .table tbody td[data-label="ปุ่มลัด"]::before { display: none; }
             .table tbody td[data-label="ปุ่มลัด"] .btn { padding: 12px !important; font-size: 1rem; border-radius: 10px; }
@@ -393,10 +399,10 @@
             badge.innerText = `เลือกแล้ว ${count}/${maxLimit} เครื่อง`;
             if (count === maxLimit) {
                 badge.className = "badge fs-6"; 
-                badge.style.backgroundColor = "#10b981"; // Success Green
+                badge.style.backgroundColor = "#10b981"; 
             } else if (count > 0) {
                 badge.className = "badge fs-6";
-                badge.style.backgroundColor = "var(--admin-main)"; // Navy
+                badge.style.backgroundColor = "var(--admin-main)"; 
             } else {
                 badge.className = "badge bg-secondary fs-6";
             }
