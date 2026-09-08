@@ -79,7 +79,7 @@ async function loadUserTableData() {
     } catch (err) {
         console.error("UserTable Error:", err);
         activeCardsContainer.innerHTML = '<div class="col-12 text-center text-danger py-5 bg-white rounded-4 border">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</div>';
-        historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
+        historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4" style="justify-content: center !important;">❌ เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล</td></tr>';
     }
 }
 
@@ -222,9 +222,9 @@ function renderUserTableRows(dataList, tbodyElement) {
     tbodyElement.innerHTML = "";
 
     if (dataList.length === 0) {
-        tbodyElement.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">ยังไม่มีประวัติรายการเสร็จสิ้น</td></tr>`;
-        return;
-    }
+    tbodyElement.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4" style="justify-content: center !important;">ยังไม่มีประวัติรายการเสร็จสิ้น</td></tr>`;
+    return;
+}
 
     dataList.forEach(item => {
         let typeHtml = '<span class="text-muted">-</span>';
