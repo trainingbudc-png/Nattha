@@ -72,9 +72,9 @@ async function loadUserTableData() {
             renderActiveUserCards(activeList);
             renderUserTableRows(historyList, historyTbody);
 
-        } else {
+} else {
             activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">ไม่มีรายการในระบบ</div>';
-            historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">ไม่มีประวัติในระบบ</td></tr>';
+            historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4" style="justify-content: center !important;">ไม่มีประวัติในระบบ</td></tr>';
         }
     } catch (err) {
         console.error("UserTable Error:", err);
