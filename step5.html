@@ -44,18 +44,17 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
+        /* 📌 ปรับแก้สี Checkbox ในกล่อง Checklist ให้เป็นสีน้ำเงินเข้มตาม Step 1 */
         .form-check-input { 
             cursor: pointer; 
-            accent-color: var(--admin-main) !important; 
             border: 2px solid #94a3b8 !important; 
             transition: all 0.2s;
         }
         .form-check-input:checked {
-            border-color: var(--admin-main) !important; 
-            background-color: var(--admin-main) !important; 
+            border-color: #1e3a8a !important; 
+            background-color: #1e3a8a !important; 
         }
 
-        /* 📌 คืนค่าปุ่มติ๊กครบ กลับเป็นปกติ */
         .btn-shortcut { 
             background: white; 
             color: var(--admin-main); 
@@ -68,20 +67,19 @@
             color: white; 
         }
 
-        /* 📌 เปลี่ยนสีปุ่มยืนยันด้านล่าง เป็นสีฟ้าเข้ม ตาม Step 1 */
+        /* 📌 ปรับคืนค่าปุ่มยืนยันหลักเป็นสีเดิม */
         .btn-admin-solid {
-            background-color: #0284c7; /* สีฟ้าเข้ม */
+            background-color: var(--admin-main);
             color: white;
             border: none;
             transition: 0.3s;
         }
         .btn-admin-solid:hover {
-            background-color: #0369a1; /* สีฟ้าเข้มขึ้นเมื่อชี้ */
+            background-color: var(--admin-hover);
             color: white;
-            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.4);
+            box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4);
         }
 
-        /* 📌 สไตล์การ์ด และ Checkbox ถอดแบบมาจาก Step 1 */
         .ipad-card-header {
             background-color: #f1f5f9;
             border-bottom: 2px solid var(--admin-main) !important;
@@ -185,7 +183,6 @@
                         
                         container.innerHTML += `
                         <div class="border rounded-4 mb-4 overflow-hidden shadow-sm bg-white" style="border-color: var(--admin-border) !important;">
-                            <!-- 📌 หัวการ์ดที่มีชื่อ iPad ชิดซ้าย กล่องติ๊กอยู่ขวา -->
                             <div class="ipad-card-header">
                                 <label for="main-${safeId}" class="m-0 fw-bold d-flex justify-content-between align-items-center w-100" style="color: var(--admin-main); font-size: 1.15rem; cursor: pointer;">
                                     <span>📱 ${id}</span>
@@ -194,7 +191,6 @@
                             </div>
                             
                             <div class="p-3">
-                                <!-- กล่อง Checklist เรียง 2x2 ในมือถือ และ 4 ในคอม -->
                                 <div class="row row-cols-2 row-cols-lg-4 g-2">
                                     <div class="col">
                                         <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
@@ -222,7 +218,6 @@
                                     </div>
                                 </div>
                                 
-                                <!-- ปุ่มติ๊กครบ ย้ายมาอยู่ด้านล่างเต็มบรรทัด -->
                                 <div class="mt-2 pt-1">
                                     <button type="button" class="btn btn-shortcut w-100 py-2" style="border-radius: 10px; font-size: 1rem;" onclick="tickAllRow('${safeId}')">ติ๊กครบ</button>
                                 </div>
