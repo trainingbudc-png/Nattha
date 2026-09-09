@@ -108,15 +108,14 @@
 
     <div class="container" style="max-width: 650px;">
         
-        <div class="instruction-section mb-3">
-            <div class="d-flex align-items-center mb-1">
+<!-- รวมข้อความและปุ่มรีเฟรชให้อยู่ในบรรทัดเดียวกัน -->
+        <div class="instruction-section mb-3 d-flex justify-content-between align-items-center py-3">
+            <div class="d-flex align-items-center">
                 <div class="accent-bar-admin"></div>
                 <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ผู้ใช้งานส่งคืน</h5>
             </div>
-        </div>
-        
-        <div class="text-end mb-3">
-            <button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm bg-white border" onclick="loadStep5List()">
+            
+            <button class="btn btn-outline-admin btn-sm rounded-pill fw-bold px-3 py-2 shadow-sm bg-white border" onclick="loadStep5List()">
                 🔄 รีเฟรช
             </button>
         </div>
