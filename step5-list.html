@@ -17,9 +17,8 @@
             padding-bottom: 40px; 
         }
         
-        /* ใช้คลาสความกว้างตรงตาม Step 3 */
-        .container-wide, .nav-header { max-width: 1280px !important; margin: 0 auto !important; }
-        .container-wide { padding-left: 20px !important; padding-right: 20px !important; }
+        .container-wide { max-width: 1280px !important; margin: 0 auto !important; padding-left: 20px !important; padding-right: 20px !important; }
+        .nav-header { max-width: 1280px !important; margin: 0 auto !important; padding: 15px 20px !important; }
 
         .accent-bar-admin {
             width: 4px; height: 22px;
@@ -96,20 +95,20 @@
 </head>
 <body>
 
-    <!-- 📌 นี่ครับ โค้ดเดิมจาก Step 3 เป๊ะๆ ไม่มีคลาสแทรกมั่วแล้ว -->
-    <nav class="nav-header">
-        <div class="nav-title" style="line-height: 1.2;">
+    <!-- 📌 แก้ไข Nav Header ให้กลับมาอยู่บรรทัดเดียวกัน (d-flex justify-content-between) -->
+    <nav class="nav-header d-flex justify-content-between align-items-center mt-3 mb-4">
+        <div class="nav-title fw-bold text-dark" style="line-height: 1.2; font-size: 1.15rem;">
             🔍 Step 5 | ตรวจรับคืน
             <span class="d-block d-sm-inline" style="font-size: 0.95rem; color: #6c757d; font-weight: 500;">(ค้างดำเนินการ)</span>
         </div>
         <div class="d-flex align-items-center">
-            <a href="admin.html" class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold">กลับเมนู</a>
+            <a href="admin.html" class="btn btn-outline-dark btn-sm rounded-pill px-4 py-1 fw-bold">กลับเมนู</a>
         </div>
     </nav>
 
     <div class="container-wide pb-5">
         
-        <div class="d-flex align-items-center mb-3 mt-4">
+        <div class="d-flex align-items-center mb-3">
             <div class="accent-bar-admin"></div>
             <h5 class="fw-bold m-0" style="color: var(--admin-main, #1e3a8a); font-size: 1.1rem;">รายการที่ผู้ใช้งานส่งคืนรอตรวจสอบ</h5>
         </div>
