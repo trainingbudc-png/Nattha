@@ -11,42 +11,43 @@
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
-        body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
+        body { background: var(--admin-bg, #f4f7f6); font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
         
-        /* ปรับขนาดความกว้างให้เท่ากับฝั่ง User (1280px) */
-        .container-wide, .nav-header { max-width: 1280px !important; margin: 0 auto !important; }
-        .container-wide { padding-left: 20px !important; padding-right: 20px !important; }
-        .nav-header { padding: 15px 20px !important; }
+        .container-wide { max-width: 1280px !important; margin: 0 auto !important; padding-left: 20px !important; padding-right: 20px !important; }
+        .nav-header { max-width: 1280px !important; margin: 0 auto !important; padding: 15px 20px !important; }
 
         .accent-bar-admin {
-            width: 5px; height: 24px;
-            background-color: var(--admin-accent);
-            border-radius: 4px;
+            width: 4px; height: 22px;
+            background-color: var(--admin-main, #1e3a8a);
             display: inline-block;
             margin-right: 10px;
+            border-radius: 2px;
         }
 
-        /* 💻 สไตล์ตารางสำหรับหน้าจอคอมพิวเตอร์ */
+        /* 💻 สไตล์ตาราง - คืนค่าหัวตารางสีน้ำเงินตามรูป */
         .table-card {
             background: #ffffff;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
+            border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.04);
             overflow: hidden;
+            border: 1px solid #e2e8f0;
         }
 
-        .table thead tr {
-            background-color: #f8fafc;
-            border-bottom: 2px solid #e2e8f0;
-            color: #475569;
-            font-size: 0.95rem;
+        .table thead {
+            background-color: var(--admin-main, #1e3a8a); /* สีน้ำเงินเข้ม */
+            color: white;
+        }
+        
+        .table thead th {
+            font-weight: 500;
+            border: none;
+            padding: 12px 10px;
         }
 
-        /* ปุ่มในจอคอมพิวเตอร์ */
         .btn-action-admin {
             background-color: white;
-            color: var(--admin-main);
-            border: 1px solid var(--admin-main);
+            color: var(--admin-main, #1e3a8a);
+            border: 1px solid var(--admin-main, #1e3a8a);
             border-radius: 10px;
             padding: 5px 18px;
             font-size: 0.9rem;
@@ -55,104 +56,62 @@
         }
 
         .btn-action-admin:hover {
-            background-color: var(--admin-main);
+            background-color: var(--admin-main, #1e3a8a);
             color: white;
-            box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2);
-            transform: translateY(-2px);
         }
 
-        /* 📱 ปรับแต่งตารางให้กลายเป็นการ์ดในจอมือถือ */
+        /* 📱 Mobile */
         @media (max-width: 768px) {
-            .table-card { 
-                background: transparent !important; 
-                box-shadow: none !important; 
-                border: none !important; 
-                margin-top: 10px;
-            }
-            .table thead { 
-                display: none !important; 
-            }
+            .table-card { background: transparent !important; box-shadow: none !important; border: none !important; margin-top: 10px; }
+            .table thead { display: none !important; }
             .table tbody tr { 
-                display: block; 
-                background: #ffffff; 
-                border-radius: 16px; 
-                margin-bottom: 16px; 
-                padding: 16px 20px; 
-                box-shadow: 0 4px 15px rgba(0,0,0,0.04); 
-                border: 1px solid #e2e8f0 !important; 
+                display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid #e2e8f0 !important; 
             }
             .table tbody td { 
-                display: flex; 
-                justify-content: space-between; 
-                align-items: center; 
-                text-align: right; 
-                padding: 10px 0; 
-                border-bottom: 1px dashed #e2e8f0 !important; 
+                display: flex; justify-content: space-between; align-items: center; text-align: right; 
+                padding: 10px 0; border-bottom: 1px dashed #e2e8f0 !important; 
             }
             .table tbody td::before { 
-                content: attr(data-label); 
-                font-weight: 600; 
-                color: #475569; 
-                font-size: 0.95rem; 
-                text-align: left; 
-                margin-right: 15px; 
-                flex-shrink: 0; 
+                content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; flex-shrink: 0; 
             }
-            .table tbody td:first-child {
-                border-bottom: 2px solid var(--admin-main) !important;
-                padding-top: 0;
-            }
-            .table tbody td:last-child { 
-                border-bottom: none !important; 
-                padding-bottom: 0; 
-                padding-top: 14px; 
-                display: block; 
-            }
-            .table tbody td:last-child::before { 
-                display: none; 
-            } 
-            .table tbody td:last-child .btn-action-admin { 
-                background-color: var(--admin-main);
-                color: white;
-                border: none;
-                width: 100%;
-                padding: 12px !important; 
-                font-size: 1.05rem; 
-                border-radius: 12px;
-            }
+            .table tbody td:first-child { border-bottom: 2px solid var(--admin-main, #1e3a8a) !important; padding-top: 0; }
+            .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 14px; display: block; }
+            .table tbody td:last-child::before { display: none; } 
+            .table tbody td:last-child .btn-action-admin { background-color: var(--admin-main, #1e3a8a); color: white; width: 100%; padding: 12px !important; font-size: 1.05rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 📌 ปรับแก้แถบ Nav ให้เหมือน Step 3 -->
-    <nav class="nav-header d-flex justify-content-between align-items-center mb-3 mt-2">
-        <div class="nav-title fw-bold text-dark" style="line-height: 1.2; font-size: 1.2rem;">
+    <!-- 📌 Nav Header ปรับให้เหมือน Step 3 เป๊ะๆ (ปุ่มดำทึบ ตัวหนังสือเป๊ะ) -->
+    <nav class="nav-header d-flex justify-content-between align-items-center mt-3 mb-4">
+        <div class="nav-title fw-bold text-dark" style="line-height: 1.2; font-size: 1.15rem;">
             🔍 Step 5 | ตรวจรับคืน
-            <span class="d-block d-sm-inline mt-1 mt-sm-0" style="font-size: 0.95rem; color: #6c757d; font-weight: 500;">(ค้างดำเนินการ)</span>
+            <span class="d-block d-sm-inline" style="font-size: 0.95rem; color: #6c757d; font-weight: 500;">(ค้างดำเนินการ)</span>
         </div>
         <div class="d-flex align-items-center">
-            <a href="admin.html" class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold">กลับเมนู</a>
+            <a href="admin.html" class="btn btn-dark btn-sm rounded-pill px-4 py-1 fw-bold">กลับเมนู</a>
         </div>
     </nav>
 
     <div class="container-wide pb-5">
         
-        <div class="d-flex align-items-center mb-3 px-1">
+        <div class="d-flex align-items-center mb-3">
             <div class="accent-bar-admin"></div>
-            <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ผู้ใช้งานส่งคืนรอตรวจสอบ</h5>
+            <h5 class="fw-bold m-0" style="color: var(--admin-main, #1e3a8a); font-size: 1.1rem;">รายการที่ผู้ใช้งานส่งคืนรอตรวจสอบ</h5>
         </div>
         
         <div class="table-card table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead>
                     <tr class="text-center">
-                        <th style="width: 15%;" class="py-3">เลขรายการ</th>
-                        <th style="width: 15%;" class="py-3">วันที่และเวลา</th>
-                        <th style="width: 20%;" class="py-3">ผู้ส่งคืน</th>
-                        <th style="width: 18%;" class="py-3">อุปกรณ์ที่ยืม</th>
-                        <th style="width: 18%;" class="py-3">เครื่องที่เตรียม</th>
-                        <th style="width: 14%;" class="py-3">จัดการ</th>
+                        <th style="width: 15%;">เลขรายการ</th>
+                        <th style="width: 15%;">วันที่และเวลา</th>
+                        <th style="width: 20%;">ผู้ส่งคืน</th>
+                        <th style="width: 18%;">อุปกรณ์ที่ยืม</th>
+                        <th style="width: 18%;">เครื่องที่เตรียม</th>
+                        <th style="width: 14%;">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody id="requestListBody">
@@ -215,7 +174,7 @@
                         let idsArr = [];
                         
                         if (normalIds.length > 0) {
-                            typeArr.push(`<div class="fw-bold mb-1" style="color: var(--admin-main);">iPad</div>`);
+                            typeArr.push(`<div class="fw-bold mb-1" style="color: var(--admin-main, #1e3a8a);">iPad</div>`);
                             idsArr.push(`<div class="mb-1 text-dark" style="word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`);
                         }
                         if (airIds.length > 0) {
@@ -229,7 +188,7 @@
 
                     tbody.innerHTML += `
                         <tr class="text-center align-middle">
-                            <td data-label="เลขรายการ"><div class="fw-bold" style="color: var(--admin-main);">${item.reqId}</div></td>
+                            <td data-label="เลขรายการ"><div class="fw-bold" style="color: var(--admin-main, #1e3a8a);">${item.reqId}</div></td>
                             <td data-label="วันที่และเวลา"><div class="text-muted" style="font-size: 0.9rem;">${dateStr}</div></td>
                             <td data-label="ผู้ส่งคืน"><div class="fw-bold text-dark">${fullName}</div></td>
                             <td data-label="อุปกรณ์ที่ยืม">${typeHtml}</td>
