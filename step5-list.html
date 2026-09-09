@@ -6,6 +6,7 @@
     <title>Step 5 List | ตรวจรับคืน</title>
     <link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
     
+    <!-- Bootstrap & Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-admin.css">
@@ -94,14 +95,14 @@
 </head>
 <body>
 
-    <!-- 📌 แก้ไข: ถอดคลาสที่มีปัญหาออก แล้วใช้ Inline Style บังคับให้อยู่บรรทัดเดียวกันแน่นอน 100% -->
-    <nav style="display: flex !important; justify-content: space-between !important; align-items: center !important; flex-wrap: nowrap !important; max-width: 1280px; margin: 0 auto; padding: 20px;" class="mt-2 mb-2">
-        <div class="fw-bold text-dark" style="line-height: 1.2; font-size: 1.15rem; flex-grow: 1;">
+    <!-- 📌 Nav Header ที่แก้บังคับให้อยู่บรรทัดเดียวกันแน่นอน -->
+    <nav class="d-flex flex-row justify-content-between align-items-center mt-3 mb-4 mx-auto w-100 px-3 px-md-0" style="max-width: 1280px; flex-wrap: nowrap !important;">
+        <div class="fw-bold text-dark text-truncate" style="line-height: 1.2; font-size: 1.15rem; min-width: 0;">
             🔍 Step 5 | ตรวจรับคืน
-            <span class="d-block d-sm-inline" style="font-size: 0.95rem; color: #6c757d; font-weight: 500; margin-left: 4px;">(ค้างดำเนินการ)</span>
+            <span class="d-none d-sm-inline" style="font-size: 0.95rem; color: #6c757d; font-weight: 500; margin-left: 4px;">(ค้างดำเนินการ)</span>
         </div>
-        <div style="flex-shrink: 0;">
-            <a href="admin.html" class="btn btn-outline-dark btn-sm rounded-pill px-4 py-1 fw-bold shadow-sm">กลับเมนู</a>
+        <div class="flex-shrink-0 ms-2">
+            <a href="admin.html" class="btn btn-outline-dark btn-sm rounded-pill px-3 py-1 fw-bold shadow-sm">กลับเมนู</a>
         </div>
     </nav>
 
