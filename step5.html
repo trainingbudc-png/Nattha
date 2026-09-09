@@ -55,16 +55,18 @@
             background-color: var(--admin-main) !important; 
         }
 
+        /* 📌 เปลี่ยนสีปุ่ม "ติ๊กครบ" เป็นสีฟ้าเข้ม ตามที่ขอ */
         .btn-shortcut { 
-            background: white; 
-            color: var(--admin-main); 
-            border: 2px solid var(--admin-main); 
+            background: #0284c7; /* สีฟ้าเข้ม */
+            color: white; 
+            border: none; 
             font-weight: 600;
             transition: 0.2s;
         }
         .btn-shortcut:hover { 
-            background: var(--admin-main); 
+            background: #0369a1; /* สีฟ้าเข้มขึ้นเมื่อเอาเมาส์ชี้ */
             color: white; 
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
         }
 
         .btn-admin-solid {
