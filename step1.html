@@ -16,7 +16,15 @@
     
     <style>
         body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding: 20px; }
-        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(30, 58, 138, 0.05); max-width: 950px; margin: auto; border: 1px solid var(--admin-border); }
+        .confirm-card { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 4px 20px rgba(30, 58, 138, 0.05); 
+            max-width: 950px; 
+            margin: auto; 
+            border: none !important; /* 🚨 ลบเส้นกรอบรอบนอกออก */
+        }
         .form-label { font-weight: 600; color: #475569; font-size: 0.95rem; }
         
         .form-control, .form-select { border-radius: 10px; border: 1px solid #cbd5e1; padding: 12px 15px; color: #1e293b; }
@@ -55,7 +63,6 @@
 
         .emergency-box { background-color: #fff5f5; border: 1px dashed #fca5a5; }
 
-        /* 📱 จัดการ UI สำหรับมือถือโดยเฉพาะ */
         @media (max-width: 768px) {
             body { padding: 10px; }
             .confirm-card { padding: 15px; border-radius: 16px; margin-top: 5px; }
@@ -88,29 +95,26 @@
                 font-size: 0.85rem; 
             }
             
-            /* 1. แถวแสดงชื่อ iPad (เต็มบรรทัด) */
-/* 1. แถวแสดงชื่อ iPad (เต็มบรรทัดและใส่สีพื้นหลังธีม) */
             .table tbody td[data-label="รหัส iPad"] {
-                width: calc(100% + 24px); /* ขยายให้ชนขอบการ์ดซ้าย-ขวา */
-                margin: -12px -12px 12px -12px; /* ดึงแถบให้ไปติดขอบบนสุดของการ์ด */
+                width: calc(100% + 24px); 
+                margin: -12px -12px 12px -12px; 
                 padding: 12px 16px !important;
                 justify-content: space-between;
-                background-color: #f1f5f9; /* 🚨 ใส่สีพื้นหลังธีมฟ้าอ่อน */
-                border-bottom: 2px solid var(--admin-main) !important; /* 🚨 เส้นขอบล่างสีกรมท่าชัดเจน */
-                border-radius: 14px 14px 0 0; /* โค้งมุมบนให้พอดีกับการ์ด */
+                background-color: #f1f5f9; 
+                border-bottom: 2px solid var(--admin-main) !important; 
+                border-radius: 14px 14px 0 0; 
             }
             .table tbody td[data-label="รหัส iPad"]::before { content: "📱 " attr(data-label); color: var(--admin-main); font-size: 0.95rem; }
             .table tbody td[data-label="รหัส iPad"] .fw-bold { font-size: 1.15rem !important; color: var(--admin-main) !important; }
 
-            /* 2. แก๊ง Checkbox (ปรับใหม่ให้คลีน จัดซ้าย-ขวา เป๊ะๆ) */
             .table tbody td[data-label="G-Drive"],
             .table tbody td[data-label="ไฟล์เอกสาร"],
             .table tbody td[data-label="ไฟล์รูปภาพ"],
             .table tbody td[data-label="Safari"] {
-                width: calc(50% - 6px); /* แบ่งครึ่งเป๊ะๆ ลบขอบ 6px */
+                width: calc(50% - 6px); 
                 margin: 3px; 
-                flex-direction: row; /* จัดวางแนวนอน */
-                justify-content: space-between; /* ดันข้อความไปซ้าย ติ๊กไปขวา */
+                flex-direction: row; 
+                justify-content: space-between; 
                 align-items: center;
                 padding: 12px 14px;
                 background: #f8fafc;
@@ -127,7 +131,6 @@
                 font-weight: 600;
             }
 
-            /* ป้องกัน Checkbox บีบเบี้ยว */
             .table tbody td input[type="checkbox"] {
                 width: 22px !important;
                 height: 22px !important;
@@ -135,7 +138,6 @@
                 flex-shrink: 0;
             }
 
-            /* 3. ปุ่มกดติ๊กครบ (เต็มบรรทัด) */
             .table tbody td[data-label="ปุ่มลัด"] {
                 width: 100%;
                 margin-top: 8px;
@@ -167,7 +169,6 @@
                 </select>
             </div>
 
-            <!-- 🚨 แก้ไขหัวข้อให้ปัดบรรทัดเมื่อจอแคบ -->
             <div class="mb-4">
                 <label class="form-label d-flex justify-content-between align-items-start mb-3">
                     <div>
@@ -196,7 +197,6 @@
                 </div>
             </div>
 
-            <!-- 🚨 แก้ไขหัวข้อให้ปัดบรรทัดเมื่อจอแคบ -->
             <div id="dynamicChecklistContainer" class="mb-4 d-none">
                 <label class="form-label fw-bold mb-3" style="color: var(--admin-main);">
                     ✅ สิ่งที่แอดมินต้องเตรียม 
@@ -220,7 +220,7 @@
                 </div>
             </div>
 
-<div class="mb-4 p-3 p-md-4 rounded-4 emergency-box">
+            <div class="mb-4 p-3 p-md-4 rounded-4 emergency-box">
                 <div class="d-flex align-items-center gap-2">
                     <input class="form-check-input m-0 shadow-sm" type="checkbox" id="emergencyCheck" style="width: 26px !important; height: 26px !important; flex-shrink: 0; cursor: pointer; accent-color: #dc3545 !important; border-color: #fca5a5 !important;" onchange="toggleEmergencyNote()">
                     <label class="fw-bold text-danger m-0" for="emergencyCheck" style="font-size: 1.1rem; cursor: pointer; user-select: none;">🚨 กรณีเบิกยืมฉุกเฉิน</label>
@@ -450,6 +450,7 @@
         const reqIdValue = document.getElementById("reqIdInput").value.trim(); 
         const recipientName = document.getElementById("userNameSelect").value;
         const adminName = localStorage.getItem("userName") || "Admin";
+        const adminId = localStorage.getItem("userId") || ""; // 🚨 ดึง Admin ID จากระบบ
         const selectedIpads = document.querySelectorAll('.ipad-checkbox:checked');
         const isEmergency = document.getElementById("emergencyCheck").checked;
         const emergencyNote = document.getElementById("emergencyNote").value.trim();
@@ -490,6 +491,7 @@
             action: "saveStep1", 
             reqId: reqIdValue !== "" ? reqIdValue : null, 
             adminName: adminName, 
+            adminId: adminId, // 🚨 ส่ง adminId บันทึกลงคอลัมน์ E
             recipientName: recipientName, 
             note: finalNote, 
             ipadData: ipadData 
