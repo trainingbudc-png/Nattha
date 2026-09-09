@@ -18,7 +18,6 @@
         }
         
         .container-wide { max-width: 1280px !important; margin: 0 auto !important; padding-left: 20px !important; padding-right: 20px !important; }
-        .nav-header { max-width: 1280px !important; margin: 0 auto !important; padding: 15px 20px !important; }
 
         .accent-bar-admin {
             width: 4px; height: 22px;
@@ -95,14 +94,14 @@
 </head>
 <body>
 
-    <!-- 📌 แก้ไข Nav Header ให้กลับมาอยู่บรรทัดเดียวกัน (d-flex justify-content-between) -->
-    <nav class="nav-header d-flex justify-content-between align-items-center mt-3 mb-4">
-        <div class="nav-title fw-bold text-dark" style="line-height: 1.2; font-size: 1.15rem;">
+    <!-- 📌 แก้ไข: ถอดคลาสที่มีปัญหาออก แล้วใช้ Inline Style บังคับให้อยู่บรรทัดเดียวกันแน่นอน 100% -->
+    <nav style="display: flex !important; justify-content: space-between !important; align-items: center !important; flex-wrap: nowrap !important; max-width: 1280px; margin: 0 auto; padding: 20px;" class="mt-2 mb-2">
+        <div class="fw-bold text-dark" style="line-height: 1.2; font-size: 1.15rem; flex-grow: 1;">
             🔍 Step 5 | ตรวจรับคืน
-            <span class="d-block d-sm-inline" style="font-size: 0.95rem; color: #6c757d; font-weight: 500;">(ค้างดำเนินการ)</span>
+            <span class="d-block d-sm-inline" style="font-size: 0.95rem; color: #6c757d; font-weight: 500; margin-left: 4px;">(ค้างดำเนินการ)</span>
         </div>
-        <div class="d-flex align-items-center">
-            <a href="admin.html" class="btn btn-outline-dark btn-sm rounded-pill px-4 py-1 fw-bold">กลับเมนู</a>
+        <div style="flex-shrink: 0;">
+            <a href="admin.html" class="btn btn-outline-dark btn-sm rounded-pill px-4 py-1 fw-bold shadow-sm">กลับเมนู</a>
         </div>
     </nav>
 
