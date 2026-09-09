@@ -12,6 +12,14 @@
     
     <style>
         body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
+        
+        /* ปรับขนาดความกว้างในคอมพิวเตอร์ */
+        .container-wide { 
+            max-width: 1000px !important; 
+            margin: 0 auto !important; 
+            padding-left: 15px !important; 
+            padding-right: 15px !important; 
+        }
 
         .accent-bar-admin {
             width: 5px; height: 24px;
@@ -102,10 +110,12 @@
                 margin-right: 15px; 
                 flex-shrink: 0; 
             }
+            /* แถบเส้นเน้นสำหรับเลขรายการในมือถือ */
             .table tbody td:first-child {
                 border-bottom: 2px solid var(--admin-main) !important;
                 padding-top: 0;
             }
+            /* ปุ่มจัดการในมือถือขยายเต็มความกว้าง */
             .table tbody td:last-child { 
                 border-bottom: none !important; 
                 padding-bottom: 0; 
@@ -129,18 +139,18 @@
 </head>
 <body>
 
-    <!-- Header ด้านบน ใช้โครงสร้างสีขาวและขนาดเท่ากับ Step 3 เป๊ะๆ -->
-    <div class="main-header-card shadow-sm mb-4 d-flex justify-content-between align-items-center" style="background: #ffffff !important; border-bottom: 1px solid #e2e8f0; padding: 15px 30px;">
-        <div class="fw-bold text-dark lh-sm m-0" style="font-size: 1.1rem;">
+    <!-- 📌 ปรับขนาดความกว้างของแท็บด้านบนให้เหลือ 1000px และจัดให้อยู่กึ่งกลาง -->
+    <div class="nav-header-custom shadow-sm mb-4 d-flex justify-content-between align-items-center" style="padding: 15px 20px; max-width: 1000px; margin: 0 auto; border-radius: 0 0 12px 12px;">
+        <div class="nav-title-custom fw-bold text-white lh-sm m-0">
             🔍 Step 5 | ตรวจรับคืน
-            <span class="d-block d-sm-inline text-secondary opacity-75 mt-1 mt-sm-0" style="font-size: 0.85rem; font-weight: 500;">(ค้างดำเนินการ)</span>
+            <span class="d-block d-sm-inline text-light opacity-75 mt-1 mt-sm-0" style="font-size: 0.85rem; font-weight: 500;">(ค้างดำเนินการ)</span>
         </div>
         <div>
-            <a href="admin.html" class="btn btn-outline-dark btn-sm rounded-pill fw-bold px-3 py-1 shadow-sm">กลับเมนู</a>
+            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-3 py-1 shadow-sm">กลับเมนู</a>
         </div>
     </div>
 
-    <div class="container-fluid px-3 px-md-5">
+    <div class="container-wide">
         
         <!-- หัวข้อรายการ -->
         <div class="d-flex align-items-center mb-3 px-1">
@@ -148,7 +158,7 @@
             <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ผู้ใช้งานส่งคืน</h5>
         </div>
         
-        <!-- ตารางแสดงข้อมูล -->
+        <!-- ตารางแสดงข้อมูล (ปรับเป็นตารางในคอม / เป็นการ์ดในมือถืออัตโนมัติ) -->
         <div class="table-card table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead>
@@ -204,13 +214,13 @@
                     let fullName = item.name || "-";
 
                     tbody.innerHTML += `
-                        <tr class="align-middle text-center">
+                        <tr class="align-middle">
                             <td data-label="เลขรายการ" class="py-3 px-4 fw-bold text-start" style="color: var(--admin-main);">${item.reqId}</td>
-                            <td data-label="วันที่และเวลา" class="py-3 text-muted" style="font-size: 0.9rem;">${dateStr}</td>
-                            <td data-label="ผู้ส่งคืน" class="py-3 fw-bold text-dark">${fullName}</td>
-                            <td data-label="อุปกรณ์ที่ยืม" class="py-3 text-dark">${deviceData.type}</td>
-                            <td data-label="เครื่องที่เตรียม" class="py-3 fw-bold" style="color: #2563eb;">${deviceData.number}</td>
-                            <td data-label="สถานะ" class="py-3">
+                            <td data-label="วันที่และเวลา" class="py-3 text-center text-muted" style="font-size: 0.9rem;">${dateStr}</td>
+                            <td data-label="ผู้ส่งคืน" class="py-3 text-center fw-bold text-dark">${fullName}</td>
+                            <td data-label="อุปกรณ์ที่ยืม" class="py-3 text-center text-dark">${deviceData.type}</td>
+                            <td data-label="เครื่องที่เตรียม" class="py-3 text-center fw-bold" style="color: #2563eb;">${deviceData.number}</td>
+                            <td data-label="สถานะ" class="py-3 text-center">
                                 <span class="status-badge-custom">Step[4]</span>
                             </td>
                             <td data-label="จัดการ" class="py-3 text-end px-4">
