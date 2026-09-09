@@ -45,17 +45,6 @@
             font-size: 0.95rem;
         }
 
-        .status-badge-custom {
-            background-color: #fef3c7;
-            color: #d97706;
-            border: 1px solid #fde68a;
-            padding: 5px 16px;
-            border-radius: 50rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-
         /* ปุ่มในจอคอมพิวเตอร์ */
         .btn-action-admin {
             background-color: white;
@@ -75,7 +64,7 @@
             transform: translateY(-2px);
         }
 
-        /* 📱 ปรับแต่งตารางให้กลายเป็นการ์ดในจอมือถือ (โค้ดเดิม ไม่เปลี่ยนแปลง) */
+        /* 📱 ปรับแต่งตารางให้กลายเป็นการ์ดในจอมือถือ */
         @media (max-width: 768px) {
             .table-card { 
                 background: transparent !important; 
@@ -156,22 +145,20 @@
             <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ผู้ใช้งานส่งคืนรอตรวจสอบ</h5>
         </div>
         
-        <!-- ปรับโครงสร้างตารางให้ตรงกับ Step 3 (จัดกึ่งกลาง / ความกว้างคอลัมน์) -->
         <div class="table-card table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead>
                     <tr class="text-center">
-                        <th style="width: 12%;" class="py-3">เลขรายการ</th>
+                        <th style="width: 15%;" class="py-3">เลขรายการ</th>
                         <th style="width: 15%;" class="py-3">วันที่และเวลา</th>
-                        <th style="width: 18%;" class="py-3">ผู้ส่งคืน</th>
-                        <th style="width: 15%;" class="py-3">อุปกรณ์ที่ยืม</th>
-                        <th style="width: 15%;" class="py-3">เครื่องที่เตรียม</th>
-                        <th style="width: 13%;" class="py-3">สถานะ</th>
-                        <th style="width: 12%;" class="py-3">จัดการ</th>
+                        <th style="width: 20%;" class="py-3">ผู้ส่งคืน</th>
+                        <th style="width: 18%;" class="py-3">อุปกรณ์ที่ยืม</th>
+                        <th style="width: 18%;" class="py-3">เครื่องที่เตรียม</th>
+                        <th style="width: 14%;" class="py-3">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody id="requestListBody">
-                    <tr><td colspan="7" class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</td></tr>
+                    <tr><td colspan="6" class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
@@ -187,7 +174,7 @@
 
     function loadStep5List() {
         const tbody = document.getElementById("requestListBody");
-        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-5 text-muted fw-bold">กำลังดึงข้อมูล... ⏳</td></tr>'; 
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted fw-bold">กำลังดึงข้อมูล... ⏳</td></tr>'; 
         
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
         .then(res => res.json())
@@ -200,7 +187,7 @@
                 );
 
                 if (pendingData.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-success fw-bold py-5">🎉 ไม่มีรายการรอตรวจสอบรับคืนในขณะนี้</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-success fw-bold py-5">🎉 ไม่มีรายการรอตรวจสอบรับคืนในขณะนี้</td></tr>';
                     return;
                 }
 
@@ -209,7 +196,6 @@
                     dateStr = dateStr.replace(/:\d{2}$/, '');
                     let fullName = item.name || "-";
                     
-                    // ดึงโค้ดแปลงข้อมูลอุปกรณ์จาก Step 3 มาใช้ เพื่อให้ UI เหมือนกันเป๊ะ
                     let typeHtml = '<span class="text-muted">-</span>';
                     let idsHtml = '<span class="text-muted">-</span>';
                     
@@ -243,7 +229,7 @@
                         idsHtml = idsArr.join('');
                     }
 
-                    // ปรับ HTML ของแต่ละแถวให้จัดกึ่งกลางและโครงสร้างเหมือน Step 3
+                    // ตัด td ที่เป็นสถานะออก
                     tbody.innerHTML += `
                         <tr class="text-center align-middle">
                             <td data-label="เลขรายการ"><div class="fw-bold" style="color: var(--admin-main);">${item.reqId}</div></td>
@@ -251,7 +237,6 @@
                             <td data-label="ผู้ส่งคืน"><div class="fw-bold text-dark">${fullName}</div></td>
                             <td data-label="อุปกรณ์ที่ยืม">${typeHtml}</td>
                             <td data-label="เครื่องที่เตรียม">${idsHtml}</td>
-                            <td data-label="สถานะ"><div><span class="status-badge-custom">${item.status || 'Step[4]'}</span></div></td>
                             <td data-label="จัดการ">
                                 <button class="btn-action-admin shadow-sm w-100" onclick="goToStep5('${item.reqId}')">ตรวจสอบ</button>
                             </td>
@@ -259,11 +244,11 @@
                     `;
                 });
             } else {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
             }
         })
         .catch(err => {
-            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
         });
     }
 
