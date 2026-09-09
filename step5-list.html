@@ -13,6 +13,7 @@
     <style>
         body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
         
+        /* เอา style ของ instruction-section ออกจาก HTML ด้านล่างแล้ว แต่คง CSS ไว้เผื่อใช้ที่อื่น */
         .instruction-section {
             background: white;
             border-radius: 12px;
@@ -96,29 +97,28 @@
 </head>
 <body>
 
-    <div class="nav-header-custom shadow-sm mb-4">
-        <div class="nav-title-custom fw-bold text-white">
+    <!-- ปรับรูปแบบ Header ให้ข้อความแบ่งบรรทัดและปุ่มอยู่ขวาเสมอ -->
+    <div class="nav-header-custom shadow-sm mb-4 d-flex justify-content-between align-items-center" style="padding: 15px 20px;">
+        <div class="nav-title-custom fw-bold text-white lh-sm m-0">
             🔍 Step 5 | ตรวจรับคืน
-            <span class="d-block d-sm-inline text-light opacity-75" style="font-size: 0.95rem; font-weight: 500;">(ค้างดำเนินการ)</span>
+            <span class="d-block text-light opacity-75 mt-1" style="font-size: 0.85rem; font-weight: 500;">(ค้างดำเนินการ)</span>
         </div>
         <div>
-            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm">กลับเมนู</a>
+            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-3 py-1 shadow-sm">กลับเมนู</a>
         </div>
     </div>
 
     <div class="container" style="max-width: 650px;">
         
-        <!-- ส่วนหัวข้อรายการ -->
-        <div class="instruction-section mb-3">
-            <div class="d-flex align-items-center">
-                <div class="accent-bar-admin"></div>
-                <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ผู้ใช้งานส่งคืน</h5>
-            </div>
+        <!-- ส่วนหัวข้อรายการ จัดวางแบบนำกล่องสีขาวออก (เหมือนในรูป) -->
+        <div class="d-flex align-items-center mb-3 px-2">
+            <div class="accent-bar-admin"></div>
+            <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ผู้ใช้งานส่งคืน</h5>
         </div>
         
         <!-- รายการการ์ดจะถูกใส่ตรงนี้ -->
         <div id="listContainer">
-            <div class="text-center py-5 text-muted fw-bold bg-white rounded-4 border">กำลังเชื่อมต่อข้อมูล... ⏳</div>
+            <div class="text-center py-5 text-muted fw-bold bg-white rounded-4 border shadow-sm">กำลังเชื่อมต่อข้อมูล... ⏳</div>
         </div>
     </div>
 
@@ -132,7 +132,7 @@
 
     function loadStep5List() {
         const container = document.getElementById("listContainer");
-        container.innerHTML = '<div class="text-center py-5 text-muted fw-bold bg-white rounded-4 border">กำลังดึงข้อมูล... ⏳</div>'; 
+        container.innerHTML = '<div class="text-center py-5 text-muted fw-bold bg-white rounded-4 border shadow-sm">กำลังดึงข้อมูล... ⏳</div>'; 
         
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
         .then(res => res.json())
@@ -155,7 +155,6 @@
                     
                     let deviceData = parseDeviceData(item.ipadId);
 
-                    // รวมชื่อจริงกับวงเล็บชื่อเล่นให้อยู่ในก้อนเดียวกัน ไม่ให้แตกแถว
                     let fullName = item.name || "-";
                     let nameHtml = `<div class="fw-bold text-dark">${fullName}</div>`;
 
@@ -202,7 +201,7 @@
                     `;
                 });
             } else {
-                container.innerHTML = '<div class="text-center text-muted py-5 bg-white rounded-4 border">ไม่มีข้อมูลในระบบ</div>';
+                container.innerHTML = '<div class="text-center text-muted py-5 bg-white rounded-4 border shadow-sm">ไม่มีข้อมูลในระบบ</div>';
             }
         });
     }
