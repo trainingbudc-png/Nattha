@@ -13,7 +13,7 @@
     <style>
         body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
         
-        /* ปรับขนาดความกว้างในคอมพิวเตอร์ */
+        /* ปรับขนาดความกว้างเท่ากับ step3list */
         .container-wide { 
             max-width: 1000px !important; 
             margin: 0 auto !important; 
@@ -139,18 +139,18 @@
 </head>
 <body>
 
-    <!-- 📌 ปรับขนาดความกว้างของแท็บด้านบนให้เหลือ 1000px และจัดให้อยู่กึ่งกลาง -->
-    <div class="nav-header-custom shadow-sm mb-4 d-flex justify-content-between align-items-center" style="padding: 15px 20px; max-width: 1000px; margin: 0 auto; border-radius: 0 0 12px 12px;">
-        <div class="nav-title-custom fw-bold text-white lh-sm m-0">
-            🔍 Step 5 | ตรวจรับคืน
-            <span class="d-block d-sm-inline text-light opacity-75 mt-1 mt-sm-0" style="font-size: 0.85rem; font-weight: 500;">(ค้างดำเนินการ)</span>
+    <div class="container-wide pt-3">
+        
+        <!-- 📌 แถบสีน้ำเงินด้านบน (ย้ายเข้ามาอยู่ใน container เดียวกัน ขนาดกว้างเท่ากับตารางพอดีเป๊ะ) -->
+        <div class="nav-header-custom shadow-sm mb-4 d-flex justify-content-between align-items-center" style="padding: 15px 20px; border-radius: 12px;">
+            <div class="nav-title-custom fw-bold text-white lh-sm m-0">
+                🔍 Step 5 | ตรวจรับคืน
+                <span class="d-block d-sm-inline text-light opacity-75 mt-1 mt-sm-0" style="font-size: 0.85rem; font-weight: 500;">(ค้างดำเนินการ)</span>
+            </div>
+            <div>
+                <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-3 py-1 shadow-sm">กลับเมนู</a>
+            </div>
         </div>
-        <div>
-            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-3 py-1 shadow-sm">กลับเมนู</a>
-        </div>
-    </div>
-
-    <div class="container-wide">
         
         <!-- หัวข้อรายการ -->
         <div class="d-flex align-items-center mb-3 px-1">
@@ -158,7 +158,7 @@
             <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ผู้ใช้งานส่งคืน</h5>
         </div>
         
-        <!-- ตารางแสดงข้อมูล (ปรับเป็นตารางในคอม / เป็นการ์ดในมือถืออัตโนมัติ) -->
+        <!-- ตารางแสดงข้อมูล -->
         <div class="table-card table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead>
