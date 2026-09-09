@@ -14,12 +14,9 @@
         body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
         
         /* ปรับขนาดความกว้างให้เท่ากับฝั่ง User (1280px) */
-        .container-wide { 
-            max-width: 1280px !important; 
-            margin: 0 auto !important; 
-            padding-left: 20px !important; 
-            padding-right: 20px !important; 
-        }
+        .container-wide, .nav-header { max-width: 1280px !important; margin: 0 auto !important; }
+        .container-wide { padding-left: 20px !important; padding-right: 20px !important; }
+        .nav-header { padding: 15px 20px !important; }
 
         .accent-bar-admin {
             width: 5px; height: 24px;
@@ -128,15 +125,16 @@
 </head>
 <body>
 
-    <div class="nav-header-custom shadow-sm mb-4 d-flex justify-content-between align-items-center" style="padding: 15px 20px;">
-        <div class="nav-title-custom fw-bold text-white lh-sm m-0" style="font-size: 1.2rem;">
+    <!-- 📌 ปรับแก้แถบ Nav ให้เหมือน Step 3 -->
+    <nav class="nav-header d-flex justify-content-between align-items-center mb-3 mt-2">
+        <div class="nav-title fw-bold text-dark" style="line-height: 1.2; font-size: 1.2rem;">
             🔍 Step 5 | ตรวจรับคืน
-            <span class="d-block d-sm-inline text-light opacity-75 mt-1 mt-sm-0" style="font-size: 0.95rem; font-weight: 500;">(ค้างดำเนินการ)</span>
+            <span class="d-block d-sm-inline mt-1 mt-sm-0" style="font-size: 0.95rem; color: #6c757d; font-weight: 500;">(ค้างดำเนินการ)</span>
         </div>
-        <div>
-            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-3 py-1 shadow-sm">กลับเมนู</a>
+        <div class="d-flex align-items-center">
+            <a href="admin.html" class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold">กลับเมนู</a>
         </div>
-    </div>
+    </nav>
 
     <div class="container-wide pb-5">
         
@@ -229,7 +227,6 @@
                         idsHtml = idsArr.join('');
                     }
 
-                    // ตัด td ที่เป็นสถานะออก
                     tbody.innerHTML += `
                         <tr class="text-center align-middle">
                             <td data-label="เลขรายการ"><div class="fw-bold" style="color: var(--admin-main);">${item.reqId}</div></td>
