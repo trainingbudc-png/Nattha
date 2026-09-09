@@ -55,30 +55,30 @@
             background-color: var(--admin-main) !important; 
         }
 
-        /* 📌 เปลี่ยนสีปุ่ม "ติ๊กครบ" เป็นสีฟ้าเข้ม ตามที่ขอ */
+        /* 📌 คืนค่าปุ่มติ๊กครบ กลับเป็นปกติ */
         .btn-shortcut { 
-            background: #0284c7; /* สีฟ้าเข้ม */
-            color: white; 
-            border: none; 
+            background: white; 
+            color: var(--admin-main); 
+            border: 2px solid var(--admin-main); 
             font-weight: 600;
             transition: 0.2s;
         }
         .btn-shortcut:hover { 
-            background: #0369a1; /* สีฟ้าเข้มขึ้นเมื่อเอาเมาส์ชี้ */
+            background: var(--admin-main); 
             color: white; 
-            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
         }
 
+        /* 📌 เปลี่ยนสีปุ่มยืนยันด้านล่าง เป็นสีฟ้าเข้ม ตาม Step 1 */
         .btn-admin-solid {
-            background-color: var(--admin-main);
+            background-color: #0284c7; /* สีฟ้าเข้ม */
             color: white;
             border: none;
             transition: 0.3s;
         }
         .btn-admin-solid:hover {
-            background-color: var(--admin-hover);
+            background-color: #0369a1; /* สีฟ้าเข้มขึ้นเมื่อชี้ */
             color: white;
-            box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4);
+            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.4);
         }
 
         /* 📌 สไตล์การ์ด และ Checkbox ถอดแบบมาจาก Step 1 */
