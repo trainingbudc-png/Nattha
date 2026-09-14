@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
-        /* 📌 ขยาย Container ให้กว้างเท่าหน้า User (1280px) */
         .container-wide {
             max-width: 1280px !important;
             margin: 0 auto;
@@ -18,7 +17,6 @@
             padding-right: 20px;
         }
 
-        /* 📌 สร้างคลาสสำหรับปุ่ม Action ให้เป็นธีม Navy */
         .btn-outline-admin {
             color: var(--admin-main);
             border-color: var(--admin-main);
@@ -40,7 +38,6 @@
             border-color: var(--admin-hover);
         }
 
-        /* 📌 สไตล์สำหรับปุ่มเมนูทางลัด */
         .shortcut-card {
             background-color: white;
             border-radius: 12px;
@@ -80,9 +77,7 @@
         <div class="fw-bold fs-5 d-flex align-items-center gap-2">
             <img src="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" alt="Logo" style="width: 32px; height: 32px; object-fit: contain;">
             เมนูผู้ดูแล (Admin)
-            <a href="admin-manage.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-3 ms-2 shadow-sm d-flex align-items-center gap-1">
-                🛠️ จัดการ
-            </a>
+            <!-- 🚨 นำปุ่มจัดการออกเรียบร้อย -->
         </div>
         <div class="d-flex align-items-center gap-2">
             <span class="admin-name d-none d-md-inline">แอดมิน: <span id="adminNameDisplay">Loading...</span></span>
@@ -92,7 +87,6 @@
 
     <div class="container-wide pb-5 mt-4">
         
-        <!-- 📊 โซนที่ 1: จัดการและวิเคราะห์ระบบ (Management & Analytics) -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="section-title mt-0 mb-0">ภาพรวมและการจัดการระบบ</div>
         </div>
@@ -113,7 +107,6 @@
             </div>
         </div>
 
-        <!-- 🚀 โซนที่ 2: ขั้นตอนการทำงานหลัก (Workflow Actions) -->
         <div class="section-title mt-4">ขั้นตอนการดำเนินการ</div>
         <div class="row g-3 mb-5">
             <div class="col-6">
@@ -132,7 +125,6 @@
             </div>
         </div>
         
-        <!-- 📌 รายการที่กำลังดำเนินการ -->
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-2">
             <div class="section-title mt-0 mb-0">รายการที่กำลังดำเนินการ</div>
             <button class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm border" onclick="loadAdminTableData()">🔄 รีเฟรช</button>
@@ -142,7 +134,6 @@
             <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>
         </div>
 
-        <!-- 📌 ประวัติรายการ -->
         <div class="d-flex justify-content-between align-items-end mt-5 mb-3">
             <div class="section-title mt-0 mb-0">ประวัติรายการ</div>
         </div>
@@ -211,7 +202,6 @@
     async function loadAdminTableData(retryCount = 3) {
         if (retryCount === 3) {
             document.getElementById("activeCardsContainer").innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>';
-            // 📌 ใช้ justify-content: center เพื่อไม่ให้กระทบ Desktop แต่จัดกลางใน Mobile
             document.getElementById("adminTableBody").innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted" style="justify-content: center;">กำลังโหลดข้อมูลตาราง... ⏳</td></tr>';
         }
         
@@ -292,7 +282,6 @@
 
             let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
 
-            // 📌 1. จัดรูปแบบอุปกรณ์ให้แยก "ประเภท" กับ "เลขอุปกรณ์"
             let formattedIpads = '<div class="d-flex justify-content-between"><span class="text-muted" style="font-size: 0.85rem;">อุปกรณ์:</span><span class="text-dark">-</span></div>';
             
             if (item.ipadId && item.ipadId.trim() !== "") {
@@ -342,7 +331,6 @@
                 nickNameHtml = `<span class="text-secondary ms-1 fw-normal" style="font-size: 0.8rem;">(${parts[1].trim()})</span>`;
             }
 
-            // 📌 2. เปลี่ยนปุ่มกดแอดมิน (w-100)
             let statusTxt = item.status || "-";
             let actionBtn = "";
             let stepLabel = "";
@@ -364,7 +352,6 @@
                 actionBtn = `<span class="badge bg-light text-dark border px-3 py-2 rounded-pill w-100 fs-6 d-block">${statusTxt}</span>`;
             }
 
-            // 📌 3. ประกอบการ์ด
             container.innerHTML += `
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="active-task-card position-relative overflow-hidden" style="border: 1px solid #e2e8f0;">
@@ -429,7 +416,6 @@
         tbody.innerHTML = ""; 
         
         if (data.length === 0) {
-            // 📌 ใช้ justify-content: center ตรงนี้
             tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5" style="justify-content: center; border: none;">🔍 ไม่พบข้อมูล</td></tr>';
             return;
         }
