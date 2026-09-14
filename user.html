@@ -30,7 +30,6 @@
             transform: rotate(180deg);
         }
 
-        /* 📌 สไตล์สำหรับปุ่มเมนูทางลัด (Menu Cards) */
         .shortcut-card {
             background-color: white;
             border-radius: 12px;
@@ -85,8 +84,21 @@
 
     <div class="container-wide pb-5">
 
-        <!-- 📌 เมนูทางลัด (Shortcuts) สำหรับผู้ใช้งาน -->
-        <div class="d-flex align-items-center gap-2 mt-4 mb-3">
+        <!-- 📌 ย้ายรายการที่กำลังดำเนินการมาไว้บนสุด -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-2 mt-4">
+            <div class="d-flex align-items-center gap-2">
+                <div class="accent-bar"></div>
+                <h5 class="fw-bold m-0 text-dark">รายการที่กำลังดำเนินการ</h5>
+            </div>
+            <button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold bg-white shadow-sm border-2" onclick="loadUserTableData()">🔄 อัปเดต</button>
+        </div>
+        
+        <div class="row g-3 mb-5" id="activeCardsContainer">
+            <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>
+        </div>
+
+        <!-- 📌 เมนูทางลัด (Shortcuts) สำหรับผู้ใช้งาน (เลื่อนลงมา) -->
+        <div class="d-flex align-items-center gap-2 mb-3">
             <div class="accent-bar"></div>
             <h5 class="fw-bold m-0 text-dark">เมนูจัดการอุปกรณ์</h5>
         </div>
@@ -114,18 +126,6 @@
                 </a>
             </div>
         </div>
-        
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-2">
-            <div class="d-flex align-items-center gap-2">
-                <div class="accent-bar"></div>
-                <h5 class="fw-bold m-0 text-dark">รายการที่กำลังดำเนินการ</h5>
-            </div>
-            <button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold bg-white shadow-sm border-2" onclick="loadUserTableData()">🔄 อัปเดต</button>
-        </div>
-        
-        <div class="row g-3 mb-5" id="activeCardsContainer">
-            <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>
-        </div>
 
         <div class="d-flex align-items-center gap-2 mb-3">
             <div class="accent-bar"></div>
@@ -142,9 +142,9 @@
                         <th style="width: 20%;">สถานะปัจจุบัน</th>
                     </tr>
                 </thead>
-<tbody id="historyTableBody" class="bg-white">
-    <tr><td colspan="4" class="text-center py-4 text-muted" style="justify-content: center !important;">กำลังโหลดข้อมูล... ⏳</td></tr>
-</tbody>
+                <tbody id="historyTableBody" class="bg-white">
+                    <tr><td colspan="4" class="text-center py-4 text-muted" style="justify-content: center !important;">กำลังโหลดข้อมูล... ⏳</td></tr>
+                </tbody>
             </table>
         </div>
 
@@ -156,7 +156,6 @@
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                 <div class="modal-header border-0 pb-0 mt-3 d-flex flex-column align-items-center position-relative">
                     <button type="button" class="btn-close position-absolute top-0 end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <!-- 📌 เปลี่ยนหัวข้อเป็นสีตามธีมหลัก และเอาฟันเฟืองออก -->
                     <h4 class="modal-title fw-bold" style="color: var(--user-dark);">ข้อมูลส่วนตัว</h4>
                     <p class="text-muted mb-0" style="font-size: 0.9rem;">อัปเดตข้อมูลของคุณให้เป็นปัจจุบัน</p>
                 </div>
@@ -187,7 +186,6 @@
                         <label class="form-label fw-bold" style="color: #2c3e50; font-size: 0.9rem;">เบอร์ติดต่อภายใน (หรือมือถือ)</label>
                         <input type="tel" id="editProfilePhone" class="form-control" placeholder="กรอกเบอร์ที่สามารถติดต่อได้" style="border-radius: 8px;">
                     </div>
-                    <!-- 📌 เปลี่ยนเป็นคลาส btn-action เพื่อดึงสี Slate Blue จาก CSS มาใช้ -->
                     <button type="button" class="btn btn-action w-100 fw-bold py-2 shadow-sm" id="btnSaveProfile" onclick="saveProfileData()" style="border-radius: 8px; font-size: 1.05rem;">
                         บันทึกข้อมูลส่วนตัว
                     </button>
