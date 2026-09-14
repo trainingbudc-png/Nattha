@@ -102,13 +102,14 @@
             let originalBorrower = res.userName || "ไม่ระบุ";
             document.getElementById('displayUserName').innerText = originalBorrower;
 
-            globalOwnerName = originalBorrower.split('(')[0].trim();
-            let cleanLogger = currentLoggerName.split('(')[0].trim();
+   globalOwnerName = originalBorrower;
+            const currentLoggerId = localStorage.getItem("userId") || ""; // 🚨 ดึง LINE ID ของคนล็อกอินในเครื่อง
 
-            if (globalOwnerName !== cleanLogger) {
+            // 🚨 เทียบด้วย LINE ID 100% ไม่สนใจชื่อว่าจะเว้นวรรคผิดหรือเปลี่ยนชื่อใหม่
+            if (res.ownerId && currentLoggerId && res.ownerId !== currentLoggerId) {
                 document.getElementById('proxyAlert').style.display = "block";
                 document.getElementById('proxyNameDisplay').innerText = currentLoggerName;
-            } 
+            }
 
             const container = document.getElementById('itemList');
             container.innerHTML = "";
