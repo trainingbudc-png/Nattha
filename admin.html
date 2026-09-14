@@ -77,7 +77,6 @@
         <div class="fw-bold fs-5 d-flex align-items-center gap-2">
             <img src="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" alt="Logo" style="width: 32px; height: 32px; object-fit: contain;">
             เมนูผู้ดูแล (Admin)
-            <!-- 🚨 นำปุ่มจัดการออกเรียบร้อย -->
         </div>
         <div class="d-flex align-items-center gap-2">
             <span class="admin-name d-none d-md-inline">แอดมิน: <span id="adminNameDisplay">Loading...</span></span>
@@ -87,6 +86,17 @@
 
     <div class="container-wide pb-5 mt-4">
         
+        <!-- 📌 ย้ายรายการที่กำลังดำเนินการมาไว้บนสุด -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-2">
+            <div class="section-title mt-0 mb-0">รายการที่กำลังดำเนินการ</div>
+            <button class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm border" onclick="loadAdminTableData()">🔄 รีเฟรช</button>
+        </div>
+        
+        <div class="row g-3 mb-5" id="activeCardsContainer">
+            <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>
+        </div>
+
+        <!-- 📊 โซนที่ 1: จัดการและวิเคราะห์ระบบ (Management & Analytics) (เลื่อนลงมา) -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="section-title mt-0 mb-0">ภาพรวมและการจัดการระบบ</div>
         </div>
@@ -107,6 +117,7 @@
             </div>
         </div>
 
+        <!-- 🚀 โซนที่ 2: ขั้นตอนการทำงานหลัก (Workflow Actions) -->
         <div class="section-title mt-4">ขั้นตอนการดำเนินการ</div>
         <div class="row g-3 mb-5">
             <div class="col-6">
@@ -124,16 +135,8 @@
                 </a>
             </div>
         </div>
-        
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-2">
-            <div class="section-title mt-0 mb-0">รายการที่กำลังดำเนินการ</div>
-            <button class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm border" onclick="loadAdminTableData()">🔄 รีเฟรช</button>
-        </div>
-        
-        <div class="row g-3 mb-5" id="activeCardsContainer">
-            <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">กำลังโหลดข้อมูล... ⏳</div>
-        </div>
 
+        <!-- 📌 ประวัติรายการ -->
         <div class="d-flex justify-content-between align-items-end mt-5 mb-3">
             <div class="section-title mt-0 mb-0">ประวัติรายการ</div>
         </div>
