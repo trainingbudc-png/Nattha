@@ -23,7 +23,7 @@
             box-shadow: 0 4px 20px rgba(30, 58, 138, 0.05); 
             max-width: 950px; 
             margin: auto; 
-            border: none !important;
+            border: none !important; /* 🚨 ลบเส้นกรอบรอบนอกออก */
         }
         .form-label { font-weight: 600; color: #475569; font-size: 0.95rem; }
         
@@ -450,7 +450,7 @@
         const reqIdValue = document.getElementById("reqIdInput").value.trim(); 
         const recipientName = document.getElementById("userNameSelect").value;
         const adminName = localStorage.getItem("userName") || "Admin";
-        const adminId = localStorage.getItem("userId") || ""; 
+        const adminId = localStorage.getItem("userId") || ""; // 🚨 ดึง Admin ID จากระบบ
         const selectedIpads = document.querySelectorAll('.ipad-checkbox:checked');
         const isEmergency = document.getElementById("emergencyCheck").checked;
         const emergencyNote = document.getElementById("emergencyNote").value.trim();
@@ -491,7 +491,7 @@
             action: "saveStep1", 
             reqId: reqIdValue !== "" ? reqIdValue : null, 
             adminName: adminName, 
-            adminId: adminId, 
+            adminId: adminId, // 🚨 ส่ง adminId บันทึกลงคอลัมน์ E
             recipientName: recipientName, 
             note: finalNote, 
             ipadData: ipadData 
@@ -526,8 +526,7 @@
             if(res && res.status === "success") {
                 Swal.fire({
                     title: "บันทึกสำเร็จ!",
-                    // 🚨 อัปเดตข้อความตรงนี้
-                    html: `หมายเลขรายการ : <b>${res.reqId || "-"}</b><br>ระบบแจ้งให้ผู้ยืมมารับเครื่องแล้ว`,
+                    html: `หมายเลขรายการ : <b>${res.reqId || "-"}</b><br>ระบบบันทึกสถานะ : รอยืนยันแล้ว`,
                     icon: "success",
                     confirmButtonColor: "#1e3a8a",
                     confirmButtonText: "กลับ",
