@@ -91,6 +91,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script src="script.js"></script>
 <script>
+<script>
     if (!localStorage.getItem("userId") || !localStorage.getItem("userName")) {
         localStorage.setItem("pendingUrl", window.location.href);
         window.location.replace("index.html");
@@ -100,7 +101,7 @@
     const isAdmin = localStorage.getItem("userRole") === "Admin";
     const currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
     
-    let finalSubmitName = currentLoggerName; 
+    let globalOwnerName = ""; // 🚨 ตัวแปรโกลบอล
 
     function handleExamChange(examType) {
         const hintBox = document.getElementById('examHint');
@@ -130,19 +131,15 @@
                 return;
             }
             
-            // 🚨 ระบบเทียบล็อกอินอัตโนมัติ
             let originalBorrower = res.userName || "ไม่ระบุ";
             document.getElementById('displayUserName').innerText = originalBorrower;
 
-            let cleanBorrower = originalBorrower.split('(')[0].trim();
+            globalOwnerName = originalBorrower.split('(')[0].trim();
             let cleanLogger = currentLoggerName.split('(')[0].trim();
 
-            if (cleanBorrower !== cleanLogger) {
+            if (globalOwnerName !== cleanLogger) {
                 document.getElementById('proxyAlert').style.display = "block";
                 document.getElementById('proxyNameDisplay').innerText = currentLoggerName;
-                finalSubmitName = `${currentLoggerName} (แทน ${cleanBorrower})`;
-            } else {
-                finalSubmitName = currentLoggerName;
             }
 
             const container = document.getElementById('itemList');
@@ -280,7 +277,8 @@
                     items: items, 
                     exam: examValue, 
                     note: noteValue, 
-                    name: finalSubmitName, // 🚨 ใช้ตัวแปรชื่ออัตโนมัติ
+                    actorName: currentLoggerName, // 🚨 แยกผู้ทำ
+                    ownerName: globalOwnerName,   // 🚨 แยกเจ้าของ
                     userId: localStorage.getItem("userId") 
                 }) 
             });
