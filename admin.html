@@ -260,14 +260,16 @@
             else activeData.push(item);
         });
 
-        let finalHistoryData = historyData.filter(item => {
+let finalHistoryData = historyData.filter(item => {
             if (statusValue === "all") return true;
             if (statusValue === "เสร็จสิ้น") return item.status.includes("คืนแล้ว") || item.status.includes("เสร็จสิ้น") || item.status.includes("เคลียร์");
             return item.status.includes(statusValue);
         });
 
         renderActiveCards(activeData); 
-        renderTable(finalHistoryData, "adminTableBody", "resultCountLabel"); 
+        
+        // 🚨 เติม .slice(0, 5) ต่อท้าย finalHistoryData ตรงนี้
+        renderTable(finalHistoryData.slice(0, 5), "adminTableBody", "resultCountLabel"); 
     }
 
     function renderActiveCards(data) {
