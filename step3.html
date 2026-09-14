@@ -91,16 +91,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script src="script.js"></script>
 <script>
-    if (!localStorage.getItem("userId") || !localStorage.getItem("userName")) {
-        localStorage.setItem("pendingUrl", window.location.href);
-        window.location.replace("index.html");
-    }
-
-    const reqId = new URLSearchParams(window.location.search).get('reqId');
-    const isAdmin = localStorage.getItem("userRole") === "Admin";
-    const currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
-    
-    let globalOwnerName = ""; // 🚨 ตัวแปรโกลบอล
+    let reqId = new URLSearchParams(window.location.search).get('reqId');
+    let currentLoggerName = "ผู้ใช้งาน";
+    let isAdmin = false;
+    let globalOwnerName = ""; 
 
     function handleExamChange(examType) {
         const hintBox = document.getElementById('examHint');
@@ -117,10 +111,31 @@
         } else { reasonNote.value = ''; }
     }
 
-    window.onload = function() {
+    async function initSystem() {
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+            localStorage.setItem("pendingUrl", window.location.href);
+            window.location.replace("index.html");
+            return;
+        }
+
+        // 🔄 1. แอบไปเช็คข้อมูลล่าสุดจาก Database
+        try {
+            const syncRes = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "checkRole", userId: userId }) });
+            const syncData = await syncRes.json();
+            if (syncData.success && syncData.name) {
+                localStorage.setItem("userName", syncData.name);
+                localStorage.setItem("userRole", syncData.role);
+            }
+        } catch (err) { console.warn("Auto-sync failed"); }
+
+        currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
+        isAdmin = localStorage.getItem("userRole") === "Admin";
+
         document.getElementById('displayReqId').innerText = reqId || "ไม่พบข้อมูล";
         if(!reqId) { document.getElementById('itemList').innerHTML = '<div class="text-danger py-4 text-center">❌ ไม่พบหมายเลขรายการ</div>'; return; }
 
+        // 📦 2. โหลดข้อมูลรายการตามปกติ
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep2Data", reqId: reqId }) })
         .then(res => res.json())
         .then(res => {
@@ -133,10 +148,10 @@
             let originalBorrower = res.userName || "ไม่ระบุ";
             document.getElementById('displayUserName').innerText = originalBorrower;
 
-        globalOwnerName = originalBorrower;
-            const currentLoggerId = localStorage.getItem("userId") || ""; // 🚨 ดึง LINE ID ของคนล็อกอินในเครื่อง
+            globalOwnerName = originalBorrower;
+            const currentLoggerId = userId;
 
-            // 🚨 เทียบด้วย LINE ID 100% ไม่สนใจชื่อว่าจะเว้นวรรคผิดหรือเปลี่ยนชื่อใหม่
+            // เทียบด้วย ID แทนชื่อ
             if (res.ownerId && currentLoggerId && res.ownerId !== currentLoggerId) {
                 document.getElementById('proxyAlert').style.display = "block";
                 document.getElementById('proxyNameDisplay').innerText = currentLoggerName;
@@ -200,7 +215,9 @@
                 });
             } else { container.innerHTML = `<div class="text-danger py-4 text-center">❌ ไม่พบข้อมูล iPad</div>`; }
         });
-    };
+    }
+
+    initSystem();
 
     function toggleCard(checkbox) {
         const targetId = checkbox.dataset.target;
@@ -277,8 +294,8 @@
                     items: items, 
                     exam: examValue, 
                     note: noteValue, 
-                    actorName: currentLoggerName, // 🚨 แยกผู้ทำ
-                    ownerName: globalOwnerName,   // 🚨 แยกเจ้าของ
+                    actorName: currentLoggerName,
+                    ownerName: globalOwnerName,
                     userId: localStorage.getItem("userId") 
                 }) 
             });
