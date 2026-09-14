@@ -58,7 +58,7 @@ async function loadUserTableData() {
             let activeList = [];
             let historyList = [];
 
-            myData.forEach(item => {
+myData.forEach(item => {
                 let statusTxt = item.status || "";
                 let isHistory = statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์") || statusTxt.includes("ยกเลิก");
                 
@@ -70,10 +70,13 @@ async function loadUserTableData() {
             });
 
             renderActiveUserCards(activeList);
-            renderUserTableRows(historyList, historyTbody);
+            
+            // 🚨 เติม .slice(0, 5) ต่อท้าย historyList ตรงนี้
+            renderUserTableRows(historyList.slice(0, 5), historyTbody);
 
-} else {
+        } else {
             activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">ไม่มีรายการในระบบ</div>';
+            // ...
             historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4" style="justify-content: center !important;">ไม่มีประวัติในระบบ</td></tr>';
         }
     } catch (err) {
