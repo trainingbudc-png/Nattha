@@ -72,22 +72,36 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script src="script.js"></script>
 <script>
-    // 🔒 ล็อคประตู: ถ้ายังไม่ล็อกอิน ให้จำทางเข้าเดิมไว้แล้วเด้งไปหน้า Login
-    if (!localStorage.getItem("userId") || !localStorage.getItem("userName")) {
-        localStorage.setItem("pendingUrl", window.location.href);
-        window.location.replace("index.html");
-    }
+    let reqId = new URLSearchParams(window.location.search).get('reqId');
+    let currentLoggerName = "ผู้ใช้งาน";
+    let isAdmin = false;
+    let globalOwnerName = ""; 
 
-    const reqId = new URLSearchParams(window.location.search).get('reqId');
-    const currentLoggerName = localStorage.getItem("userName") || "User";
-    const isAdmin = localStorage.getItem("userRole") === "Admin";
-    
-    let globalOwnerName = ""; // 🚨 ตัวแปรโกลบอลเก็บชื่อเจ้าของ
+    async function initSystem() {
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+            localStorage.setItem("pendingUrl", window.location.href);
+            window.location.replace("index.html");
+            return;
+        }
 
-    window.onload = function() {
+        // 🔄 1. แอบไปเช็คข้อมูลล่าสุดจาก Database
+        try {
+            const syncRes = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "checkRole", userId: userId }) });
+            const syncData = await syncRes.json();
+            if (syncData.success && syncData.name) {
+                localStorage.setItem("userName", syncData.name);
+                localStorage.setItem("userRole", syncData.role);
+            }
+        } catch (err) { console.warn("Auto-sync failed"); }
+
+        currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
+        isAdmin = localStorage.getItem("userRole") === "Admin";
+
         if(!reqId) { Swal.fire("ข้อผิดพลาด", "ไม่พบเลขรายการ", "error"); return; }
         document.getElementById('displayReqIdBox').innerText = reqId;
 
+        // 📦 2. โหลดข้อมูลรายการ
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep2Data", reqId: reqId }) })
         .then(res => res.json())
         .then(res => {
@@ -98,18 +112,17 @@
                 return;
             }
 
-            // 🚨 ระบบเทียบล็อกอินอัตโนมัติ
             let originalBorrower = res.userName || "ไม่ระบุ";
             document.getElementById('displayUserName').innerText = originalBorrower;
 
-   globalOwnerName = originalBorrower;
-            const currentLoggerId = localStorage.getItem("userId") || ""; // 🚨 ดึง LINE ID ของคนล็อกอินในเครื่อง
+            globalOwnerName = originalBorrower;
+            const currentLoggerId = userId;
 
-            // 🚨 เทียบด้วย LINE ID 100% ไม่สนใจชื่อว่าจะเว้นวรรคผิดหรือเปลี่ยนชื่อใหม่
+            // เทียบด้วย ID แทนชื่อ
             if (res.ownerId && currentLoggerId && res.ownerId !== currentLoggerId) {
                 document.getElementById('proxyAlert').style.display = "block";
                 document.getElementById('proxyNameDisplay').innerText = currentLoggerName;
-            }
+            } 
 
             const container = document.getElementById('itemList');
             container.innerHTML = "";
@@ -184,7 +197,9 @@
                 container.innerHTML = `<div class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</div>`; 
             }
         });
-    };
+    }
+
+    initSystem();
 
     function toggleCard(checkbox) {
         const targetId = checkbox.dataset.target;
@@ -247,13 +262,12 @@
                     action: "saveStep4", 
                     reqId: reqId, 
                     items: items, 
-                    actorName: currentLoggerName, // 🚨 ส่งชื่อผู้กดทำรายการ
-                    ownerName: globalOwnerName,   // 🚨 ส่งชื่อเจ้าของรายการ
+                    actorName: currentLoggerName,
+                    ownerName: globalOwnerName,
                     userId: localStorage.getItem("userId") 
                 }) 
             });
             const result = await res.json();
-            
             if(result.status === "success") {
                 let nextPage = isAdmin ? "admin.html" : "user.html";
                 showNavyAlert("ส่งคืนสำเร็จ!", `หมายเลขรายการ: <b>${reqId}</b><br>ส่งคืนอุปกรณ์จำนวน ${items.length} เครื่องเรียบร้อยแล้ว`, "success", nextPage);
