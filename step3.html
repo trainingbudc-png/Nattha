@@ -96,21 +96,6 @@
     let isAdmin = false;
     let globalOwnerName = ""; 
 
-    function handleExamChange(examType) {
-        const hintBox = document.getElementById('examHint');
-        const noteContainer = document.getElementById('noteContainer');
-        const reasonNote = document.getElementById('reasonNote');
-        
-        hintBox.style.display = 'none'; 
-        noteContainer.style.display = 'none';
-        
-        if (examType === 'Exam+') { 
-            hintBox.style.display = 'block'; reasonNote.value = ''; 
-        } else if (examType === 'ไม่ได้ใช้สำหรับสอบ') { 
-            noteContainer.style.display = 'block'; 
-        } else { reasonNote.value = ''; }
-    }
-
     async function initSystem() {
         const userId = localStorage.getItem("userId");
         if (!userId) {
@@ -132,19 +117,20 @@
         currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
         isAdmin = localStorage.getItem("userRole") === "Admin";
 
-        document.getElementById('displayReqId').innerText = reqId || "ไม่พบข้อมูล";
-        if(!reqId) { document.getElementById('itemList').innerHTML = '<div class="text-danger py-4 text-center">❌ ไม่พบหมายเลขรายการ</div>'; return; }
+        if(!reqId) { Swal.fire("ข้อผิดพลาด", "ไม่พบเลขรายการ", "error"); return; }
+        document.getElementById('displayReqIdBox').innerText = reqId;
 
-        // 📦 2. โหลดข้อมูลรายการตามปกติ
+        // 📦 2. โหลดข้อมูลรายการ
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep2Data", reqId: reqId }) })
         .then(res => res.json())
         .then(res => {
-            if (res.reqStatus && res.reqStatus !== "Step[2]") {
-                let nextPage = isAdmin ? "admin.html" : "user.html";
-                showNavyAlert("แจ้งเตือน", `รายการนี้ตรวจสอบก่อนสอบไปแล้ว (สถานะ: ${res.reqStatus})`, "warning", nextPage);
+            if (res.reqStatus && res.reqStatus !== "Step[3]") {
+                Swal.fire("แจ้งเตือน", `รายการนี้ส่งคืนเครื่องไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => {
+                    window.location.href = isAdmin ? "admin.html" : "user.html";
+                });
                 return;
             }
-            
+
             let originalBorrower = res.userName || "ไม่ระบุ";
             document.getElementById('displayUserName').innerText = originalBorrower;
 
@@ -155,12 +141,13 @@
             if (res.ownerId && currentLoggerId && res.ownerId !== currentLoggerId) {
                 document.getElementById('proxyAlert').style.display = "block";
                 document.getElementById('proxyNameDisplay').innerText = currentLoggerName;
-            }
+            } 
 
             const container = document.getElementById('itemList');
             container.innerHTML = "";
+            
             if(res.data && res.data.length > 0) {
-                res.data.forEach(item => {
+                res.data.forEach((item) => {
                     let adminBtn = isAdmin ? `<button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill shadow-sm" onclick="tickAllInCard(this)">ติ๊กครบ</button>` : '';
                     container.innerHTML += `
                     <div class="ipad-card bg-white border border-2 rounded-4 overflow-hidden transition-all" data-ipad="${item.ipadId}">
@@ -172,40 +159,52 @@
                             ${adminBtn}
                         </div>
                         <div class="collapse" id="collapse-${item.ipadId}">
-                            <div class="p-4 row row-cols-2 row-cols-md-3 g-3 text-center">
+                            <div class="p-4 row row-cols-2 row-cols-md-4 g-3 text-center">
                                 <div class="col">
                                     <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">Logout Drive</span>
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">File</span>
                                         <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
                                     </label>
                                 </div>
                                 <div class="col">
                                     <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">ปิด Wi-Fi</span>
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">รูปภาพ</span>
                                         <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
                                     </label>
                                 </div>
                                 <div class="col">
                                     <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">ปิด Bluetooth</span>
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">Safari</span>
                                         <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
                                     </label>
                                 </div>
                                 <div class="col">
                                     <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">ปิด AirDrop</span>
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">Wi-Fi</span>
                                         <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
                                     </label>
                                 </div>
                                 <div class="col">
                                     <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">โหมดเครื่องบิน</span>
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">Bluetooth</span>
                                         <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
                                     </label>
                                 </div>
                                 <div class="col">
                                     <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">เริ่มใช้งาน</span>
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">AirDrop</span>
+                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">G-Drive</span>
+                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem; min-height: 25px;">ลบ WI-FI</span>
                                         <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
                                     </label>
                                 </div>
@@ -213,7 +212,9 @@
                         </div>
                     </div>`;
                 });
-            } else { container.innerHTML = `<div class="text-danger py-4 text-center">❌ ไม่พบข้อมูล iPad</div>`; }
+            } else { 
+                container.innerHTML = `<div class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</div>`; 
+            }
         });
     }
 
@@ -231,7 +232,7 @@
         } else {
             bsCollapse.hide();
             card.classList.remove('active-card');
-            collapseElement.querySelectorAll('.check-item').forEach(cb => cb.checked = false);
+            collapseElement.querySelectorAll('.check-item').forEach(cb => cb.checked = false); 
         }
     }
 
@@ -245,71 +246,56 @@
         card.querySelectorAll('.check-item').forEach(cb => { cb.checked = true; });
     }
 
-    async function saveStep3() {
+    async function submitReturn() {
         let items = [];
         let isAllChecked = true; 
 
         document.querySelectorAll('.select-ipad:checked').forEach(checkbox => {
             const card = checkbox.closest('.ipad-card');
             const checks = Array.from(card.querySelectorAll('.check-item'));
+
             if (checks.some(c => !c.checked)) isAllChecked = false;
             const checkValues = checks.map(c => c.checked ? "☑" : "☐");
             items.push({ ipadId: card.dataset.ipad, checks: checkValues });
         });
 
         if(items.length === 0) {
-            Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาติ๊กเลือกหน้าชื่อ iPad ที่พร้อมสอบ อย่างน้อย 1 เครื่องครับ!", icon: "warning", confirmButtonColor: "#212529" });
+            Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาติ๊กเลือกหน้าชื่ออุปกรณ์ที่ต้องการส่งคืน อย่างน้อย 1 รายการครับ!", icon: "warning", confirmButtonColor: "#212529" });
             return;
         }
+
         if (!isAllChecked) {
             Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาตรวจสอบและติ๊กรายการให้ครบทุกข้อ สำหรับ iPad ที่เลือกครับ!", icon: "warning", confirmButtonColor: "#212529" });
             return;
         }
 
-        const examValueObj = document.querySelector('input[name="examType"]:checked');
-        if (!examValueObj) {
-            Swal.fire({ title: "⚠️ แจ้งเตือน", text: "กรุณาเลือกระบบการสอบ", icon: "warning", confirmButtonColor: "#212529" });
-            return;
-        }
-        
-        const examValue = examValueObj.value;
-        const noteValue = document.getElementById('reasonNote').value.trim();
-
-        if (examValue === "ไม่ได้ใช้สำหรับสอบ" && noteValue === "") {
-            Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาระบุเหตุผลที่ไม่ได้ใช้สำหรับสอบด้วยครับ!", icon: "warning", confirmButtonColor: "#212529" });
-            return;
-        }
-
         const btn = document.querySelector('.btn-confirm');
         const originalText = btn.innerText; 
-        btn.innerText = "⏳ กำลังบันทึกข้อมูล..."; 
+        btn.innerText = "⏳ กำลังบันทึก..."; 
         btn.disabled = true;
-        
-        try {
+
+       try {
             const res = await fetch(API_URL, { 
                 method: "POST", 
                 body: JSON.stringify({ 
-                    action: "saveStep3", 
+                    action: "saveStep4", 
                     reqId: reqId, 
                     items: items, 
-                    exam: examValue, 
-                    note: noteValue, 
                     actorName: currentLoggerName,
                     ownerName: globalOwnerName,
                     userId: localStorage.getItem("userId") 
                 }) 
             });
             const result = await res.json();
-            
             if(result.status === "success") {
                 let nextPage = isAdmin ? "admin.html" : "user.html";
-                showNavyAlert("ตรวจก่อนสอบสำเร็จ!", `หมายเลขรายการ: <b>${reqId}</b><br>Check List จำนวน ${items.length} เครื่องเรียบร้อยแล้ว`, "success", nextPage);
+                showNavyAlert("ส่งคืนสำเร็จ!", `หมายเลขรายการ: <b>${reqId}</b><br>ส่งคืนอุปกรณ์จำนวน ${items.length} เครื่องเรียบร้อยแล้ว`, "success", nextPage);
             } else { 
                 Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); 
                 btn.innerText = originalText; btn.disabled = false; 
             }
         } catch (error) {
-            Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); 
+            Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อระบบได้", "error"); 
             btn.innerText = originalText; btn.disabled = false;
         }
     }
