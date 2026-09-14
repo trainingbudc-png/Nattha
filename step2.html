@@ -68,6 +68,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script src="script.js"></script>
 <script>
+<script>
     if (!localStorage.getItem("userId") || !localStorage.getItem("userName")) {
         localStorage.setItem("pendingUrl", window.location.href);
         window.location.replace("index.html");
@@ -77,7 +78,7 @@
     const currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
     const isAdmin = localStorage.getItem("userRole") === "Admin"; 
     
-    let finalSubmitName = currentLoggerName; // ตัวแปรเก็บชื่อที่จะส่งเข้าฐานข้อมูล
+    let globalOwnerName = ""; // 🚨 ตัวแปรโกลบอลเก็บชื่อเจ้าของ
 
     fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep1Data", reqId: reqId }) })
     .then(res => res.json())
@@ -89,23 +90,16 @@
             return;
         }
 
-        // 🚨 1. ดึงชื่อเจ้าของรายการ
         let originalBorrower = res.userName || "ไม่ระบุ";
         document.getElementById('displayUserName').innerText = originalBorrower;
         document.getElementById('displayAdminName').innerText = res.adminName || "ไม่ระบุ";
 
-        // 🚨 2. ระบบเทียบล็อกอินอัตโนมัติ (ตัดวงเล็บชื่อเล่นออกก่อนเทียบเพื่อความชัวร์)
-        let cleanBorrower = originalBorrower.split('(')[0].trim();
+        globalOwnerName = originalBorrower.split('(')[0].trim();
         let cleanLogger = currentLoggerName.split('(')[0].trim();
 
-        if (cleanBorrower !== cleanLogger) {
-            // โชว์ป้ายทำแทน
+        if (globalOwnerName !== cleanLogger) {
             document.getElementById('proxyAlert').style.display = "block";
             document.getElementById('proxyNameDisplay').innerText = currentLoggerName;
-            // แพ็กชื่อรวมกัน
-            finalSubmitName = `${currentLoggerName} (รับแทน ${cleanBorrower})`;
-        } else {
-            finalSubmitName = currentLoggerName;
         }
 
         const container = document.getElementById('itemList');
@@ -217,7 +211,8 @@
                     reqId: reqId, 
                     items: items, 
                     note: "", 
-                    name: finalSubmitName, // 🚨 ใช้ตัวแปรชื่ออัตโนมัติ
+                    actorName: currentLoggerName, // 🚨 ส่งแยกคอลัมน์ผู้ทำ
+                    ownerName: globalOwnerName,   // 🚨 ส่งแยกคอลัมน์เจ้าของ
                     userId: localStorage.getItem("userId") 
                 }) 
             });
