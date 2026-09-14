@@ -11,10 +11,10 @@
     <style>
         body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
         .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 900px; margin: auto; border: 1px solid #e9ecef; }
-        .info-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: center; }
+        .info-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 12px; padding: 15px 10px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: stretch; }
         .info-label { font-size: 0.85rem; color: #6c757d; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
-        .info-value { font-size: 1.1rem; font-weight: bold; color: #212529; }
-        .divider { width: 1px; background-color: #dee2e6; height: 40px; }
+        .info-value { font-size: 1.05rem; font-weight: bold; color: #212529; word-break: break-word;}
+        .divider { width: 1px; background-color: #dee2e6; }
         
         .btn-confirm { background: #212529; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; border: none; margin-top: 20px; }
         .btn-confirm:hover { background: #495057; color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(33,37,41,0.2); }
@@ -24,9 +24,7 @@
 
         .ipad-card { transition: all 0.3s ease; border-color: #dee2e6; }
         .ipad-card.active-card { border-color: #212529 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.08) !important; transform: translateY(-2px); }
-        
         .select-ipad { width: 26px !important; height: 26px !important; cursor: pointer; accent-color: #0d6efd; transition: transform 0.2s; }
-        .select-ipad:active { transform: scale(0.9); }
         .check-item { width: 22px !important; height: 22px !important; cursor: pointer; accent-color: #0d6efd; }
 
         @media screen and (max-width: 768px) {
@@ -45,14 +43,21 @@
     </div>
     
     <div class="info-box">
-        <div class="text-center">
-            <div class="info-label">🔖 เลขรายการ</div>
-            <div id="displayReqId" class="info-value">กำลังโหลด...</div>
+        <div class="text-center w-50">
+            <div class="info-label">👤 ผู้ขอเบิกยืม</div>
+            <div id="displayUserName" class="info-value">กำลังโหลด...</div>
+            
+            <!-- 🚨 ป้ายแจ้งเตือนผู้ทำแทน -->
+            <div id="proxyAlert" class="mt-2" style="display: none;">
+                <span class="badge bg-warning text-dark border border-warning shadow-sm" style="font-size: 0.8rem; padding: 5px 10px;">
+                    🤝 ตรวจสอบแทนโดย: <span id="proxyNameDisplay" class="fw-bold"></span>
+                </span>
+            </div>
         </div>
         <div class="divider"></div>
-        <div class="text-center">
-            <div class="info-label">👤 ผู้ตรวจสอบ</div>
-            <div id="inspectorName" class="info-value">กำลังโหลด...</div>
+        <div class="text-center w-50">
+            <div class="info-label">🔖 เลขรายการ</div>
+            <div id="displayReqId" class="info-value">กำลังโหลด...</div>
         </div>
     </div>
     
@@ -72,23 +77,11 @@
             <label class="btn btn-outline-dark px-4" for="none">ไม่ได้ใช้สำหรับสอบ</label>
         </div>
         <div id="examHint" class="alert alert-light hint-box mt-3 py-2 px-3 border shadow-sm"><strong>💡 คำแนะนำ [Exam+]:</strong> ไม่ต้องปิด Bluetooth เนื่องจากปากกาต้องใช้ Bluetooth</div>
-        
         <div id="noteContainer" class="mt-3" style="display:none;"><input type="text" id="reasonNote" class="form-control border-danger" placeholder="⚠️ ระบุเหตุผลที่ไม่ได้ใช้สำหรับสอบ..."></div>
     </div>
 
     <div id="itemList" class="d-flex flex-column gap-3 mb-4">
         <div class="text-center text-muted py-4">กำลังโหลดข้อมูล... ⏳</div>
-    </div>
-
-    <!-- 📌 สวิตช์เปิด/ปิด การทำรายการแทน -->
-    <div class="mb-4 p-3 rounded-4" style="background-color: #f8fafc; border: 1px dashed #cbd5e1;">
-        <div class="form-check form-switch d-flex align-items-center gap-2 mb-0">
-            <input class="form-check-input m-0 shadow-sm" type="checkbox" id="delegateCheck" style="width: 30px; height: 20px; cursor: pointer;" onchange="toggleDelegateInput()">
-            <label class="form-check-label fw-bold text-dark m-0" for="delegateCheck" style="cursor: pointer;">ตรวจก่อนสอบแทนผู้อื่น</label>
-        </div>
-        <div id="delegateInputBox" class="mt-3" style="display: none;">
-            <input type="text" id="delegateName" class="form-control border-secondary" placeholder="ระบุชื่อคนที่คุณมาตรวจแทน..." style="border-radius: 8px;">
-        </div>
     </div>
 
     <button class="btn btn-confirm shadow-sm" onclick="saveStep3()">ยืนยันเครื่องพร้อมสอบ</button>
@@ -98,7 +91,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script src="script.js"></script>
 <script>
-    // 🔒 ล็อคประตู: ถ้ายังไม่ล็อกอิน ให้จำทางเข้าเดิมไว้แล้วเด้งไปหน้า Login ก่อน
     if (!localStorage.getItem("userId") || !localStorage.getItem("userName")) {
         localStorage.setItem("pendingUrl", window.location.href);
         window.location.replace("index.html");
@@ -107,6 +99,8 @@
     const reqId = new URLSearchParams(window.location.search).get('reqId');
     const isAdmin = localStorage.getItem("userRole") === "Admin";
     const currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
+    
+    let finalSubmitName = currentLoggerName; 
 
     function handleExamChange(examType) {
         const hintBox = document.getElementById('examHint');
@@ -117,21 +111,14 @@
         noteContainer.style.display = 'none';
         
         if (examType === 'Exam+') { 
-            hintBox.style.display = 'block'; 
-            reasonNote.value = ''; 
-        } 
-        else if (examType === 'ไม่ได้ใช้สำหรับสอบ') { 
+            hintBox.style.display = 'block'; reasonNote.value = ''; 
+        } else if (examType === 'ไม่ได้ใช้สำหรับสอบ') { 
             noteContainer.style.display = 'block'; 
-        } 
-        else { 
-            reasonNote.value = ''; 
-        }
+        } else { reasonNote.value = ''; }
     }
 
     window.onload = function() {
         document.getElementById('displayReqId').innerText = reqId || "ไม่พบข้อมูล";
-        document.getElementById('inspectorName').innerText = currentLoggerName;
-
         if(!reqId) { document.getElementById('itemList').innerHTML = '<div class="text-danger py-4 text-center">❌ ไม่พบหมายเลขรายการ</div>'; return; }
 
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep2Data", reqId: reqId }) })
@@ -142,12 +129,27 @@
                 showNavyAlert("แจ้งเตือน", `รายการนี้ตรวจสอบก่อนสอบไปแล้ว (สถานะ: ${res.reqStatus})`, "warning", nextPage);
                 return;
             }
+            
+            // 🚨 ระบบเทียบล็อกอินอัตโนมัติ
+            let originalBorrower = res.userName || "ไม่ระบุ";
+            document.getElementById('displayUserName').innerText = originalBorrower;
+
+            let cleanBorrower = originalBorrower.split('(')[0].trim();
+            let cleanLogger = currentLoggerName.split('(')[0].trim();
+
+            if (cleanBorrower !== cleanLogger) {
+                document.getElementById('proxyAlert').style.display = "block";
+                document.getElementById('proxyNameDisplay').innerText = currentLoggerName;
+                finalSubmitName = `${currentLoggerName} (แทน ${cleanBorrower})`;
+            } else {
+                finalSubmitName = currentLoggerName;
+            }
+
             const container = document.getElementById('itemList');
             container.innerHTML = "";
             if(res.data && res.data.length > 0) {
                 res.data.forEach(item => {
                     let adminBtn = isAdmin ? `<button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill shadow-sm" onclick="tickAllInCard(this)">ติ๊กครบ</button>` : '';
-                    
                     container.innerHTML += `
                     <div class="ipad-card bg-white border border-2 rounded-4 overflow-hidden transition-all" data-ipad="${item.ipadId}">
                         <div class="bg-light border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
@@ -157,7 +159,6 @@
                             </div>
                             ${adminBtn}
                         </div>
-                        
                         <div class="collapse" id="collapse-${item.ipadId}">
                             <div class="p-4 row row-cols-2 row-cols-md-3 g-3 text-center">
                                 <div class="col">
@@ -230,18 +231,6 @@
         card.querySelectorAll('.check-item').forEach(cb => { cb.checked = true; });
     }
 
-    function toggleDelegateInput() {
-        const box = document.getElementById('delegateInputBox');
-        const input = document.getElementById('delegateName');
-        if (document.getElementById('delegateCheck').checked) {
-            box.style.display = 'block';
-            input.focus();
-        } else {
-            box.style.display = 'none';
-            input.value = ''; 
-        }
-    }
-
     async function saveStep3() {
         let items = [];
         let isAllChecked = true; 
@@ -258,7 +247,6 @@
             Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาติ๊กเลือกหน้าชื่อ iPad ที่พร้อมสอบ อย่างน้อย 1 เครื่องครับ!", icon: "warning", confirmButtonColor: "#212529" });
             return;
         }
-
         if (!isAllChecked) {
             Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาตรวจสอบและติ๊กรายการให้ครบทุกข้อ สำหรับ iPad ที่เลือกครับ!", icon: "warning", confirmButtonColor: "#212529" });
             return;
@@ -269,25 +257,13 @@
             Swal.fire({ title: "⚠️ แจ้งเตือน", text: "กรุณาเลือกระบบการสอบ", icon: "warning", confirmButtonColor: "#212529" });
             return;
         }
+        
         const examValue = examValueObj.value;
         const noteValue = document.getElementById('reasonNote').value.trim();
 
         if (examValue === "ไม่ได้ใช้สำหรับสอบ" && noteValue === "") {
             Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาระบุเหตุผลที่ไม่ได้ใช้สำหรับสอบด้วยครับ!", icon: "warning", confirmButtonColor: "#212529" });
             return;
-        }
-
-        // 📌 ดักจับชื่อทำแทน
-        let finalName = currentLoggerName; 
-        const isDelegate = document.getElementById('delegateCheck').checked;
-        const delegateName = document.getElementById('delegateName').value.trim();
-
-        if (isDelegate) {
-            if (!delegateName) {
-                Swal.fire({ title: "แจ้งเตือน", text: "กรุณาระบุชื่อคนที่คุณมาตรวจแทนด้วยครับ", icon: "warning", confirmButtonColor: "#212529" });
-                return;
-            }
-            finalName = `${currentLoggerName} (ตรวจแทน ${delegateName})`; 
         }
 
         const btn = document.querySelector('.btn-confirm');
@@ -304,7 +280,7 @@
                     items: items, 
                     exam: examValue, 
                     note: noteValue, 
-                    name: finalName, 
+                    name: finalSubmitName, // 🚨 ใช้ตัวแปรชื่ออัตโนมัติ
                     userId: localStorage.getItem("userId") 
                 }) 
             });
@@ -313,16 +289,13 @@
             if(result.status === "success") {
                 let nextPage = isAdmin ? "admin.html" : "user.html";
                 showNavyAlert("ตรวจก่อนสอบสำเร็จ!", `หมายเลขรายการ: <b>${reqId}</b><br>Check List จำนวน ${items.length} เครื่องเรียบร้อยแล้ว`, "success", nextPage);
-            }
-            else { 
+            } else { 
                 Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); 
-                btn.innerText = originalText; 
-                btn.disabled = false; 
+                btn.innerText = originalText; btn.disabled = false; 
             }
         } catch (error) {
             Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); 
-            btn.innerText = originalText; 
-            btn.disabled = false;
+            btn.innerText = originalText; btn.disabled = false;
         }
     }
 </script>
