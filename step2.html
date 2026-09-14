@@ -68,89 +68,110 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script src="script.js"></script>
 <script>
-    if (!localStorage.getItem("userId") || !localStorage.getItem("userName")) {
-        localStorage.setItem("pendingUrl", window.location.href);
-        window.location.replace("index.html");
-    }
+    let reqId = new URLSearchParams(window.location.search).get('reqId');
+    let currentLoggerName = "ผู้ใช้งาน";
+    let isAdmin = false;
+    let globalOwnerName = ""; 
 
-    const reqId = new URLSearchParams(window.location.search).get('reqId');
-    const currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
-    const isAdmin = localStorage.getItem("userRole") === "Admin"; 
-    
-    let globalOwnerName = ""; // 🚨 ตัวแปรโกลบอลเก็บชื่อเจ้าของ
-
-    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep1Data", reqId: reqId }) })
-    .then(res => res.json())
-    .then(res => {
-        if (res.reqStatus && res.reqStatus !== "Step[1]") {
-            Swal.fire("แจ้งเตือน", `รายการนี้รับเครื่องไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => {
-                window.location.href = isAdmin ? "admin.html" : "user.html";
-            });
+    // 🚀 ระบบมืออาชีพ: ซิงค์ชื่อล่าสุดจากฐานข้อมูลอัตโนมัติก่อนโหลดข้อมูล
+    async function initSystem() {
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+            localStorage.setItem("pendingUrl", window.location.href);
+            window.location.replace("index.html");
             return;
         }
 
-        let originalBorrower = res.userName || "ไม่ระบุ";
-        document.getElementById('displayUserName').innerText = originalBorrower;
-        document.getElementById('displayAdminName').innerText = res.adminName || "ไม่ระบุ";
+        // 🔄 1. แอบไปเช็คข้อมูลล่าสุดจาก Database
+        try {
+            const syncRes = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "checkRole", userId: userId }) });
+            const syncData = await syncRes.json();
+            if (syncData.success && syncData.name) {
+                localStorage.setItem("userName", syncData.name); // อัปเดตชื่อใหม่ลงเบราว์เซอร์
+                localStorage.setItem("userRole", syncData.role);
+            }
+        } catch (err) { console.warn("Auto-sync failed, using cached name."); }
 
-   globalOwnerName = originalBorrower;
-            const currentLoggerId = localStorage.getItem("userId") || ""; // 🚨 ดึง LINE ID ของคนล็อกอินในเครื่อง
+        // ดึงค่าล่าสุดมาใช้งาน
+        currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
+        isAdmin = localStorage.getItem("userRole") === "Admin";
 
-            // 🚨 เทียบด้วย LINE ID 100% ไม่สนใจชื่อว่าจะเว้นวรรคผิดหรือเปลี่ยนชื่อใหม่
+        // 📦 2. โหลดข้อมูลรายการตามปกติ
+        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep1Data", reqId: reqId }) })
+        .then(res => res.json())
+        .then(res => {
+            if (res.reqStatus && res.reqStatus !== "Step[1]") {
+                Swal.fire("แจ้งเตือน", `รายการนี้รับเครื่องไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => {
+                    window.location.href = isAdmin ? "admin.html" : "user.html";
+                });
+                return;
+            }
+
+            let originalBorrower = res.userName || "ไม่ระบุ";
+            document.getElementById('displayUserName').innerText = originalBorrower;
+            document.getElementById('displayAdminName').innerText = res.adminName || "ไม่ระบุ";
+
+            globalOwnerName = originalBorrower;
+            const currentLoggerId = userId; 
+
+            // เทียบด้วย ID แทนชื่อ (เป๊ะ 100%)
             if (res.ownerId && currentLoggerId && res.ownerId !== currentLoggerId) {
                 document.getElementById('proxyAlert').style.display = "block";
                 document.getElementById('proxyNameDisplay').innerText = currentLoggerName;
             }
 
-        const container = document.getElementById('itemList');
-        container.innerHTML = ""; 
+            const container = document.getElementById('itemList');
+            container.innerHTML = ""; 
 
-        if(res.data && res.data.length > 0) {
-            res.data.forEach(item => {
-                let adminBtn = isAdmin ? `<button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill shadow-sm" onclick="tickAllInCard(this)">ติ๊กครบ</button>` : '';
-                container.innerHTML += `
-                <div class="ipad-card bg-white border border-2 rounded-4 overflow-hidden transition-all" data-ipad="${item.ipadId}">
-                    <div class="bg-light border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center gap-3">
-                            <input type="checkbox" class="select-ipad form-check-input m-0 shadow-sm" id="btn-${item.ipadId}" data-target="collapse-${item.ipadId}" onchange="toggleCard(this)"> 
-                            <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-dark fw-bold fs-5 mb-0">${item.ipadId}</label>
+            if(res.data && res.data.length > 0) {
+                res.data.forEach(item => {
+                    let adminBtn = isAdmin ? `<button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill shadow-sm" onclick="tickAllInCard(this)">ติ๊กครบ</button>` : '';
+                    container.innerHTML += `
+                    <div class="ipad-card bg-white border border-2 rounded-4 overflow-hidden transition-all" data-ipad="${item.ipadId}">
+                        <div class="bg-light border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-3">
+                                <input type="checkbox" class="select-ipad form-check-input m-0 shadow-sm" id="btn-${item.ipadId}" data-target="collapse-${item.ipadId}" onchange="toggleCard(this)"> 
+                                <label for="btn-${item.ipadId}" style="cursor:pointer;" class="text-dark fw-bold fs-5 mb-0">${item.ipadId}</label>
+                            </div>
+                            ${adminBtn}
                         </div>
-                        ${adminBtn}
-                    </div>
-                    <div class="collapse" id="collapse-${item.ipadId}">
-                        <div class="p-4 row row-cols-2 row-cols-sm-4 g-4 text-center">
-                            <div class="col">
-                                <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                    <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Drive</span>
-                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                </label>
-                            </div>
-                            <div class="col">
-                                <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                    <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">File</span>
-                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                </label>
-                            </div>
-                            <div class="col">
-                                <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                    <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Img</span>
-                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                </label>
-                            </div>
-                            <div class="col">
-                                <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                    <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Safari</span>
-                                    <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                </label>
+                        <div class="collapse" id="collapse-${item.ipadId}">
+                            <div class="p-4 row row-cols-2 row-cols-sm-4 g-4 text-center">
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Drive</span>
+                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">File</span>
+                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Img</span>
+                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
+                                        <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Safari</span>
+                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>`;
-            });
-        } else {
-            container.innerHTML = `<div class="text-center text-danger py-4">❌ ไม่พบรายการเครื่อง</div>`;
-        }
-    });
+                    </div>`;
+                });
+            } else {
+                container.innerHTML = `<div class="text-center text-danger py-4">❌ ไม่พบรายการเครื่อง</div>`;
+            }
+        });
+    }
+
+    initSystem(); // เรียกใช้งานเมื่อโหลดหน้า
 
     function toggleCard(checkbox) {
         const targetId = checkbox.dataset.target;
@@ -211,8 +232,8 @@
                     reqId: reqId, 
                     items: items, 
                     note: "", 
-                    actorName: currentLoggerName, // 🚨 ส่งแยกคอลัมน์ผู้ทำ
-                    ownerName: globalOwnerName,   // 🚨 ส่งแยกคอลัมน์เจ้าของ
+                    actorName: currentLoggerName,
+                    ownerName: globalOwnerName,
                     userId: localStorage.getItem("userId") 
                 }) 
             });
