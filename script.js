@@ -29,12 +29,16 @@ function hideLoading() {
 }
 
 // -----------------------------------------
-// 2. ระบบเรียกใช้ API (🚀 ใช้ Fetch แบบมาตรฐานที่สุด ป้องกันปัญหา CORS บล็อกเว็บ 100%)
+// 2. ระบบเรียกใช้ API (🚀 ป้องกันปัญหา CORS บล็อกเว็บ 100%)
 // -----------------------------------------
 async function callAPI(payload) {
     try {
         const res = await fetch(API_URL, {
             method: "POST",
+            // 🚨 เพิ่ม headers ส่วนนี้เพื่อไม่ให้เบราว์เซอร์บล็อกการส่งข้อมูล
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8" 
+            },
             body: JSON.stringify(payload)
         });
         return await res.json();
