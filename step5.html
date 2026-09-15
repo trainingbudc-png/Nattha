@@ -20,7 +20,7 @@
             box-shadow: 0 10px 30px rgba(30, 58, 138, 0.08); 
             max-width: 850px; 
             margin: auto; 
-            border: none !important; /* 🚨 ลบเส้นกรอบรอบนอกออก */
+            border: none !important; 
             overflow: hidden;
         }
 
@@ -60,6 +60,12 @@
         .btn-shortcut:hover { 
             background: var(--admin-main); 
             color: white; 
+        }
+
+        /* 🚨 เอฟเฟกต์ปุ่มตอนกด "ติ๊กครบ" (สีทึบตามธีมแอดมิน) */
+        .btn-ticked-all {
+            background-color: var(--admin-main) !important;
+            color: white !important;
         }
 
         .btn-admin-solid {
@@ -175,6 +181,7 @@
                         let id = item.ipadId;
                         let safeId = id.replace(/[^a-zA-Z0-9]/g, '');
                         
+                        // 🚨 เพิ่ม parameter this ให้ปุ่ม
                         container.innerHTML += `
                         <div class="border rounded-4 mb-4 overflow-hidden shadow-sm bg-white" style="border-color: var(--admin-border) !important;">
                             <div class="ipad-card-header">
@@ -213,7 +220,7 @@
                                 </div>
                                 
                                 <div class="mt-2 pt-1">
-                                    <button type="button" class="btn btn-shortcut w-100 py-2" style="border-radius: 10px; font-size: 1rem;" onclick="tickAllRow('${safeId}')">ติ๊กครบ</button>
+                                    <button type="button" class="btn btn-shortcut w-100 py-2" style="border-radius: 10px; font-size: 1rem;" onclick="tickAllRow('${safeId}', this)">ติ๊กครบ</button>
                                 </div>
                             </div>
                         </div>`;
@@ -232,10 +239,29 @@
         }
     }
 
-    function tickAllRow(safeId) {
+    // 🚨 อัปเดตฟังก์ชันดักจับทำปุ่มสีทึบ
+    function tickAllRow(safeId, btn) {
         document.getElementById(`main-${safeId}`).checked = true;
         const checkboxes = document.querySelectorAll(`.sub-check-${safeId}`);
         checkboxes.forEach(cb => cb.checked = true);
+
+        if(btn) {
+            btn.classList.add('btn-ticked-all');
+
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    if(!this.checked) {
+                        btn.classList.remove('btn-ticked-all');
+                    }
+                }, { once: true });
+            });
+            // ดักตอนเอาติ๊กใหญ่หน้าชื่อเครื่องออกด้วย
+            document.getElementById(`main-${safeId}`).addEventListener('change', function() {
+                 if(!this.checked) {
+                     btn.classList.remove('btn-ticked-all');
+                 }
+            }, { once: true });
+        }
     }
 
     function toggleSubChecks(safeId) {
