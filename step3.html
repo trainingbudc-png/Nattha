@@ -27,6 +27,12 @@
         .select-ipad { width: 26px !important; height: 26px !important; cursor: pointer; accent-color: #0d6efd; transition: transform 0.2s; }
         .check-item { width: 22px !important; height: 22px !important; cursor: pointer; accent-color: #0d6efd; }
 
+        /* 🚨 เอฟเฟกต์ปุ่มตอนกด "ติ๊กครบ" (สีทึบ) */
+        .btn-ticked-all {
+            background-color: #212529 !important;
+            color: white !important;
+        }
+
         @media screen and (max-width: 768px) {
             .confirm-card { padding: 20px; }
             .info-box { flex-direction: column; gap: 15px; }
@@ -47,7 +53,6 @@
             <div class="info-label">👤 ผู้ขอเบิกยืม</div>
             <div id="displayUserName" class="info-value">กำลังโหลด...</div>
             
-            <!-- 🚨 ป้ายแจ้งเตือนผู้ทำแทน -->
             <div id="proxyAlert" class="mt-2" style="display: none;">
                 <span class="badge bg-warning text-dark border border-warning shadow-sm" style="font-size: 0.8rem; padding: 5px 10px;">
                     🤝 ตรวจสอบแทนโดย: <span id="proxyNameDisplay" class="fw-bold"></span>
@@ -119,7 +124,6 @@
             return;
         }
 
-        // 🔄 1. แอบไปเช็คข้อมูลล่าสุดจาก Database
         try {
             const syncRes = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "checkRole", userId: userId }) });
             const syncData = await syncRes.json();
@@ -135,7 +139,6 @@
         document.getElementById('displayReqId').innerText = reqId || "ไม่พบข้อมูล";
         if(!reqId) { document.getElementById('itemList').innerHTML = '<div class="text-danger py-4 text-center">❌ ไม่พบหมายเลขรายการ</div>'; return; }
 
-        // 📦 2. โหลดข้อมูลรายการตามปกติ
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep2Data", reqId: reqId }) })
         .then(res => res.json())
         .then(res => {
@@ -151,7 +154,6 @@
             globalOwnerName = originalBorrower;
             const currentLoggerId = userId;
 
-            // เทียบด้วย ID แทนชื่อ
             if (res.ownerId && currentLoggerId && res.ownerId !== currentLoggerId) {
                 document.getElementById('proxyAlert').style.display = "block";
                 document.getElementById('proxyNameDisplay').innerText = currentLoggerName;
@@ -243,6 +245,17 @@
             toggleCard(mainCheck);
         }
         card.querySelectorAll('.check-item').forEach(cb => { cb.checked = true; });
+
+        // 🚨 ดักจับทำปุ่มสีทึบ
+        btn.classList.add('btn-ticked-all');
+
+        card.querySelectorAll('.check-item').forEach(cb => {
+            cb.addEventListener('change', function() {
+                if(!this.checked) {
+                    btn.classList.remove('btn-ticked-all');
+                }
+            }, { once: true });
+        });
     }
 
     async function saveStep3() {
