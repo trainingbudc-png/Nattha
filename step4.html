@@ -30,7 +30,7 @@
             transform: translateY(-2px); 
             box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
         }
-        /* 🚨 บังคับเปลี่ยนสีกล่องติ๊กของ Bootstrap เป็นสีเทาจาง (สีเดียวกับปุ่ม) */
+        /* 🚨 บังคับเปลี่ยนสีกล่องติ๊กของ Bootstrap เป็นสีดำ/เทาเข้ม (สีเดียวกับปุ่ม) */
         .form-check-input:checked {
             background-color: #6c757d !important; 
             border-color: #6c757d !important;
@@ -114,7 +114,7 @@
         document.getElementById('displayReqIdBox').innerText = reqId;
 
         try {
-            // 🚀 โหลด 2 เส้นทางพร้อมกันเพื่อความรวดเร็ว
+            // 🚀 โหลด 2 API พร้อมกันผ่าน callAPI() ป้องกันโดนบล็อก CORS
             const [syncData, res] = await Promise.all([
                 callAPI({ action: "checkRole", userId: userId }).catch(() => ({ success: false })),
                 callAPI({ action: "getStep2Data", reqId: reqId })
@@ -222,7 +222,8 @@
             document.getElementById('itemList').innerHTML = `
                 <div class="text-danger py-4 text-center fw-bold">
                     ❌ ไม่สามารถเชื่อมต่อฐานข้อมูลได้<br>
-                    <span class="text-muted fw-normal" style="font-size: 0.85rem;">กรุณาลองใหม่อีกครั้ง</span>
+                    <span class="text-muted fw-normal" style="font-size: 0.85rem;">โปรดตรวจสอบลิงก์ API_URL หรือการ Deploy สคริปต์ใหม่</span><br>
+                    <span class="text-muted fw-normal" style="font-size: 0.75rem;">(${err.message})</span>
                 </div>
             `;
             console.error("Fetch Data Error:", err);
