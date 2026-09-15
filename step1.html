@@ -435,9 +435,25 @@
         else container.classList.add('d-none');
     }
 
-    function tickAllRow(safeId) {
+function tickAllRow(safeId, btn) {
         const checkboxes = document.querySelectorAll(`.check-${safeId}`);
         checkboxes.forEach(cb => cb.checked = true);
+
+        // 🚨 ส่วนที่เพิ่มเข้ามาเปลี่ยนสีปุ่ม
+        if(btn) {
+            btn.classList.add('btn-ticked-all');
+            btn.innerText = "✅ ครบแล้ว";
+
+            // ดักจับถ้ามีการเอาติ๊กออกแค่ 1 ช่อง ให้ปุ่มเด้งกลับสภาพเดิม
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    if(!this.checked) {
+                        btn.classList.remove('btn-ticked-all');
+                        btn.innerText = "ติ๊กครบ";
+                    }
+                }, { once: true });
+            });
+        }
     }
 
     function toggleEmergencyNote() {
