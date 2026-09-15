@@ -16,9 +16,9 @@
         
         .confirm-card { 
             background: white; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.08); 
-            max-width: 850px; 
+            border-radius: 20px; 
+            box-shadow: 0 4px 20px rgba(30, 58, 138, 0.05); 
+            max-width: 950px; 
             margin: auto; 
             border: none !important; 
             overflow: hidden;
@@ -45,24 +45,29 @@
         }
 
         .form-check-input { 
+            width: 24px !important; height: 24px !important; 
             cursor: pointer; 
             border: 2px solid #94a3b8 !important; 
             transition: all 0.2s;
         }
+        .form-check-input:checked {
+            background-color: var(--admin-main) !important;
+            border-color: var(--admin-main) !important;
+        }
+
+        /* 🚨 สไตล์ตารางแบบกะทัดรัด (ยึดตาม Step 1) */
+        .table-responsive { border-radius: 12px; border: 1px solid var(--admin-border); overflow: hidden; }
+        .table { margin-bottom: 0; }
+        .table th { background-color: var(--admin-bg); color: var(--admin-main); font-weight: 600; text-align: center; padding: 15px; border-bottom: 2px solid var(--admin-main); font-size: 0.95rem; white-space: nowrap; }
+        .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid var(--admin-border); color: #1e293b; font-weight: 500; font-size: 0.95rem; }
+        .table tbody tr:hover { background-color: #f8fafc; }
 
         .btn-shortcut { 
-            background: white; 
-            color: var(--admin-main); 
-            border: 2px solid var(--admin-main); 
-            font-weight: 600;
-            transition: 0.2s;
+            background: white; color: var(--admin-main); border: 2px solid var(--admin-main); 
+            transition: 0.2s; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
         }
-        .btn-shortcut:hover { 
-            background: var(--admin-main); 
-            color: white; 
-        }
+        .btn-shortcut:hover { background: var(--admin-main); color: white; }
 
-        /* 🚨 เอฟเฟกต์ปุ่มตอนกด "ติ๊กครบ" (สีทึบตามธีมแอดมิน) */
         .btn-ticked-all {
             background-color: var(--admin-main) !important;
             color: white !important;
@@ -71,6 +76,8 @@
         .btn-admin-solid {
             background-color: var(--admin-main);
             color: white;
+            border-radius: 12px;
+            padding: 15px;
             border: none;
             transition: 0.3s;
         }
@@ -80,39 +87,61 @@
             box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4);
         }
 
-        .ipad-card-header {
-            background-color: #f1f5f9;
-            border-bottom: 2px solid var(--admin-main) !important;
-            padding: 12px 16px;
-        }
-        .step5-check-tile { 
-            background-color: #f8fafc; 
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 10px !important;
-            padding: 12px 14px !important;
-        }
-        .step5-check-tile:hover { 
-            background-color: #e2e8f0; 
-            border-color: #cbd5e1 !important; 
-        }
-
+        /* 📱 ปรับหน้าจอเมื่อแสดงบนมือถือ (ให้เรียงแบบกล่องเล็กๆ อ้างอิง Step 1) */
         @media (max-width: 768px) {
             body { padding: 10px; }
             .confirm-card { padding-bottom: 20px; }
             .card-header-navy { padding: 15px; flex-direction: column; gap: 10px; text-align: center; }
+
+            .table-responsive { border: none; background: transparent; padding: 0; overflow: visible; }
+            .table thead { display: none; }
+            .table tbody tr { 
+                display: flex; flex-wrap: wrap; background: #ffffff; border-radius: 14px; 
+                margin-bottom: 16px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+                border: 1px solid var(--admin-border); 
+            }
+            .table tbody td { display: flex; align-items: center; padding: 8px 0; border: none !important; }
+            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #64748b; font-size: 0.85rem; }
+            
+            .table tbody td[data-label="รหัส iPad"] {
+                width: calc(100% + 24px); margin: -12px -12px 12px -12px; padding: 12px 16px !important;
+                justify-content: space-between; background-color: #f1f5f9; 
+                border-bottom: 2px solid var(--admin-main) !important; border-radius: 14px 14px 0 0; 
+            }
+            .table tbody td[data-label="รหัส iPad"]::before { display: none; }
+
+            .table tbody td[data-label="G-Drive"],
+            .table tbody td[data-label="File"],
+            .table tbody td[data-label="รูปภาพ"],
+            .table tbody td[data-label="Safari"] {
+                width: calc(50% - 6px); margin: 3px; flex-direction: row; justify-content: space-between; 
+                align-items: center; padding: 12px 14px; background: #f8fafc;
+                border: 1px solid #e2e8f0 !important; border-radius: 10px;
+            }
+            .table tbody td[data-label="G-Drive"]::before,
+            .table tbody td[data-label="File"]::before,
+            .table tbody td[data-label="รูปภาพ"]::before,
+            .table tbody td[data-label="Safari"]::before {
+                margin-right: 10px; color: #1e293b; font-size: 0.9rem; font-weight: 600;
+            }
+
+            .table tbody td input[type="checkbox"] { width: 22px !important; height: 22px !important; margin: 0 !important; flex-shrink: 0; }
+            .table tbody td[data-label="จัดการ"] { width: 100%; margin-top: 8px; padding: 0 3px; }
+            .table tbody td[data-label="จัดการ"]::before { display: none; }
+            .table tbody td[data-label="จัดการ"] .btn { padding: 12px !important; font-size: 1rem; border-radius: 10px; }
         }
     </style>
 </head>
 <body>
     
     <div class="container pb-5">
-        <div class="text-end" style="max-width: 850px; margin: 0 auto 15px auto;">
+        <div class="text-end" style="max-width: 950px; margin: 0 auto 15px auto;">
             <button class="btn bg-white shadow-sm fw-bold rounded-pill px-4" style="color: var(--admin-main); border: 2px solid var(--admin-main);" onclick="window.location.href='step5-list.html'">🔙 กลับ</button>
         </div>
 
         <div class="confirm-card">
             <div class="card-header-navy">
-                <h5 class="m-0 fw-bold">📱 iPad ที่ส่งคืน</h5>
+                <h5 class="m-0 fw-bold">📱 Step 5 | ตรวจสอบรับคืนเครื่อง</h5>
                 <div class="badge-req">รายการ: <span id="reqIdDisplay">กำลังโหลด...</span></div>
             </div>
             
@@ -132,7 +161,7 @@
                     <div class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</div>
                 </div>
 
-                <button type="button" class="btn btn-admin-solid w-100 py-3 mt-4 fw-bold fs-5 rounded-3 shadow-sm" id="btnSubmit" onclick="submitStep5()">ยืนยันการตรวจสอบเสร็จสมบูรณ์</button>
+                <button type="button" class="btn btn-admin-solid w-100 mt-4 fw-bold fs-5 shadow-sm" id="btnSubmit" onclick="submitStep5()">ยืนยันการตรวจสอบเสร็จสมบูรณ์</button>
             </div>
         </div>
     </div>
@@ -176,55 +205,54 @@
                 const container = document.getElementById("ipadListContainer");
                 container.innerHTML = "";
 
+                // 🚨 สร้างตารางครอบข้อมูล แบบเดียวกับ Step 1
                 if(result.data && result.data.length > 0) {
+                    let tableHTML = `
+                    <label class="form-label fw-bold mb-3 d-none d-md-block" style="color: var(--admin-main);">
+                        ✅ รายการอุปกรณ์ที่แอดมินต้องตรวจสอบ 
+                        <span class="text-muted fw-normal" style="font-size: 0.85rem;">(เช็คให้ครบทุกเครื่อง)</span>
+                    </label>
+                    <div class="table-responsive bg-white shadow-sm mb-2">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="text-start ps-4" style="width: 25%;">รหัส iPad</th>
+                                    <th>G-Drive</th>
+                                    <th>File</th>
+                                    <th>รูปภาพ</th>
+                                    <th>Safari</th>
+                                    <th style="width: 15%;">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
                     result.data.forEach(item => {
                         let id = item.ipadId;
                         let safeId = id.replace(/[^a-zA-Z0-9]/g, '');
                         
-                        // 🚨 เพิ่ม parameter this ให้ปุ่ม
-                        container.innerHTML += `
-                        <div class="border rounded-4 mb-4 overflow-hidden shadow-sm bg-white" style="border-color: var(--admin-border) !important;">
-                            <div class="ipad-card-header">
-                                <label for="main-${safeId}" class="m-0 fw-bold d-flex justify-content-between align-items-center w-100" style="color: var(--admin-main); font-size: 1.15rem; cursor: pointer;">
-                                    <span>📱 ${id}</span>
-                                    <input type="checkbox" class="form-check-input main-check m-0 shadow-sm" id="main-${safeId}" value="${id}" onchange="toggleSubChecks('${safeId}')" style="width: 24px !important; height: 24px !important; flex-shrink: 0;">
-                                </label>
-                            </div>
-                            
-                            <div class="p-3">
-                                <div class="row row-cols-2 row-cols-lg-4 g-2">
-                                    <div class="col">
-                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
-                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">G-Drive</span>
-                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
-                                        </label>
-                                    </div>
-                                    <div class="col">
-                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
-                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">File</span>
-                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
-                                        </label>
-                                    </div>
-                                    <div class="col">
-                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
-                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">รูปภาพ</span>
-                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
-                                        </label>
-                                    </div>
-                                    <div class="col">
-                                        <label class="d-flex justify-content-between align-items-center w-100 step5-check-tile" style="cursor: pointer; transition: 0.2s;">
-                                            <span class="fw-bold" style="color: #1e293b; font-size: 0.9rem;">Safari</span>
-                                            <input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm flex-shrink-0" style="width: 22px !important; height: 22px !important;">
-                                        </label>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-2 pt-1">
-                                    <button type="button" class="btn btn-shortcut w-100 py-2" style="border-radius: 10px; font-size: 1rem;" onclick="tickAllRow('${safeId}', this)">ติ๊กครบ</button>
-                                </div>
-                            </div>
-                        </div>`;
+                        tableHTML += `
+                                <tr>
+                                    <td data-label="รหัส iPad" class="text-start ps-md-4">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input type="checkbox" class="form-check-input main-check m-0 shadow-sm" id="main-${safeId}" value="${id}" onchange="toggleSubChecks('${safeId}')" style="flex-shrink: 0;">
+                                            <label for="main-${safeId}" class="fw-bold m-0 text-truncate" style="color: var(--admin-main); font-size: 1.1rem; cursor: pointer;">📱 ${id}</label>
+                                        </div>
+                                    </td>
+                                    <td data-label="G-Drive"><input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm"></td>
+                                    <td data-label="File"><input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm"></td>
+                                    <td data-label="รูปภาพ"><input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm"></td>
+                                    <td data-label="Safari"><input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm"></td>
+                                    <td data-label="จัดการ">
+                                        <button type="button" class="btn btn-shortcut btn-sm px-3 w-100" onclick="tickAllRow('${safeId}', this)">ติ๊กครบ</button>
+                                    </td>
+                                </tr>
+                        `;
                     });
+
+                    tableHTML += `</tbody></table></div>`;
+                    container.innerHTML = tableHTML;
+
                 } else {
                     container.innerHTML = '<div class="text-danger fw-bold text-center py-4 fs-5">❌ ไม่พบข้อมูลอุปกรณ์ในระบบ</div>';
                 }
@@ -239,7 +267,6 @@
         }
     }
 
-    // 🚨 อัปเดตฟังก์ชันดักจับทำปุ่มสีทึบ
     function tickAllRow(safeId, btn) {
         document.getElementById(`main-${safeId}`).checked = true;
         const checkboxes = document.querySelectorAll(`.sub-check-${safeId}`);
@@ -255,7 +282,6 @@
                     }
                 }, { once: true });
             });
-            // ดักตอนเอาติ๊กใหญ่หน้าชื่อเครื่องออกด้วย
             document.getElementById(`main-${safeId}`).addEventListener('change', function() {
                  if(!this.checked) {
                      btn.classList.remove('btn-ticked-all');
