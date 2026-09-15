@@ -209,7 +209,6 @@
                 if(result.data && result.data.length > 0) {
                     let tableHTML = `
                     <label class="form-label fw-bold mb-3 d-none d-md-block" style="color: var(--admin-main);">
-                        ✅ รายการอุปกรณ์ที่แอดมินต้องตรวจสอบ 
                         <span class="text-muted fw-normal" style="font-size: 0.85rem;">(เช็คให้ครบทุกเครื่อง)</span>
                     </label>
                     <div class="table-responsive bg-white shadow-sm mb-2">
@@ -236,7 +235,7 @@
                                     <td data-label="รหัส iPad" class="text-start ps-md-4">
                                         <div class="d-flex align-items-center gap-2">
                                             <input type="checkbox" class="form-check-input main-check m-0 shadow-sm" id="main-${safeId}" value="${id}" onchange="toggleSubChecks('${safeId}')" style="flex-shrink: 0;">
-                                            <label for="main-${safeId}" class="fw-bold m-0 text-truncate" style="color: var(--admin-main); font-size: 1.1rem; cursor: pointer;">📱 ${id}</label>
+                                            <label for="main-${safeId}" class="fw-bold m-0 text-truncate" style="color: var(--admin-main); font-size: 1.1rem; cursor: pointer;">${id}</label>
                                         </div>
                                     </td>
                                     <td data-label="G-Drive"><input type="checkbox" class="form-check-input sub-check-${safeId} m-0 shadow-sm"></td>
