@@ -145,24 +145,24 @@
             return;
         }
 
+        document.getElementById('displayReqId').innerText = reqId || "ไม่พบข้อมูล";
+        if(!reqId) { document.getElementById('itemList').innerHTML = '<div class="text-danger py-4 text-center">❌ ไม่พบหมายเลขรายการ</div>'; return; }
+
         try {
-            const syncRes = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "checkRole", userId: userId }) });
-            const syncData = await syncRes.json();
+            // 🚀 โหลด 2 เส้นทางพร้อมกันเพื่อความรวดเร็ว
+            const [syncData, res] = await Promise.all([
+                callAPI({ action: "checkRole", userId: userId }).catch(() => ({ success: false })),
+                callAPI({ action: "getStep2Data", reqId: reqId })
+            ]);
+            
             if (syncData.success && syncData.name) {
                 localStorage.setItem("userName", syncData.name);
                 localStorage.setItem("userRole", syncData.role);
             }
-        } catch (err) { console.warn("Auto-sync failed"); }
 
-        currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
-        isAdmin = localStorage.getItem("userRole") === "Admin";
+            currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
+            isAdmin = localStorage.getItem("userRole") === "Admin";
 
-        document.getElementById('displayReqId').innerText = reqId || "ไม่พบข้อมูล";
-        if(!reqId) { document.getElementById('itemList').innerHTML = '<div class="text-danger py-4 text-center">❌ ไม่พบหมายเลขรายการ</div>'; return; }
-
-        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep2Data", reqId: reqId }) })
-        .then(res => res.json())
-        .then(res => {
             if (res.reqStatus && res.reqStatus !== "Step[2]") {
                 let nextPage = isAdmin ? "admin.html" : "user.html";
                 showNavyAlert("แจ้งเตือน", `รายการนี้ตรวจสอบก่อนสอบไปแล้ว (สถานะ: ${res.reqStatus})`, "warning", nextPage);
@@ -182,6 +182,7 @@
 
             const container = document.getElementById('itemList');
             container.innerHTML = "";
+            
             if(res.data && res.data.length > 0) {
                 res.data.forEach(item => {
                     let adminBtn = isAdmin ? `<button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill shadow-sm" onclick="tickAllInCard(this)">ติ๊กครบ</button>` : '';
@@ -237,7 +238,10 @@
                     </div>`;
                 });
             } else { container.innerHTML = `<div class="text-danger py-4 text-center">❌ ไม่พบข้อมูล iPad</div>`; }
-        });
+        } catch (error) {
+            console.error(error);
+            document.getElementById('itemList').innerHTML = `<div class="text-danger py-4 text-center fw-bold">❌ ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาลองใหม่</div>`;
+        }
     }
 
     initSystem();
@@ -319,20 +323,17 @@
         btn.disabled = true;
         
         try {
-            const res = await fetch(API_URL, { 
-                method: "POST", 
-                body: JSON.stringify({ 
-                    action: "saveStep3", 
-                    reqId: reqId, 
-                    items: items, 
-                    exam: examValue, 
-                    note: noteValue, 
-                    actorName: currentLoggerName,
-                    ownerName: globalOwnerName,
-                    userId: localStorage.getItem("userId") 
-                }) 
+            // 🚀 เรียกผ่าน callAPI แทน
+            const result = await callAPI({ 
+                action: "saveStep3", 
+                reqId: reqId, 
+                items: items, 
+                exam: examValue, 
+                note: noteValue, 
+                actorName: currentLoggerName,
+                ownerName: globalOwnerName,
+                userId: localStorage.getItem("userId") 
             });
-            const result = await res.json();
             
             if(result.status === "success") {
                 let nextPage = isAdmin ? "admin.html" : "user.html";
