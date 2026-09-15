@@ -11,7 +11,12 @@
     <link rel="stylesheet" href="theme-user.css">
     
     <style>
-        body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
+        /* 🚨 บังคับเปลี่ยนสีกล่องติ๊กของ Bootstrap เป็นสีดำ/เทาเข้ม (สีเดียวกับปุ่ม) */
+        .form-check-input:checked {
+            background-color: #212529 !important;
+            border-color: #212529 !important;
+        }
+		body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
         .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 900px; margin: auto; border: 1px solid #e9ecef; }
         .info-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 12px; padding: 15px 10px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: stretch; }
         .info-label { font-size: 0.85rem; color: #6c757d; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
