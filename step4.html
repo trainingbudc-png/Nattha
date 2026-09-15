@@ -30,7 +30,7 @@
             transform: translateY(-2px); 
             box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
         }
-        /* 🚨 บังคับเปลี่ยนสีกล่องติ๊กของ Bootstrap เป็นสีดำ/เทาเข้ม (สีเดียวกับปุ่ม) */
+        /* 🚨 บังคับเปลี่ยนสีกล่องติ๊กของ Bootstrap เป็นสีเทาจาง (สีเดียวกับปุ่ม) */
         .form-check-input:checked {
             background-color: #6c757d !important; 
             border-color: #6c757d !important;
@@ -114,11 +114,9 @@
         document.getElementById('displayReqIdBox').innerText = reqId;
 
         try {
-            // 🚀 โหลด 2 API พร้อมกันผ่าน callAPI() ป้องกันโดนบล็อก CORS
-            const [syncData, res] = await Promise.all([
-                callAPI({ action: "checkRole", userId: userId }).catch(() => ({ success: false })),
-                callAPI({ action: "getStep2Data", reqId: reqId })
-            ]);
+            // 🚨 เปลี่ยนให้เข้าคิวโหลดทีละเส้น ป้องกัน Google รวน
+            const syncData = await callAPI({ action: "checkRole", userId: userId }).catch(() => ({ success: false }));
+            const res = await callAPI({ action: "getStep2Data", reqId: reqId });
 
             if (syncData.success && syncData.name) {
                 localStorage.setItem("userName", syncData.name);
@@ -297,7 +295,6 @@
         btn.disabled = true;
 
        try {
-            // 🚀 เรียกผ่าน callAPI แทน
             const result = await callAPI({ 
                 action: "saveStep4", 
                 reqId: reqId, 
