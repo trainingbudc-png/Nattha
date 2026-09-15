@@ -108,11 +108,9 @@
         }
 
         try {
-            // 🚀 โหลด 2 API พร้อมกันผ่าน callAPI() ป้องกันโดนบล็อก CORS
-            const [syncData, res] = await Promise.all([
-                callAPI({ action: "checkRole", userId: userId }).catch(() => ({ success: false })),
-                callAPI({ action: "getStep1Data", reqId: reqId })
-            ]);
+// 🚨 แก้ไขให้ต่อคิวโหลดทีละเส้น ป้องกัน Google รวนแล้วพ่น 404
+            const syncData = await callAPI({ action: "checkRole", userId: userId }).catch(() => ({ success: false }));
+            const res = await callAPI({ action: "getStep2Data", reqId: reqId }); // ⚠️ ถ้าแก้หน้า step2 ให้เปลี่ยนเป็น getStep1Data นะครับ
 
             if (syncData.success && syncData.name) {
                 localStorage.setItem("userName", syncData.name);
