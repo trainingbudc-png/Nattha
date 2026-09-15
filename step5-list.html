@@ -45,17 +45,6 @@
             font-size: 0.95rem;
         }
 
-        .status-badge-custom {
-            background-color: #fef3c7;
-            color: #d97706;
-            border: 1px solid #fde68a;
-            padding: 4px 12px;
-            border-radius: 50rem;
-            font-size: 0.85rem;
-            font-weight: 700;
-            display: inline-block;
-        }
-
         /* ป้ายแสดงคนทำแทน */
         .proxy-badge {
             background-color: #f8fafc;
@@ -87,7 +76,7 @@
             box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2);
         }
 
-        /* 📱 ปรับแต่งตารางให้กลายเป็นการ์ดในจอมือถือ (อ้างอิงจาก step3-list.html) */
+        /* 📱 ปรับแต่งตารางให้กลายเป็นการ์ดในจอมือถือ */
         @media (max-width: 768px) {
             .table-card { 
                 background: transparent !important; 
@@ -181,21 +170,20 @@
             <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ผู้ใช้งานส่งคืน</h5>
         </div>
         
-        <!-- ตารางแสดงข้อมูล (ปรับเป็นตารางในคอม / เป็นการ์ดในมือถืออัตโนมัติ) -->
+        <!-- ตารางแสดงข้อมูล -->
         <div class="table-card table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead>
                     <tr class="text-center">
-                        <th style="width: 15%;" class="py-3 px-4 text-start">เลขรายการ</th>
-                        <th style="width: 18%;" class="py-3">วันที่และเวลา</th>
-                        <th style="width: 20%;" class="py-3">ผู้ส่งคืน</th> <!-- ขยายความกว้างนิดนึงให้ชื่อคนทำแทน -->
-                        <th style="width: 15%;" class="py-3">อุปกรณ์ที่ยืม</th>
-                        <th style="width: 10%;" class="py-3">สถานะ</th>
-                        <th style="width: 12%;" class="py-3 text-end px-4">จัดการ</th>
+                        <th style="width: 18%;" class="py-3 px-4 text-start">เลขรายการ</th>
+                        <th style="width: 20%;" class="py-3">วันที่และเวลา</th>
+                        <th style="width: 25%;" class="py-3">ผู้ส่งคืน</th> 
+                        <th style="width: 22%;" class="py-3">อุปกรณ์ที่ยืม</th>
+                        <th style="width: 15%;" class="py-3 text-end px-4">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody id="requestListBody">
-                    <tr><td colspan="6" class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</td></tr>
+                    <tr><td colspan="5" class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
@@ -211,7 +199,7 @@
 
     function loadStep5List() {
         const tbody = document.getElementById("requestListBody");
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted fw-bold">กำลังดึงข้อมูล... ⏳</td></tr>'; 
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted fw-bold">กำลังดึงข้อมูล... ⏳</td></tr>'; 
         
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
         .then(res => res.json())
@@ -224,7 +212,7 @@
                 );
 
                 if (pendingData.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-success fw-bold py-5">🎉 ไม่มีรายการรอตรวจสอบรับคืนในขณะนี้</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-success fw-bold py-5">🎉 ไม่มีรายการรอตรวจสอบรับคืนในขณะนี้</td></tr>';
                     return;
                 }
 
@@ -232,11 +220,9 @@
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
                     dateStr = dateStr.replace(/:\d{2}$/, '');
                     
-                    // 🚨 ดึงข้อมูลชื่อที่ส่งมาจาก Code.gs มาแยกว่าเป็นการทำแทนหรือไม่
                     let fullNameRaw = item.name || "-";
                     let displayNameHTML = `<span class="fw-bold text-dark">${fullNameRaw}</span>`;
                     
-                    // สมมติว่ามีคำว่า (แทน...) โผล่มา
                     if (fullNameRaw.includes("(แทน") || fullNameRaw.includes("(รับแทน") || fullNameRaw.includes("(คืนแทน")) {
                         let parts = fullNameRaw.split('(');
                         let mainName = parts[0].trim();
@@ -248,7 +234,6 @@
                         `;
                     }
 
-                    // จัดรูปแบบอุปกรณ์ให้อ่านง่าย
                     let deviceData = parseDeviceData(item.ipadId);
 
                     tbody.innerHTML += `
@@ -260,9 +245,6 @@
                                 <span class="text-dark d-block" style="font-size: 0.85rem;">${deviceData.type}</span>
                                 <span class="fw-bold" style="color: #2563eb;">${deviceData.number}</span>
                             </td>
-                            <td data-label="สถานะ" class="py-3 text-center">
-                                <span class="status-badge-custom">รอแอดมินตรวจรับ</span>
-                            </td>
                             <td data-label="จัดการ" class="py-3 text-end px-4">
                                 <button class="btn-action-admin shadow-sm" onclick="goToStep5('${item.reqId}')">ตรวจสอบ</button>
                             </td>
@@ -270,11 +252,11 @@
                     `;
                 });
             } else {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
             }
         })
         .catch(err => {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
         });
     }
 
