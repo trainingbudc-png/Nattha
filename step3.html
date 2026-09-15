@@ -149,11 +149,9 @@
         if(!reqId) { document.getElementById('itemList').innerHTML = '<div class="text-danger py-4 text-center">❌ ไม่พบหมายเลขรายการ</div>'; return; }
 
         try {
-            // 🚀 โหลด 2 API พร้อมกันผ่าน callAPI() ป้องกันโดนบล็อก CORS
-            const [syncData, res] = await Promise.all([
-                callAPI({ action: "checkRole", userId: userId }).catch(() => ({ success: false })),
-                callAPI({ action: "getStep2Data", reqId: reqId })
-            ]);
+            // 🚨 เปลี่ยนให้เข้าคิวโหลดทีละเส้น ป้องกัน Google รวน
+            const syncData = await callAPI({ action: "checkRole", userId: userId }).catch(() => ({ success: false }));
+            const res = await callAPI({ action: "getStep2Data", reqId: reqId });
             
             if (syncData.success && syncData.name) {
                 localStorage.setItem("userName", syncData.name);
@@ -329,7 +327,6 @@
         btn.disabled = true;
         
         try {
-            // 🚀 เรียกผ่าน callAPI แทน
             const result = await callAPI({ 
                 action: "saveStep3", 
                 reqId: reqId, 
