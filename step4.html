@@ -30,8 +30,8 @@
             transform: translateY(-2px); 
             box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
         }
-        /* 🚨 บังคับเปลี่ยนสีกล่องติ๊กของ Bootstrap เป็นสีดำ/เทาเข้ม (สีเดียวกับปุ่ม) */
-.form-check-input:checked {
+        /* 🚨 บังคับเปลี่ยนสีกล่องติ๊กของ Bootstrap เป็นสีเทาจาง (สีเดียวกับปุ่ม) */
+        .form-check-input:checked {
             background-color: #6c757d !important; 
             border-color: #6c757d !important;
         }
@@ -41,9 +41,6 @@
         .info-label { font-size: 0.85rem; color: #6c757d; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
         .info-value { font-size: 1.05rem; font-weight: bold; color: #212529; word-break: break-word;}
         .divider { width: 1px; background-color: #dee2e6; }
-        
-       .btn-confirm { background: #000000; color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; border: none; margin-top: 20px; }
-        .btn-confirm:hover { background: #1a1a1a; color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         
         .ipad-card { transition: all 0.3s ease; border-color: #dee2e6; }
         .ipad-card.active-card { border-color: #212529 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.08) !important; transform: translateY(-2px); }
@@ -113,29 +110,24 @@
             return;
         }
 
+        if(!reqId) { Swal.fire("ข้อผิดพลาด", "ไม่พบเลขรายการ", "error"); return; }
+        document.getElementById('displayReqIdBox').innerText = reqId;
+
         try {
-            const syncRes = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "checkRole", userId: userId }) });
-            const syncData = await syncRes.json();
+            // 🚀 โหลด 2 เส้นทางพร้อมกันเพื่อความรวดเร็ว
+            const [syncData, res] = await Promise.all([
+                callAPI({ action: "checkRole", userId: userId }).catch(() => ({ success: false })),
+                callAPI({ action: "getStep2Data", reqId: reqId })
+            ]);
+
             if (syncData.success && syncData.name) {
                 localStorage.setItem("userName", syncData.name);
                 localStorage.setItem("userRole", syncData.role);
             }
-        } catch (err) { 
-            console.warn("⚠️ Auto-sync failed (เป็นไปได้ว่า API_URL มีปัญหา หรือยังไม่ได้ Deploy สคริปต์ใหม่):", err); 
-        }
 
-        currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
-        isAdmin = localStorage.getItem("userRole") === "Admin";
+            currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
+            isAdmin = localStorage.getItem("userRole") === "Admin";
 
-        if(!reqId) { Swal.fire("ข้อผิดพลาด", "ไม่พบเลขรายการ", "error"); return; }
-        document.getElementById('displayReqIdBox').innerText = reqId;
-
-        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep2Data", reqId: reqId }) })
-        .then(async res => {
-            if (!res.ok) throw new Error("HTTP Status " + res.status);
-            return res.json();
-        })
-        .then(res => {
             if (res.reqStatus && res.reqStatus !== "Step[3]") {
                 Swal.fire("แจ้งเตือน", `รายการนี้ส่งคืนเครื่องไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => {
                     window.location.href = isAdmin ? "admin.html" : "user.html";
@@ -226,18 +218,15 @@
             } else { 
                 container.innerHTML = `<div class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</div>`; 
             }
-        })
-        .catch(err => {
-            // 🚨 ดักจับ Error ตรงนี้ จะได้ไม่ค้างอยู่ที่คำว่า กำลังโหลดข้อมูล...
+        } catch (err) {
             document.getElementById('itemList').innerHTML = `
                 <div class="text-danger py-4 text-center fw-bold">
                     ❌ ไม่สามารถเชื่อมต่อฐานข้อมูลได้<br>
-                    <span class="text-muted fw-normal" style="font-size: 0.85rem;">โปรดตรวจสอบลิงก์ API_URL หรือการ Deploy สคริปต์ใหม่</span><br>
-                    <span class="text-muted fw-normal" style="font-size: 0.75rem;">(${err.message})</span>
+                    <span class="text-muted fw-normal" style="font-size: 0.85rem;">กรุณาลองใหม่อีกครั้ง</span>
                 </div>
             `;
             console.error("Fetch Data Error:", err);
-        });
+        }
     }
 
     initSystem();
@@ -307,18 +296,16 @@
         btn.disabled = true;
 
        try {
-            const res = await fetch(API_URL, { 
-                method: "POST", 
-                body: JSON.stringify({ 
-                    action: "saveStep4", 
-                    reqId: reqId, 
-                    items: items, 
-                    actorName: currentLoggerName,
-                    ownerName: globalOwnerName,
-                    userId: localStorage.getItem("userId") 
-                }) 
+            // 🚀 เรียกผ่าน callAPI แทน
+            const result = await callAPI({ 
+                action: "saveStep4", 
+                reqId: reqId, 
+                items: items, 
+                actorName: currentLoggerName,
+                ownerName: globalOwnerName,
+                userId: localStorage.getItem("userId") 
             });
-            const result = await res.json();
+            
             if(result.status === "success") {
                 let nextPage = isAdmin ? "admin.html" : "user.html";
                 showNavyAlert("ส่งคืนสำเร็จ!", `หมายเลขรายการ: <b>${reqId}</b><br>ส่งคืนอุปกรณ์จำนวน ${items.length} เครื่องเรียบร้อยแล้ว`, "success", nextPage);
