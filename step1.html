@@ -55,9 +55,21 @@
 
         .form-check-input { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: var(--admin-main); border: 2px solid #94a3b8 !important; transition: 0.2s; }
         
+        /* 🚨 เพิ่มให้สีกล่องตอนติ๊กถูกเป็นสีธีมแอดมิน (กรมท่า) */
+        .form-check-input:checked {
+            background-color: var(--admin-main) !important;
+            border-color: var(--admin-main) !important;
+        }
+
         .btn-shortcut { background: white; color: var(--admin-main); border: 2px solid var(--admin-main); transition: 0.2s; border-radius: 8px; font-size: 0.85rem; font-weight: 600;}
         .btn-shortcut:hover { background: var(--admin-main); color: white; }
         
+        /* 🚨 เอฟเฟกต์ปุ่มตอนกด "ติ๊กครบ" (สีทึบตามธีมเดิม) */
+        .btn-ticked-all {
+            background-color: var(--admin-main) !important;
+            color: white !important;
+        }
+
         .btn-submit-custom { background-color: var(--admin-main); color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 25px; transition: 0.3s; border: none; font-size: 1.1rem; }
         .btn-submit-custom:hover { background-color: var(--admin-hover); color: white; box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4); }
 
@@ -145,14 +157,6 @@
             }
             .table tbody td[data-label="ปุ่มลัด"]::before { display: none; }
             .table tbody td[data-label="ปุ่มลัด"] .btn { padding: 12px !important; font-size: 1rem; border-radius: 10px; }
-        }
-		/* 🚨 เอฟเฟกต์ปุ่มตอนกด "ติ๊กครบ" */
-        .btn-ticked-all {
-            background-color: #10b981 !important;
-            color: white !important;
-            border-color: #059669 !important;
-            box-shadow: inset 0 3px 6px rgba(0,0,0,0.2), 0 4px 12px rgba(16, 185, 129, 0.4) !important;
-            transform: scale(0.98);
         }
     </style>
 </head>
@@ -435,21 +439,19 @@
         else container.classList.add('d-none');
     }
 
-function tickAllRow(safeId, btn) {
+    // 🚨 ฟังก์ชันติ๊กครบอัปเดตใหม่
+    function tickAllRow(safeId, btn) {
         const checkboxes = document.querySelectorAll(`.check-${safeId}`);
         checkboxes.forEach(cb => cb.checked = true);
 
-        // 🚨 ส่วนที่เพิ่มเข้ามาเปลี่ยนสีปุ่ม
         if(btn) {
             btn.classList.add('btn-ticked-all');
-            btn.innerText = "✅ ครบแล้ว";
 
-            // ดักจับถ้ามีการเอาติ๊กออกแค่ 1 ช่อง ให้ปุ่มเด้งกลับสภาพเดิม
+            // ดักจับถ้าเอาติ๊กออก ให้ปุ่มกลับเป็นปกติ
             checkboxes.forEach(cb => {
                 cb.addEventListener('change', function() {
                     if(!this.checked) {
                         btn.classList.remove('btn-ticked-all');
-                        btn.innerText = "ติ๊กครบ";
                     }
                 }, { once: true });
             });
@@ -550,7 +552,6 @@ function tickAllRow(safeId, btn) {
             if(res && res.status === "success") {
                 Swal.fire({
                     title: "บันทึกสำเร็จ!",
-                    // 🚨 อัปเดตข้อความตรงนี้
                     html: `หมายเลขรายการ : <b>${res.reqId || "-"}</b><br>ระบบแจ้งให้ผู้ยืมมารับเครื่องแล้ว`,
                     icon: "success",
                     confirmButtonColor: "#1e3a8a",
