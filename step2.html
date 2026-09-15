@@ -108,20 +108,20 @@
         }
 
         try {
-            const syncRes = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "checkRole", userId: userId }) });
-            const syncData = await syncRes.json();
+            // 🚀 โหลด 2 เส้นทางพร้อมกันเพื่อความรวดเร็ว
+            const [syncData, res] = await Promise.all([
+                callAPI({ action: "checkRole", userId: userId }).catch(() => ({ success: false })),
+                callAPI({ action: "getStep1Data", reqId: reqId })
+            ]);
+
             if (syncData.success && syncData.name) {
                 localStorage.setItem("userName", syncData.name);
                 localStorage.setItem("userRole", syncData.role);
             }
-        } catch (err) { console.warn("Auto-sync failed, using cached name."); }
 
-        currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
-        isAdmin = localStorage.getItem("userRole") === "Admin";
+            currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
+            isAdmin = localStorage.getItem("userRole") === "Admin";
 
-        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStep1Data", reqId: reqId }) })
-        .then(res => res.json())
-        .then(res => {
             if (res.reqStatus && res.reqStatus !== "Step[1]") {
                 Swal.fire("แจ้งเตือน", `รายการนี้รับเครื่องไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => {
                     window.location.href = isAdmin ? "admin.html" : "user.html";
@@ -189,7 +189,10 @@
             } else {
                 container.innerHTML = `<div class="text-center text-danger py-4">❌ ไม่พบรายการเครื่อง</div>`;
             }
-        });
+        } catch (error) {
+            console.error(error);
+            document.getElementById('itemList').innerHTML = `<div class="text-danger py-4 text-center fw-bold">❌ ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาลองใหม่</div>`;
+        }
     }
 
     initSystem();
@@ -256,19 +259,17 @@
         btn.innerText = "กำลังบันทึกข้อมูล... ⏳"; btn.disabled = true;
 
         try {
-            const response = await fetch(API_URL, { 
-                method: "POST", 
-                body: JSON.stringify({ 
-                    action: "updateStatus", 
-                    reqId: reqId, 
-                    items: items, 
-                    note: "", 
-                    actorName: currentLoggerName,
-                    ownerName: globalOwnerName,
-                    userId: localStorage.getItem("userId") 
-                }) 
+            // 🚀 เรียกผ่าน callAPI แทน
+            const result = await callAPI({ 
+                action: "updateStatus", 
+                reqId: reqId, 
+                items: items, 
+                note: "", 
+                actorName: currentLoggerName,
+                ownerName: globalOwnerName,
+                userId: localStorage.getItem("userId") 
             });
-            const result = await response.json();
+            
             if (result.status === "success") {
                 let nextPage = isAdmin ? "admin.html" : "user.html";
                 showNavyAlert("รับเครื่องเรียบร้อย!", `หมายเลขรายการ : <b>${reqId}</b><br>ระบบบันทึกการรับเครื่องจำนวน : ${items.length} เครื่อง`, "success", nextPage);
