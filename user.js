@@ -25,7 +25,6 @@ async function loadUserTableData() {
     historyTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted" style="justify-content: center !important;">กำลังโหลดข้อมูล... ⏳</td></tr>';
     
     const currentUserId = localStorage.getItem("userId");
-    const currentUserName = localStorage.getItem("userName"); 
 
     try {
         const res = await callAPI({ action: "getData" });
@@ -36,17 +35,12 @@ async function loadUserTableData() {
                 let isValidReq = item.reqId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ";
                 if (!isValidReq) return false;
 
+                // 🚨 กรองด้วย ID ของผู้ใช้เท่านั้น! (ถ้าเป็นแอดมินไปกดแทน ID จะไม่ตรงกัน ทำให้ไม่โดนดึงมาโชว์)
                 if (currentUserId && item.userId === currentUserId) {
                     return true;
                 }
-
-                let dbName = item.name ? item.name.split("(")[0].trim() : "";
-                let localName = currentUserName ? currentUserName.split("(")[0].trim() : "";
-                if (dbName === localName || (item.name && item.name.includes(localName))) {
-                    return true;
-                }
-
-                return false;
+                
+                return false; 
             });
 
             if (myData.length === 0) {
@@ -58,7 +52,7 @@ async function loadUserTableData() {
             let activeList = [];
             let historyList = [];
 
-myData.forEach(item => {
+            myData.forEach(item => {
                 let statusTxt = item.status || "";
                 let isHistory = statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์") || statusTxt.includes("ยกเลิก");
                 
@@ -71,12 +65,11 @@ myData.forEach(item => {
 
             renderActiveUserCards(activeList);
             
-            // 🚨 เติม .slice(0, 5) ต่อท้าย historyList ตรงนี้
+            // แสดงประวัติแค่ 5 รายการล่าสุด
             renderUserTableRows(historyList.slice(0, 5), historyTbody);
 
         } else {
             activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">ไม่มีรายการในระบบ</div>';
-            // ...
             historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4" style="justify-content: center !important;">ไม่มีประวัติในระบบ</td></tr>';
         }
     } catch (err) {
@@ -97,12 +90,10 @@ function renderActiveUserCards(data) {
 
     data.forEach(item => {
         let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH") : "-";
-        // ตัดวินาทีออกให้ดูคลีนขึ้นบนมือถือ
-        dateStr = dateStr.replace(/:\d{2}$/, '');
+        dateStr = dateStr.replace(/:\d{2}$/, ''); // ตัดวินาทีออกให้ดูคลีนขึ้นบนมือถือ
 
         let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
 
-        // 📌 ปรับการแสดงผล "แยกประเภท" กับ "เลขอุปกรณ์" ให้อยู่คนละบรรทัด (คลีนๆ)
         let formattedIpads = '<div class="d-flex justify-content-between"><span class="text-muted" style="font-size: 0.85rem;">อุปกรณ์:</span><span class="text-dark">-</span></div>';
         
         if (item.ipadId && item.ipadId.trim() !== "") {
@@ -141,7 +132,6 @@ function renderActiveUserCards(data) {
                     </div>
                 `);
             }
-            // เชื่อมรายการเข้าด้วยกัน ถ้ามีการยืมทั้ง 2 ประเภทจะมีเส้นคั่นจางๆ
             formattedIpads = displayGroups.join('<div class="border-bottom my-2 opacity-25"></div>');
         }
 
@@ -202,7 +192,6 @@ function renderActiveUserCards(data) {
                                 <span class="text-dark" style="font-size: 0.85rem; font-weight: 500;">${dateStr}</span>
                             </div>
                             
-                            <!-- 📌 ข้อมูลอุปกรณ์ที่จัดบรรทัดใหม่ -->
                             ${formattedIpads}
                             
                         </div>
@@ -212,6 +201,7 @@ function renderActiveUserCards(data) {
         `;
     });
 }
+
 function closeOtherAccordions(targetId) {
     document.querySelectorAll('#activeCardsContainer .collapse.show').forEach(el => {
         if (el.id !== targetId) {
@@ -225,9 +215,9 @@ function renderUserTableRows(dataList, tbodyElement) {
     tbodyElement.innerHTML = "";
 
     if (dataList.length === 0) {
-    tbodyElement.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4" style="justify-content: center !important;">ยังไม่มีประวัติรายการเสร็จสิ้น</td></tr>`;
-    return;
-}
+        tbodyElement.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4" style="justify-content: center !important;">ยังไม่มีประวัติรายการเสร็จสิ้น</td></tr>`;
+        return;
+    }
 
     dataList.forEach(item => {
         let typeHtml = '<span class="text-muted">-</span>';
@@ -267,7 +257,6 @@ function renderUserTableRows(dataList, tbodyElement) {
         let displayStatus = statusTxt;
         let badgeClass = "bg-secondary text-white";
 
-        // 📌 เปลี่ยนสีป้ายสถานะประวัติจากเขียวเป็นเทาอ่อน เพื่อลดการดึงดูดสายตา
         if (statusTxt.includes("เคลียร์") || statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น")) {
             displayStatus = "คืนเรียบร้อย";
             badgeClass = "bg-light text-secondary border"; 
@@ -279,7 +268,7 @@ function renderUserTableRows(dataList, tbodyElement) {
             badgeClass = "bg-secondary text-white"; 
         }
         
-tbodyElement.innerHTML += `
+        tbodyElement.innerHTML += `
             <tr class="text-center align-middle">
                 <td data-label="📌 เลขรายการ" class="fw-bold text-dark">${item.reqId}</td>
                 <td data-label="📦 อุปกรณ์ที่ยืม">${typeHtml}</td>
