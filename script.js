@@ -1,7 +1,7 @@
 // =========================================
 // 📌 ไฟล์ script.js : แกนกลางจัดการระบบหน้าเว็บ
 // =========================================
-const API_URL = "https://script.google.com/macros/s/AKfycbyxC7d4Lu3Dp6paujWKcYGBmWJpm2qTrxT1m-XQNlHkMg-Jb-assbu09ZB7u-v78gmO/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbwTYZGGb-XQ1jh301IlRJ15aDlvQm3lqxrlGUSFYG5ColRGichCODQIFM4e6cUxY6kU/exec"; 
 const LIFF_ID = "2010557323-PAyWhGxW";
 
 function showLoading(text = "กำลังโหลด...") {
