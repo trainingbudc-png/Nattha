@@ -1,14 +1,9 @@
 // =========================================
 // 📌 ไฟล์ script.js : แกนกลางจัดการระบบหน้าเว็บ
 // =========================================
-
 const API_URL = "https://script.google.com/macros/s/AKfycbyxC7d4Lu3Dp6paujWKcYGBmWJpm2qTrxT1m-XQNlHkMg-Jb-assbu09ZB7u-v78gmO/exec"; 
-
 const LIFF_ID = "2010557323-PAyWhGxW";
 
-// -----------------------------------------
-// 1. ระบบ Loading (หน้าต่างโหลด)
-// -----------------------------------------
 function showLoading(text = "กำลังโหลด...") {
     let overlay = document.getElementById("loadingOverlay");
     if (!overlay) {
@@ -28,17 +23,11 @@ function hideLoading() {
     if (overlay) overlay.style.display = "none";
 }
 
-// -----------------------------------------
-// 2. ระบบเรียกใช้ API (🚀 ป้องกันปัญหา CORS บล็อกเว็บ 100%)
-// -----------------------------------------
 async function callAPI(payload) {
     try {
         const res = await fetch(API_URL, {
             method: "POST",
-            // 🚨 เพิ่ม headers ส่วนนี้เพื่อไม่ให้เบราว์เซอร์บล็อกการส่งข้อมูล
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8" 
-            },
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify(payload)
         });
         return await res.json();
@@ -48,9 +37,6 @@ async function callAPI(payload) {
     }
 }
 
-// -----------------------------------------
-// 3. ระบบจัดการผู้ใช้ & ออกจากระบบ
-// -----------------------------------------
 function logoutSystem() {
     if(typeof Swal !== 'undefined') {
         Swal.fire({
@@ -62,9 +48,7 @@ function logoutSystem() {
             cancelButtonColor: "#64748b",
             confirmButtonText: "ออกจากระบบ",
             cancelButtonText: "ยกเลิก"
-        }).then((result) => {
-            if (result.isConfirmed) executeLogout();
-        });
+        }).then((result) => { if (result.isConfirmed) executeLogout(); });
     } else {
         if(confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) executeLogout();
     }
@@ -78,55 +62,40 @@ async function executeLogout() {
         if (liff.isLoggedIn()) liff.logout();
         if (liff.isInClient()) liff.closeWindow();
         else window.location.replace("index.html");
-    } catch (error) {
-        window.location.replace("index.html");
-    }
+    } catch (error) { window.location.replace("index.html"); }
 }
 
-// -----------------------------------------
-// 4. ระบบตรวจสอบสิทธิ์พื้นหลัง (Silent Role Check)
-// -----------------------------------------
 function verifyRoleSilently() {
     const userId = localStorage.getItem("userId");
     const currentRole = localStorage.getItem("userRole");
-    
     if (userId) {
         callAPI({ action: "checkRole", userId: userId }).then(res => {
-            // ถ้าระบบพบว่าสิทธิ์ใน Google Sheet ไม่ตรงกับในเครื่อง ให้สลับหน้าทันที
             if (res.success && res.role !== currentRole) {
                 localStorage.setItem("userRole", res.role);
-                if (res.role === "Admin") {
-                    window.location.replace("admin.html");
-                } else {
-                    window.location.replace("user.html");
-                }
+                window.location.replace(res.role === "Admin" ? "admin.html" : "user.html");
             }
         }).catch(e => console.log("Silent role check failed:", e));
     }
 }
 
-// -----------------------------------------
-// 5. ระบบแจ้งเตือน (Global Alert) คุมธีม Navy ทั้งระบบ
-// -----------------------------------------
 function showNavyAlert(title, htmlText, iconType, redirectUrl = null) {
     if(typeof Swal !== 'undefined') {
         Swal.fire({
-            title: title,
-            html: htmlText,
-            icon: iconType,
-            confirmButtonColor: "#1e3a8a", // 📌 ล็อกสีกรมท่าไว้ที่นี่ที่เดียวจบ!
-            confirmButtonText: "OK",
-            allowOutsideClick: false
-        }).then(() => {
-            if (redirectUrl) {
-                window.location.href = redirectUrl;
-            }
-        });
+            title: title, html: htmlText, icon: iconType,
+            confirmButtonColor: "#1e3a8a", confirmButtonText: "OK", allowOutsideClick: false
+        }).then(() => { if (redirectUrl) window.location.href = redirectUrl; });
     } else {
-        // Fallback กรณี SweetAlert โหลดไม่ขึ้น
         alert(title + "\n" + htmlText.replace(/<[^>]*>?/gm, '')); 
-        if (redirectUrl) {
-            window.location.href = redirectUrl;
-        }
+        if (redirectUrl) window.location.href = redirectUrl;
     }
+}
+
+// ⚡ เพิ่มระบบ Debounce ลดการกระตุกเวลาพิมพ์ค้นหา
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => { clearTimeout(timeout); func(...args); };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
