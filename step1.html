@@ -5,15 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Step 1 | เตรียมเครื่อง</title>
 	<link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-
     <link rel="stylesheet" href="theme-admin.css">
-    
     <style>
         body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding: 20px; }
         .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(30, 58, 138, 0.05); max-width: 950px; margin: auto; border: none !important; }
@@ -22,34 +18,27 @@
         .form-control:focus, .form-select:focus { border-color: var(--admin-accent); box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); }
         .select2-container--bootstrap-5 .select2-selection { border-radius: 10px !important; border: 1px solid #cbd5e1 !important; min-height: 50px !important; font-size: 1.1rem; display: flex; align-items: center; }
         .select2-container--bootstrap-5.select2-container--focus .select2-selection { border-color: var(--admin-accent) !important; box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important; }
-
         .category-header { background-color: #f8fafc; color: var(--admin-main); padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; margin-bottom: 5px; border: 1px solid var(--admin-border); }
         .category-header:hover { background-color: #e2e8f0; }
         .category-header::after { content: '▼'; font-size: 0.8rem; transition: transform 0.3s ease; }
         .category-header.collapsed::after { transform: rotate(-90deg); }
-
         .ipad-container { max-height: 250px; overflow-y: auto; padding: 15px; background: white; border: 1px solid var(--admin-border); border-radius: 0 0 8px 8px; border-top: none; margin-bottom: 15px; }
         .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
         .grid-layout .btn { width: 100%; margin: 0 !important; padding: 8px 5px !important; font-size: 0.95rem; text-align: center; white-space: normal; line-height: 1.2; display: flex; align-items: center; justify-content: center; min-height: 45px; border-radius: 8px; }
         .grid-full-width { grid-column: 1 / -1; text-align: center; padding: 10px 0; }
-
         .btn-outline-admin { color: #475569; border: 1px solid #cbd5e1; font-weight: 600; background-color: white; }
         .btn-outline-admin:hover { background-color: #f1f5f9; border-color: var(--admin-main); color: var(--admin-main); }
         .btn-check:checked + .btn-outline-admin { background-color: var(--admin-main) !important; color: white !important; border-color: var(--admin-main) !important; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3); }
-
         .table-responsive { border-radius: 12px; border: 1px solid var(--admin-border); overflow: hidden; }
         .table { margin-bottom: 0; }
         .table th { background-color: var(--admin-bg); color: var(--admin-main); font-weight: 600; text-align: center; padding: 15px; border-bottom: 2px solid var(--admin-main); font-size: 0.95rem; white-space: nowrap; }
         .table td { vertical-align: middle; text-align: center; padding: 12px 10px; border-bottom: 1px solid var(--admin-border); color: #1e293b; font-weight: 500; font-size: 0.95rem; }
         .table tbody tr:hover { background-color: #f8fafc; }
-
         .form-check-input { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: var(--admin-main); border: 2px solid #94a3b8 !important; transition: 0.2s; }
         .form-check-input:checked { background-color: var(--admin-main) !important; border-color: var(--admin-main) !important; }
-
         .btn-shortcut { background: white; color: var(--admin-main); border: 2px solid var(--admin-main); transition: 0.2s; border-radius: 8px; font-size: 0.85rem; font-weight: 600;}
         .btn-shortcut:hover { background: var(--admin-main); color: white; }
         .btn-ticked-all { background-color: var(--admin-main) !important; color: white !important; }
-
         .btn-submit-custom { background-color: var(--admin-main); color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 25px; transition: 0.3s; border: none; font-size: 1.1rem; }
         .btn-submit-custom:hover { background-color: var(--admin-hover); color: white; box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4); }
         .emergency-box { background-color: #fff5f5; border: 1px dashed #fca5a5; }
@@ -202,11 +191,11 @@
 
             const select = document.getElementById("userNameSelect");
             
-            // ⚡ อัปเกรดสะสมโค้ด HTML รายชื่อผู้ยืม
+            // ⚡ เปลี่ยนมาฝัง LINE ID ที่ Value ของ Dropdown
             if (userRes.status === "success" && userRes.data) {
-                userRes.data.sort((a, b) => a.localeCompare(b, 'th'));
+                userRes.data.sort((a, b) => a.name.localeCompare(b.name, 'th'));
                 let userHtml = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
-                userRes.data.forEach(name => { userHtml += `<option value="${name}">${name}</option>`; });
+                userRes.data.forEach(user => { userHtml += `<option value="${user.id}">${user.name}</option>`; });
                 select.innerHTML = userHtml;
                 
                 $('#userNameSelect').select2({ theme: "bootstrap-5", width: '100%', placeholder: "-- เลือกชื่อผู้ขอยืม --", allowClear: true });
@@ -225,7 +214,6 @@
             const containerNormal = document.getElementById("ipadNormalContainer");
             const containerAir = document.getElementById("ipadAirContainer");
             
-            // ⚡ อัปเกรดสะสมโค้ด HTML รายการเครื่อง
             if (invRes.status === "success" && invRes.data) {
                 invRes.data.sort((a, b) => {
                     let numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
@@ -338,14 +326,19 @@
 
     async function submitStep1() {
         const reqIdValue = document.getElementById("reqIdInput").value.trim(); 
-        const recipientName = document.getElementById("userNameSelect").value;
+        
+        // ⚡ ดึงทั้ง ID และ Name จาก Dropdown
+        const selectUser = document.getElementById("userNameSelect");
+        const recipientId = selectUser.value;
+        const recipientName = selectUser.options[selectUser.selectedIndex]?.text || "";
+        
         const adminName = localStorage.getItem("userName") || "Admin";
         const adminId = localStorage.getItem("userId") || ""; 
         const selectedIpads = document.querySelectorAll('.ipad-checkbox:checked');
         const isEmergency = document.getElementById("emergencyCheck").checked;
         const emergencyNote = document.getElementById("emergencyNote").value.trim();
 
-        if(!recipientName) return Swal.fire("แจ้งเตือน", "กรุณาเลือกชื่อผู้ขอยืม", "warning");
+        if(!recipientId) return Swal.fire("แจ้งเตือน", "กรุณาเลือกชื่อผู้ขอยืม", "warning"); // ⚡ เช็คจาก ID
         if(selectedIpads.length === 0) return Swal.fire("แจ้งเตือน", "กรุณากดเลือก iPad อย่างน้อย 1 เครื่อง", "warning");
         if(isEmergency && !emergencyNote) return Swal.fire("แจ้งเตือน", "กรุณาระบุเหตุผลการยืมฉุกเฉินด้วยครับ", "warning");
         
@@ -369,7 +362,17 @@
         let finalNote = "-";
         if(isEmergency) finalNote = `🚨 [ยืมฉุกเฉิน] เหตุผล: ${emergencyNote}`;
 
-        const payload = { action: "saveStep1", reqId: reqIdValue !== "" ? reqIdValue : null, adminName: adminName, adminId: adminId, recipientName: recipientName, note: finalNote, ipadData: ipadData };
+        // ⚡ เพิ่มการส่ง recipientId ไปพร้อมกับ payload
+        const payload = { 
+            action: "saveStep1", 
+            reqId: reqIdValue !== "" ? reqIdValue : null, 
+            adminName: adminName, 
+            adminId: adminId, 
+            recipientName: recipientName, 
+            recipientId: recipientId, 
+            note: finalNote, 
+            ipadData: ipadData 
+        };
 
         try {
             const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
