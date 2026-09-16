@@ -16,20 +16,10 @@
     
     <style>
         body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding: 20px; }
-        .confirm-card { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 4px 20px rgba(30, 58, 138, 0.05); 
-            max-width: 950px; 
-            margin: auto; 
-            border: none !important;
-        }
+        .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(30, 58, 138, 0.05); max-width: 950px; margin: auto; border: none !important; }
         .form-label { font-weight: 600; color: #475569; font-size: 0.95rem; }
-        
         .form-control, .form-select { border-radius: 10px; border: 1px solid #cbd5e1; padding: 12px 15px; color: #1e293b; }
         .form-control:focus, .form-select:focus { border-color: var(--admin-accent); box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); }
-        
         .select2-container--bootstrap-5 .select2-selection { border-radius: 10px !important; border: 1px solid #cbd5e1 !important; min-height: 50px !important; font-size: 1.1rem; display: flex; align-items: center; }
         .select2-container--bootstrap-5.select2-container--focus .select2-selection { border-color: var(--admin-accent) !important; box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important; }
 
@@ -54,107 +44,33 @@
         .table tbody tr:hover { background-color: #f8fafc; }
 
         .form-check-input { width: 24px !important; height: 24px !important; cursor: pointer; accent-color: var(--admin-main); border: 2px solid #94a3b8 !important; transition: 0.2s; }
-        
-        /* 🚨 เพิ่มให้สีกล่องตอนติ๊กถูกเป็นสีธีมแอดมิน (กรมท่า) */
-        .form-check-input:checked {
-            background-color: var(--admin-main) !important;
-            border-color: var(--admin-main) !important;
-        }
+        .form-check-input:checked { background-color: var(--admin-main) !important; border-color: var(--admin-main) !important; }
 
         .btn-shortcut { background: white; color: var(--admin-main); border: 2px solid var(--admin-main); transition: 0.2s; border-radius: 8px; font-size: 0.85rem; font-weight: 600;}
         .btn-shortcut:hover { background: var(--admin-main); color: white; }
-        
-        /* 🚨 เอฟเฟกต์ปุ่มตอนกด "ติ๊กครบ" (สีทึบตามธีมเดิม) */
-        .btn-ticked-all {
-            background-color: var(--admin-main) !important;
-            color: white !important;
-        }
+        .btn-ticked-all { background-color: var(--admin-main) !important; color: white !important; }
 
         .btn-submit-custom { background-color: var(--admin-main); color: white; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; margin-top: 25px; transition: 0.3s; border: none; font-size: 1.1rem; }
         .btn-submit-custom:hover { background-color: var(--admin-hover); color: white; box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4); }
-
         .emergency-box { background-color: #fff5f5; border: 1px dashed #fca5a5; }
 
         @media (max-width: 768px) {
             body { padding: 10px; }
             .confirm-card { padding: 15px; border-radius: 16px; margin-top: 5px; }
-            
             .grid-layout { grid-template-columns: repeat(3, 1fr); gap: 8px; }
             .grid-layout .btn { font-size: 0.85rem; min-height: 40px; padding: 6px !important; }
-            
             .table-responsive { border: none; background: transparent; padding: 0; overflow: visible; }
             .table thead { display: none; }
-            .table tbody tr { 
-                display: flex; 
-                flex-wrap: wrap; 
-                background: #ffffff; 
-                border-radius: 14px; 
-                margin-bottom: 16px; 
-                padding: 12px; 
-                box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-                border: 1px solid var(--admin-border); 
-            }
-            .table tbody td { 
-                display: flex; 
-                align-items: center; 
-                padding: 8px 0; 
-                border: none !important;
-            }
-            .table tbody td::before { 
-                content: attr(data-label); 
-                font-weight: 600; 
-                color: #64748b; 
-                font-size: 0.85rem; 
-            }
-            
-            .table tbody td[data-label="รหัส iPad"] {
-                width: calc(100% + 24px); 
-                margin: -12px -12px 12px -12px; 
-                padding: 12px 16px !important;
-                justify-content: space-between;
-                background-color: #f1f5f9; 
-                border-bottom: 2px solid var(--admin-main) !important; 
-                border-radius: 14px 14px 0 0; 
-            }
+            .table tbody tr { display: flex; flex-wrap: wrap; background: #ffffff; border-radius: 14px; margin-bottom: 16px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--admin-border); }
+            .table tbody td { display: flex; align-items: center; padding: 8px 0; border: none !important; }
+            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #64748b; font-size: 0.85rem; }
+            .table tbody td[data-label="รหัส iPad"] { width: calc(100% + 24px); margin: -12px -12px 12px -12px; padding: 12px 16px !important; justify-content: space-between; background-color: #f1f5f9; border-bottom: 2px solid var(--admin-main) !important; border-radius: 14px 14px 0 0; }
             .table tbody td[data-label="รหัส iPad"]::before { content: "📱 " attr(data-label); color: var(--admin-main); font-size: 0.95rem; }
             .table tbody td[data-label="รหัส iPad"] .fw-bold { font-size: 1.15rem !important; color: var(--admin-main) !important; }
-
-            .table tbody td[data-label="G-Drive"],
-            .table tbody td[data-label="ไฟล์เอกสาร"],
-            .table tbody td[data-label="ไฟล์รูปภาพ"],
-            .table tbody td[data-label="Safari"] {
-                width: calc(50% - 6px); 
-                margin: 3px; 
-                flex-direction: row; 
-                justify-content: space-between; 
-                align-items: center;
-                padding: 12px 14px;
-                background: #f8fafc;
-                border: 1px solid #e2e8f0 !important;
-                border-radius: 10px;
-            }
-            .table tbody td[data-label="G-Drive"]::before,
-            .table tbody td[data-label="ไฟล์เอกสาร"]::before,
-            .table tbody td[data-label="ไฟล์รูปภาพ"]::before,
-            .table tbody td[data-label="Safari"]::before {
-                margin-right: 10px;
-                color: #1e293b;
-                font-size: 0.9rem;
-                font-weight: 600;
-            }
-
-            .table tbody td input[type="checkbox"] {
-                width: 22px !important;
-                height: 22px !important;
-                margin: 0 !important;
-                flex-shrink: 0;
-            }
-
-            .table tbody td[data-label="ปุ่มลัด"] {
-                width: 100%;
-                margin-top: 8px;
-                padding: 0 3px;
-            }
+            .table tbody td[data-label="G-Drive"], .table tbody td[data-label="ไฟล์เอกสาร"], .table tbody td[data-label="ไฟล์รูปภาพ"], .table tbody td[data-label="Safari"] { width: calc(50% - 6px); margin: 3px; flex-direction: row; justify-content: space-between; align-items: center; padding: 12px 14px; background: #f8fafc; border: 1px solid #e2e8f0 !important; border-radius: 10px; }
+            .table tbody td[data-label="G-Drive"]::before, .table tbody td[data-label="ไฟล์เอกสาร"]::before, .table tbody td[data-label="ไฟล์รูปภาพ"]::before, .table tbody td[data-label="Safari"]::before { margin-right: 10px; color: #1e293b; font-size: 0.9rem; font-weight: 600; }
+            .table tbody td input[type="checkbox"] { width: 22px !important; height: 22px !important; margin: 0 !important; flex-shrink: 0; }
+            .table tbody td[data-label="ปุ่มลัด"] { width: 100%; margin-top: 8px; padding: 0 3px; }
             .table tbody td[data-label="ปุ่มลัด"]::before { display: none; }
             .table tbody td[data-label="ปุ่มลัด"] .btn { padding: 12px !important; font-size: 1rem; border-radius: 10px; }
         }
@@ -237,7 +153,6 @@
                     <input class="form-check-input m-0 shadow-sm" type="checkbox" id="emergencyCheck" style="width: 26px !important; height: 26px !important; flex-shrink: 0; cursor: pointer; accent-color: #dc3545 !important; border-color: #fca5a5 !important;" onchange="toggleEmergencyNote()">
                     <label class="fw-bold text-danger m-0" for="emergencyCheck" style="font-size: 1.1rem; cursor: pointer; user-select: none;">🚨 กรณีเบิกยืมฉุกเฉิน</label>
                 </div>
-                
                 <div id="emergencyNoteContainer" class="mt-3" style="display: none;">
                     <label class="form-label text-danger fw-bold fs-6 mb-2">ระบุเหตุผลการยืมฉุกเฉิน <span class="text-muted fw-normal" style="font-size: 0.85rem;">(บังคับกรอก)</span></label>
                     <input type="text" id="emergencyNote" class="form-control border-danger" placeholder="เช่น เครื่องเดิมชำรุดกะทันหัน, อาจารย์ขอเพิ่มด่วน..." required>
@@ -252,7 +167,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <script src="script.js"></script>
 
 <script>
@@ -270,12 +184,9 @@
 
         if (urlReqId !== "") {
             let formattedReqId = urlReqId;
-            if (!formattedReqId.toUpperCase().startsWith("REQ-")) {
-                formattedReqId = "REQ-" + formattedReqId;
-            }
+            if (!formattedReqId.toUpperCase().startsWith("REQ-")) formattedReqId = "REQ-" + formattedReqId;
             document.getElementById('reqIdInput').value = formattedReqId;
         }
-
         if (extAmount > 0) {
             maxLimit = extAmount;
             document.getElementById('selectedCount').innerText = `เลือกแล้ว 0/${maxLimit} เครื่อง`;
@@ -286,49 +197,35 @@
 
     async function loadUsersAndIpads(retryCount = 3) {
         try {
-            const userResponse = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: "getUserNames" })
-            });
+            const userResponse = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "getUserNames" }) });
             const userRes = await userResponse.json();
 
             const select = document.getElementById("userNameSelect");
-            select.innerHTML = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
             
+            // ⚡ อัปเกรดสะสมโค้ด HTML รายชื่อผู้ยืม
             if (userRes.status === "success" && userRes.data) {
                 userRes.data.sort((a, b) => a.localeCompare(b, 'th'));
-                userRes.data.forEach(name => { select.innerHTML += `<option value="${name}">${name}</option>`; });
+                let userHtml = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
+                userRes.data.forEach(name => { userHtml += `<option value="${name}">${name}</option>`; });
+                select.innerHTML = userHtml;
                 
-                $('#userNameSelect').select2({
-                    theme: "bootstrap-5",
-                    width: '100%',
-                    placeholder: "-- เลือกชื่อผู้ขอยืม --",
-                    allowClear: true
-                });
+                $('#userNameSelect').select2({ theme: "bootstrap-5", width: '100%', placeholder: "-- เลือกชื่อผู้ขอยืม --", allowClear: true });
 
                 const urlBorrower = new URLSearchParams(window.location.search).get('borrower') || "";
                 if (urlBorrower !== "") {
                     for(let i = 0; i < select.options.length; i++) {
-                        if(select.options[i].text.includes(urlBorrower)) {
-                            $('#userNameSelect').val(select.options[i].value).trigger('change');
-                            break;
-                        }
+                        if(select.options[i].text.includes(urlBorrower)) { $('#userNameSelect').val(select.options[i].value).trigger('change'); break; }
                     }
                 }
-            } else {
-                select.innerHTML = '<option value="">❌ ไม่พบรายชื่อผู้ใช้งาน</option>';
-            }
+            } else { select.innerHTML = '<option value="">❌ ไม่พบรายชื่อผู้ใช้งาน</option>'; }
 
-            const invResponse = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: "getInventory" })
-            });
+            const invResponse = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "getInventory" }) });
             const invRes = await invResponse.json();
 
             const containerNormal = document.getElementById("ipadNormalContainer");
             const containerAir = document.getElementById("ipadAirContainer");
-            containerNormal.innerHTML = ""; containerAir.innerHTML = "";
             
+            // ⚡ อัปเกรดสะสมโค้ด HTML รายการเครื่อง
             if (invRes.status === "success" && invRes.data) {
                 invRes.data.sort((a, b) => {
                     let numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
@@ -337,6 +234,7 @@
                 });
 
                 let countNormal = 0, countAir = 0;
+                let normalHtml = ""; let airHtml = ""; 
 
                 invRes.data.forEach(id => { 
                     const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
@@ -344,13 +242,12 @@
                         <input type="checkbox" class="btn-check ipad-checkbox" id="btn-${safeId}" value="${id}" data-safeid="${safeId}" onchange="handleIpadSelection(this)">
                         <label class="btn btn-outline-admin shadow-sm" for="btn-${safeId}" title="${id}">${id}</label>
                     `;
-                    
-                    if (id.includes("Air") || id.includes("APC")) { containerAir.innerHTML += btnHtml; countAir++; } 
-                    else { containerNormal.innerHTML += btnHtml; countNormal++; }
+                    if (id.includes("Air") || id.includes("APC")) { airHtml += btnHtml; countAir++; } 
+                    else { normalHtml += btnHtml; countNormal++; }
                 });
 
-                if(countNormal === 0) containerNormal.innerHTML = '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
-                if(countAir === 0) containerAir.innerHTML = '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
+                containerNormal.innerHTML = countNormal > 0 ? normalHtml : '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
+                containerAir.innerHTML = countAir > 0 ? airHtml : '<div class="grid-full-width text-muted">-- ไม่มีเครื่องว่าง --</div>';
             } else { 
                 containerNormal.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
                 containerAir.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
@@ -358,10 +255,8 @@
 
         } catch (error) {
             if (retryCount > 0) {
-                console.warn(`[Auto-Retry] โหลดข้อมูลไม่สำเร็จ กำลังพยายามใหม่... (เหลือสิทธิ์อีก ${retryCount} ครั้ง)`);
                 setTimeout(() => loadUsersAndIpads(retryCount - 1), 1500);
             } else {
-                console.error("Error loading setup data:", error);
                 document.getElementById("userNameSelect").innerHTML = '<option value="">❌ โหลดข้อมูลล้มเหลว</option>';
                 document.getElementById("ipadNormalContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
                 document.getElementById("ipadAirContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
@@ -371,15 +266,13 @@
 
     function handleIpadSelection(checkbox) {
         const currentSelectedCount = document.querySelectorAll('.ipad-checkbox:checked').length;
-
         if (checkbox.checked && maxLimit > 0 && currentSelectedCount > maxLimit) {
             checkbox.checked = false; 
             Swal.fire("เต็มโควต้า!", `รายการนี้ระบุจำนวนการยืมไว้สูงสุดที่ ${maxLimit} เครื่องครับ`, "warning");
             return;
         }
 
-        const ipadId = checkbox.value; 
-        const safeId = checkbox.dataset.safeid; 
+        const ipadId = checkbox.value; const safeId = checkbox.dataset.safeid; 
         const tbody = document.getElementById("dynamicChecklistBody");
         const container = document.getElementById("dynamicChecklistContainer");
         
@@ -387,13 +280,10 @@
             const tr = document.createElement("tr");
             tr.id = `row-${safeId}`;
             const numericValue = parseInt(ipadId.replace(/\D/g, ''), 10) || 0;
-            tr.dataset.sortval = numericValue;
-            tr.dataset.rawname = ipadId;
+            tr.dataset.sortval = numericValue; tr.dataset.rawname = ipadId;
 
             tr.innerHTML = `
-                <td data-label="รหัส iPad" class="text-start ps-4">
-                    <div class="fw-bold fs-6 m-0" style="color: var(--admin-main);">${ipadId}</div>
-                </td>
+                <td data-label="รหัส iPad" class="text-start ps-4"><div class="fw-bold fs-6 m-0" style="color: var(--admin-main);">${ipadId}</div></td>
                 <td data-label="G-Drive"><input type="checkbox" class="form-check-input check-${safeId}" value="drive"></td>
                 <td data-label="ไฟล์เอกสาร"><input type="checkbox" class="form-check-input check-${safeId}" value="file"></td>
                 <td data-label="ไฟล์รูปภาพ"><input type="checkbox" class="form-check-input check-${safeId}" value="img"></td>
@@ -408,53 +298,33 @@
 
         const rows = Array.from(tbody.querySelectorAll('tr'));
         rows.sort((a, b) => {
-            const valA = parseInt(a.dataset.sortval, 10);
-            const valB = parseInt(b.dataset.sortval, 10);
+            const valA = parseInt(a.dataset.sortval, 10); const valB = parseInt(b.dataset.sortval, 10);
             if (valA === valB) return a.dataset.rawname.localeCompare(b.dataset.rawname);
             return valA - valB;
         });
         rows.forEach(row => tbody.appendChild(row));
 
-        const count = rows.length;
-        const badge = document.getElementById('selectedCount');
-        
+        const count = rows.length; const badge = document.getElementById('selectedCount');
         if (maxLimit > 0) {
             badge.innerText = `เลือกแล้ว ${count}/${maxLimit} เครื่อง`;
-            if (count === maxLimit) {
-                badge.className = "badge fs-6 mt-1"; 
-                badge.style.backgroundColor = "#10b981"; 
-            } else if (count > 0) {
-                badge.className = "badge fs-6 mt-1";
-                badge.style.backgroundColor = "var(--admin-main)"; 
-            } else {
-                badge.className = "badge bg-secondary fs-6 mt-1";
-            }
+            if (count === maxLimit) { badge.className = "badge fs-6 mt-1"; badge.style.backgroundColor = "#10b981"; } 
+            else if (count > 0) { badge.className = "badge fs-6 mt-1"; badge.style.backgroundColor = "var(--admin-main)"; } 
+            else { badge.className = "badge bg-secondary fs-6 mt-1"; }
         } else {
             badge.innerText = `เลือกแล้ว ${count} เครื่อง`;
             badge.className = count > 0 ? "badge fs-6 mt-1" : "badge bg-secondary fs-6 mt-1";
             if(count > 0) badge.style.backgroundColor = "var(--admin-main)";
         }
         
-        if (count > 0) container.classList.remove('d-none');
-        else container.classList.add('d-none');
+        if (count > 0) container.classList.remove('d-none'); else container.classList.add('d-none');
     }
 
-    // 🚨 ฟังก์ชันติ๊กครบอัปเดตใหม่
     function tickAllRow(safeId, btn) {
         const checkboxes = document.querySelectorAll(`.check-${safeId}`);
         checkboxes.forEach(cb => cb.checked = true);
-
         if(btn) {
             btn.classList.add('btn-ticked-all');
-
-            // ดักจับถ้าเอาติ๊กออก ให้ปุ่มกลับเป็นปกติ
-            checkboxes.forEach(cb => {
-                cb.addEventListener('change', function() {
-                    if(!this.checked) {
-                        btn.classList.remove('btn-ticked-all');
-                    }
-                }, { once: true });
-            });
+            checkboxes.forEach(cb => { cb.addEventListener('change', function() { if(!this.checked) btn.classList.remove('btn-ticked-all'); }, { once: true }); });
         }
     }
 
@@ -462,14 +332,8 @@
         const isChecked = document.getElementById("emergencyCheck").checked;
         const noteContainer = document.getElementById("emergencyNoteContainer");
         const noteInput = document.getElementById("emergencyNote");
-
-        if (isChecked) {
-            noteContainer.style.display = "block";
-            noteInput.focus();
-        } else {
-            noteContainer.style.display = "none";
-            noteInput.value = ""; 
-        }
+        if (isChecked) { noteContainer.style.display = "block"; noteInput.focus(); } 
+        else { noteContainer.style.display = "none"; noteInput.value = ""; }
     }
 
     async function submitStep1() {
@@ -485,18 +349,13 @@
         if(selectedIpads.length === 0) return Swal.fire("แจ้งเตือน", "กรุณากดเลือก iPad อย่างน้อย 1 เครื่อง", "warning");
         if(isEmergency && !emergencyNote) return Swal.fire("แจ้งเตือน", "กรุณาระบุเหตุผลการยืมฉุกเฉินด้วยครับ", "warning");
         
-        let allChecked = true;
-        const ipadData = [];
-
+        let allChecked = true; const ipadData = [];
         selectedIpads.forEach(checkbox => {
-            const id = checkbox.value;
-            const safeId = checkbox.dataset.safeid;
+            const id = checkbox.value; const safeId = checkbox.dataset.safeid;
             const checks = document.querySelectorAll(`.check-${safeId}`);
             if (checks.length > 0) {
-                const drive = checks[0].checked;
-                const file = checks[1].checked;
-                const img = checks[2].checked;
-                const safari = checks[3].checked;
+                const drive = checks[0].checked; const file = checks[1].checked;
+                const img = checks[2].checked; const safari = checks[3].checked;
                 if (!drive || !file || !img || !safari) allChecked = false;
                 ipadData.push({ id: id, drive: drive, file: file, img: img, safari: safari });
             }
@@ -505,77 +364,35 @@
         if(!allChecked) return Swal.fire("แจ้งเตือน", "กรุณาติ๊กเตรียมเครื่องให้ครบทุกข้อ ของทุกเครื่องที่เลือกครับ", "warning");
 
         const btn = document.getElementById("submitBtn");
-        btn.innerHTML = "กำลังบันทึกข้อมูล... ⏳";
-        btn.disabled = true;
+        btn.innerHTML = "กำลังบันทึกข้อมูล... ⏳"; btn.disabled = true;
 
         let finalNote = "-";
-        if(isEmergency) {
-            finalNote = `🚨 [ยืมฉุกเฉิน] เหตุผล: ${emergencyNote}`;
-        }
+        if(isEmergency) finalNote = `🚨 [ยืมฉุกเฉิน] เหตุผล: ${emergencyNote}`;
 
-        const payload = { 
-            action: "saveStep1", 
-            reqId: reqIdValue !== "" ? reqIdValue : null, 
-            adminName: adminName, 
-            adminId: adminId, 
-            recipientName: recipientName, 
-            note: finalNote, 
-            ipadData: ipadData 
-        };
+        const payload = { action: "saveStep1", reqId: reqIdValue !== "" ? reqIdValue : null, adminName: adminName, adminId: adminId, recipientName: recipientName, note: finalNote, ipadData: ipadData };
 
         try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            });
-            
+            const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
             const rawText = await response.text(); 
             let res;
             
-            try {
-                res = JSON.parse(rawText);
-            } catch (parseErr) {
+            try { res = JSON.parse(rawText); } 
+            catch (parseErr) {
                 if (navigator.onLine) {
-                    Swal.fire({
-                        title: "บันทึกสำเร็จ!",
-                        html: `ข้อมูลได้ถูกบันทึกลงระบบเรียบร้อยแล้ว<br><span style="font-size: 0.85rem; color: gray;">(เซิร์ฟเวอร์ตอบกลับล่าช้าเล็กน้อย แต่ข้อมูลปลอดภัย 100%)</span>`,
-                        icon: "success",
-                        confirmButtonColor: "#1e3a8a",
-                        allowOutsideClick: false
-                    }).then(() => {
-                        window.location.href = "admin.html";
-                    });
+                    Swal.fire({ title: "บันทึกสำเร็จ!", html: `ข้อมูลได้ถูกบันทึกลงระบบเรียบร้อยแล้ว<br><span style="font-size: 0.85rem; color: gray;">(เซิร์ฟเวอร์ตอบกลับล่าช้าเล็กน้อย)</span>`, icon: "success", confirmButtonColor: "#1e3a8a", allowOutsideClick: false }).then(() => { window.location.href = "admin.html"; });
                     return;
                 }
             }
 
             if(res && res.status === "success") {
-                Swal.fire({
-                    title: "บันทึกสำเร็จ!",
-                    html: `หมายเลขรายการ : <b>${res.reqId || "-"}</b><br>ระบบแจ้งให้ผู้ยืมมารับเครื่องแล้ว`,
-                    icon: "success",
-                    confirmButtonColor: "#1e3a8a",
-                    confirmButtonText: "กลับ",
-                    allowOutsideClick: false
-                }).then(() => {
-                    window.location.href = "admin.html";
-                });
+                Swal.fire({ title: "บันทึกสำเร็จ!", html: `หมายเลขรายการ : <b>${res.reqId || "-"}</b><br>ระบบแจ้งให้ผู้ยืมมารับเครื่องแล้ว`, icon: "success", confirmButtonColor: "#1e3a8a", confirmButtonText: "กลับ", allowOutsideClick: false }).then(() => { window.location.href = "admin.html"; });
             } else {
                 Swal.fire("ข้อผิดพลาด", (res && res.message) ? res.message : "เกิดข้อผิดพลาดในการบันทึก", "error");
                 btn.innerHTML = "ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
             }
-
         } catch (err) {
             if (navigator.onLine) {
-                Swal.fire({
-                    title: "บันทึกสำเร็จ!",
-                    html: `อัปเดตข้อมูลลงฐานข้อมูลเรียบร้อยแล้ว<br><span style="font-size: 0.85rem; color: gray;">(ระบบเชื่อมต่อล่าช้า แต่บันทึกสำเร็จแน่นอน)</span>`,
-                    icon: "success",
-                    confirmButtonColor: "#1e3a8a",
-                    allowOutsideClick: false
-                }).then(() => {
-                    window.location.href = "admin.html";
-                });
+                Swal.fire({ title: "บันทึกสำเร็จ!", html: `อัปเดตข้อมูลลงฐานข้อมูลเรียบร้อยแล้ว`, icon: "success", confirmButtonColor: "#1e3a8a", allowOutsideClick: false }).then(() => { window.location.href = "admin.html"; });
             } else {
                 Swal.fire("ขัดข้อง", "ไม่สามารถเชื่อมต่ออินเทอร์เน็ตได้", "error");
                 btn.innerHTML = "ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
