@@ -7,7 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* 📌 ธีมสี Enterprise Navy */
         :root {
             --primary-navy: #1e3a8a;
             --primary-hover: #172554;
@@ -18,88 +17,35 @@
         }
 
         body { background: var(--bg-color); font-family: 'Kanit', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px 0; }
-        
-        .main-card { 
-            background: white; 
-            padding: 50px 40px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.08); 
-            width: 100%; 
-            max-width: 450px; 
-            text-align: center; 
-            border: 1px solid var(--border-color);
-        }
-        
+        .main-card { background: white; padding: 50px 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(30, 58, 138, 0.08); width: 100%; max-width: 450px; text-align: center; border: 1px solid var(--border-color); }
         .loading-section { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        
         .logo-wrapper { position: relative; margin-bottom: 25px; display: inline-flex; align-items: center; justify-content: center; }
         .line-icon { width: 85px; height: 85px; position: relative; z-index: 2; }
         
-        /* วงแหวน Loading คงสีเขียว LINE ไว้เพื่อความสมจริง */
         .pulse-ring {
-            position: absolute;
-            width: 85px; height: 85px;
-            background-color: #06C755;
-            border-radius: 50%;
-            z-index: 1;
+            position: absolute; width: 85px; height: 85px; background-color: #06C755; border-radius: 50%; z-index: 1;
             animation: pulseAnim 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
         }
-        @keyframes pulseAnim {
-            0% { transform: scale(1); opacity: 0.6; }
-            100% { transform: scale(1.8); opacity: 0; }
-        }
+        @keyframes pulseAnim { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.8); opacity: 0; } }
 
         .loading-dots { margin-top: 10px; height: 20px; }
         .loading-dots span {
-            display: inline-block; width: 10px; height: 10px;
-            background-color: #06C755; border-radius: 50%; margin: 0 4px;
+            display: inline-block; width: 10px; height: 10px; background-color: #06C755; border-radius: 50%; margin: 0 4px;
             animation: bounceAnim 1.4s infinite ease-in-out both;
         }
         .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
         .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounceAnim {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
+        @keyframes bounceAnim { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
         #mainText { font-size: 1.3rem; letter-spacing: 0.5px; color: var(--primary-navy) !important; font-weight: 700 !important; }
         #subText { font-size: 0.95rem; color: var(--text-muted); transition: all 0.3s ease; }
 
         .register-section { display: none; text-align: left; }
+        .form-control, .form-select { border-radius: 10px; padding: 12px 15px; border: 1px solid var(--border-color); font-size: 0.95rem; color: var(--text-dark); }
+        .form-control:focus, .form-select:focus { border-color: var(--primary-navy); box-shadow: 0 0 0 0.25rem rgba(30, 58, 138, 0.15); }
         
-        /* 📌 ปรับสไตล์ Input ให้ล้อไปกับหน้าอื่น */
-        .form-control, .form-select { 
-            border-radius: 10px; 
-            padding: 12px 15px; 
-            border: 1px solid var(--border-color); 
-            font-size: 0.95rem; 
-            color: var(--text-dark);
-        }
-        .form-control:focus, .form-select:focus { 
-            border-color: var(--primary-navy); 
-            box-shadow: 0 0 0 0.25rem rgba(30, 58, 138, 0.15); 
-        }
-        
-        /* 📌 เปลี่ยนปุ่มลงทะเบียนเป็น Navy */
-        .btn-register { 
-            background: var(--primary-navy); 
-            color: white;
-            border: none; 
-            border-radius: 10px; 
-            padding: 14px; 
-            font-weight: 600; 
-            font-size: 1.05rem; 
-            width: 100%; 
-            transition: all 0.3s ease; 
-            margin-top: 20px; 
-        }
-        .btn-register:hover { 
-            background: var(--primary-hover); 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 15px rgba(30, 58, 138, 0.3); 
-            color: white;
-        }
-        
+        .btn-register { background: var(--primary-navy); color: white; border: none; border-radius: 10px; padding: 14px; font-weight: 600; font-size: 1.05rem; width: 100%; transition: all 0.3s ease; margin-top: 20px; }
+        .btn-register:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(30, 58, 138, 0.3); color: white; }
         .form-label { font-weight: 600; color: var(--text-dark); font-size: 0.9rem; margin-bottom: 6px; }
     </style>
 </head>
@@ -159,13 +105,10 @@
 </div>
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-
-<!-- 📌 ดึงลิงก์ API และ LIFF_ID มาจาก script.js -->
 <script src="script.js"></script>
 
 <script>
 window.onload = async () => {
-        // ⚡ ระบบ Fast Login (ข้ามหน้าโหลดใน 0.5 วิ)
         const savedUserId = localStorage.getItem("userId");
         const savedRole = localStorage.getItem("userRole");
         const savedName = localStorage.getItem("userName");
@@ -175,42 +118,28 @@ window.onload = async () => {
             document.getElementById('subText').innerText = `สวัสดีคุณ ${savedName} กำลังพาท่านเข้าสู่ระบบ...`;
             document.getElementById('spinnerIcon').style.display = "none";
             document.getElementById('pulseRing').style.display = "none";
-            
-            setTimeout(() => {
-                redirectUser(savedRole);
-            }, 600);
+            setTimeout(() => { redirectUser(savedRole); }, 600);
             return;
         }
 
         try {
             await liff.init({ liffId: LIFF_ID });
-            
-            if (!liff.isLoggedIn()) {
-                liff.login();
-                return;
-            }
-
+            if (!liff.isLoggedIn()) { liff.login(); return; }
             const profile = await liff.getProfile();
-            const displayName = profile.displayName;
-            const userId = profile.userId; 
-
-            document.getElementById('subText').innerText = `สวัสดีคุณ ${displayName} กำลังตรวจสอบสิทธิ์...`;
-            checkUserInDatabase(userId, displayName);
-
+            document.getElementById('subText').innerText = `สวัสดีคุณ ${profile.displayName} กำลังตรวจสอบสิทธิ์...`;
+            checkUserInDatabase(profile.userId, profile.displayName);
         } catch (err) {
-            console.error("LIFF Error:", err);
             showError("เกิดข้อผิดพลาดในการเชื่อมต่อ", "กรุณาเปิดลิงก์ผ่านแอปพลิเคชัน LINE");
         }
     };
 
-    // 📌 ฟังก์ชันส่วนกลางสำหรับพากลับหน้าเดิมที่ค้างไว้
     function redirectUser(role) {
         const pendingUrl = localStorage.getItem("pendingUrl");
         if (pendingUrl) {
-            localStorage.removeItem("pendingUrl"); // เคลียร์ความจำทิ้ง
-            window.location.replace(pendingUrl);   // เด้งไปหน้าที่ตั้งใจจะเข้าตอนแรก
+            localStorage.removeItem("pendingUrl");
+            window.location.replace(pendingUrl);
         } else {
-            window.location.replace(role === "Admin" ? "admin.html" : "user.html"); // ไม่มีค้างก็ไปเมนูหลัก
+            window.location.replace(role === "Admin" ? "admin.html" : "user.html");
         }
     }
 
@@ -220,12 +149,8 @@ window.onload = async () => {
         }, 2500);
 
         try {
-            const res = await fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "checkRole", userId: userId })
-            });
+            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "checkRole", userId: userId }) });
             const data = await res.json();
-
             clearTimeout(slowLoadTimer); 
 
             if (data.success) {
@@ -234,17 +159,11 @@ window.onload = async () => {
                 document.getElementById('spinnerIcon').style.display = "none";
                 document.getElementById('pulseRing').style.display = "none";
                 
-                localStorage.setItem("userName", data.name);
-                localStorage.setItem("userRole", data.role);
-                localStorage.setItem("userId", userId); 
-                
-                setTimeout(() => {
-                    redirectUser(data.role); // 🚨 เรียกใช้ฟังก์ชันพากลับ
-                }, 1000);
+                localStorage.setItem("userName", data.name); localStorage.setItem("userRole", data.role); localStorage.setItem("userId", userId); 
+                setTimeout(() => { redirectUser(data.role); }, 1000);
             } else {
                 document.getElementById('loadingSection').style.display = "none";
                 document.getElementById('registerSection').style.display = "block";
-                
                 document.getElementById('hiddenUserId').value = userId;
                 
                 let nameParts = displayName.split(" ");
@@ -252,11 +171,11 @@ window.onload = async () => {
                 document.getElementById('regLastName').value = nameParts.slice(1).join(" ") || "";
                 
                 const selectDept = document.getElementById('regDept');
+                // ⚡ อัปเกรดสะสม HTML ตรงนี้
                 if (data.departments && data.departments.length > 0) {
-                    selectDept.innerHTML = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>';
-                    data.departments.forEach(dept => {
-                        selectDept.innerHTML += `<option value="${dept}">${dept}</option>`;
-                    });
+                    let deptHtml = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>';
+                    data.departments.forEach(dept => { deptHtml += `<option value="${dept}">${dept}</option>`; });
+                    selectDept.innerHTML = deptHtml;
                 } else {
                     selectDept.innerHTML = '<option value="">(ไม่พบข้อมูลแผนก)</option>';
                 }
@@ -266,9 +185,7 @@ window.onload = async () => {
             if (retryCount > 0) {
                 document.getElementById('subText').innerText = `สัญญาณขัดข้อง กำลังลองใหม่... (เหลือ ${retryCount} ครั้ง)`;
                 setTimeout(() => checkUserInDatabase(userId, displayName, retryCount - 1), 1500);
-            } else {
-                showError("เซิร์ฟเวอร์ไม่ตอบสนอง", "ไม่สามารถตรวจสอบข้อมูลกับฐานข้อมูลได้");
-            }
+            } else { showError("เซิร์ฟเวอร์ไม่ตอบสนอง", "ไม่สามารถตรวจสอบข้อมูลกับฐานข้อมูลได้"); }
         }
     }
 
@@ -280,16 +197,11 @@ window.onload = async () => {
         const dept = document.getElementById('regDept').value.trim();
         let phone = document.getElementById('regPhone').value.trim();
 
-        if (!firstName || !lastName || !dept || !phone) {
-            return alert("⚠️ กรุณากรอก ชื่อ, นามสกุล, แผนก และเบอร์โทร ให้ครบถ้วนครับ");
-        }
+        if (!firstName || !lastName || !dept || !phone) return alert("⚠️ กรุณากรอก ชื่อ, นามสกุล, แผนก และเบอร์โทร ให้ครบถ้วนครับ");
 
         phone = phone.replace(/-/g, ""); 
-        if (phone.length === 10) {
-            phone = phone.substring(0, 3) + "-" + phone.substring(3, 6) + "-" + phone.substring(6);
-        } else {
-            phone = "Tel. " + phone; 
-        }
+        if (phone.length === 10) phone = phone.substring(0, 3) + "-" + phone.substring(3, 6) + "-" + phone.substring(6);
+        else phone = "Tel. " + phone; 
 
         const fullName = firstName + " " + lastName;
         const btn = document.getElementById('btnRegister');
@@ -297,33 +209,21 @@ window.onload = async () => {
 
         try {
             const res = await fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "registerUser", userId: userId, name: fullName, nickname: nickname, role: "User", dept: dept, phone: phone })
+                method: "POST", body: JSON.stringify({ action: "registerUser", userId: userId, name: fullName, nickname: nickname, role: "User", dept: dept, phone: phone })
             });
             const data = await res.json();
 
             if (data.status === "success") {
                 alert("✅ ลงทะเบียนสำเร็จ! ระบบกำลังพาท่านเข้าสู่ระบบ...");
-                localStorage.setItem("userName", fullName);
-                localStorage.setItem("userRole", "User");
-                localStorage.setItem("userId", userId); 
-
-                redirectUser("User"); // 🚨 เรียกใช้ฟังก์ชันพากลับ
-            } else {
-                alert("❌ เกิดข้อผิดพลาดในการบันทึก");
-                btn.innerText = "✅ ยืนยันข้อมูล & เข้าใช้งาน"; btn.disabled = false;
-            }
-        } catch (error) {
-            alert("❌ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
-            btn.innerText = "✅ ยืนยันข้อมูล & เข้าใช้งาน"; btn.disabled = false;
-        }
+                localStorage.setItem("userName", fullName); localStorage.setItem("userRole", "User"); localStorage.setItem("userId", userId); 
+                redirectUser("User");
+            } else { alert("❌ เกิดข้อผิดพลาดในการบันทึก"); btn.innerText = "✅ ยืนยันข้อมูล & เข้าใช้งาน"; btn.disabled = false; }
+        } catch (error) { alert("❌ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้"); btn.innerText = "✅ ยืนยันข้อมูล & เข้าใช้งาน"; btn.disabled = false; }
     }
 
     function showError(main, sub) {
-        document.getElementById('spinnerIcon').style.display = "none";
-        document.getElementById('pulseRing').style.display = "none";
-        document.getElementById('mainText').innerText = "❌ " + main;
-        document.getElementById('mainText').classList.add("text-danger");
+        document.getElementById('spinnerIcon').style.display = "none"; document.getElementById('pulseRing').style.display = "none";
+        document.getElementById('mainText').innerText = "❌ " + main; document.getElementById('mainText').classList.add("text-danger");
         document.getElementById('subText').innerText = sub;
     }
 </script>
