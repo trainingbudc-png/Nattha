@@ -9,53 +9,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-user.css">
     <style>
-        /* 🚨 เติม !important บังคับสีดำสนิท 100% สำหรับปุ่มยืนยันด้านล่าง */
-        .btn-confirm { 
-            background-color: #000000 !important; 
-            color: #ffffff !important; 
-            border-radius: 12px; 
-            padding: 15px; 
-            font-weight: bold; 
-            width: 100%; 
-            font-size: 1.1rem; 
-            transition: 0.3s; 
-            border: none; 
-            margin-top: 20px; 
-        }
-        .btn-confirm:hover { 
-            background-color: #1a1a1a !important; 
-            color: #ffffff !important; 
-            transform: translateY(-2px); 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
-        }
-        /* 🚨 บังคับเปลี่ยนสีกล่องติ๊กของ Bootstrap เป็นสีเทาจาง */
-        .form-check-input:checked {
-            background-color: #6c757d !important; 
-            border-color: #6c757d !important;
-        }
+        .btn-confirm { background-color: #000000 !important; color: #ffffff !important; border-radius: 12px; padding: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; border: none; margin-top: 20px; }
+        .btn-confirm:hover { background-color: #1a1a1a !important; color: #ffffff !important; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .form-check-input:checked { background-color: #6c757d !important; border-color: #6c757d !important; }
 		body { background: #f8f9fa; font-family: 'Kanit', sans-serif; padding: 20px; }
         .confirm-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 900px; margin: auto; border: 1px solid #e9ecef; }
         .info-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 12px; padding: 15px 10px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: stretch; }
         .info-label { font-size: 0.85rem; color: #6c757d; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
         .info-value { font-size: 1.05rem; font-weight: bold; color: #212529; word-break: break-word; }
         .divider { width: 1px; background-color: #dee2e6; }
-        
         .ipad-card { transition: all 0.3s ease; border-color: #dee2e6; }
         .ipad-card.active-card { border-color: #212529 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.08) !important; transform: translateY(-2px); }
         .select-ipad { width: 26px !important; height: 26px !important; cursor: pointer; accent-color: #212529; transition: transform 0.2s; }
         .check-item { width: 22px !important; height: 22px !important; cursor: pointer; accent-color: #212529; }
-
-        /* 🚨 เอฟเฟกต์ปุ่มตอนกด "ติ๊กครบ" (สีทึบ) */
-        .btn-ticked-all {
-            background-color: #212529 !important;
-            color: white !important;
-        }
-
-        @media screen and (max-width: 768px) {
-            .confirm-card { padding: 20px; }
-            .info-box { flex-direction: column; gap: 15px; }
-            .divider { width: 100%; height: 1px; }
-        }
+        .btn-ticked-all { background-color: #212529 !important; color: white !important; }
+        @media screen and (max-width: 768px) { .confirm-card { padding: 20px; } .info-box { flex-direction: column; gap: 15px; } .divider { width: 100%; height: 1px; } }
     </style>
 </head>
 <body>
@@ -69,12 +37,7 @@
         <div class="text-center w-50">
             <div class="info-label">👤 ผู้ขอเบิกยืม</div>
             <div id="displayUserName" class="info-value">กำลังโหลด...</div>
-            
-            <div id="proxyAlert" class="mt-2" style="display: none;">
-                <span class="badge bg-warning text-dark border border-warning shadow-sm" style="font-size: 0.8rem; padding: 5px 10px;">
-                    🤝 รับแทนโดย: <span id="proxyNameDisplay" class="fw-bold"></span>
-                </span>
-            </div>
+            <div id="proxyAlert" class="mt-2" style="display: none;"><span class="badge bg-warning text-dark border border-warning shadow-sm" style="font-size: 0.8rem; padding: 5px 10px;">🤝 รับแทนโดย: <span id="proxyNameDisplay" class="fw-bold"></span></span></div>
         </div>
         <div class="divider"></div>
         <div class="text-center w-50">
@@ -101,36 +64,24 @@
 
     async function initSystem() {
         const userId = localStorage.getItem("userId");
-        if (!userId) {
-            localStorage.setItem("pendingUrl", window.location.href);
-            window.location.replace("index.html");
-            return;
-        }
+        if (!userId) { localStorage.setItem("pendingUrl", window.location.href); window.location.replace("index.html"); return; }
 
         try {
-            // 🚨 เปลี่ยนให้เข้าคิวโหลดทีละเส้น ป้องกัน Google รวน
             const syncData = await callAPI({ action: "checkRole", userId: userId }).catch(() => ({ success: false }));
             const res = await callAPI({ action: "getStep1Data", reqId: reqId });
 
-            if (syncData.success && syncData.name) {
-                localStorage.setItem("userName", syncData.name);
-                localStorage.setItem("userRole", syncData.role);
-            }
-
+            if (syncData.success && syncData.name) { localStorage.setItem("userName", syncData.name); localStorage.setItem("userRole", syncData.role); }
             currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน";
             isAdmin = localStorage.getItem("userRole") === "Admin";
 
             if (res.reqStatus && res.reqStatus !== "Step[1]") {
-                Swal.fire("แจ้งเตือน", `รายการนี้รับเครื่องไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => {
-                    window.location.href = isAdmin ? "admin.html" : "user.html";
-                });
+                Swal.fire("แจ้งเตือน", `รายการนี้รับเครื่องไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => { window.location.href = isAdmin ? "admin.html" : "user.html"; });
                 return;
             }
 
             let originalBorrower = res.userName || "ไม่ระบุ";
             document.getElementById('displayUserName').innerText = originalBorrower;
             document.getElementById('displayAdminName').innerText = res.adminName || "ไม่ระบุ";
-
             globalOwnerName = originalBorrower;
             const currentLoggerId = userId; 
 
@@ -140,12 +91,13 @@
             }
 
             const container = document.getElementById('itemList');
-            container.innerHTML = ""; 
-
+            
+            // ⚡ อัปเกรดสะสมโค้ด HTML แทนการแทรกทีละบรรทัด
             if(res.data && res.data.length > 0) {
+                let htmlContent = ""; 
                 res.data.forEach(item => {
                     let adminBtn = isAdmin ? `<button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill shadow-sm" onclick="tickAllInCard(this)">ติ๊กครบ</button>` : '';
-                    container.innerHTML += `
+                    htmlContent += `
                     <div class="ipad-card bg-white border border-2 rounded-4 overflow-hidden transition-all" data-ipad="${item.ipadId}">
                         <div class="bg-light border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center gap-3">
@@ -156,133 +108,62 @@
                         </div>
                         <div class="collapse" id="collapse-${item.ipadId}">
                             <div class="p-4 row row-cols-2 row-cols-sm-4 g-4 text-center">
-                                <div class="col">
-                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Drive</span>
-                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    </label>
-                                </div>
-                                <div class="col">
-                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">File</span>
-                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    </label>
-                                </div>
-                                <div class="col">
-                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Img</span>
-                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    </label>
-                                </div>
-                                <div class="col">
-                                    <label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;">
-                                        <span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Safari</span>
-                                        <input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0">
-                                    </label>
-                                </div>
+                                <div class="col"><label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;"><span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Drive</span><input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0"></label></div>
+                                <div class="col"><label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;"><span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">File</span><input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0"></label></div>
+                                <div class="col"><label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;"><span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Img</span><input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0"></label></div>
+                                <div class="col"><label class="d-flex flex-column align-items-center gap-2 mb-0 w-100" style="cursor: pointer;"><span class="fw-bold text-dark text-truncate w-100" style="font-size: 0.9rem;">Safari</span><input type="checkbox" class="check-item form-check-input m-0 shadow-sm flex-shrink-0"></label></div>
                             </div>
                         </div>
                     </div>`;
                 });
+                container.innerHTML = htmlContent;
             } else {
                 container.innerHTML = `<div class="text-center text-danger py-4">❌ ไม่พบรายการเครื่อง</div>`;
             }
         } catch (error) {
-            document.getElementById('itemList').innerHTML = `
-                <div class="text-danger py-4 text-center fw-bold">
-                    ❌ ไม่สามารถเชื่อมต่อฐานข้อมูลได้<br>
-                    <span class="text-muted fw-normal" style="font-size: 0.85rem;">โปรดตรวจสอบลิงก์ API_URL หรือการ Deploy สคริปต์ใหม่</span><br>
-                    <span class="text-muted fw-normal" style="font-size: 0.75rem;">(${error.message})</span>
-                </div>
-            `;
-            console.error("API Error:", error);
+            document.getElementById('itemList').innerHTML = `<div class="text-danger py-4 text-center fw-bold">❌ ไม่สามารถเชื่อมต่อฐานข้อมูลได้<br><span class="text-muted fw-normal" style="font-size: 0.85rem;">โปรดตรวจสอบลิงก์ API_URL</span></div>`;
         }
     }
 
     initSystem();
 
     function toggleCard(checkbox) {
-        const targetId = checkbox.dataset.target;
-        const collapseElement = document.getElementById(targetId);
-        const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseElement, { toggle: false });
-        const card = checkbox.closest('.ipad-card');
-        
-        if (checkbox.checked) {
-            bsCollapse.show();
-            card.classList.add('active-card');
-        } else {
-            bsCollapse.hide();
-            card.classList.remove('active-card');
-            collapseElement.querySelectorAll('.check-item').forEach(cb => cb.checked = false); 
-        }
+        const targetId = checkbox.dataset.target; const collapseElement = document.getElementById(targetId);
+        const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseElement, { toggle: false }); const card = checkbox.closest('.ipad-card');
+        if (checkbox.checked) { bsCollapse.show(); card.classList.add('active-card'); } 
+        else { bsCollapse.hide(); card.classList.remove('active-card'); collapseElement.querySelectorAll('.check-item').forEach(cb => cb.checked = false); }
     }
 
     function tickAllInCard(btn) {
-        const card = btn.closest('.ipad-card');
-        const mainCheck = card.querySelector('.select-ipad');
-        if (!mainCheck.checked) {
-            mainCheck.checked = true;
-            toggleCard(mainCheck);
-        }
+        const card = btn.closest('.ipad-card'); const mainCheck = card.querySelector('.select-ipad');
+        if (!mainCheck.checked) { mainCheck.checked = true; toggleCard(mainCheck); }
         card.querySelectorAll('.check-item').forEach(cb => cb.checked = true);
-
         btn.classList.add('btn-ticked-all');
-
-        card.querySelectorAll('.check-item').forEach(cb => {
-            cb.addEventListener('change', function() {
-                if(!this.checked) {
-                    btn.classList.remove('btn-ticked-all');
-                }
-            }, { once: true });
-        });
+        card.querySelectorAll('.check-item').forEach(cb => { cb.addEventListener('change', function() { if(!this.checked) btn.classList.remove('btn-ticked-all'); }, { once: true }); });
     }
 
     async function submitReceipt() {
-        let items = [];
-        let isAllChecked = true; 
-
+        let items = []; let isAllChecked = true; 
         document.querySelectorAll('.select-ipad:checked').forEach(ipad => {
-            const card = ipad.closest('.ipad-card');
-            const checks = Array.from(card.querySelectorAll('.check-item'));
+            const card = ipad.closest('.ipad-card'); const checks = Array.from(card.querySelectorAll('.check-item'));
             if (checks.some(c => !c.checked)) isAllChecked = false;
             const checkValues = checks.map(c => c.checked ? "☑" : "☐");
             items.push({ ipadId: card.dataset.ipad, checklist: checkValues.join(",") });
         });
 
-        if (items.length === 0) {
-            Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาติ๊กเลือกหน้าชื่อ iPad อย่างน้อย 1 เครื่องก่อนกดยืนยันครับ!", icon: "warning", confirmButtonColor: "#212529" });
-            return;
-        }
-
-        if (!isAllChecked) {
-            Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาตรวจสอบและติ๊กรายการให้ครบทุกข้อ สำหรับ iPad ที่เลือกครับ!", icon: "warning", confirmButtonColor: "#212529" });
-            return;
-        }
+        if (items.length === 0) return Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาติ๊กเลือกหน้าชื่อ iPad อย่างน้อย 1 เครื่องก่อนกดยืนยันครับ!", icon: "warning", confirmButtonColor: "#212529" });
+        if (!isAllChecked) return Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาตรวจสอบและติ๊กรายการให้ครบทุกข้อ สำหรับ iPad ที่เลือกครับ!", icon: "warning", confirmButtonColor: "#212529" });
 
         const btn = document.getElementById('btnSubmit');
         btn.innerText = "กำลังบันทึกข้อมูล... ⏳"; btn.disabled = true;
 
         try {
-            const result = await callAPI({ 
-                action: "updateStatus", 
-                reqId: reqId, 
-                items: items, 
-                note: "", 
-                actorName: currentLoggerName,
-                ownerName: globalOwnerName,
-                userId: localStorage.getItem("userId") 
-            });
+            const result = await callAPI({ action: "updateStatus", reqId: reqId, items: items, note: "", actorName: currentLoggerName, ownerName: globalOwnerName, userId: localStorage.getItem("userId") });
             if (result.status === "success") {
                 let nextPage = isAdmin ? "admin.html" : "user.html";
                 showNavyAlert("รับเครื่องเรียบร้อย!", `หมายเลขรายการ : <b>${reqId}</b><br>ระบบบันทึกการรับเครื่องจำนวน : ${items.length} เครื่อง`, "success", nextPage);
-            } else { 
-                Swal.fire("❌ เกิดข้อผิดพลาด", result.message || "ในการบันทึกข้อมูล", "error"); 
-                btn.innerText = "ยืนยันการรับเครื่อง"; btn.disabled = false; 
-            }
-        } catch (error) {
-            Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); 
-            btn.innerText = "ยืนยันการรับเครื่อง"; btn.disabled = false;
-        }
+            } else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message || "ในการบันทึกข้อมูล", "error"); btn.innerText = "ยืนยันการรับเครื่อง"; btn.disabled = false; }
+        } catch (error) { Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); btn.innerText = "ยืนยันการรับเครื่อง"; btn.disabled = false; }
     }
 </script>
 </body>
