@@ -69,17 +69,13 @@
         try {
             const res = await callAPI({ action: "getData" });
             const tbody = document.getElementById("requestListBody");
-            tbody.innerHTML = "";
 
             if (res.status === "success" && res.data && res.data.length > 0) {
                 const pendingRequests = res.data.filter(item => {
                     let dbName = item.name ? item.name.split("(")[0].trim() : "";
                     let localName = currentUserName ? currentUserName.split("(")[0].trim() : "";
 
-                    let matchUser = (item.userId && item.userId === currentUserId) || 
-                                    (dbName === localName) || 
-                                    (item.name && item.name.includes(localName));
-                                    
+                    let matchUser = (item.userId && item.userId === currentUserId) || (dbName === localName) || (item.name && item.name.includes(localName));
                     let isValidReq = item.reqId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ";
                     let isStatusMatch = item.status && item.status.includes("Step[1]");
                     
@@ -91,8 +87,10 @@
                     return;
                 }
 
+                let htmlContent = ""; // ⚡ ประกาศตัวแปรสะสม HTML
+
                 pendingRequests.forEach(req => {
-                    let dateStr = req.timestamp ? new Date(req.timestamp).toLocaleString("th-TH") : "-";
+                    let dateStr = req.timestamp ? new Date(req.timestamp).toLocaleString("th-TH").replace(/:\d{2}$/, '') : "-";
                     
                     let typeHtml = '<span class="text-muted">-</span>';
                     let idsHtml = '<span class="text-muted">-</span>';
@@ -102,32 +100,19 @@
                         let normalIds = [], airIds = [];
 
                         rawIpads.forEach(id => {
-                            let numMatch = id.match(/\d+/); 
-                            let num = numMatch ? numMatch[0] : id; 
-                            if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) {
-                                airIds.push(num);
-                            } else {
-                                normalIds.push(num);
-                            }
+                            let numMatch = id.match(/\d+/); let num = numMatch ? numMatch[0] : id; 
+                            if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num);
+                            else normalIds.push(num);
                         });
 
-                        let typeArr = [];
-                        let idsArr = [];
+                        let typeArr = [], idsArr = [];
+                        if (normalIds.length > 0) { typeArr.push(`<div class="fw-bold text-danger mb-1">iPad</div>`); idsArr.push(`<div class="mb-1 text-dark" style="word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`); }
+                        if (airIds.length > 0) { typeArr.push(`<div class="fw-bold text-primary mb-1">Air+APC</div>`); idsArr.push(`<div class="mb-1 text-dark" style="word-break: break-word; line-height: 1.6;">${airIds.join(', ')}</div>`); }
                         
-                        if (normalIds.length > 0) {
-                            typeArr.push(`<div class="fw-bold text-danger mb-1">iPad</div>`);
-                            idsArr.push(`<div class="mb-1 text-dark" style="word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`);
-                        }
-                        if (airIds.length > 0) {
-                            typeArr.push(`<div class="fw-bold text-primary mb-1">Air+APC</div>`);
-                            idsArr.push(`<div class="mb-1 text-dark" style="word-break: break-word; line-height: 1.6;">${airIds.join(', ')}</div>`);
-                        }
-                        
-                        typeHtml = typeArr.join('');
-                        idsHtml = idsArr.join('');
+                        typeHtml = typeArr.join(''); idsHtml = idsArr.join('');
                     }
 
-                    tbody.innerHTML += `
+                    htmlContent += `
                         <tr class="text-center align-middle">
                             <td data-label="เลขรายการ"><div class="fw-bold text-dark">${req.reqId}</div></td>
                             <td data-label="วันที่และเวลา"><div class="text-muted" style="font-size: 0.9rem;">${dateStr}</div></td>
@@ -140,6 +125,8 @@
                         </tr>
                     `;
                 });
+                
+                tbody.innerHTML = htmlContent; // ⚡ วาง HTML รวดเดียวตอนจบ
             } else {
                 tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5">ยังไม่มีรายการค้างดำเนินการ</td></tr>';
             }
