@@ -1,5 +1,5 @@
 // =========================================
-// 📌 ไฟล์ script.js : แกนกลางจัดการระบบหน้าเว็บ
+// 📌 ไฟล์ script.js : แกนกลางจัดการระบบหน้าเว็บ (อัปเกรดความเร็ว Fire & Forget)
 // =========================================
 const API_URL = "https://script.google.com/macros/s/AKfycbwTYZGGb-XQ1jh301IlRJ15aDlvQm3lqxrlGUSFYG5ColRGichCODQIFM4e6cUxY6kU/exec"; 
 const LIFF_ID = "2010557323-PAyWhGxW";
@@ -23,14 +23,40 @@ function hideLoading() {
     if (overlay) overlay.style.display = "none";
 }
 
+// 🚀 อัปเกรด callAPI: แยกระบบดึงข้อมูล (ต้องรอ) กับ ระบบบันทึก (ยิงแล้วจบเลย ไม่ต้องรอ)
 async function callAPI(payload) {
     try {
+        // เช็คว่าคำสั่งนี้คือการบันทึกข้อมูลหรือไม่
+        const isSaveAction = payload.action && (
+            payload.action.startsWith("saveStep") || 
+            payload.action === "updateStatus" || 
+            payload.action === "reportIssue" || 
+            payload.action === "registerUser" ||
+            payload.action === "updateUserProfile"
+        );
+
+        if (isSaveAction) {
+            // ⚡ ยิงข้อมูลไปหา Google แล้ว "ไม่รอ" คำตอบ
+            fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload),
+                keepalive: true // 🚨 บังคับส่งข้อมูลให้เสร็จแม้ผู้ใช้จะปิดหรือเปลี่ยนหน้าเว็บ
+            }).catch(e => console.warn("Background Push:", e));
+            
+            // แกล้งหน่วงเวลา 0.5 วินาทีให้ดูเป็นธรรมชาติ แล้วเด้ง Success เลย
+            await new Promise(r => setTimeout(r, 500));
+            return { status: "success", reqId: payload.reqId || "-" };
+        }
+
+        // 📥 ถ้าเป็นการดึงข้อมูล (โหลดตาราง/โหลดรายชื่อ) ให้รอคำตอบจากเซิร์ฟเวอร์ตามปกติ
         const res = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify(payload)
         });
         return await res.json();
+        
     } catch (error) {
         console.error("API Error:", error);
         throw error;
@@ -90,7 +116,6 @@ function showNavyAlert(title, htmlText, iconType, redirectUrl = null) {
     }
 }
 
-// ⚡ เพิ่มระบบ Debounce ลดการกระตุกเวลาพิมพ์ค้นหา
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
