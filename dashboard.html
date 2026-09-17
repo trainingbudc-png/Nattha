@@ -32,6 +32,8 @@
         .pagination .page-item.active .page-link { background-color: var(--admin-main); border-color: var(--admin-main); color: white; }
         .pagination .page-link:hover { background-color: #e0e7ff; color: var(--admin-main); }
         .mobile-card-view { display: none; }
+        
+        /* 📱 ปรับ UI มือถือให้เป็น Card เรียบหรู ดูง่าย */
         @media (max-width: 992px) {
             .dashboard-container { padding: 15px; }
             .desktop-table-view { display: none !important; }
@@ -61,11 +63,10 @@
             </div>
         </div>
 
-        <div class="filter-card p-4">
+        <div class="filter-card p-4 shadow-sm">
             <div class="row g-3 align-items-end">
                 <div class="col-md-5 col-12">
                     <label class="form-label text-muted fw-bold mb-1" style="font-size: 0.85rem;">🔍 ค้นหา (เลขรายการ / ชื่อ)</label>
-                    <!-- ⚡ เอา onkeyup ออก -->
                     <input type="text" id="searchInput" class="form-control border-2" placeholder="พิมพ์ข้อความที่ต้องการหา...">
                 </div>
                 <div class="col-md-4 col-12">
@@ -104,13 +105,13 @@
                     </tr>
                 </thead>
                 <tbody id="dashboardBody">
-                    <tr><td colspan="12" class="text-center py-5 text-muted">กำลังดึงและประกอบข้อมูล... ⏳</td></tr>
+                    <tr><td colspan="12" class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
 
         <div class="mobile-card-view mt-3" id="mobileCardContainer">
-            <div class="text-center py-5 text-muted bg-white rounded-4 border shadow-sm">กำลังดึงข้อมูล... ⏳</div>
+            <div class="text-center py-5 text-muted bg-white rounded-4 border shadow-sm fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</div>
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-3 pagination-container">
@@ -123,17 +124,14 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="script.js"></script>
 <script>
-    let allDashboardData = [];
-    let filteredData = []; 
-    let currentPage = 1;
-    const itemsPerPage = 20; 
+    let allDashboardData = []; let filteredData = []; let currentPage = 1; const itemsPerPage = 20; 
 
     window.onload = function() {
         if(localStorage.getItem("userRole") !== "Admin") { window.location.href = "index.html"; return; }
-        
-        // ⚡ เปิดใช้งาน Debounce
-        document.getElementById("searchInput").addEventListener("keyup", debounce(applyFilters, 300));
-        fetchData();
+        const searchInput = document.getElementById("searchInput");
+        if(searchInput && typeof debounce === "function") { searchInput.addEventListener("keyup", debounce(applyFilters, 400)); } 
+        else if (searchInput) { searchInput.addEventListener("change", applyFilters); }
+        setTimeout(() => { fetchData(); }, 100);
     };
 
     function formatStepCell(text) {
@@ -156,23 +154,16 @@
     }
 
     function fetchData() {
-        const tbody = document.getElementById("dashboardBody");
-        const mobileContainer = document.getElementById("mobileCardContainer");
-        
-        tbody.innerHTML = '<tr><td colspan="12" class="text-center py-5 text-muted">กำลังประมวลผลข้อมูล... ⏳</td></tr>';
-        mobileContainer.innerHTML = '<div class="text-center py-5 text-muted bg-white rounded-4 border shadow-sm">กำลังประมวลผลข้อมูล... ⏳</div>';
+        const tbody = document.getElementById("dashboardBody"); const mobileContainer = document.getElementById("mobileCardContainer");
+        tbody.innerHTML = '<tr><td colspan="12" class="text-center py-5 text-muted fw-bold">กำลังดาวน์โหลดข้อมูล... ⏳</td></tr>';
+        mobileContainer.innerHTML = '<div class="text-center py-5 text-muted bg-white rounded-4 border shadow-sm fw-bold">กำลังดาวน์โหลดข้อมูล... ⏳</div>';
         
         fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getDashboardData" }) })
         .then(res => res.json())
         .then(res => {
-            if (res.status === "success" && res.data) {
-                allDashboardData = res.data;
-                applyFilters(); 
-            } else {
-                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-muted py-5">ยังไม่มีข้อมูลรายการ</td></tr>';
-                mobileContainer.innerHTML = '<div class="text-center py-5 text-muted bg-white rounded-4 border shadow-sm">ยังไม่มีข้อมูลรายการ</div>';
-            }
-        });
+            if (res.status === "success" && res.data) { allDashboardData = res.data; applyFilters(); } 
+            else { tbody.innerHTML = '<tr><td colspan="12" class="text-center text-muted py-5">ยังไม่มีข้อมูลรายการ</td></tr>'; mobileContainer.innerHTML = '<div class="text-center py-5 text-muted bg-white rounded-4 border shadow-sm">ยังไม่มีข้อมูลรายการ</div>'; }
+        }).catch(err => { tbody.innerHTML = '<tr><td colspan="12" class="text-center text-danger py-5">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>'; mobileContainer.innerHTML = '<div class="text-center py-5 text-danger bg-white rounded-4 border shadow-sm">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>'; });
     }
 
     function applyFilters() {
@@ -192,61 +183,36 @@
             let matchEm = emCheck ? (item.emergency === "☑" || item.emergency === "✅") : true;
             return matchSearch && matchStatus && matchEm;
         });
-        currentPage = 1;
-        renderTable();
-        renderMobileCards();
+        currentPage = 1; requestAnimationFrame(() => { renderTable(); renderMobileCards(); });
     }
 
-    // ⚡ อัปเกรดสะสมโค้ด HTML แทน += ทีละรอบ
     function renderTable() {
         const tbody = document.getElementById("dashboardBody");
-        if (filteredData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="12" class="text-center text-danger fw-bold py-5" style="border: none;">❌ ไม่พบรายการที่ตรงกับเงื่อนไข</td></tr>';
-            document.getElementById("paginationControls").innerHTML = "";
-            return;
-        }
-
-        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
-        const pageData = filteredData.slice(startIndex, endIndex);
-
-        let htmlContent = ""; // ⚡
-
+        if (filteredData.length === 0) { tbody.innerHTML = '<tr><td colspan="12" class="text-center text-danger fw-bold py-5" style="border: none;">❌ ไม่พบรายการที่ตรงกับเงื่อนไข</td></tr>'; document.getElementById("paginationControls").innerHTML = ""; return; }
+        const totalPages = Math.ceil(filteredData.length / itemsPerPage); const startIndex = (currentPage - 1) * itemsPerPage; const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+        const pageData = filteredData.slice(startIndex, endIndex); let htmlContent = "";
         pageData.forEach(item => {
-            htmlContent += `
-                <tr>
-                    <td class="fw-bold text-dark col-req text-center">${item.reqId.replace("REQ-", "")}</td>
-                    ${formatStepCell(item.step1)} ${formatStepCell(item.step2)}
-                    ${formatStepCell(item.step3)} ${formatStepCell(item.step4)}
-                    ${formatStepCell(item.step5)}
-                    <td class="col-status text-center">${formatStatus(item.status)}</td>
-                    <td class="fw-bold text-dark col-name text-center">${item.preparer || "-"}</td>
-                    <td class="fw-bold text-dark col-name text-start ps-3">${item.receiver || "-"}</td>
-                    <td class="col-note text-start" style="color: var(--admin-main);">${item.note1 || '<span class="text-muted fw-normal">-</span>'}</td>
-                    <td class="col-note text-start text-warning">${item.note3 || '<span class="text-muted fw-normal">-</span>'}</td>
-                    <td class="col-em text-center">${formatEmergency(item.emergency)}</td>
-                </tr>
-            `;
+            htmlContent += `<tr>
+                <td class="fw-bold text-dark col-req text-center">${item.reqId.replace("REQ-", "")}</td>
+                ${formatStepCell(item.step1)} ${formatStepCell(item.step2)} ${formatStepCell(item.step3)} ${formatStepCell(item.step4)} ${formatStepCell(item.step5)}
+                <td class="col-status text-center">${formatStatus(item.status)}</td>
+                <td class="fw-bold text-dark col-name text-center">${item.preparer || "-"}</td>
+                <td class="fw-bold text-dark col-name text-start ps-3">${item.receiver || "-"}</td>
+                <td class="col-note text-start" style="color: var(--admin-main);">${item.note1 || '<span class="text-muted fw-normal">-</span>'}</td>
+                <td class="col-note text-start text-warning">${item.note3 || '<span class="text-muted fw-normal">-</span>'}</td>
+                <td class="col-em text-center">${formatEmergency(item.emergency)}</td>
+            </tr>`;
         });
         tbody.innerHTML = htmlContent;
-
         document.getElementById("pageInfo").innerHTML = `แสดงรายการ <span class="fw-bold text-danger">${startIndex + 1}</span> ถึง <span class="fw-bold text-danger">${endIndex}</span> จากทั้งหมด <span class="fw-bold text-danger">${filteredData.length}</span> รายการ`;
         renderPaginationControls(totalPages);
     }
 
-    // ⚡ อัปเกรดสะสมโค้ด HTML (มือถือ)
     function renderMobileCards() {
         const container = document.getElementById("mobileCardContainer");
-        if (filteredData.length === 0) {
-            container.innerHTML = '<div class="text-center text-danger fw-bold py-5 bg-white rounded-4 border shadow-sm">❌ ไม่พบรายการที่ตรงกับเงื่อนไข</div>';
-            return;
-        }
-
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+        if (filteredData.length === 0) { container.innerHTML = '<div class="text-center text-danger fw-bold py-5 bg-white rounded-4 border shadow-sm">❌ ไม่พบรายการที่ตรงกับเงื่อนไข</div>'; return; }
+        const startIndex = (currentPage - 1) * itemsPerPage; const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
         const pageData = filteredData.slice(startIndex, endIndex);
-
         const formatMobileStep = (text) => {
             if (!text || text.trim() === "") return `<div class="dash-step-status text-muted">-</div><div class="dash-step-time text-muted">-</div>`;
             let parts = text.split(/<br\s*\/?>|\\n|\n/);
@@ -254,17 +220,14 @@
             let timePart = parts[1] ? parts[1].trim().replace(/:\d{2}$/, '') : "";   
             return `<div class="dash-step-status">${statusPart}</div><div class="dash-step-time">${timePart}</div>`;
         };
-
-        let htmlContent = ""; // ⚡
-
+        let htmlContent = "";
         pageData.forEach((item, index) => {
             let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "M" + index;
             let isEmergencyTag = (item.emergency === "☑" || item.emergency === "✅") ? `<div class="badge bg-danger text-white mt-1 mb-2 d-inline-block px-3 py-1 shadow-sm"><span class="fs-6">🚨</span> เคสฉุกเฉิน</div>` : "";
-
             htmlContent += `
-                <div class="dash-mobile-card p-3">
+                <div class="dash-mobile-card p-3 shadow-sm">
                     <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
-                        <div><div class="fw-bold text-dark" style="font-size: 1.25rem; line-height: 1.2;">${item.reqId}</div>${isEmergencyTag}</div>
+                        <div><div class="fw-bold text-dark" style="font-size: 1.25rem; line-height: 1.2; color: var(--admin-main) !important;">${item.reqId}</div>${isEmergencyTag}</div>
                         <div class="text-end">${formatStatus(item.status)}</div>
                     </div>
                     <div class="row g-2 mb-3">
@@ -288,29 +251,20 @@
                             <div class="dash-step-row"><div class="dash-step-label">Step 4 (คืน)</div>${formatMobileStep(item.step4)}</div>
                             <div class="dash-step-row"><div class="dash-step-label">Step 5 (ตรวจ)</div>${formatMobileStep(item.step5)}</div>
                             <div class="mt-3 p-3 bg-white rounded-3 border shadow-sm">
-                                <div class="mb-3 pb-2 border-bottom">
-                                    <div class="text-danger fw-bold mb-1" style="font-size: 0.8rem;">📝 หมายเหตุ (เตรียม):</div>
-                                    <div class="text-dark" style="font-size: 0.85rem; line-height: 1.4;">${item.note1 || '-'}</div>
-                                </div>
-                                <div>
-                                    <div class="text-warning fw-bold mb-1" style="font-size: 0.8rem;">📝 หมายเหตุ (ก่อนสอบ):</div>
-                                    <div class="text-dark" style="font-size: 0.85rem; line-height: 1.4;">${item.note3 || '-'}</div>
-                                </div>
+                                <div class="mb-3 pb-2 border-bottom"><div class="text-danger fw-bold mb-1" style="font-size: 0.8rem;">📝 หมายเหตุ (เตรียม):</div><div class="text-dark" style="font-size: 0.85rem; line-height: 1.4;">${item.note1 || '-'}</div></div>
+                                <div><div class="text-warning fw-bold mb-1" style="font-size: 0.8rem;">📝 หมายเหตุ (ก่อนสอบ):</div><div class="text-dark" style="font-size: 0.85rem; line-height: 1.4;">${item.note3 || '-'}</div></div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
         });
         container.innerHTML = htmlContent;
     }
 
     function renderPaginationControls(totalPages) {
-        const paginationEl = document.getElementById("paginationControls");
-        let html = '';
+        const paginationEl = document.getElementById("paginationControls"); let html = '';
         html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})">«</a></li>`;
-        let startPage = Math.max(1, currentPage - 2);
-        let endPage = Math.min(totalPages, currentPage + 2);
+        let startPage = Math.max(1, currentPage - 2); let endPage = Math.min(totalPages, currentPage + 2);
         for (let i = startPage; i <= endPage; i++) html += `<li class="page-item ${currentPage === i ? 'active' : ''}"><a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a></li>`;
         html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}"><a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})">»</a></li>`;
         paginationEl.innerHTML = html;
@@ -319,24 +273,17 @@
     function changePage(page) {
         const totalPages = Math.ceil(filteredData.length / itemsPerPage);
         if (page < 1 || page > totalPages) return;
-        currentPage = page;
-        renderTable();
-        renderMobileCards();
+        currentPage = page; requestAnimationFrame(() => { renderTable(); renderMobileCards(); });
     }
 
     function exportToExcel() {
         if (filteredData.length === 0) { Swal.fire("แจ้งเตือน", "ไม่มีข้อมูลสำหรับดาวน์โหลด", "warning"); return; }
         const cleanText = (text) => text ? text.replace(/<br\s*\/?>/gi, ' ').replace(/\\n|\n/g, ' ').replace(/<[^>]*>?/gm, '').trim() : "";
-        const exportData = filteredData.map(item => ({
-            "เลขรายการ": item.reqId, "Step 1 | เตรียม": cleanText(item.step1), "Step 2 | ยืม": cleanText(item.step2), "Step 3 | ก่อนสอบ": cleanText(item.step3), "Step 4 | คืน": cleanText(item.step4), "Step 5 | ตรวจ": cleanText(item.step5),
-            "สถานะรวม": item.status, "ผู้เตรียมเครื่อง": cleanText(item.preparer), "ผู้ที่จะมารับเครื่อง": cleanText(item.receiver), "หมายเหตุ (เตรียม)": cleanText(item.note1), "หมายเหตุ (ก่อนสอบ)": cleanText(item.note3),
-            "ยืมฉุกเฉิน": (item.emergency === "☑" || item.emergency === "✅") ? "ใช่" : "ไม่ใช่"
-        }));
+        const exportData = filteredData.map(item => ({ "เลขรายการ": item.reqId, "Step 1 | เตรียม": cleanText(item.step1), "Step 2 | ยืม": cleanText(item.step2), "Step 3 | ก่อนสอบ": cleanText(item.step3), "Step 4 | คืน": cleanText(item.step4), "Step 5 | ตรวจ": cleanText(item.step5), "สถานะรวม": item.status, "ผู้เตรียมเครื่อง": cleanText(item.preparer), "ผู้ที่จะมารับเครื่อง": cleanText(item.receiver), "หมายเหตุ (เตรียม)": cleanText(item.note1), "หมายเหตุ (ก่อนสอบ)": cleanText(item.note3), "ยืมฉุกเฉิน": (item.emergency === "☑" || item.emergency === "✅") ? "ใช่" : "ไม่ใช่" }));
         const worksheet = XLSX.utils.json_to_sheet(exportData);
         worksheet['!cols'] = [{wch: 12}, {wch: 22}, {wch: 22}, {wch: 22}, {wch: 22}, {wch: 22}, {wch: 15}, {wch: 25}, {wch: 35}, {wch: 25}, {wch: 25}, {wch: 12}];
         const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, worksheet, "Dashboard_Data");
-        const d = new Date();
-        XLSX.writeFile(workbook, `iPad_Report_${d.getFullYear()}${(d.getMonth()+1).toString().padStart(2,'0')}${d.getDate().toString().padStart(2,'0')}.xlsx`);
+        const d = new Date(); XLSX.writeFile(workbook, `iPad_Report_${d.getFullYear()}${(d.getMonth()+1).toString().padStart(2,'0')}${d.getDate().toString().padStart(2,'0')}.xlsx`);
     }
 </script>
 </body>
