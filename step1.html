@@ -191,7 +191,6 @@
 
             const select = document.getElementById("userNameSelect");
             
-            // ⚡ เปลี่ยนมาฝัง LINE ID ที่ Value ของ Dropdown
             if (userRes.status === "success" && userRes.data) {
                 userRes.data.sort((a, b) => a.name.localeCompare(b.name, 'th'));
                 let userHtml = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
@@ -326,8 +325,6 @@
 
     async function submitStep1() {
         const reqIdValue = document.getElementById("reqIdInput").value.trim(); 
-        
-        // ⚡ ดึงทั้ง ID และ Name จาก Dropdown
         const selectUser = document.getElementById("userNameSelect");
         const recipientId = selectUser.value;
         const recipientName = selectUser.options[selectUser.selectedIndex]?.text || "";
@@ -338,7 +335,7 @@
         const isEmergency = document.getElementById("emergencyCheck").checked;
         const emergencyNote = document.getElementById("emergencyNote").value.trim();
 
-        if(!recipientId) return Swal.fire("แจ้งเตือน", "กรุณาเลือกชื่อผู้ขอยืม", "warning"); // ⚡ เช็คจาก ID
+        if(!recipientId) return Swal.fire("แจ้งเตือน", "กรุณาเลือกชื่อผู้ขอยืม", "warning");
         if(selectedIpads.length === 0) return Swal.fire("แจ้งเตือน", "กรุณากดเลือก iPad อย่างน้อย 1 เครื่อง", "warning");
         if(isEmergency && !emergencyNote) return Swal.fire("แจ้งเตือน", "กรุณาระบุเหตุผลการยืมฉุกเฉินด้วยครับ", "warning");
         
@@ -357,12 +354,11 @@
         if(!allChecked) return Swal.fire("แจ้งเตือน", "กรุณาติ๊กเตรียมเครื่องให้ครบทุกข้อ ของทุกเครื่องที่เลือกครับ", "warning");
 
         const btn = document.getElementById("submitBtn");
-        btn.innerHTML = "กำลังบันทึกข้อมูล... ⏳"; btn.disabled = true;
+        btn.innerHTML = "กำลังดำเนินการ... ⏳"; btn.disabled = true;
 
         let finalNote = "-";
         if(isEmergency) finalNote = `🚨 [ยืมฉุกเฉิน] เหตุผล: ${emergencyNote}`;
 
-        // ⚡ เพิ่มการส่ง recipientId ไปพร้อมกับ payload
         const payload = { 
             action: "saveStep1", 
             reqId: reqIdValue !== "" ? reqIdValue : null, 
@@ -375,6 +371,7 @@
         };
 
         try {
+            // โค้ดส่วนดักจับ Fire and Forget (ไม่ต้องรอ ReqID)
             const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
             const rawText = await response.text(); 
             let res;
@@ -382,13 +379,18 @@
             try { res = JSON.parse(rawText); } 
             catch (parseErr) {
                 if (navigator.onLine) {
-                    Swal.fire({ title: "บันทึกสำเร็จ!", html: `ข้อมูลได้ถูกบันทึกลงระบบเรียบร้อยแล้ว<br><span style="font-size: 0.85rem; color: gray;">(เซิร์ฟเวอร์ตอบกลับล่าช้าเล็กน้อย)</span>`, icon: "success", confirmButtonColor: "#1e3a8a", allowOutsideClick: false }).then(() => { window.location.href = "admin.html"; });
+                    Swal.fire({ 
+                        title: "ส่งข้อมูลสำเร็จ!", 
+                        text: "ระบบกำลังดำเนินการบันทึกข้อมูลและส่งแจ้งเตือนครับ", 
+                        icon: "success", 
+                        confirmButtonColor: "#1e3a8a", 
+                        allowOutsideClick: false 
+                    }).then(() => { window.location.href = "admin.html"; });
                     return;
                 }
             }
 
-if(res && res.status === "success") {
-                // 🚨 เปลี่ยนแจ้งเตือนให้สั้นลง ไม่ต้องรอเลข ReqId จากฐานข้อมูล
+            if(res && res.status === "success") {
                 Swal.fire({ 
                     title: "ส่งข้อมูลสำเร็จ!", 
                     text: "ระบบกำลังดำเนินการบันทึกข้อมูลและส่งแจ้งเตือนครับ", 
@@ -399,6 +401,19 @@ if(res && res.status === "success") {
                 }).then(() => { window.location.href = "admin.html"; });
             } else {
                 Swal.fire("ข้อผิดพลาด", (res && res.message) ? res.message : "เกิดข้อผิดพลาดในการบันทึก", "error");
+                btn.innerHTML = "ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
+            }
+        } catch (err) {
+            if (navigator.onLine) {
+                Swal.fire({ 
+                    title: "ส่งข้อมูลสำเร็จ!", 
+                    text: `ระบบกำลังดำเนินการบันทึกข้อมูลและส่งแจ้งเตือนครับ`, 
+                    icon: "success", 
+                    confirmButtonColor: "#1e3a8a", 
+                    allowOutsideClick: false 
+                }).then(() => { window.location.href = "admin.html"; });
+            } else {
+                Swal.fire("ขัดข้อง", "ไม่สามารถเชื่อมต่ออินเทอร์เน็ตได้", "error");
                 btn.innerHTML = "ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
             }
         }
