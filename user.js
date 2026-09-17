@@ -14,7 +14,7 @@ async function loadUserTableData() {
     
     const currentUserId = localStorage.getItem("userId");
     try {
-        const res = await callAPI({ action: "getData" });
+        const res = await callAPI({ action: "getData" }); // ยิง API รอบเดียวใน script.js
         if (res.status === "success" && res.data && res.data.length > 0) {
             const myData = res.data.filter(item => {
                 let isValidReq = item.reqId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ";
@@ -35,10 +35,7 @@ async function loadUserTableData() {
                 if (statusTxt.includes("คืนแล้ว") || statusTxt.includes("เสร็จสิ้น") || statusTxt.includes("เคลียร์") || statusTxt.includes("ยกเลิก")) { historyList.push(item); } else { activeList.push(item); }
             });
 
-            requestAnimationFrame(() => {
-                renderActiveUserCards(activeList);
-                renderUserTableRows(historyList.slice(0, 5), historyTbody);
-            });
+            requestAnimationFrame(() => { renderActiveUserCards(activeList); renderUserTableRows(historyList.slice(0, 5), historyTbody); });
         } else {
             activeCardsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted bg-white rounded-4 border shadow-sm">ไม่มีรายการในระบบ</div>';
             historyTbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4" style="justify-content: center !important;">ไม่มีประวัติในระบบ</td></tr>';
@@ -58,8 +55,7 @@ function renderActiveUserCards(data) {
         let safeId = item.reqId ? item.reqId.replace(/[^a-zA-Z0-9]/g, '') : "R" + Math.floor(Math.random() * 10000);
         let formattedIpads = '<div class="d-flex justify-content-between"><span class="text-muted" style="font-size: 0.85rem;">อุปกรณ์:</span><span class="text-dark">-</span></div>';
         if (item.ipadId && item.ipadId.trim() !== "") {
-            let rawIpads = item.ipadId.split(',').map(id => id.trim());
-            let normalIds = [], airIds = [];
+            let rawIpads = item.ipadId.split(',').map(id => id.trim()); let normalIds = [], airIds = [];
             rawIpads.forEach(id => { let numMatch = id.match(/\d+/); let num = numMatch ? numMatch[0] : id; if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num); else normalIds.push(num); });
             let displayGroups = [];
             if (normalIds.length > 0) displayGroups.push(`<div class="d-flex justify-content-between align-items-center mt-2 mb-1"><span class="text-muted" style="font-size: 0.85rem;">ประเภท:</span><span class="text-danger fw-bold" style="font-size: 0.85rem;">iPad</span></div><div class="d-flex justify-content-between align-items-start mb-2"><span class="text-muted flex-shrink-0" style="font-size: 0.85rem;">เลขอุปกรณ์:</span><span class="text-dark fw-bold text-end w-100 ps-3" style="font-size: 0.95rem;">${normalIds.join(', ')}</span></div>`);
@@ -95,8 +91,7 @@ function renderUserTableRows(dataList, tbodyElement) {
     dataList.forEach(item => {
         let typeHtml = '<span class="text-muted">-</span>'; let idsHtml = '<span class="text-muted">-</span>';
         if (item.ipadId && item.ipadId.trim() !== "") {
-            let rawIpads = item.ipadId.split(',').map(id => id.trim());
-            let normalIds = [], airIds = [];
+            let rawIpads = item.ipadId.split(',').map(id => id.trim()); let normalIds = [], airIds = [];
             rawIpads.forEach(id => { let numMatch = id.match(/\d+/); let num = numMatch ? numMatch[0] : id; if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num); else normalIds.push(num); });
             let typeArr = [], idsArr = [];
             if (normalIds.length > 0) { typeArr.push(`<div class="fw-bold text-dark mb-1">iPad</div>`); idsArr.push(`<div class="mb-1 text-secondary" style="word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`); }
@@ -111,4 +106,32 @@ function renderUserTableRows(dataList, tbodyElement) {
 }
 
 let profileModal; let isDeptLoaded = false; 
-// (ฟังก์ชัน Profile เปิดปิด Modal ปกติเหมือนเดิม)
+
+async function openProfileModal() {
+    if (!profileModal) profileModal = new bootstrap.Modal(document.getElementById('profileModal'));
+    document.getElementById('editProfileFirstName').value = ""; document.getElementById('editProfileLastName').value = ""; document.getElementById('editProfileNickname').value = ""; document.getElementById('editProfilePhone').value = ""; document.getElementById('editProfileDept').innerHTML = '<option value="">กำลังโหลดแผนก... ⏳</option>';
+    profileModal.show();
+    const currentName = localStorage.getItem("userName");
+    try {
+        const [profileRes, deptRes] = await Promise.all([ callAPI({ action: "getUserProfile", name: currentName }).catch(()=>null), isDeptLoaded ? Promise.resolve(null) : callAPI({ action: "getDepartments" }).catch(()=>null) ]);
+        if (deptRes && deptRes.status === "success") { let deptHtml = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>'; deptRes.data.forEach(d => deptHtml += `<option value="${d}">${d}</option>`); document.getElementById('editProfileDept').innerHTML = deptHtml; isDeptLoaded = true; }
+        if (profileRes && profileRes.status === "success") {
+            let nameParts = currentName.split("(")[0].trim().split(" ");
+            document.getElementById('editProfileFirstName').value = nameParts[0] || ""; document.getElementById('editProfileLastName').value = nameParts.slice(1).join(" ") || ""; document.getElementById('editProfileNickname').value = profileRes.nickname || ""; document.getElementById('editProfileDept').value = profileRes.dept || "";
+            let phoneVal = profileRes.phone || ""; phoneVal = phoneVal.replace(/^(Tel\.\s*|="|"|')/g, '').replace(/("|')$/g, '').trim(); document.getElementById('editProfilePhone').value = phoneVal;
+        }
+    } catch (e) { console.error("Error loading profile:", e); }
+}
+
+async function saveProfileData() {
+    const firstName = document.getElementById('editProfileFirstName').value.trim(); const lastName = document.getElementById('editProfileLastName').value.trim(); const nickname = document.getElementById('editProfileNickname').value.trim(); const dept = document.getElementById('editProfileDept').value.trim(); let phone = document.getElementById('editProfilePhone').value.trim();
+    if (!firstName || !lastName || !dept || !phone) return Swal.fire("แจ้งเตือน", "กรุณากรอก ชื่อ, นามสกุล, แผนก และเบอร์โทร ให้ครบ", "warning");
+    phone = phone.replace(/-/g, ""); if (phone.length === 10) phone = phone.substring(0, 3) + "-" + phone.substring(3, 6) + "-" + phone.substring(6); else phone = "Tel. " + phone;
+    const fullName = firstName + " " + lastName; const combinedName = nickname ? `${fullName} (${nickname})` : fullName;
+    const btn = document.getElementById('btnSaveProfile'); btn.innerText = "⏳ กำลังบันทึก..."; btn.disabled = true;
+    try {
+        const res = await callAPI({ action: "updateUserProfile", userId: localStorage.getItem("userId"), name: fullName, nickname: nickname, dept: dept, phone: phone });
+        if (res.status === "success") { localStorage.setItem("userName", combinedName); document.getElementById("showName").innerText = combinedName; Swal.fire({ title: "อัปเดตสำเร็จ!", text: "ข้อมูลส่วนตัวของคุณถูกบันทึกแล้ว", icon: "success", confirmButtonColor: "#1e3a8a" }); profileModal.hide(); } 
+        else { Swal.fire("ข้อผิดพลาด", res.message || "ไม่สามารถบันทึกข้อมูลได้", "error"); }
+    } catch (error) { Swal.fire("ข้อผิดพลาด", "เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาลองใหม่", "error"); } finally { btn.innerText = "บันทึกข้อมูลส่วนตัว"; btn.disabled = false; }
+}
