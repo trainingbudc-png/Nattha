@@ -65,7 +65,7 @@ function showNavyAlert(title, htmlText, iconType, redirectUrl = null) {
     } else { alert(title + "\n" + htmlText.replace(/<[^>]*>?/gm, '')); if (redirectUrl) window.location.href = redirectUrl; }
 }
 
-// 🚦 ตัวหน่วงเวลาให้พิมพ์ให้เสร็จก่อนค่อยทำงาน (ใช้ตอนค้นหาใน Dashboard)
+// 🚦 ตัวหน่วงเวลาให้พิมพ์ให้เสร็จก่อนค่อยค้นหา (ลดภาระ CPU มือถือ)
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
