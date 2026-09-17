@@ -387,17 +387,18 @@
                 }
             }
 
-            if(res && res.status === "success") {
-                Swal.fire({ title: "บันทึกสำเร็จ!", html: `หมายเลขรายการ : <b>${res.reqId || "-"}</b><br>ระบบแจ้งให้ผู้ยืมมารับเครื่องแล้ว`, icon: "success", confirmButtonColor: "#1e3a8a", confirmButtonText: "กลับ", allowOutsideClick: false }).then(() => { window.location.href = "admin.html"; });
+if(res && res.status === "success") {
+                // 🚨 เปลี่ยนแจ้งเตือนให้สั้นลง ไม่ต้องรอเลข ReqId จากฐานข้อมูล
+                Swal.fire({ 
+                    title: "ส่งข้อมูลสำเร็จ!", 
+                    text: "ระบบกำลังดำเนินการบันทึกข้อมูลและส่งแจ้งเตือนครับ", 
+                    icon: "success", 
+                    confirmButtonColor: "#1e3a8a", 
+                    confirmButtonText: "กลับหน้าหลัก", 
+                    allowOutsideClick: false 
+                }).then(() => { window.location.href = "admin.html"; });
             } else {
                 Swal.fire("ข้อผิดพลาด", (res && res.message) ? res.message : "เกิดข้อผิดพลาดในการบันทึก", "error");
-                btn.innerHTML = "ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
-            }
-        } catch (err) {
-            if (navigator.onLine) {
-                Swal.fire({ title: "บันทึกสำเร็จ!", html: `อัปเดตข้อมูลลงฐานข้อมูลเรียบร้อยแล้ว`, icon: "success", confirmButtonColor: "#1e3a8a", allowOutsideClick: false }).then(() => { window.location.href = "admin.html"; });
-            } else {
-                Swal.fire("ขัดข้อง", "ไม่สามารถเชื่อมต่ออินเทอร์เน็ตได้", "error");
                 btn.innerHTML = "ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
             }
         }
