@@ -18,6 +18,43 @@
         .shortcut-icon { font-size: 2rem; margin-bottom: 10px; }
         .shortcut-title { font-size: 1rem; font-weight: 600; color: var(--admin-main); margin-bottom: 5px; }
         .shortcut-desc { font-size: 0.8rem; color: #64748b; }
+
+        /* 🚨 นำ CSS โครงสร้างมือถือจากหน้า User มาใช้กับ Admin เพื่อให้ตารางเป็น Card สวยงาม */
+        @media (max-width: 768px) {
+            .table-card { background: transparent !important; box-shadow: none !important; border: none !important; padding: 0; }
+            .table thead { display: none; }
+            
+            /* สร้างกรอบการ์ดมนๆ พร้อมซ่อนส่วนที่ล้น */
+            .table tbody tr { 
+                display: flex; flex-wrap: wrap; background: #ffffff; 
+                border-radius: 16px; margin-bottom: 16px; padding: 12px; 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.04); 
+                border: 1px solid #e2e8f0 !important; 
+                overflow: hidden; 
+            }
+            
+            /* จัดเรียงข้อความซ้ายขวา มีเส้นประคั่น */
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 10px 0; border-bottom: 1px dashed #e2e8f0 !important; width: 100%; }
+            .table tbody td::before { content: attr(data-label); font-weight: 600; color: #64748b; font-size: 0.9rem; text-align: left; margin-right: 15px; flex-shrink: 0; }
+            
+            /* หัวการ์ดที่เป็นเลขรายการ (ให้ขยายเต็มและมีพื้นหลัง) */
+            .table tbody td[data-label="เลขรายการ"] { 
+                border-bottom: 2px solid var(--admin-main) !important; 
+                background-color: #f8fafc; 
+                margin: -12px -12px 10px -12px; 
+                padding: 12px 16px !important; 
+                width: calc(100% + 24px); 
+                border-radius: 16px 16px 0 0; 
+            }
+            
+            .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; }
+            
+            /* ย่อกล่องปุ่มเมนูให้กะทัดรัดเหมือนหน้า User */
+            .shortcut-icon { font-size: 1.5rem; margin-bottom: 5px; }
+            .shortcut-title { font-size: 0.85rem; line-height: 1.2; margin-bottom: 0; }
+            .shortcut-desc { display: none; } 
+            .shortcut-card { padding: 12px; }
+        }
     </style>
 </head>
 <body>
@@ -88,7 +125,6 @@
             <div class="row align-items-end g-3">
                 <div class="col-md-5">
                     <label class="form-label fw-bold text-dark" style="font-size: 0.9rem;">🔍 ค้นหาชื่อ / เลขรายการ</label>
-                    <!-- ⚡ เอา onkeyup ออก เพื่อไปใช้ Debounce ใน JS แทน -->
                     <input type="text" id="searchInput" class="form-control form-control-sm border-2" placeholder="พิมพ์ชื่อเพื่อค้นหา...">
                 </div>
                 <div class="col-md-4">
@@ -142,13 +178,10 @@
         }
 
         document.getElementById("adminNameDisplay").innerText = userName;
-        
-        // ⚡ เพิ่มคำสั่งใช้งาน Debounce ให้ช่องค้นหา
         document.getElementById("searchInput").addEventListener("keyup", debounce(filterTable, 300));
         
         verifyRoleSilently();
         
-        // ✅ หน่วงเวลา 0.8 วินาที ให้เช็คสิทธิ์ส่งผ่านไปก่อน แล้วค่อยดึงตาราง
         setTimeout(() => { 
             loadAdminTableData(); 
         }, 800);
@@ -210,7 +243,6 @@
         renderTable(finalHistoryData.slice(0, 5), "adminTableBody", "resultCountLabel"); 
     }
 
-    // ⚡ อัปเกรดความลื่นไหลด้วยการสะสม HTML 
     function renderActiveCards(data) {
         const container = document.getElementById("activeCardsContainer");
         if (data.length === 0) {
@@ -218,7 +250,7 @@
             return;
         }
 
-        let htmlContent = ""; // ตัวสะสม HTML
+        let htmlContent = "";
 
         data.forEach(item => {
             let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH").replace(/:\d{2}$/, '') : "-";
@@ -235,8 +267,9 @@
                 });
                 
                 let displayGroups = [];
-if (normalIds.length > 0) displayGroups.push(`<div class="d-flex justify-content-between align-items-center mt-2 mb-1"><span class="text-muted" style="font-size: 0.85rem;">ประเภท:</span><span class="text-danger fw-bold" style="font-size: 0.85rem;">iPad</span></div><div class="d-flex justify-content-between align-items-start mb-2"><span class="text-muted flex-shrink-0" style="font-size: 0.85rem;">เลขอุปกรณ์:</span><span class="fw-bold text-end w-100 ps-3" style="color: #2563eb; font-size: 0.95rem;">${normalIds.join(', ')}</span></div>`);
-if (airIds.length > 0) displayGroups.push(`<div class="d-flex justify-content-between align-items-center mt-2 mb-1"><span class="text-muted" style="font-size: 0.85rem;">ประเภท:</span><span style="color: var(--admin-accent);" class="fw-bold" style="font-size: 0.85rem;">Air+APC</span></div><div class="d-flex justify-content-between align-items-start mb-2"><span class="text-muted flex-shrink-0" style="font-size: 0.85rem;">เลขอุปกรณ์:</span><span class="fw-bold text-end w-100 ps-3" style="color: #2563eb; font-size: 0.95rem;">${airIds.join(', ')}</span></div>`);
+                if (normalIds.length > 0) displayGroups.push(`<div class="d-flex justify-content-between align-items-center mt-2 mb-1"><span class="text-muted" style="font-size: 0.85rem;">ประเภท:</span><span class="text-danger fw-bold" style="font-size: 0.85rem;">iPad</span></div><div class="d-flex justify-content-between align-items-start mb-2"><span class="text-muted flex-shrink-0" style="font-size: 0.85rem;">เลขอุปกรณ์:</span><span class="fw-bold text-end w-100 ps-3" style="color: #2563eb; font-size: 0.95rem;">${normalIds.join(', ')}</span></div>`);
+                if (airIds.length > 0) displayGroups.push(`<div class="d-flex justify-content-between align-items-center mt-2 mb-1"><span class="text-muted" style="font-size: 0.85rem;">ประเภท:</span><span style="color: var(--admin-accent);" class="fw-bold" style="font-size: 0.85rem;">Air+APC</span></div><div class="d-flex justify-content-between align-items-start mb-2"><span class="text-muted flex-shrink-0" style="font-size: 0.85rem;">เลขอุปกรณ์:</span><span class="fw-bold text-end w-100 ps-3" style="color: #2563eb; font-size: 0.95rem;">${airIds.join(', ')}</span></div>`);
+                
                 formattedIpads = displayGroups.join('<div class="border-bottom my-2 opacity-25"></div>');
             }
 
@@ -277,7 +310,7 @@ if (airIds.length > 0) displayGroups.push(`<div class="d-flex justify-content-be
                 </div>
             `;
         });
-        container.innerHTML = htmlContent; // ⚡ รันครั้งเดียวจบ
+        container.innerHTML = htmlContent;
     }
 
     function closeOtherAccordions(targetId) {
@@ -289,7 +322,6 @@ if (airIds.length > 0) displayGroups.push(`<div class="d-flex justify-content-be
         });
     }
 
-    // ⚡ อัปเกรดความลื่นไหลด้วยการสะสม HTML 
     function renderTable(data, targetTbodyId, countLabelId) {
         const tbody = document.getElementById(targetTbodyId);
         if (countLabelId) document.getElementById(countLabelId).innerText = `พบ ${data.length} รายการ`;
@@ -342,7 +374,7 @@ if (airIds.length > 0) displayGroups.push(`<div class="d-flex justify-content-be
                 </tr>
             `;
         });
-        tbody.innerHTML = htmlContent; // ⚡ รันรอบเดียวจบ
+        tbody.innerHTML = htmlContent;
     }
 </script>
 </body>
