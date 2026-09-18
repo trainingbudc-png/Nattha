@@ -24,11 +24,12 @@
             .table-card { background: transparent !important; box-shadow: none !important; border: none !important; }
             .table thead { display: none !important; }
             .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid #e2e8f0 !important; }
+            
+            /* ⚡ ปรับโครงสร้าง Flexbox ใหม่ ให้จัดกลางอย่างสวยงาม */
             .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 10px 0; border-bottom: 1px dashed #e2e8f0 !important; }
             .table tbody td::before { content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; flex-shrink: 0; }
             .table tbody td:first-child { border-bottom: 2px solid var(--admin-main) !important; padding-top: 0; }
-            .table tbody td[data-label="ผู้ส่งคืน"] { flex-direction: column; align-items: flex-end; }
-            .table tbody td[data-label="ผู้ส่งคืน"]::before { align-self: flex-start; margin-bottom: -15px; }
+            
             .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 14px; display: block; }
             .table tbody td:last-child::before { display: none; } 
             .table tbody td:last-child .btn-action-admin { background-color: var(--admin-main); color: white; border: none; width: 100%; padding: 12px !important; font-size: 1.05rem; border-radius: 12px; }
@@ -85,7 +86,6 @@
         tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted fw-bold">กำลังดึงข้อมูล... ⏳</td></tr>'; 
         
         try {
-            // ⚡ ใช้ fetch พร้อมพารามิเตอร์ป้องกันเบราว์เซอร์จดจำค่าเดิม (cache: "no-store")
             const response = await fetch(API_URL, { 
                 method: "POST",
                 cache: "no-store", 
@@ -110,14 +110,16 @@
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH").replace(/:\d{2}$/, '') : "-";
                     
                     let fullNameRaw = item.name || "-";
-                    let displayNameHTML = `<span class="fw-bold text-dark">${fullNameRaw}</span>`;
+                    
+                    // ⚡ ห่อด้วย <div> เสมอ เพื่อให้ Flexbox บนมือถือมองเห็นเป็นไอเท็มก้อนเดียวกันชิดขวา
+                    let displayNameHTML = `<div><span class="fw-bold text-dark">${fullNameRaw}</span></div>`;
                     
                     if (fullNameRaw.includes("(แทน") || fullNameRaw.includes("(รับแทน") || fullNameRaw.includes("(คืนแทน")) {
                         let parts = fullNameRaw.split('(');
                         let mainName = parts[0].trim();
                         let proxyInfo = parts[1] ? parts[1].replace(')', '').trim() : "";
                         
-                        displayNameHTML = `<span class="fw-bold text-dark d-block">${mainName}</span><span class="proxy-badge">🤝 ${proxyInfo}</span>`;
+                        displayNameHTML = `<div><span class="fw-bold text-dark d-block">${mainName}</span><span class="proxy-badge">🤝 ${proxyInfo}</span></div>`;
                     }
 
                     let deviceData = parseDeviceData(item.ipadId);
@@ -141,7 +143,6 @@
                 tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
             }
         } catch (err) {
-            // 🚨 ถ้าเชื่อมต่อไม่ได้ จะปริ้นต์ข้อความแจ้งสาเหตุเฉพาะขึ้นมาบนหน้าจอเลย
             console.error("Fetch Data Error:", err);
             tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาด: ${err.message}</td></tr>`;
         }
@@ -162,7 +163,6 @@
             });
             
             let typeArr = [], idsArr = [];
-            // 🔥 แสดงตัวเลขอุปกรณ์เป็นสี #2563eb
             if (normalIds.length > 0) { typeArr.push(`<div class="fw-bold text-danger mb-1">iPad</div>`); idsArr.push(`<div class="mb-1 fw-bold" style="color: #2563eb; word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`); }
             if (airIds.length > 0) { typeArr.push(`<div class="fw-bold text-danger mb-1">Air+APC</div>`); idsArr.push(`<div class="mb-1 fw-bold" style="color: #2563eb; word-break: break-word; line-height: 1.6;">${airIds.join(', ')}</div>`); }
             
