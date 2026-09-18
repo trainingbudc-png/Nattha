@@ -25,7 +25,14 @@
         .select-ipad { width: 26px !important; height: 26px !important; cursor: pointer; accent-color: #212529; transition: transform 0.2s; }
         .check-item { width: 22px !important; height: 22px !important; cursor: pointer; accent-color: #212529; }
         .btn-ticked-all { background-color: #212529 !important; color: white !important; }
-        @media screen and (max-width: 768px) { .confirm-card { padding: 20px; } .info-box { flex-direction: column; gap: 15px; } .divider { width: 100%; height: 1px; } }
+        
+        /* ⚡ แก้ไขปัญหาเบี้ยวบนมือถือ: บังคับให้กล่อง w-50 กางเต็ม 100% เพื่อให้จัดกึ่งกลางได้ถูกต้อง */
+        @media screen and (max-width: 768px) { 
+            .confirm-card { padding: 20px; } 
+            .info-box { flex-direction: column; gap: 15px; } 
+            .info-box .w-50 { width: 100% !important; }
+            .divider { width: 100%; height: 1px; } 
+        }
     </style>
 </head>
 <body>
@@ -116,7 +123,6 @@
 
             const container = document.getElementById('itemList');
             
-            // ⚡ อัปเกรดสะสมโค้ด HTML แทนการแทรกทีละบรรทัด
             if(res.data && res.data.length > 0) {
                 let htmlContent = "";
                 res.data.forEach(item => {
