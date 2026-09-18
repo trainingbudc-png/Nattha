@@ -80,13 +80,20 @@
         loadStep5List();
     };
 
-    function loadStep5List() {
+    async function loadStep5List() {
         const tbody = document.getElementById("requestListBody");
         tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted fw-bold">กำลังดึงข้อมูล... ⏳</td></tr>'; 
         
-        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getData" }) })
-        .then(res => res.json())
-        .then(res => {
+        try {
+            // ⚡ ใช้ fetch พร้อมพารามิเตอร์ป้องกันเบราว์เซอร์จดจำค่าเดิม (cache: "no-store")
+            const response = await fetch(API_URL, { 
+                method: "POST",
+                cache: "no-store", 
+                body: JSON.stringify({ action: "getData" }) 
+            });
+            
+            const res = await response.json();
+            
             if (res.status === "success" && res.data && res.data.length > 0) {
                 const pendingData = res.data.filter(item => 
                     item.status && (item.status.includes("รอตรวจสอบ") || item.status.includes("รอแอดมินตรวจ") || item.status.includes("รอตรวจรับ") || item.status.includes("Step[4]"))
@@ -97,7 +104,7 @@
                     return;
                 }
 
-                let htmlContent = ""; // ⚡ ประกาศตัวแปรสะสม HTML
+                let htmlContent = "";
 
                 pendingData.forEach(item => {
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH").replace(/:\d{2}$/, '') : "-";
@@ -129,14 +136,15 @@
                     `;
                 });
                 
-                tbody.innerHTML = htmlContent; // ⚡ วาง HTML รวดเดียวตอนจบ
+                tbody.innerHTML = htmlContent;
             } else {
                 tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
             }
-        })
-        .catch(err => {
-            document.getElementById("requestListBody").innerHTML = '<tr><td colspan="6" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
-        });
+        } catch (err) {
+            // 🚨 ถ้าเชื่อมต่อไม่ได้ จะปริ้นต์ข้อความแจ้งสาเหตุเฉพาะขึ้นมาบนหน้าจอเลย
+            console.error("Fetch Data Error:", err);
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาด: ${err.message}</td></tr>`;
+        }
     }
 
     function parseDeviceData(ipadText) {
@@ -154,6 +162,7 @@
             });
             
             let typeArr = [], idsArr = [];
+            // 🔥 แสดงตัวเลขอุปกรณ์เป็นสี #2563eb
             if (normalIds.length > 0) { typeArr.push(`<div class="fw-bold text-danger mb-1">iPad</div>`); idsArr.push(`<div class="mb-1 fw-bold" style="color: #2563eb; word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`); }
             if (airIds.length > 0) { typeArr.push(`<div class="fw-bold text-danger mb-1">Air+APC</div>`); idsArr.push(`<div class="mb-1 fw-bold" style="color: #2563eb; word-break: break-word; line-height: 1.6;">${airIds.join(', ')}</div>`); }
             
