@@ -12,11 +12,10 @@
     
     <style>
         body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
-        .container-wide { max-width: 1100px !important; margin: 0 auto !important; padding-left: 15px !important; padding-right: 15px !important; }
+        .container-wide { max-width: 1200px !important; margin: 0 auto !important; padding-left: 15px !important; padding-right: 15px !important; }
         .accent-bar-admin { width: 5px; height: 24px; background-color: var(--admin-accent); border-radius: 4px; display: inline-block; margin-right: 10px; }
         .table-card { background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.04); overflow: hidden; }
         .table thead tr { background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; color: #475569; font-size: 0.95rem; }
-        .proxy-badge { background-color: #f8fafc; color: #ef4444; border: 1px dashed #fca5a5; padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; margin-top: 4px; display: inline-block; }
         .btn-action-admin { background-color: white; color: var(--admin-main); border: 1px solid var(--admin-main); border-radius: 50rem; padding: 5px 18px; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; }
         .btn-action-admin:hover { background-color: var(--admin-main); color: white; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2); }
 
@@ -37,7 +36,7 @@
 </head>
 <body>
 
-    <div class="nav-header-custom shadow-sm mb-4 d-flex justify-content-between align-items-center" style="padding: 15px 20px; max-width: 1100px; margin: 0 auto; border-radius: 0 0 12px 12px;">
+    <div class="nav-header-custom shadow-sm mb-4 d-flex justify-content-between align-items-center" style="padding: 15px 20px; max-width: 1200px; margin: 0 auto; border-radius: 0 0 12px 12px;">
         <div class="nav-title-custom fw-bold text-white lh-sm m-0">
             🔍 Step 5 | ตรวจรับคืน
             <span class="d-block d-sm-inline text-light opacity-75 mt-1 mt-sm-0" style="font-size: 0.85rem; font-weight: 500;">(ค้างดำเนินการ)</span>
@@ -57,16 +56,17 @@
             <table class="table table-hover align-middle mb-0">
                 <thead>
                     <tr class="text-center">
-                        <th style="width: 14%;" class="py-3 px-4 text-start">เลขรายการ</th>
-                        <th style="width: 16%;" class="py-3">วันที่และเวลา</th>
-                        <th style="width: 20%;" class="py-3">ผู้ส่งคืน</th> 
-                        <th style="width: 15%;" class="py-3">อุปกรณ์ที่ยืม</th>
-                        <th style="width: 20%;" class="py-3">เครื่องที่เตรียม</th>
-                        <th style="width: 15%;" class="py-3 text-end px-4">จัดการ</th>
+                        <th style="width: 13%;" class="py-3 px-4 text-start">เลขรายการ</th>
+                        <th style="width: 14%;" class="py-3">วัน-เวลา</th>
+                        <th style="width: 17%;" class="py-3">เจ้าของรายการ</th> 
+                        <th style="width: 16%;" class="py-3">ผู้ส่งคืน</th> 
+                        <th style="width: 12%;" class="py-3">ประเภท</th>
+                        <th style="width: 15%;" class="py-3">เลขอุปกรณ์</th>
+                        <th style="width: 13%;" class="py-3 text-end px-4">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody id="requestListBody">
-                    <tr><td colspan="6" class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</td></tr>
+                    <tr><td colspan="7" class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
@@ -82,7 +82,7 @@
 
     async function loadStep5List() {
         const tbody = document.getElementById("requestListBody");
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted fw-bold">กำลังดึงข้อมูล... ⏳</td></tr>'; 
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-5 text-muted fw-bold">กำลังดึงข้อมูล... ⏳</td></tr>'; 
         
         try {
             const response = await fetch(API_URL, { 
@@ -99,7 +99,7 @@
                 );
 
                 if (pendingData.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-success fw-bold py-5">🎉 ไม่มีรายการรอตรวจสอบรับคืนในขณะนี้</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-success fw-bold py-5">🎉 ไม่มีรายการรอตรวจสอบรับคืนในขณะนี้</td></tr>';
                     return;
                 }
 
@@ -109,26 +109,38 @@
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH").replace(/:\d{2}$/, '') : "-";
                     
                     let fullNameRaw = item.name || "-";
-                    let displayNameHTML = `<div class="text-end"><span class="fw-bold text-dark">${fullNameRaw}</span></div>`;
-                    
+                    let ownerName = fullNameRaw;
+                    let actorName = "ส่งด้วยตนเอง"; 
+
+                    // ⚡ แยกร่าง! ดึงข้อมูลเจ้าของเครื่อง กับ คนเอามาคืน ออกจากกัน
                     if (fullNameRaw.includes("(แทน") || fullNameRaw.includes("(รับแทน") || fullNameRaw.includes("(คืนแทน")) {
                         let parts = fullNameRaw.split('(');
-                        let mainName = parts[0].trim();
-                        let proxyInfo = parts[1] ? parts[1].replace(')', '').trim() : "";
+                        actorName = parts[0].trim(); // ผู้ทำการแทน
+                        let insideParen = parts[1] ? parts[1].replace(')', '').trim() : ""; 
+                        ownerName = insideParen.replace(/^(แทน|รับแทน|คืนแทน)\s*/, '').trim(); // เจ้าของตัวจริง
                         
-                        displayNameHTML = `<div class="text-end"><span class="fw-bold text-dark d-block lh-sm">${mainName}</span><span class="proxy-badge">🤝 ${proxyInfo}</span></div>`;
+                        // ถ้าระบบส่งมาเบิ้ล (เช่น นัท แทน นัท) ให้ปรับเป็น ส่งด้วยตนเอง
+                        if (actorName === ownerName) {
+                            actorName = "ส่งด้วยตนเอง";
+                        }
                     }
+
+                    // จัดรูปแบบ HTML
+                    let ownerHTML = `<span class="fw-bold text-dark">${ownerName}</span>`;
+                    let actorHTML = actorName === "ส่งด้วยตนเอง"
+                        ? `<span class="badge bg-light text-secondary border shadow-sm px-2 py-1" style="font-weight: 500;">👤 ส่งด้วยตนเอง</span>`
+                        : `<span class="fw-bold" style="color: #ea580c;">🤝 ${actorName}</span>`;
 
                     let deviceData = parseDeviceData(item.ipadId);
 
-                    // ⚡ ลบ px-4 ออก แล้วใส่ px-0 px-md-4 เพื่อให้ขอบชิดในหน้ามือถือ
                     htmlContent += `
                         <tr class="align-middle">
                             <td data-label="เลขรายการ" class="py-3 px-0 px-md-4 fw-bold text-start" style="color: var(--admin-main);">${item.reqId}</td>
-                            <td data-label="วันที่และเวลา" class="py-3 text-center text-muted" style="font-size: 0.9rem;">${dateStr}</td>
-                            <td data-label="ผู้ส่งคืน" class="py-3 text-center lh-sm">${displayNameHTML}</td>
-                            <td data-label="อุปกรณ์ที่ยืม" class="py-3 text-center">${deviceData.typeHtml}</td>
-                            <td data-label="เครื่องที่เตรียม" class="py-3 text-center">${deviceData.idsHtml}</td>
+                            <td data-label="วัน-เวลา" class="py-3 text-center text-muted" style="font-size: 0.9rem;">${dateStr}</td>
+                            <td data-label="เจ้าของรายการ" class="py-3 text-center">${ownerHTML}</td>
+                            <td data-label="ผู้ส่งคืน" class="py-3 text-center">${actorHTML}</td>
+                            <td data-label="ประเภท" class="py-3 text-center">${deviceData.typeHtml}</td>
+                            <td data-label="เลขอุปกรณ์" class="py-3 text-center">${deviceData.idsHtml}</td>
                             <td data-label="จัดการ" class="py-3 text-end px-0 px-md-4">
                                 <button class="btn-action-admin shadow-sm" onclick="goToStep5('${item.reqId}')">ตรวจสอบ</button>
                             </td>
@@ -138,11 +150,11 @@
                 
                 tbody.innerHTML = htmlContent;
             } else {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
             }
         } catch (err) {
             console.error("Fetch Data Error:", err);
-            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาด: ${err.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาด: ${err.message}</td></tr>`;
         }
     }
 
