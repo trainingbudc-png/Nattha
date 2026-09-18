@@ -14,7 +14,7 @@ async function loadUserTableData() {
     
     const currentUserId = localStorage.getItem("userId");
     try {
-        const res = await callAPI({ action: "getData" }); // ยิง API รอบเดียวใน script.js
+        const res = await callAPI({ action: "getData" }); 
         if (res.status === "success" && res.data && res.data.length > 0) {
             const myData = res.data.filter(item => {
                 let isValidReq = item.reqId && item.reqId !== "ReqID" && item.reqId !== "เลขรายการ";
@@ -111,14 +111,41 @@ async function openProfileModal() {
     if (!profileModal) profileModal = new bootstrap.Modal(document.getElementById('profileModal'));
     document.getElementById('editProfileFirstName').value = ""; document.getElementById('editProfileLastName').value = ""; document.getElementById('editProfileNickname').value = ""; document.getElementById('editProfilePhone').value = ""; document.getElementById('editProfileDept').innerHTML = '<option value="">กำลังโหลดแผนก... ⏳</option>';
     profileModal.show();
+    
     const currentName = localStorage.getItem("userName");
+    
+    // ⚡ แก้ปัญหาดึงข้อมูลไม่ขึ้น: แยก "ชื่อจริง" ออกจาก "วงเล็บ(ชื่อเล่น)" ก่อนส่งไปหาฐานข้อมูล
+    let realName = currentName ? currentName.split("(")[0].trim() : "";
+    
     try {
-        const [profileRes, deptRes] = await Promise.all([ callAPI({ action: "getUserProfile", name: currentName }).catch(()=>null), isDeptLoaded ? Promise.resolve(null) : callAPI({ action: "getDepartments" }).catch(()=>null) ]);
-        if (deptRes && deptRes.status === "success") { let deptHtml = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>'; deptRes.data.forEach(d => deptHtml += `<option value="${d}">${d}</option>`); document.getElementById('editProfileDept').innerHTML = deptHtml; isDeptLoaded = true; }
+        const [profileRes, deptRes] = await Promise.all([ 
+            callAPI({ action: "getUserProfile", name: realName }).catch(()=>null), 
+            isDeptLoaded ? Promise.resolve(null) : callAPI({ action: "getDepartments" }).catch(()=>null) 
+        ]);
+        
+        if (deptRes && deptRes.status === "success") { 
+            let deptHtml = '<option value="">-- กรุณาเลือกแผนกของคุณ --</option>'; 
+            deptRes.data.forEach(d => deptHtml += `<option value="${d}">${d}</option>`); 
+            document.getElementById('editProfileDept').innerHTML = deptHtml; 
+            isDeptLoaded = true; 
+        }
+        
         if (profileRes && profileRes.status === "success") {
-            let nameParts = currentName.split("(")[0].trim().split(" ");
-            document.getElementById('editProfileFirstName').value = nameParts[0] || ""; document.getElementById('editProfileLastName').value = nameParts.slice(1).join(" ") || ""; document.getElementById('editProfileNickname').value = profileRes.nickname || ""; document.getElementById('editProfileDept').value = profileRes.dept || "";
-            let phoneVal = profileRes.phone || ""; phoneVal = phoneVal.replace(/^(Tel\.\s*|="|"|')/g, '').replace(/("|')$/g, '').trim(); document.getElementById('editProfilePhone').value = phoneVal;
+            let nameParts = realName.split(" ");
+            document.getElementById('editProfileFirstName').value = nameParts[0] || ""; 
+            document.getElementById('editProfileLastName').value = nameParts.slice(1).join(" ") || ""; 
+            document.getElementById('editProfileNickname').value = profileRes.nickname || ""; 
+            
+            // ⚡ ป้องกันปัญหา select option ยังไม่โหลดเสร็จ
+            setTimeout(() => {
+                document.getElementById('editProfileDept').value = profileRes.dept || "";
+            }, 50);
+            
+            let phoneVal = profileRes.phone || ""; 
+            phoneVal = phoneVal.replace(/^(Tel\.\s*|="|"|')/g, '').replace(/("|')$/g, '').trim(); 
+            document.getElementById('editProfilePhone').value = phoneVal;
+        } else {
+            console.warn("ไม่พบโปรไฟล์:", profileRes);
         }
     } catch (e) { console.error("Error loading profile:", e); }
 }
