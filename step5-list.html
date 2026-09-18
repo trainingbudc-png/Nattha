@@ -25,7 +25,6 @@
             .table thead { display: none !important; }
             .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid #e2e8f0 !important; }
             
-            /* ⚡ ใช้ Flexbox กลางปกติ ไม่มีบรรทัดพังๆ แล้ว */
             .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 10px 0; border-bottom: 1px dashed #e2e8f0 !important; }
             .table tbody td::before { content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; flex-shrink: 0; }
             .table tbody td:first-child { border-bottom: 2px solid var(--admin-main) !important; padding-top: 0; }
@@ -110,8 +109,6 @@
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH").replace(/:\d{2}$/, '') : "-";
                     
                     let fullNameRaw = item.name || "-";
-                    
-                    // ⚡ ห่อชื่อและป้ายด้วย <div class="text-end"> เพื่อบังคับชิดขวาเสมอ
                     let displayNameHTML = `<div class="text-end"><span class="fw-bold text-dark">${fullNameRaw}</span></div>`;
                     
                     if (fullNameRaw.includes("(แทน") || fullNameRaw.includes("(รับแทน") || fullNameRaw.includes("(คืนแทน")) {
@@ -124,14 +121,15 @@
 
                     let deviceData = parseDeviceData(item.ipadId);
 
+                    // ⚡ ลบ px-4 ออก แล้วใส่ px-0 px-md-4 เพื่อให้ขอบชิดในหน้ามือถือ
                     htmlContent += `
                         <tr class="align-middle">
-                            <td data-label="เลขรายการ" class="py-3 px-4 fw-bold text-start" style="color: var(--admin-main);">${item.reqId}</td>
+                            <td data-label="เลขรายการ" class="py-3 px-0 px-md-4 fw-bold text-start" style="color: var(--admin-main);">${item.reqId}</td>
                             <td data-label="วันที่และเวลา" class="py-3 text-center text-muted" style="font-size: 0.9rem;">${dateStr}</td>
                             <td data-label="ผู้ส่งคืน" class="py-3 text-center lh-sm">${displayNameHTML}</td>
                             <td data-label="อุปกรณ์ที่ยืม" class="py-3 text-center">${deviceData.typeHtml}</td>
                             <td data-label="เครื่องที่เตรียม" class="py-3 text-center">${deviceData.idsHtml}</td>
-                            <td data-label="จัดการ" class="py-3 text-end px-4">
+                            <td data-label="จัดการ" class="py-3 text-end px-0 px-md-4">
                                 <button class="btn-action-admin shadow-sm" onclick="goToStep5('${item.reqId}')">ตรวจสอบ</button>
                             </td>
                         </tr>
