@@ -83,6 +83,7 @@
             if (syncData.success && syncData.name) { localStorage.setItem("userName", syncData.name); localStorage.setItem("userRole", syncData.role); }
             currentLoggerName = localStorage.getItem("userName") || "ผู้ใช้งาน"; isAdmin = localStorage.getItem("userRole") === "Admin";
 
+            // ป้องกัน undefined ในกรณีที่ค่าหายไป
             if (res.reqStatus && res.reqStatus !== "Step[3]") {
                 Swal.fire("แจ้งเตือน", `รายการนี้ส่งคืนเครื่องไปแล้ว (สถานะ: ${res.reqStatus})`, "warning").then(() => { window.location.href = isAdmin ? "admin.html" : "user.html"; });
                 return;
@@ -97,7 +98,8 @@
 
             const container = document.getElementById('itemList');
             
-            if(res.data && res.data.length > 0) {
+            // เช็คว่า res.data มีค่าและเป็น Array ก่อนทำการวนลูป (ป้องกัน Error ที่ทำให้ลง catch)
+            if(res.data && Array.isArray(res.data) && res.data.length > 0) {
                 let htmlContent = "";
                 res.data.forEach((item) => {
                     let adminBtn = isAdmin ? `<button type="button" class="btn btn-dark btn-sm fw-bold px-3 rounded-pill shadow-sm" onclick="tickAllInCard(this)">ติ๊กครบ</button>` : '';
@@ -126,7 +128,10 @@
                 });
                 container.innerHTML = htmlContent;
             } else { container.innerHTML = `<div class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</div>`; }
-        } catch (err) { document.getElementById('itemList').innerHTML = `<div class="text-danger py-4 text-center fw-bold">❌ ไม่สามารถเชื่อมต่อฐานข้อมูลได้<br><span class="text-muted fw-normal" style="font-size: 0.85rem;">โปรดตรวจสอบลิงก์ API_URL</span></div>`; }
+        } catch (err) { 
+            console.error(err); // ดูใน Console ได้ว่าพังตรงไหน
+            document.getElementById('itemList').innerHTML = `<div class="text-danger py-4 text-center fw-bold">❌ Error: ${err.message}<br><span class="text-muted fw-normal" style="font-size: 0.85rem;">(ลองรีเฟรชหน้าเว็บอีกครั้ง)</span></div>`; 
+        }
     }
 
     initSystem();
