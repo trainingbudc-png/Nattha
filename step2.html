@@ -24,7 +24,7 @@
         .check-item { width: 22px !important; height: 22px !important; cursor: pointer; accent-color: #212529; }
         .btn-ticked-all { background-color: #212529 !important; color: white !important; }
         
-        /* ⚡ แก้ไขปัญหาเบี้ยวบนมือถือ: บังคับให้กล่อง w-50 กางเต็ม 100% เพื่อให้จัดกึ่งกลางได้ถูกต้อง */
+        /* ⚡ บังคับให้กล่อง w-50 กางเต็ม 100% บนมือถือ เพื่อจัดกลางได้อย่างสมบูรณ์แบบ */
         @media screen and (max-width: 768px) { 
             .confirm-card { padding: 20px; } 
             .info-box { flex-direction: column; gap: 15px; } 
@@ -48,8 +48,9 @@
         </div>
         <div class="divider"></div>
         <div class="text-center w-50">
-            <div class="info-label">👮 แอดมินผู้เตรียม</div>
-            <div id="displayAdminName" class="info-value">กำลังโหลด...</div>
+            <!-- ⚡ เปลี่ยนเป็นเลขรายการให้เหมือนหน้าอื่น -->
+            <div class="info-label">🔖 เลขรายการ</div>
+            <div id="displayReqId" class="info-value">กำลังโหลด...</div>
         </div>
     </div>
 
@@ -73,6 +74,13 @@
         const userId = localStorage.getItem("userId");
         if (!userId) { localStorage.setItem("pendingUrl", window.location.href); window.location.replace("index.html"); return; }
 
+        // ⚡ เพิ่มการแสดงผลเลขรายการ
+        document.getElementById('displayReqId').innerText = reqId || "ไม่พบข้อมูล";
+        if(!reqId) { 
+            document.getElementById('itemList').innerHTML = '<div class="text-danger py-4 text-center">❌ ไม่พบหมายเลขรายการ</div>'; 
+            return; 
+        }
+
         try {
             const syncData = await callAPI({ action: "checkRole", userId: userId }).catch(() => ({ success: false }));
             const res = await callAPI({ action: "getStep1Data", reqId: reqId });
@@ -88,7 +96,6 @@
 
             let originalBorrower = res.userName || "ไม่ระบุ";
             document.getElementById('displayUserName').innerText = originalBorrower;
-            document.getElementById('displayAdminName').innerText = res.adminName || "ไม่ระบุ";
             globalOwnerName = originalBorrower;
             const currentLoggerId = userId; 
 
