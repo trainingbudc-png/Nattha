@@ -147,7 +147,11 @@
         document.getElementById("searchInput").addEventListener("keyup", debounce(filterTable, 300));
         
         verifyRoleSilently();
-        loadAdminTableData();
+        
+        // ✅ หน่วงเวลา 0.8 วินาที ให้เช็คสิทธิ์ส่งผ่านไปก่อน แล้วค่อยดึงตาราง
+        setTimeout(() => { 
+            loadAdminTableData(); 
+        }, 800);
     };
 
     async function loadAdminTableData(retryCount = 3) {
