@@ -5,64 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Step 5 List | ตรวจรับคืน</title>
     <link rel="icon" href="https://github.com/trainingbudc-png/Nattha/blob/main/%E0%B8%A3%E0%B8%B9%E0%B8%9B.png?raw=true" type="image/png">
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme-admin.css">
     
     <style>
         body { background: var(--admin-bg); font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
-        .container-wide { max-width: 1200px !important; margin: 0 auto !important; padding-left: 15px !important; padding-right: 15px !important; }
-        .accent-bar-admin { width: 5px; height: 24px; background-color: var(--admin-accent); border-radius: 4px; display: inline-block; margin-right: 10px; }
-        .table-card { background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.04); overflow: hidden; }
-        .table thead tr { background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; color: #475569; font-size: 0.95rem; }
-        .btn-action-admin { background-color: white; color: var(--admin-main); border: 1px solid var(--admin-main); border-radius: 50rem; padding: 5px 18px; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; }
-        .btn-action-admin:hover { background-color: var(--admin-main); color: white; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2); }
+        .container-wide { max-width: 1200px !important; margin: 0 auto !important; padding-left: 20px !important; padding-right: 20px !important; }
+        
+        /* 🚨 ตารางและหัวตารางสีน้ำเงินเข้มตามดีไซน์ของพี่ */
+        .table-card { background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
+        .table thead tr { background-color: #1e3a8a; color: white; font-size: 0.95rem; letter-spacing: 0.5px; }
+        .table th { border: none !important; padding: 16px; font-weight: 500; }
+        .table tbody td { padding: 16px 12px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
+        .table tbody tr:hover { background-color: #f8fafc; }
+        
+        /* 🚨 ป้ายสถานะผู้ส่งคืน (แก้ปัญหาตัวอักษรลอย) */
+        .badge-self { background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 50rem; font-weight: 500; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
+        .badge-proxy { background-color: #fffbeb; color: #d97706; border: 1px solid #fcd34d; padding: 6px 14px; border-radius: 50rem; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(217, 119, 6, 0.05); }
+        
+        /* ปุ่มตรวจสอบแบบ Outline */
+        .btn-action-outline { background-color: white; color: #1e3a8a; border: 1.5px solid #1e3a8a; border-radius: 50rem; padding: 6px 22px; font-size: 0.95rem; font-weight: 600; transition: all 0.2s; }
+        .btn-action-outline:hover { background-color: #1e3a8a; color: white; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2); }
 
+        /* การแสดงผลบนมือถือ */
         @media (max-width: 768px) {
-            .table-card { background: transparent !important; box-shadow: none !important; border: none !important; }
+            .table-card { background: transparent !important; box-shadow: none !important; border: none !important; margin-top: 10px; }
             .table thead { display: none !important; }
             .table tbody tr { display: block; background: #ffffff; border-radius: 16px; margin-bottom: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid #e2e8f0 !important; }
-            
-            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 10px 0; border-bottom: 1px dashed #e2e8f0 !important; }
+            .table tbody td { display: flex; justify-content: space-between; align-items: center; text-align: right; width: 100%; padding: 12px 0; border-bottom: 1px dashed #e2e8f0 !important; }
             .table tbody td::before { content: attr(data-label); font-weight: 600; color: #475569; font-size: 0.95rem; text-align: left; margin-right: 15px; flex-shrink: 0; }
-            .table tbody td:first-child { border-bottom: 2px solid var(--admin-main) !important; padding-top: 0; }
-            
-            .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 14px; display: block; }
+            .table tbody td[data-label="เลขรายการ"] { background-color: #f8fafc; border-bottom: 2px solid #1e3a8a !important; margin: -16px -20px 10px -20px; padding: 15px 20px !important; border-radius: 16px 16px 0 0; }
+            .table tbody td[data-label="เลขรายการ"]::before { display: none; }
+            .table tbody td:last-child { border-bottom: none !important; padding-bottom: 0; padding-top: 16px; display: block; }
             .table tbody td:last-child::before { display: none; } 
-            .table tbody td:last-child .btn-action-admin { background-color: var(--admin-main); color: white; border: none; width: 100%; padding: 12px !important; font-size: 1.05rem; border-radius: 12px; }
+            .table tbody td:last-child .btn-action-outline { background-color: #1e3a8a; color: white; border: none; width: 100%; padding: 14px !important; font-size: 1.05rem; border-radius: 12px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="nav-header-custom shadow-sm mb-4 d-flex justify-content-between align-items-center" style="padding: 15px 20px; max-width: 1200px; margin: 0 auto; border-radius: 0 0 12px 12px;">
-        <div class="nav-title-custom fw-bold text-white lh-sm m-0">
+    <nav class="nav-header-custom shadow-sm mb-4 d-flex justify-content-between align-items-center" style="padding: 15px 30px; background-color: #1e3a8a;">
+        <div class="nav-title-custom fw-bold text-white lh-sm m-0 fs-5">
             🔍 Step 5 | ตรวจรับคืน
-            <span class="d-block d-sm-inline text-light opacity-75 mt-1 mt-sm-0" style="font-size: 0.85rem; font-weight: 500;">(ค้างดำเนินการ)</span>
+            <span class="d-block d-sm-inline text-light opacity-75 mt-1 mt-sm-0" style="font-size: 0.9rem; font-weight: 500;">(ค้างดำเนินการ)</span>
         </div>
-        <div>
-            <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-3 py-1 shadow-sm">🔙 กลับเมนู</a>
-        </div>
-    </div>
+        <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm">🔙 กลับเมนู</a>
+    </nav>
 
-    <div class="container-wide">
-        <div class="d-flex align-items-center mb-3 px-1">
-            <div class="accent-bar-admin"></div>
-            <h5 class="fw-bold m-0" style="color: var(--admin-main);">รายการที่ผู้ใช้งานส่งคืน</h5>
-        </div>
+    <div class="container-wide pb-5">
+        <h5 class="fw-bold m-0 mb-3 text-dark" style="border-left: 5px solid #1e3a8a; padding-left: 10px;">รายการที่ผู้ใช้งานส่งคืน</h5>
         
         <div class="table-card table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table align-middle mb-0">
                 <thead>
                     <tr class="text-center">
-                        <th style="width: 13%;" class="py-3 px-4 text-start">เลขรายการ</th>
-                        <th style="width: 14%;" class="py-3">วัน-เวลา</th>
-                        <th style="width: 17%;" class="py-3">เจ้าของรายการ</th> 
-                        <th style="width: 16%;" class="py-3">ผู้ส่งคืน</th> 
-                        <th style="width: 12%;" class="py-3">ประเภท</th>
-                        <th style="width: 15%;" class="py-3">เลขอุปกรณ์</th>
-                        <th style="width: 13%;" class="py-3 text-end px-4">จัดการ</th>
+                        <th style="width: 14%;" class="text-start px-4">เลขรายการ</th>
+                        <th style="width: 16%;">วัน-เวลา</th>
+                        <th style="width: 16%;">เจ้าของรายการ</th> 
+                        <th style="width: 18%;">ผู้ส่งคืน</th>
+                        <th style="width: 10%;">ประเภท</th>
+                        <th style="width: 16%;">เลขอุปกรณ์</th>
+                        <th style="width: 10%;" class="px-4 text-center">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody id="requestListBody">
@@ -80,19 +84,11 @@
         loadStep5List();
     };
 
-    async function loadStep5List() {
+    function loadStep5List() {
         const tbody = document.getElementById("requestListBody");
-        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-5 text-muted fw-bold">กำลังดึงข้อมูล... ⏳</td></tr>'; 
         
-        try {
-            const response = await fetch(API_URL, { 
-                method: "POST",
-                cache: "no-store", 
-                body: JSON.stringify({ action: "getData" }) 
-            });
-            
-            const res = await response.json();
-            
+        callAPI({ action: "getData" })
+        .then(res => {
             if (res.status === "success" && res.data && res.data.length > 0) {
                 const pendingData = res.data.filter(item => 
                     item.status && (item.status.includes("รอตรวจสอบ") || item.status.includes("รอแอดมินตรวจ") || item.status.includes("รอตรวจรับ") || item.status.includes("Step[4]"))
@@ -103,86 +99,66 @@
                     return;
                 }
 
-                let htmlContent = "";
+                let htmlContent = ""; 
 
                 pendingData.forEach(item => {
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH").replace(/:\d{2}$/, '') : "-";
                     
-                    let fullNameRaw = item.name || "-";
-                    let ownerName = fullNameRaw;
-                    let actorName = "ส่งด้วยตนเอง"; 
-
-                    // ⚡ แยกร่าง! ดึงข้อมูลเจ้าของเครื่อง กับ คนเอามาคืน ออกจากกัน
-                    if (fullNameRaw.includes("(แทน") || fullNameRaw.includes("(รับแทน") || fullNameRaw.includes("(คืนแทน")) {
-                        let parts = fullNameRaw.split('(');
-                        actorName = parts[0].trim(); // ผู้ทำการแทน
-                        let insideParen = parts[1] ? parts[1].replace(')', '').trim() : ""; 
-                        ownerName = insideParen.replace(/^(แทน|รับแทน|คืนแทน)\s*/, '').trim(); // เจ้าของตัวจริง
+                    // 🚨 ดึงชื่อเจ้าของรายการ และ ผู้ส่งคืน แยกออกจากกัน
+                    let ownerName = item.name || "-";
+                    let senderHtml = `<span class="badge-self shadow-sm">👤 ส่งด้วยตนเอง</span>`;
+                    
+                    if (item.name && item.name.includes("(แทน")) {
+                        let parts = item.name.split('(');
+                        let actorName = parts[0].trim();
+                        ownerName = parts[1].replace('แทน', '').replace(')', '').trim();
                         
-                        // ถ้าระบบส่งมาเบิ้ล (เช่น นัท แทน นัท) ให้ปรับเป็น ส่งด้วยตนเอง
-                        if (actorName === ownerName) {
-                            actorName = "ส่งด้วยตนเอง";
-                        }
+                        // 🚨 ทำให้คนรับแทนมีพื้นหลังป้ายสวยงาม
+                        senderHtml = `<span class="badge-proxy shadow-sm">🤝 ${actorName}</span>`;
                     }
 
-                    // จัดรูปแบบ HTML
-                    let ownerHTML = `<span class="fw-bold text-dark">${ownerName}</span>`;
-                    let actorHTML = actorName === "ส่งด้วยตนเอง"
-                        ? `<span class="badge bg-light text-secondary border shadow-sm px-2 py-1" style="font-weight: 500;">👤 ส่งด้วยตนเอง</span>`
-                        : `<span class="fw-bold" style="color: #ea580c;">🤝 ${actorName}</span>`;
-
-                    let deviceData = parseDeviceData(item.ipadId);
+                    // แยกประเภทและเลขอุปกรณ์
+                    let typeHtml = '<span class="text-muted">-</span>';
+                    let idsHtml = '<span class="text-muted">-</span>';
+                    if (item.ipadId && item.ipadId.trim() !== "") {
+                        let rawIpads = item.ipadId.split(',').map(id => id.trim());
+                        let normalIds = [], airIds = [];
+                        rawIpads.forEach(id => {
+                            let numMatch = id.match(/\d+/); let num = numMatch ? numMatch[0] : id; 
+                            if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num);
+                            else normalIds.push(num);
+                        });
+                        
+                        let typeArr = [], idsArr = [];
+                        if (normalIds.length > 0) { typeArr.push(`<div class="fw-bold text-dark mb-1">iPad</div>`); idsArr.push(`<div class="mb-1 fw-bold" style="color: #2563eb; word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`); }
+                        if (airIds.length > 0) { typeArr.push(`<div class="fw-bold text-dark mb-1">Air+APC</div>`); idsArr.push(`<div class="mb-1 fw-bold" style="color: #2563eb; word-break: break-word; line-height: 1.6;">${airIds.join(', ')}</div>`); }
+                        
+                        typeHtml = typeArr.join(''); idsHtml = idsArr.join('');
+                    }
 
                     htmlContent += `
                         <tr class="align-middle">
-                            <td data-label="เลขรายการ" class="py-3 px-0 px-md-4 fw-bold text-start" style="color: var(--admin-main);">${item.reqId}</td>
+                            <td data-label="เลขรายการ" class="py-3 px-4 fw-bold text-start" style="color: #1e3a8a;">${item.reqId}</td>
                             <td data-label="วัน-เวลา" class="py-3 text-center text-muted" style="font-size: 0.9rem;">${dateStr}</td>
-                            <td data-label="เจ้าของรายการ" class="py-3 text-center">${ownerHTML}</td>
-                            <td data-label="ผู้ส่งคืน" class="py-3 text-center">${actorHTML}</td>
-                            <td data-label="ประเภท" class="py-3 text-center">${deviceData.typeHtml}</td>
-                            <td data-label="เลขอุปกรณ์" class="py-3 text-center">${deviceData.idsHtml}</td>
-                            <td data-label="จัดการ" class="py-3 text-end px-0 px-md-4">
-                                <button class="btn-action-admin shadow-sm" onclick="goToStep5('${item.reqId}')">ตรวจสอบ</button>
+                            <td data-label="เจ้าของรายการ" class="py-3 text-center fw-bold text-dark">${ownerName}</td>
+                            <td data-label="ผู้ส่งคืน" class="py-3 text-center">${senderHtml}</td>
+                            <td data-label="ประเภท" class="py-3 text-center">${typeHtml}</td>
+                            <td data-label="เลขอุปกรณ์" class="py-3 text-center">${idsHtml}</td>
+                            <td data-label="จัดการ" class="py-3 text-center px-4">
+                                <button class="btn-action-outline shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'">ตรวจสอบ</button>
                             </td>
                         </tr>
                     `;
                 });
                 
-                tbody.innerHTML = htmlContent;
+                tbody.innerHTML = htmlContent; 
             } else {
                 tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
             }
-        } catch (err) {
-            console.error("Fetch Data Error:", err);
-            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-5">❌ เกิดข้อผิดพลาด: ${err.message}</td></tr>`;
-        }
-    }
-
-    function parseDeviceData(ipadText) {
-        let typeHtml = '<span class="text-muted">-</span>';
-        let idsHtml = '<span class="text-muted">-</span>';
-        
-        if (ipadText && ipadText.trim() !== "") {
-            let rawIpads = ipadText.split(',').map(id => id.trim());
-            let normalIds = [], airIds = [];
-            
-            rawIpads.forEach(id => {
-                let numMatch = id.match(/\d+/); let num = numMatch ? numMatch[0] : id; 
-                if (id.toLowerCase().includes("air") || id.toLowerCase().includes("apc")) airIds.push(num);
-                else normalIds.push(num);
-            });
-            
-            let typeArr = [], idsArr = [];
-            if (normalIds.length > 0) { typeArr.push(`<div class="fw-bold text-danger mb-1">iPad</div>`); idsArr.push(`<div class="mb-1 fw-bold" style="color: #2563eb; word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`); }
-            if (airIds.length > 0) { typeArr.push(`<div class="fw-bold text-danger mb-1">Air+APC</div>`); idsArr.push(`<div class="mb-1 fw-bold" style="color: #2563eb; word-break: break-word; line-height: 1.6;">${airIds.join(', ')}</div>`); }
-            
-            typeHtml = typeArr.join(''); idsHtml = idsArr.join('');
-        }
-        return { typeHtml, idsHtml };
-    }
-
-    function goToStep5(reqId) {
-        window.location.href = `step5.html?reqId=${reqId}`;
+        })
+        .catch(err => {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger fw-bold py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
+        });
     }
 </script>
 </body>
