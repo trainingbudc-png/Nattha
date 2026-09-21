@@ -371,29 +371,13 @@
         };
 
         try {
-            // โค้ดส่วนดักจับ Fire and Forget (ไม่ต้องรอ ReqID)
-            const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-            const rawText = await response.text(); 
-            let res;
-            
-            try { res = JSON.parse(rawText); } 
-            catch (parseErr) {
-                if (navigator.onLine) {
-                    Swal.fire({ 
-                        title: "ส่งข้อมูลสำเร็จ!", 
-                        text: "ระบบกำลังดำเนินการบันทึกข้อมูลและส่งแจ้งเตือนครับ", 
-                        icon: "success", 
-                        confirmButtonColor: "#1e3a8a", 
-                        allowOutsideClick: false 
-                    }).then(() => { window.location.href = "admin.html"; });
-                    return;
-                }
-            }
+            // ใช้ callAPI แบบปลอดภัย รอเช็คผลลัพธ์จาก Server
+            const res = await callAPI(payload);
 
             if(res && res.status === "success") {
                 Swal.fire({ 
                     title: "ส่งข้อมูลสำเร็จ!", 
-                    text: "ระบบกำลังดำเนินการบันทึกข้อมูลและส่งแจ้งเตือนครับ", 
+                    text: `ระบบเตรียมเครื่องเรียบร้อยแล้ว (Ref: ${res.reqId})`, 
                     icon: "success", 
                     confirmButtonColor: "#1e3a8a", 
                     confirmButtonText: "กลับหน้าหลัก", 
@@ -404,18 +388,8 @@
                 btn.innerHTML = "ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
             }
         } catch (err) {
-            if (navigator.onLine) {
-                Swal.fire({ 
-                    title: "ส่งข้อมูลสำเร็จ!", 
-                    text: `ระบบกำลังดำเนินการบันทึกข้อมูลและส่งแจ้งเตือนครับ`, 
-                    icon: "success", 
-                    confirmButtonColor: "#1e3a8a", 
-                    allowOutsideClick: false 
-                }).then(() => { window.location.href = "admin.html"; });
-            } else {
-                Swal.fire("ขัดข้อง", "ไม่สามารถเชื่อมต่ออินเทอร์เน็ตได้", "error");
-                btn.innerHTML = "ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
-            }
+            Swal.fire("ขัดข้อง", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองอีกครั้ง", "error");
+            btn.innerHTML = "ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
         }
     }
 </script>
