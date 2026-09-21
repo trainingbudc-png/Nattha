@@ -1,5 +1,5 @@
 // =========================================
-// 📌 ไฟล์ script.js : แกนกลางจัดการระบบหน้าเว็บ (อัปเกรด Fire & Forget)
+// 📌 ไฟล์ script.js : แกนกลางจัดการระบบหน้าเว็บ (ปลอดภัย 100%)
 // =========================================
 const API_URL = "https://script.google.com/macros/s/AKfycbwTYZGGb-XQ1jh301IlRJ15aDlvQm3lqxrlGUSFYG5ColRGichCODQIFM4e6cUxY6kU/exec"; 
 const LIFF_ID = "2010557323-PAyWhGxW";
@@ -18,26 +18,14 @@ function showLoading(text = "กำลังโหลด...") {
 
 function hideLoading() { const overlay = document.getElementById("loadingOverlay"); if (overlay) overlay.style.display = "none"; }
 
-// 🚀 อัปเกรด callAPI: แยกระบบดึงข้อมูล กับ ระบบบันทึก (Fire and Forget)
+// 🚀 เปลี่ยนมารอคำตอบจาก Server เสมอ เพื่อให้ชัวร์ว่า Data ลง Database แล้ว (เสถียร 100%)
 async function callAPI(payload) {
     try {
-        const isSaveAction = payload.action && (payload.action.startsWith("saveStep") || payload.action === "updateStatus" || payload.action === "reportIssue" || payload.action === "registerUser" || payload.action === "updateUserProfile");
-
-        if (isSaveAction) {
-            // ⚡ ยิงข้อมูลไม่รอคำตอบ
-            fetch(API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(payload),
-                keepalive: true
-            }).catch(e => console.warn("Background Push:", e));
-            
-            // เด้ง Success ทันที
-            await new Promise(r => setTimeout(r, 500));
-            return { status: "success", reqId: payload.reqId || "-" };
-        }
-
-        const res = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) });
+        const res = await fetch(API_URL, { 
+            method: "POST", 
+            headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+            body: JSON.stringify(payload) 
+        });
         return await res.json();
     } catch (error) {
         console.error("API Error:", error); throw error;
