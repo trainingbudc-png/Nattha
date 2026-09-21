@@ -20,21 +20,6 @@
         .table tbody td { padding: 16px 12px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
         .table tbody tr:hover { background-color: #f8fafc; }
         
-        /* 🚨 ป้ายสถานะผู้ส่งคืน (ทรงเดียวกันทั้งหมด ไม่ว่าส่งเองหรือส่งแทน) */
-        .badge-sender { 
-            background-color: #f8fafc; 
-            color: #475569; 
-            border: 1px solid #cbd5e1; 
-            padding: 6px 14px; 
-            border-radius: 50rem; 
-            font-weight: 600; 
-            font-size: 0.85rem; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 6px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        
         /* ปุ่มตรวจสอบแบบ Outline */
         .btn-action-outline { background-color: white; color: #1e3a8a; border: 1.5px solid #1e3a8a; border-radius: 50rem; padding: 6px 22px; font-size: 0.95rem; font-weight: 600; transition: all 0.2s; }
         .btn-action-outline:hover { background-color: #1e3a8a; color: white; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2); }
@@ -116,18 +101,19 @@
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH").replace(/:\d{2}$/, '') : "-";
                     
                     let ownerName = item.name || "-";
-                    // 🚨 สร้างป้ายพื้นฐานให้เหมือนกันหมด คุมโทนสีเทา
-                    let senderHtml = `<span class="badge-sender"><span class="text-muted opacity-75">👤</span> ส่งด้วยตนเอง</span>`;
+                    // 🚨 คลีนๆ ไม่มีกรอบ ไม่มีอีโมจิ
+                    let senderHtml = `<span class="text-muted" style="font-size: 0.95rem;">ส่งด้วยตนเอง</span>`;
                     
                     if (item.name && item.name.includes("(แทน")) {
                         let parts = item.name.split('(');
                         let actorName = parts[0].trim();
                         ownerName = parts[1].replace('แทน', '').replace(')', '').trim();
                         
-                        // 🚨 ถ้าส่งแทน ก็ใช้ Class badge-sender เหมือนกันเป๊ะ แต่เปลี่ยนข้อความกับไอคอน
-                        senderHtml = `<span class="badge-sender"><span style="color: #ea580c;">🤝</span> ${actorName}</span>`;
+                        // 🚨 คลีนๆ ไม่มีกรอบ ไม่มีอีโมจิ (เน้นตัวหนาให้เห็นชัดว่ามีคนคืนแทน)
+                        senderHtml = `<span class="fw-bold text-dark" style="font-size: 0.95rem;">${actorName}</span>`;
                     }
 
+                    // แยกประเภทและเลขอุปกรณ์
                     let typeHtml = '<span class="text-muted">-</span>';
                     let idsHtml = '<span class="text-muted">-</span>';
                     if (item.ipadId && item.ipadId.trim() !== "") {
