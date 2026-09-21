@@ -18,17 +18,25 @@ function showLoading(text = "กำลังโหลด...") {
 
 function hideLoading() { const overlay = document.getElementById("loadingOverlay"); if (overlay) overlay.style.display = "none"; }
 
-// 🚀 เปลี่ยนมารอคำตอบจาก Server เสมอ เพื่อให้ชัวร์ว่า Data ลง Database แล้ว (เสถียร 100%)
-async function callAPI(payload) {
-    try {
-        const res = await fetch(API_URL, { 
-            method: "POST", 
-            headers: { "Content-Type": "text/plain;charset=utf-8" }, 
-            body: JSON.stringify(payload) 
-        });
-        return await res.json();
-    } catch (error) {
-        console.error("API Error:", error); throw error;
+// 🚀 อัปเกรด callAPI: เพิ่มระบบ Auto-Retry ลองซ้ำอัตโนมัติ 3 ครั้งเมื่อเน็ตหลุดหรือ Server ขัดข้อง
+async function callAPI(payload, maxRetries = 3, delayMs = 1500) {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            const res = await fetch(API_URL, { 
+                method: "POST", 
+                headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+                body: JSON.stringify(payload) 
+            });
+            if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+            return await res.json();
+        } catch (error) {
+            console.warn(`📡 สัญญาณขัดข้อง (ลองรอบที่ ${i + 1}/${maxRetries}):`, error);
+            if (i === maxRetries - 1) {
+                console.error("❌ เชื่อมต่อ API ล้มเหลวโดยสมบูรณ์");
+                throw error; 
+            }
+            await new Promise(resolve => setTimeout(resolve, delayMs * (i + 1)));
+        }
     }
 }
 
