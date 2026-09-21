@@ -55,7 +55,6 @@
             border-color: var(--admin-main) !important;
         }
 
-        /* 🚨 สไตล์ตารางแบบกะทัดรัด (ยึดตาม Step 1) */
         .table-responsive { border-radius: 12px; border: 1px solid var(--admin-border); overflow: hidden; }
         .table { margin-bottom: 0; }
         .table th { background-color: var(--admin-bg); color: var(--admin-main); font-weight: 600; text-align: center; padding: 15px; border-bottom: 2px solid var(--admin-main); font-size: 0.95rem; white-space: nowrap; }
@@ -87,7 +86,6 @@
             box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4);
         }
 
-        /* 📱 ปรับหน้าจอเมื่อแสดงบนมือถือ (ให้เรียงแบบกล่องเล็กๆ อ้างอิง Step 1) */
         @media (max-width: 768px) {
             body { padding: 10px; }
             .confirm-card { padding-bottom: 20px; }
@@ -205,7 +203,6 @@
                 const container = document.getElementById("ipadListContainer");
                 container.innerHTML = "";
 
-                // 🚨 สร้างตารางครอบข้อมูล แบบเดียวกับ Step 1
                 if(result.data && result.data.length > 0) {
                     let tableHTML = `
                     <label class="form-label fw-bold mb-3 d-none d-md-block" style="color: var(--admin-main);">
@@ -339,37 +336,17 @@
         btn.disabled = true;
 
         try {
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: "saveStep5",
-                    reqId: reqId,
-                    name: adminName,
-                    borrowerName: borrowerName,
-                    items: items,
-                    userId: localStorage.getItem("userId") 
-                })
+            // ใช้ callAPI แบบปลอดภัย รอเช็คผลลัพธ์จาก Server
+            const res = await callAPI({
+                action: "saveStep5",
+                reqId: reqId,
+                name: adminName,
+                borrowerName: borrowerName,
+                items: items,
+                userId: localStorage.getItem("userId") 
             });
-            
-            const rawText = await res.text();
-            let result;
-            
-            try {
-                result = JSON.parse(rawText);
-            } catch (parseErr) {
-                if (navigator.onLine) {
-                    Swal.fire({
-                        title: "สำเร็จ!",
-                        text: "ตรวจสอบรับคืนเรียบร้อย",
-                        icon: "success",
-                        confirmButtonColor: "#1e3a8a",
-                        allowOutsideClick: false
-                    }).then(() => window.location.href = "step5-list.html");
-                    return;
-                }
-            }
 
-            if(result && result.status === "success") {
+            if(res && res.status === "success") {
                 Swal.fire({
                     title: "สำเร็จ!",
                     text: "ตรวจสอบรับคืนเรียบร้อย ปิดรายการสมบูรณ์",
@@ -378,24 +355,14 @@
                     allowOutsideClick: false
                 }).then(() => window.location.href = "step5-list.html");
             } else {
-                Swal.fire("ข้อผิดพลาด", result.message || "เกิดข้อผิดพลาดในการบันทึก", "error");
+                Swal.fire("ข้อผิดพลาด", res.message || "เกิดข้อผิดพลาดในการบันทึก", "error");
                 btn.innerHTML = "ยืนยันการตรวจสอบเสร็จสมบูรณ์"; 
                 btn.disabled = false;
             }
         } catch(e) {
-            if (navigator.onLine) {
-                Swal.fire({
-                    title: "สำเร็จ!",
-                    text: "ตรวจสอบรับคืนเรียบร้อย ปิดรายการสมบูรณ์ (ข้อมูลถูกบันทึกแล้ว)",
-                    icon: "success",
-                    confirmButtonColor: "#1e3a8a",
-                    allowOutsideClick: false
-                }).then(() => window.location.href = "step5-list.html");
-            } else {
-                Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่ออินเทอร์เน็ตได้", "error");
-                btn.innerHTML = "ยืนยันการตรวจสอบเสร็จสมบูรณ์"; 
-                btn.disabled = false;
-            }
+            Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่ออินเทอร์เน็ตได้ กรุณาลองใหม่", "error");
+            btn.innerHTML = "ยืนยันการตรวจสอบเสร็จสมบูรณ์"; 
+            btn.disabled = false;
         }
     }
 </script>
