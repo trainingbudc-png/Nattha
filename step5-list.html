@@ -20,10 +20,6 @@
         .table tbody td { padding: 16px 12px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
         .table tbody tr:hover { background-color: #f8fafc; }
         
-        /* 🚨 ป้ายสถานะผู้ส่งคืน (แก้ปัญหาตัวอักษรลอย) */
-        .badge-self { background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 50rem; font-weight: 500; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
-        .badge-proxy { background-color: #fffbeb; color: #d97706; border: 1px solid #fcd34d; padding: 6px 14px; border-radius: 50rem; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(217, 119, 6, 0.05); }
-        
         /* ปุ่มตรวจสอบแบบ Outline */
         .btn-action-outline { background-color: white; color: #1e3a8a; border: 1.5px solid #1e3a8a; border-radius: 50rem; padding: 6px 22px; font-size: 0.95rem; font-weight: 600; transition: all 0.2s; }
         .btn-action-outline:hover { background-color: #1e3a8a; color: white; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2); }
@@ -104,17 +100,17 @@
                 pendingData.forEach(item => {
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString("th-TH").replace(/:\d{2}$/, '') : "-";
                     
-                    // 🚨 ดึงชื่อเจ้าของรายการ และ ผู้ส่งคืน แยกออกจากกัน
+                    // 🚨 ดึงชื่อเจ้าของรายการ และ ผู้ส่งคืน แยกออกจากกัน (ใช้ตัวหนังสือธรรมดา)
                     let ownerName = item.name || "-";
-                    let senderHtml = `<span class="badge-self shadow-sm">👤 ส่งด้วยตนเอง</span>`;
+                    let senderHtml = `<span class="text-muted" style="font-size: 0.9rem;"><span class="opacity-75">👤</span> ส่งด้วยตนเอง</span>`;
                     
                     if (item.name && item.name.includes("(แทน")) {
                         let parts = item.name.split('(');
                         let actorName = parts[0].trim();
                         ownerName = parts[1].replace('แทน', '').replace(')', '').trim();
                         
-                        // 🚨 ทำให้คนรับแทนมีพื้นหลังป้ายสวยงาม
-                        senderHtml = `<span class="badge-proxy shadow-sm">🤝 ${actorName}</span>`;
+                        // 🚨 ทำให้คนรับแทนเป็นตัวหนังสือธรรมดาสีส้ม
+                        senderHtml = `<span class="fw-bold" style="color: #ea580c;">🤝 ${actorName}</span>`;
                     }
 
                     // แยกประเภทและเลขอุปกรณ์
