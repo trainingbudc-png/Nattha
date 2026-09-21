@@ -58,29 +58,45 @@
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-2">
             <h5 class="fw-bold text-dark m-0">ตารางข้อมูลรายการเบิก-ยืม</h5>
             <div class="d-flex gap-2">
-                <button class="btn btn-success btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="exportToExcel()" style="background-color: #10b981; border-color: #10b981;">📥 ดาวน์โหลด Excel (.xlsx)</button>
+                <button class="btn btn-success btn-sm rounded-pill fw-bold px-4 shadow-sm" onclick="exportToExcel()" style="background-color: #10b981; border-color: #10b981;">📥 ดาวน์โหลด Excel</button>
                 <button class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 shadow-sm border" onclick="fetchData()">🔄 อัปเดต</button>
             </div>
         </div>
 
-        <div class="filter-card p-4 shadow-sm">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-5 col-12">
-                    <label class="form-label text-muted fw-bold mb-1" style="font-size: 0.85rem;">🔍 ค้นหา (เลขรายการ / ชื่อ)</label>
-                    <input type="text" id="searchInput" class="form-control border-2" placeholder="พิมพ์ข้อความที่ต้องการหา...">
-                </div>
-                <div class="col-md-4 col-12">
-                    <label class="form-label text-muted fw-bold mb-1" style="font-size: 0.85rem;">📊 กรองตามสถานะระบบ</label>
-                    <select id="statusFilter" class="form-select fw-bold border-2" onchange="applyFilters()">
-                        <option value="all">โชว์ทุกสถานะ (ทั้งหมด)</option>
-                        <option value="ไม่ครบ">⚠️ ค้างดำเนินการ (ไม่ครบ)</option>
-                        <option value="จบขั้นตอน">✔️ เสร็จสมบูรณ์ (จบขั้นตอน)</option>
-                    </select>
-                </div>
-                <div class="col-md-3 col-12">
-                    <div class="form-check form-switch d-flex align-items-center gap-2 pb-2">
-                        <input class="form-check-input" type="checkbox" id="emergencyFilter" style="width: 40px; height: 20px; cursor: pointer;" onchange="applyFilters()">
-                        <label class="form-check-label fw-bold mb-0 text-danger" for="emergencyFilter" style="font-size: 1rem; cursor: pointer; padding-top: 2px;">🚨 เฉพาะเคสฉุกเฉิน</label>
+        <!-- ปุ่มเปิด Filter บนมือถือ (ซ่อนบน Desktop) -->
+        <div class="d-block d-lg-none mb-3">
+            <button class="btn btn-outline-admin w-100 fw-bold py-2 shadow-sm rounded-pill" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
+                🔍 เปิดเครื่องมือค้นหาและตัวกรอง
+            </button>
+        </div>
+
+        <!-- แผง Filter (เป็น Card ปกติบน Desktop, เป็น Offcanvas สไลด์ขึ้นบนมือถือ) -->
+        <div class="offcanvas-lg offcanvas-bottom h-auto rounded-top-4" tabindex="-1" id="filterOffcanvas">
+            <div class="offcanvas-header d-lg-none border-bottom">
+                <h5 class="offcanvas-title fw-bold text-dark m-0">🔍 ค้นหาและตัวกรองข้อมูล</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body p-0 p-lg-0">
+                <div class="filter-card p-4 shadow-sm w-100 mb-lg-3">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-5 col-12">
+                            <label class="form-label text-muted fw-bold mb-1" style="font-size: 0.85rem;">🔍 ค้นหา (เลขรายการ / ชื่อ)</label>
+                            <input type="text" id="searchInput" class="form-control border-2" placeholder="พิมพ์ข้อความที่ต้องการหา...">
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <label class="form-label text-muted fw-bold mb-1" style="font-size: 0.85rem;">📊 กรองตามสถานะระบบ</label>
+                            <select id="statusFilter" class="form-select fw-bold border-2" onchange="applyFilters()">
+                                <option value="all">โชว์ทุกสถานะ (ทั้งหมด)</option>
+                                <option value="ไม่ครบ">⚠️ ค้างดำเนินการ (ไม่ครบ)</option>
+                                <option value="จบขั้นตอน">✔️ เสร็จสมบูรณ์ (จบขั้นตอน)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-12">
+                            <div class="form-check form-switch d-flex align-items-center gap-2 pb-2">
+                                <input class="form-check-input" type="checkbox" id="emergencyFilter" style="width: 40px; height: 20px; cursor: pointer;" onchange="applyFilters()">
+                                <label class="form-check-label fw-bold mb-0 text-danger" for="emergencyFilter" style="font-size: 1rem; cursor: pointer; padding-top: 2px;">🚨 เฉพาะเคสฉุกเฉิน</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -105,13 +121,13 @@
                     </tr>
                 </thead>
                 <tbody id="dashboardBody">
-                    <tr><td colspan="12" class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</td></tr>
+                    <tr><td colspan="12" class="text-center py-5 text-muted fw-bold">ระบบกำลังตรวจสอบสิทธิ์การเข้าถึง... ⏳</td></tr>
                 </tbody>
             </table>
         </div>
 
         <div class="mobile-card-view mt-3" id="mobileCardContainer">
-            <div class="text-center py-5 text-muted bg-white rounded-4 border shadow-sm fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</div>
+            <div class="text-center py-5 text-muted bg-white rounded-4 border shadow-sm fw-bold">ระบบกำลังตรวจสอบสิทธิ์การเข้าถึง... ⏳</div>
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-3 pagination-container">
@@ -126,11 +142,32 @@
 <script>
     let allDashboardData = []; let filteredData = []; let currentPage = 1; const itemsPerPage = 20; 
 
-    window.onload = function() {
-        if(localStorage.getItem("userRole") !== "Admin") { window.location.href = "index.html"; return; }
+    window.onload = async function() {
+        const userId = localStorage.getItem("userId");
+        if (!userId) { window.location.replace("index.html"); return; }
+        
+        // 🛡️ เช็คสิทธิ์ Admin จาก Server โดยตรง (อุดช่องโหว่ Security)
+        try {
+            const res = await callAPI({ action: "checkRole", userId: userId });
+            if (res.role !== "Admin") {
+                Swal.fire({
+                    title: "ปฏิเสธการเข้าถึง",
+                    text: "เฉพาะผู้ดูแลระบบ (Admin) เท่านั้น",
+                    icon: "error",
+                    confirmButtonColor: "#1e3a8a",
+                    allowOutsideClick: false
+                }).then(() => window.location.replace("user.html"));
+                return;
+            }
+        } catch (e) {
+            Swal.fire("ข้อผิดพลาด", "ไม่สามารถตรวจสอบสิทธิ์การใช้งานได้", "error").then(() => window.location.replace("index.html"));
+            return;
+        }
+
         const searchInput = document.getElementById("searchInput");
         if(searchInput && typeof debounce === "function") { searchInput.addEventListener("keyup", debounce(applyFilters, 400)); } 
         else if (searchInput) { searchInput.addEventListener("change", applyFilters); }
+        
         setTimeout(() => { fetchData(); }, 100);
     };
 
@@ -158,8 +195,7 @@
         tbody.innerHTML = '<tr><td colspan="12" class="text-center py-5 text-muted fw-bold">กำลังดาวน์โหลดข้อมูล... ⏳</td></tr>';
         mobileContainer.innerHTML = '<div class="text-center py-5 text-muted bg-white rounded-4 border shadow-sm fw-bold">กำลังดาวน์โหลดข้อมูล... ⏳</div>';
         
-        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getDashboardData" }) })
-        .then(res => res.json())
+        callAPI({ action: "getDashboardData" })
         .then(res => {
             if (res.status === "success" && res.data) { allDashboardData = res.data; applyFilters(); } 
             else { tbody.innerHTML = '<tr><td colspan="12" class="text-center text-muted py-5">ยังไม่มีข้อมูลรายการ</td></tr>'; mobileContainer.innerHTML = '<div class="text-center py-5 text-muted bg-white rounded-4 border shadow-sm">ยังไม่มีข้อมูลรายการ</div>'; }
