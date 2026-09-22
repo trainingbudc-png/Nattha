@@ -32,12 +32,11 @@
         }
         .btn-action-solid:hover { background-color: #172554; color: white; transform: translateY(-1px); }
 
-        /* 🚨 สไตล์พิเศษสำหรับแถว Loading / ไม่มีข้อมูล (Desktop) */
         .table tbody tr.empty-row:hover { background-color: transparent; }
         .table tbody tr.empty-row td { border: none !important; }
 
         /* =========================================
-           📱 สไตล์ Card สำหรับ Mobile (ปรับเลย์เอาต์ใหม่)
+           📱 สไตล์ Card สำหรับ Mobile (ปรับใหม่ให้เป็นแอปโปรๆ)
            ========================================= */
         @media (max-width: 768px) {
             .table-card { background: transparent !important; box-shadow: none !important; border: none !important; margin-top: 10px; }
@@ -45,40 +44,48 @@
             
             .table tbody tr { 
                 display: flex; flex-direction: column; background: #ffffff; 
-                border-radius: 16px; margin-bottom: 16px; padding: 20px 24px; 
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f1f5f9 !important; 
+                border-radius: 20px; margin-bottom: 20px; padding: 24px; 
+                box-shadow: 0 8px 20px rgba(0,0,0,0.04); border: 1px solid #e2e8f0 !important; 
             }
             
             .table tbody td { 
                 display: flex; justify-content: space-between; align-items: flex-start; 
-                text-align: right; width: 100%; padding: 10px 0; border: none !important; 
+                text-align: right; width: 100%; padding: 12px 0; border: none !important; 
             }
             
+            /* 🚨 ดรอปสีหัวข้อฝั่งซ้ายลง เพื่อดันข้อมูลขวาให้เด่น */
             .table tbody td::before { 
-                content: attr(data-label); font-weight: 500; color: #64748b; 
+                content: attr(data-label); font-weight: 500; color: #94a3b8; 
                 font-size: 0.95rem; text-align: left; margin-right: 15px; 
                 flex-shrink: 0; padding-top: 2px;
             }
             
-            .table tbody td[data-label="เลขรายการ"] { padding-top: 0; padding-bottom: 16px; }
-            .table tbody td[data-label="เลขรายการ"] .req-id-cell { font-size: 1.15rem; }
-            
-            .table tbody td[data-label="เครื่องที่ส่งคืน"] { 
-                flex-direction: column; align-items: flex-start; text-align: left; padding-top: 15px;
+            /* แยกเส้นคั่นใต้ REQ */
+            .table tbody td[data-label="เลขรายการ"] { 
+                padding-top: 0; padding-bottom: 16px; border-bottom: 1px dashed #e2e8f0 !important; margin-bottom: 10px; 
             }
-            .table tbody td[data-label="เครื่องที่ส่งคืน"]::before { margin-bottom: 8px; }
-            .table tbody td[data-label="เครื่องที่ส่งคืน"] div { text-align: left !important; width: 100%; }
+            .table tbody td[data-label="เลขรายการ"] .req-id-cell { font-size: 1.25rem; }
+            
+            /* 🚨 ปรับกล่องเครื่องที่ส่งคืน (ตกลงมาข้างล่าง) */
+            .table tbody td[data-label="เครื่องที่ส่งคืน"] { 
+                flex-direction: column; align-items: flex-start; text-align: left; padding-top: 20px;
+            }
+            .table tbody td[data-label="เครื่องที่ส่งคืน"]::before { 
+                margin-bottom: 12px; color: #64748b; font-weight: 600; 
+            }
+            .table tbody td[data-label="เครื่องที่ส่งคืน"] div { 
+                text-align: left !important; width: 100%; 
+            }
             
             .table tbody td[data-label="จัดการ"] { 
-                padding: 20px 0 0 0 !important; margin-top: 10px; display: block; width: 100%;
+                padding: 24px 0 0 0 !important; display: block; width: 100%;
             }
             .table tbody td[data-label="จัดการ"]::before { display: none; } 
             
             .table tbody td[data-label="จัดการ"] .btn-action-solid { 
-                width: 100%; padding: 14px !important; font-size: 1.05rem; 
+                width: 100%; padding: 16px !important; font-size: 1.1rem; border-radius: 14px;
             }
 
-            /* 🚨 ยกเว้นแถว Loading ไม่ให้กลายเป็น Card */
             .table tbody tr.empty-row { 
                 display: block; background: transparent !important; border: none !important; 
                 box-shadow: none !important; padding: 40px 10px; margin: 0;
@@ -120,7 +127,6 @@
                     </tr>
                 </thead>
                 <tbody id="requestListBody">
-                    <!-- 🚨 เติมคลาส empty-row เข้าไป -->
                     <tr class="empty-row"><td colspan="7" class="text-center py-5 text-muted fw-bold">กำลังเชื่อมต่อข้อมูล... ⏳</td></tr>
                 </tbody>
             </table>
@@ -146,7 +152,6 @@
                 );
 
                 if (pendingData.length === 0) {
-                    // 🚨 เติมคลาส empty-row เข้าไป
                     tbody.innerHTML = '<tr class="empty-row"><td colspan="7" class="text-center text-success fw-bold py-5" style="font-size: 1.1rem;">🎉 ไม่มีรายการรอตรวจสอบรับคืนในขณะนี้</td></tr>';
                     return;
                 }
@@ -180,13 +185,14 @@
                         
                         let typeArr = [], idsArr = [];
                         
+                        // 🚨 สร้างกล่องสีเทาอ่อนหุ้มตัวเลข ให้ดูเป็นก้อนข้อมูลที่อ่านง่าย
                         if (normalIds.length > 0) { 
-                            typeArr.push(`<div class="value-text mb-1">iPad</div>`); 
-                            idsArr.push(`<div class="mb-1 value-text" style="word-break: break-word; line-height: 1.8; letter-spacing: 0.5px;">${normalIds.join(', ')}</div>`); 
+                            typeArr.push(`<div class="value-text mb-1 d-none d-md-block">iPad</div>`); 
+                            idsArr.push(`<div class="p-3 rounded-4 mb-3 value-text" style="background-color: #f8fafc; border: 1px solid #e2e8f0; word-break: break-word; line-height: 1.8; letter-spacing: 0.5px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">${normalIds.join(', ')}</div>`); 
                         }
                         if (airIds.length > 0) { 
-                            typeArr.push(`<div class="value-text mb-1">Air+APC</div>`); 
-                            idsArr.push(`<div class="mb-1 value-text" style="word-break: break-word; line-height: 1.8; letter-spacing: 0.5px;">${airIds.join(', ')}</div>`); 
+                            typeArr.push(`<div class="value-text mb-1 d-none d-md-block">Air+APC</div>`); 
+                            idsArr.push(`<div class="p-3 rounded-4 mb-3 value-text" style="background-color: #f8fafc; border: 1px solid #e2e8f0; word-break: break-word; line-height: 1.8; letter-spacing: 0.5px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">${airIds.join(', ')}</div>`); 
                         }
                         
                         typeHtml = typeArr.join(''); idsHtml = idsArr.join('');
@@ -198,7 +204,7 @@
                             <td data-label="วันที่และเวลา" class="text-md-center text-muted" style="font-size: 0.9rem;">${dateStr}</td>
                             <td data-label="เจ้าของรายการ" class="text-md-center"><span class="value-text">${ownerName}</span></td>
                             <td data-label="ผู้ส่งคืน" class="text-md-center">${senderHtml}</td>
-                            <td data-label="ประเภท" class="text-md-center">${typeHtml}</td>
+                            <td data-label="ประเภท" class="text-md-center d-none d-md-table-cell">${typeHtml}</td>
                             <td data-label="เครื่องที่ส่งคืน" class="text-md-center">${idsHtml}</td>
                             <td data-label="จัดการ" class="text-md-center px-md-4">
                                 <button class="btn-action-solid" onclick="window.location.href='step5.html?reqId=${item.reqId}'">ดำเนินการ</button>
@@ -209,12 +215,10 @@
                 
                 tbody.innerHTML = htmlContent; 
             } else {
-                // 🚨 เติมคลาส empty-row เข้าไป
                 tbody.innerHTML = '<tr class="empty-row"><td colspan="7" class="text-center text-muted py-5">ไม่มีข้อมูลในระบบ</td></tr>';
             }
         })
         .catch(err => {
-            // 🚨 เติมคลาส empty-row เข้าไป
             tbody.innerHTML = '<tr class="empty-row"><td colspan="7" class="text-center text-danger fw-bold py-5">❌ เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>';
         });
     }
