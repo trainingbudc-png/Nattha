@@ -14,7 +14,7 @@
         .container-wide { max-width: 1200px !important; margin: 0 auto !important; padding-left: 20px !important; padding-right: 20px !important; }
         
         /* =========================================
-           💻 สไตล์ตารางสำหรับ Desktop (คอมพิวเตอร์)
+           💻 สไตล์ตารางสำหรับ Desktop
            ========================================= */
         .table-card { background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
         .table thead tr { background-color: #1e3a8a; color: white; font-size: 0.95rem; letter-spacing: 0.5px; }
@@ -25,7 +25,6 @@
         .req-id-cell { color: #1e293b; font-size: 1.05rem; font-weight: 700; }
         .value-text { color: #1e293b; font-weight: 600; }
         
-        /* ปุ่มจัดการ (Desktop) */
         .btn-action-solid { 
             background-color: #1e3a8a; color: white; border: none; 
             border-radius: 12px; padding: 8px 24px; font-size: 0.95rem; 
@@ -34,43 +33,52 @@
         .btn-action-solid:hover { background-color: #172554; color: white; transform: translateY(-1px); }
 
         /* =========================================
-           📱 สไตล์ Card คลีนๆ สำหรับ Mobile (ตามแบบ)
+           📱 สไตล์ Card สำหรับ Mobile (ปรับเลย์เอาต์ใหม่)
            ========================================= */
         @media (max-width: 768px) {
             .table-card { background: transparent !important; box-shadow: none !important; border: none !important; margin-top: 10px; }
             .table thead { display: none !important; }
             
-            /* เปลี่ยน TR เป็นกล่อง Card คลีนๆ */
             .table tbody tr { 
                 display: flex; flex-direction: column; background: #ffffff; 
                 border-radius: 16px; margin-bottom: 16px; padding: 20px 24px; 
                 box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f1f5f9 !important; 
             }
             
-            /* เปลี่ยน TD เป็นบรรทัดข้อมูล (ลบเส้นคั่น) */
             .table tbody td { 
                 display: flex; justify-content: space-between; align-items: flex-start; 
                 text-align: right; width: 100%; padding: 10px 0; border: none !important; 
             }
             
-            /* หัวข้อฝั่งซ้าย สีเทา */
             .table tbody td::before { 
                 content: attr(data-label); font-weight: 500; color: #64748b; 
                 font-size: 0.95rem; text-align: left; margin-right: 15px; 
                 flex-shrink: 0; padding-top: 2px;
             }
             
-            /* เลขรายการ (บรรทัดแรก) */
             .table tbody td[data-label="เลขรายการ"] { padding-top: 0; padding-bottom: 16px; }
             .table tbody td[data-label="เลขรายการ"] .req-id-cell { font-size: 1.15rem; }
             
-            /* ปุ่มดำเนินการ (บรรทัดสุดท้าย) */
+            /* 🚨 ปรับแก้ช่อง "เครื่องที่ส่งคืน" ให้ตกลงมาบรรทัดใหม่ และชิดซ้าย */
+            .table tbody td[data-label="เครื่องที่ส่งคืน"] { 
+                flex-direction: column; /* เปลี่ยนจากแนวนอนเป็นแนวตั้ง */
+                align-items: flex-start; 
+                text-align: left; 
+                padding-top: 15px;
+            }
+            .table tbody td[data-label="เครื่องที่ส่งคืน"]::before { 
+                margin-bottom: 8px; /* เพิ่มระยะห่างระหว่างหัวข้อกับตัวเลข */
+            }
+            .table tbody td[data-label="เครื่องที่ส่งคืน"] div {
+                text-align: left !important; /* บังคับตัวเลขชิดซ้าย */
+                width: 100%;
+            }
+            
             .table tbody td[data-label="จัดการ"] { 
                 padding: 20px 0 0 0 !important; margin-top: 10px; display: block; width: 100%;
             }
             .table tbody td[data-label="จัดการ"]::before { display: none; } 
             
-            /* ขยายปุ่มเต็มความกว้าง */
             .table tbody td[data-label="จัดการ"] .btn-action-solid { 
                 width: 100%; padding: 14px !important; font-size: 1.05rem; 
             }
@@ -163,12 +171,13 @@
                         let typeArr = [], idsArr = [];
                         
                         if (normalIds.length > 0) { 
+                            // ซ่อนคำว่า iPad/Air ในมือถือเพื่อไม่ให้ซ้ำซ้อน เพราะมีช่อง "ประเภท" บอกอยู่แล้ว
                             typeArr.push(`<div class="value-text mb-1">iPad</div>`); 
-                            idsArr.push(`<div class="mb-1 value-text" style="word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`); 
+                            idsArr.push(`<div class="mb-1 value-text" style="word-break: break-word; line-height: 1.8; letter-spacing: 0.5px;">${normalIds.join(', ')}</div>`); 
                         }
                         if (airIds.length > 0) { 
                             typeArr.push(`<div class="value-text mb-1">Air+APC</div>`); 
-                            idsArr.push(`<div class="mb-1 value-text" style="word-break: break-word; line-height: 1.6;">${airIds.join(', ')}</div>`); 
+                            idsArr.push(`<div class="mb-1 value-text" style="word-break: break-word; line-height: 1.8; letter-spacing: 0.5px;">${airIds.join(', ')}</div>`); 
                         }
                         
                         typeHtml = typeArr.join(''); idsHtml = idsArr.join('');
