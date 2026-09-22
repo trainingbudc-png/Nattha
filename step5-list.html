@@ -61,16 +61,16 @@
             
             /* 🚨 ปรับแก้ช่อง "เครื่องที่ส่งคืน" ให้ตกลงมาบรรทัดใหม่ และชิดซ้าย */
             .table tbody td[data-label="เครื่องที่ส่งคืน"] { 
-                flex-direction: column; /* เปลี่ยนจากแนวนอนเป็นแนวตั้ง */
+                flex-direction: column; 
                 align-items: flex-start; 
                 text-align: left; 
                 padding-top: 15px;
             }
             .table tbody td[data-label="เครื่องที่ส่งคืน"]::before { 
-                margin-bottom: 8px; /* เพิ่มระยะห่างระหว่างหัวข้อกับตัวเลข */
+                margin-bottom: 8px; 
             }
             .table tbody td[data-label="เครื่องที่ส่งคืน"] div {
-                text-align: left !important; /* บังคับตัวเลขชิดซ้าย */
+                text-align: left !important; 
                 width: 100%;
             }
             
@@ -87,12 +87,17 @@
 </head>
 <body>
 
-    <nav class="nav-header-custom shadow-sm mb-4 d-flex justify-content-between align-items-center" style="padding: 15px 30px; background-color: #1e3a8a;">
-        <div class="nav-title-custom fw-bold text-white lh-sm m-0 fs-5">
-            🔍 Step 5 | ตรวจรับคืน
-            <span class="d-block d-sm-inline text-light opacity-75 mt-1 mt-sm-0" style="font-size: 0.9rem; font-weight: 500;">(ค้างดำเนินการ)</span>
+    <!-- 🚨 แถบ Nav ใหม่ สไตล์ App Header แบบแนวนอน ประหยัดพื้นที่จอ 🚨 -->
+    <nav class="shadow-sm mb-4" style="background-color: #1e3a8a; padding: 12px 20px; position: sticky; top: 0; z-index: 1000;">
+        <div class="d-flex justify-content-between align-items-center" style="max-width: 1200px; margin: 0 auto;">
+            <div class="text-white" style="line-height: 1.2;">
+                <div class="fw-bold" style="font-size: 1.15rem; letter-spacing: 0.5px;">🔍 Step 5 | ตรวจรับคืน</div>
+                <div class="text-light opacity-75 mt-1" style="font-size: 0.85rem; font-weight: 500;">(ค้างดำเนินการ)</div>
+            </div>
+            <a href="admin.html" class="btn bg-white rounded-pill fw-bold shadow-sm d-flex align-items-center gap-2" style="color: #1e3a8a; padding: 6px 16px; font-size: 0.9rem; border: 1.5px solid #e2e8f0;">
+                <span>🔙</span> กลับเมนู
+            </a>
         </div>
-        <a href="admin.html" class="btn btn-light text-dark btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm">🔙 กลับเมนู</a>
     </nav>
 
     <div class="container-wide pb-5">
@@ -171,7 +176,6 @@
                         let typeArr = [], idsArr = [];
                         
                         if (normalIds.length > 0) { 
-                            // ซ่อนคำว่า iPad/Air ในมือถือเพื่อไม่ให้ซ้ำซ้อน เพราะมีช่อง "ประเภท" บอกอยู่แล้ว
                             typeArr.push(`<div class="value-text mb-1">iPad</div>`); 
                             idsArr.push(`<div class="mb-1 value-text" style="word-break: break-word; line-height: 1.8; letter-spacing: 0.5px;">${normalIds.join(', ')}</div>`); 
                         }
