@@ -16,70 +16,63 @@
         /* =========================================
            💻 สไตล์ตารางสำหรับ Desktop (คอมพิวเตอร์)
            ========================================= */
-        .table-card { background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
+        .table-card { background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
         .table thead tr { background-color: #1e3a8a; color: white; font-size: 0.95rem; letter-spacing: 0.5px; }
         .table th { border: none !important; padding: 16px; font-weight: 500; }
         .table tbody td { padding: 16px 12px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
         .table tbody tr:hover { background-color: #f8fafc; }
         
-        .req-id-cell { color: #1e3a8a; font-size: 1.05rem; }
+        .req-id-cell { color: #1e293b; font-size: 1.05rem; font-weight: 700; }
+        .value-text { color: #1e293b; font-weight: 600; }
         
-        /* ปุ่มตรวจสอบแบบ Outline (Desktop) */
-        .btn-action-outline { 
-            background-color: white; color: #1e3a8a; border: 1.5px solid #1e3a8a; 
-            border-radius: 50rem; padding: 6px 22px; font-size: 0.95rem; 
-            font-weight: 600; transition: all 0.2s; display: inline-block;
+        /* ปุ่มจัดการ (Desktop) */
+        .btn-action-solid { 
+            background-color: #1e3a8a; color: white; border: none; 
+            border-radius: 12px; padding: 8px 24px; font-size: 0.95rem; 
+            font-weight: 600; transition: all 0.2s; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.15);
         }
-        .btn-action-outline:hover { background-color: #1e3a8a; color: white; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2); }
+        .btn-action-solid:hover { background-color: #172554; color: white; transform: translateY(-1px); }
 
         /* =========================================
-           📱 สไตล์ Card สำหรับ Mobile (แก้ใหม่หมดจด)
+           📱 สไตล์ Card คลีนๆ สำหรับ Mobile (ตามแบบ)
            ========================================= */
         @media (max-width: 768px) {
             .table-card { background: transparent !important; box-shadow: none !important; border: none !important; margin-top: 10px; }
             .table thead { display: none !important; }
             
-            /* เปลี่ยน TR เป็นกล่อง Card */
+            /* เปลี่ยน TR เป็นกล่อง Card คลีนๆ */
             .table tbody tr { 
                 display: flex; flex-direction: column; background: #ffffff; 
-                border-radius: 16px; margin-bottom: 16px; padding: 0; 
-                box-shadow: 0 6px 16px rgba(0,0,0,0.06); border: 1px solid #e2e8f0 !important; 
-                overflow: hidden; 
+                border-radius: 16px; margin-bottom: 16px; padding: 20px 24px; 
+                box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f1f5f9 !important; 
             }
             
-            /* เปลี่ยน TD เป็นบรรทัดข้อมูล */
+            /* เปลี่ยน TD เป็นบรรทัดข้อมูล (ลบเส้นคั่น) */
             .table tbody td { 
                 display: flex; justify-content: space-between; align-items: flex-start; 
-                text-align: right; width: 100%; padding: 12px 20px; 
-                border-bottom: 1px dashed #e2e8f0 !important; 
+                text-align: right; width: 100%; padding: 10px 0; border: none !important; 
             }
             
-            /* หัวข้อของแต่ละบรรทัด (ฝั่งซ้าย) */
+            /* หัวข้อฝั่งซ้าย สีเทา */
             .table tbody td::before { 
-                content: attr(data-label); font-weight: 600; color: #64748b; 
-                font-size: 0.9rem; text-align: left; margin-right: 15px; 
+                content: attr(data-label); font-weight: 500; color: #64748b; 
+                font-size: 0.95rem; text-align: left; margin-right: 15px; 
                 flex-shrink: 0; padding-top: 2px;
             }
             
-            /* 🎨 ปรับแต่งบรรทัดแรก (เลขรายการ REQ) ให้เป็นหัวการ์ด */
-            .table tbody td[data-label="เลขรายการ"] { 
-                background-color: #f8fafc; border-bottom: 1px solid #e2e8f0 !important; 
-                padding: 16px 20px !important; font-size: 1.15rem; font-weight: 700 !important;
-                border-left: 5px solid #1e3a8a; color: #1e3a8a !important;
-            }
-            .table tbody td[data-label="เลขรายการ"]::before { display: none; }
+            /* เลขรายการ (บรรทัดแรก) */
+            .table tbody td[data-label="เลขรายการ"] { padding-top: 0; padding-bottom: 16px; }
+            .table tbody td[data-label="เลขรายการ"] .req-id-cell { font-size: 1.15rem; }
             
-            /* 🎨 ปรับแต่งปุ่มจัดการ (บรรทัดสุดท้าย) */
+            /* ปุ่มดำเนินการ (บรรทัดสุดท้าย) */
             .table tbody td[data-label="จัดการ"] { 
-                border-bottom: none !important; padding: 20px; background-color: #ffffff; display: block;
+                padding: 20px 0 0 0 !important; margin-top: 10px; display: block; width: 100%;
             }
             .table tbody td[data-label="จัดการ"]::before { display: none; } 
             
-            /* ขยายปุ่มให้เต็มความกว้างบนมือถือ */
-            .table tbody td[data-label="จัดการ"] .btn-action-outline { 
-                background-color: #1e3a8a; color: white; border: none; width: 100%; 
-                padding: 14px !important; font-size: 1.05rem; border-radius: 50rem; 
-                box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2); text-align: center;
+            /* ขยายปุ่มเต็มความกว้าง */
+            .table tbody td[data-label="จัดการ"] .btn-action-solid { 
+                width: 100%; padding: 14px !important; font-size: 1.05rem; 
             }
         }
     </style>
@@ -102,11 +95,11 @@
                 <thead>
                     <tr class="text-center">
                         <th style="width: 14%;" class="text-start px-4">เลขรายการ</th>
-                        <th style="width: 16%;">วัน-เวลา</th>
+                        <th style="width: 16%;">วันที่และเวลา</th>
                         <th style="width: 16%;">เจ้าของรายการ</th> 
                         <th style="width: 18%;">ผู้ส่งคืน</th>
                         <th style="width: 10%;">ประเภท</th>
-                        <th style="width: 16%;">เลขอุปกรณ์</th>
+                        <th style="width: 16%;">เครื่องที่ส่งคืน</th>
                         <th style="width: 10%;" class="px-4 text-center">จัดการ</th>
                     </tr>
                 </thead>
@@ -153,12 +146,9 @@
                         let actorName = parts[0].trim();
                         ownerName = parts[1].replace('แทน', '').replace(')', '').trim();
                         
-                        senderHtml = `<span class="fw-bold text-dark" style="font-size: 0.95rem;">${actorName}</span>`;
+                        senderHtml = `<span class="value-text" style="font-size: 0.95rem;">${actorName}</span>`;
                     }
 
-                    // ==========================================
-                    // 🚨 ปรับ UI เลขอุปกรณ์ ให้เป็นกล่องข้อความสวยๆ
-                    // ==========================================
                     let typeHtml = '<span class="text-muted">-</span>';
                     let idsHtml = '<span class="text-muted">-</span>';
                     if (item.ipadId && item.ipadId.trim() !== "") {
@@ -172,14 +162,13 @@
                         
                         let typeArr = [], idsArr = [];
                         
-                        // สร้างกล่อง Badge คลุมเลขอุปกรณ์
                         if (normalIds.length > 0) { 
-                            typeArr.push(`<div class="fw-bold text-dark mb-1">iPad</div>`); 
-                            idsArr.push(`<div class="px-3 py-2 rounded-3 mb-2 fw-bold shadow-sm" style="background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-size: 0.95rem; line-height: 1.6; text-align: right; display: inline-block;">${normalIds.join(', ')}</div>`); 
+                            typeArr.push(`<div class="value-text mb-1">iPad</div>`); 
+                            idsArr.push(`<div class="mb-1 value-text" style="word-break: break-word; line-height: 1.6;">${normalIds.join(', ')}</div>`); 
                         }
                         if (airIds.length > 0) { 
-                            typeArr.push(`<div class="fw-bold text-dark mb-1">Air+APC</div>`); 
-                            idsArr.push(`<div class="px-3 py-2 rounded-3 mb-2 fw-bold shadow-sm" style="background-color: #fdf4ff; color: #a21caf; border: 1px solid #fbcfe8; font-size: 0.95rem; line-height: 1.6; text-align: right; display: inline-block;">${airIds.join(', ')}</div>`); 
+                            typeArr.push(`<div class="value-text mb-1">Air+APC</div>`); 
+                            idsArr.push(`<div class="mb-1 value-text" style="word-break: break-word; line-height: 1.6;">${airIds.join(', ')}</div>`); 
                         }
                         
                         typeHtml = typeArr.join(''); idsHtml = idsArr.join('');
@@ -187,14 +176,14 @@
 
                     htmlContent += `
                         <tr class="align-middle">
-                            <td data-label="เลขรายการ" class="fw-bold text-start px-4 req-id-cell">${item.reqId}</td>
-                            <td data-label="วัน-เวลา" class="text-center text-muted" style="font-size: 0.9rem;">${dateStr}</td>
-                            <td data-label="เจ้าของรายการ" class="text-center fw-bold text-dark">${ownerName}</td>
-                            <td data-label="ผู้ส่งคืน" class="text-center">${senderHtml}</td>
-                            <td data-label="ประเภท" class="text-center">${typeHtml}</td>
-                            <td data-label="เลขอุปกรณ์" class="text-center">${idsHtml}</td>
-                            <td data-label="จัดการ" class="text-center px-4">
-                                <button class="btn-action-outline shadow-sm" onclick="window.location.href='step5.html?reqId=${item.reqId}'">🔍 ตรวจสอบรับคืน</button>
+                            <td data-label="เลขรายการ" class="text-md-center px-md-4"><span class="req-id-cell">${item.reqId}</span></td>
+                            <td data-label="วันที่และเวลา" class="text-md-center text-muted" style="font-size: 0.9rem;">${dateStr}</td>
+                            <td data-label="เจ้าของรายการ" class="text-md-center"><span class="value-text">${ownerName}</span></td>
+                            <td data-label="ผู้ส่งคืน" class="text-md-center">${senderHtml}</td>
+                            <td data-label="ประเภท" class="text-md-center">${typeHtml}</td>
+                            <td data-label="เครื่องที่ส่งคืน" class="text-md-center">${idsHtml}</td>
+                            <td data-label="จัดการ" class="text-md-center px-md-4">
+                                <button class="btn-action-solid" onclick="window.location.href='step5.html?reqId=${item.reqId}'">ดำเนินการ</button>
                             </td>
                         </tr>
                     `;
