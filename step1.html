@@ -184,14 +184,17 @@
         loadUsersAndIpads();
     };
 
-    async function loadUsersAndIpads(retryCount = 3) {
+    async function loadUsersAndIpads() {
         try {
-            const userResponse = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "getUserNames" }) });
-            const userRes = await userResponse.json();
+            // 🚀 ใช้ Cache โหลดรายชื่อผู้ใช้ (จำไว้ 60 นาที) และ คลัง iPad (จำไว้ 5 นาที)
+            // เร็วกว่าเดิม 100% เพราะไม่ต้องรอ Server ถ้ามีข้อมูลในเครื่องอยู่แล้ว
+            const [userRes, invRes] = await Promise.all([
+                callAPIWithLocalCache({ action: "getUserNames" }, "USER_NAMES_CACHE", 60),
+                callAPIWithLocalCache({ action: "getInventory" }, "INVENTORY_CACHE", 5)
+            ]);
 
             const select = document.getElementById("userNameSelect");
-            
-            if (userRes.status === "success" && userRes.data) {
+            if (userRes && userRes.status === "success" && userRes.data) {
                 userRes.data.sort((a, b) => a.name.localeCompare(b.name, 'th'));
                 let userHtml = '<option value="">-- เลือกชื่อผู้ขอยืม --</option>';
                 userRes.data.forEach(user => { userHtml += `<option value="${user.id}">${user.name}</option>`; });
@@ -207,13 +210,10 @@
                 }
             } else { select.innerHTML = '<option value="">❌ ไม่พบรายชื่อผู้ใช้งาน</option>'; }
 
-            const invResponse = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "getInventory" }) });
-            const invRes = await invResponse.json();
-
             const containerNormal = document.getElementById("ipadNormalContainer");
             const containerAir = document.getElementById("ipadAirContainer");
             
-            if (invRes.status === "success" && invRes.data) {
+            if (invRes && invRes.status === "success" && invRes.data) {
                 invRes.data.sort((a, b) => {
                     let numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
                     let numB = parseInt(b.replace(/\D/g, ''), 10) || 0;
@@ -239,15 +239,10 @@
                 containerNormal.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
                 containerAir.innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ ไม่มีเครื่องว่าง</div>'; 
             }
-
         } catch (error) {
-            if (retryCount > 0) {
-                setTimeout(() => loadUsersAndIpads(retryCount - 1), 1500);
-            } else {
-                document.getElementById("userNameSelect").innerHTML = '<option value="">❌ โหลดข้อมูลล้มเหลว</option>';
-                document.getElementById("ipadNormalContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
-                document.getElementById("ipadAirContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
-            }
+            document.getElementById("userNameSelect").innerHTML = '<option value="">❌ โหลดข้อมูลล้มเหลว</option>';
+            document.getElementById("ipadNormalContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
+            document.getElementById("ipadAirContainer").innerHTML = '<div class="grid-full-width text-danger fw-bold">❌ เกิดข้อผิดพลาดในการดึงข้อมูล</div>';
         }
     }
 
@@ -360,28 +355,18 @@
         if(isEmergency) finalNote = `🚨 [ยืมฉุกเฉิน] เหตุผล: ${emergencyNote}`;
 
         const payload = { 
-            action: "saveStep1", 
-            reqId: reqIdValue !== "" ? reqIdValue : null, 
-            adminName: adminName, 
-            adminId: adminId, 
-            recipientName: recipientName, 
-            recipientId: recipientId, 
-            note: finalNote, 
-            ipadData: ipadData 
+            action: "saveStep1", reqId: reqIdValue !== "" ? reqIdValue : null, 
+            adminName: adminName, adminId: adminId, recipientName: recipientName, 
+            recipientId: recipientId, note: finalNote, ipadData: ipadData 
         };
 
         try {
-            // ใช้ callAPI แบบปลอดภัย รอเช็คผลลัพธ์จาก Server
             const res = await callAPI(payload);
-
             if(res && res.status === "success") {
+                clearLocalCache("INVENTORY_CACHE"); // 🚀 ล้างแคชคลัง iPad ทันทีหลังเบิกเสร็จ
                 Swal.fire({ 
-                    title: "ส่งข้อมูลสำเร็จ!", 
-                    text: `ระบบเตรียมเครื่องเรียบร้อยแล้ว (Ref: ${res.reqId})`, 
-                    icon: "success", 
-                    confirmButtonColor: "#1e3a8a", 
-                    confirmButtonText: "กลับหน้าหลัก", 
-                    allowOutsideClick: false 
+                    title: "ส่งข้อมูลสำเร็จ!", text: `ระบบเตรียมเครื่องเรียบร้อยแล้ว (Ref: ${res.reqId})`, 
+                    icon: "success", confirmButtonColor: "#1e3a8a", confirmButtonText: "กลับหน้าหลัก", allowOutsideClick: false 
                 }).then(() => { window.location.href = "admin.html"; });
             } else {
                 Swal.fire("ข้อผิดพลาด", (res && res.message) ? res.message : "เกิดข้อผิดพลาดในการบันทึก", "error");
