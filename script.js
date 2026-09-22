@@ -1,6 +1,6 @@
 // =========================================
 // 📌 ไฟล์ script.js : แกนกลางจัดการระบบหน้าเว็บ (Optimized & Stable)
-// 🚀 เพิ่ม Timeout ป้องกันแอปค้าง + Local Cache ดึงข้อมูล 0 วินาที
+// 🚀 เพิ่ม Exponential Backoff + Smart Local Cache ดึงข้อมูลไวสุดๆ
 // =========================================
 const API_URL = "https://script.google.com/macros/s/AKfycbwTYZGGb-XQ1jh301IlRJ15aDlvQm3lqxrlGUSFYG5ColRGichCODQIFM4e6cUxY6kU/exec"; 
 const LIFF_ID = "2010557323-PAyWhGxW";
@@ -24,18 +24,18 @@ function hideLoading() {
     if (overlay) overlay.style.display = "none"; 
 }
 
-// 🚀 1. อัปเกรด callAPI: เพิ่ม Timeout ตัดจบเมื่อเน็ตค้าง และดักจับ Error JSON
-async function callAPI(payload, maxRetries = 3, delayMs = 1500, timeoutMs = 15000) {
-    for (let i = 0; i < maxRetries; i++) {
+// 🚀 1. อัปเกรด callAPI: เร็วและอึดขึ้นด้วย Exponential Backoff (แก้ปัญหาเน็ตสะดุด)
+async function callAPI(payload, maxRetries = 2, delayMs = 1000, timeoutMs = 15000) {
+    for (let i = 0; i <= maxRetries; i++) {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), timeoutMs); // จับเวลาถ้าเกินกำหนดให้ยกเลิก
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
         try {
             const res = await fetch(API_URL, { 
                 method: "POST", 
                 headers: { "Content-Type": "text/plain;charset=utf-8" }, 
                 body: JSON.stringify(payload),
-                signal: controller.signal // ผูกกับตัวจับเวลา
+                signal: controller.signal // ดัก Timeout
             });
             clearTimeout(timeoutId);
 
@@ -46,57 +46,59 @@ async function callAPI(payload, maxRetries = 3, delayMs = 1500, timeoutMs = 1500
                 return JSON.parse(textResponse);
             } catch (jsonError) {
                 console.error("❌ เซิร์ฟเวอร์ไม่ได้ตอบกลับเป็น JSON:", textResponse);
-                throw new Error("Invalid response format from server.");
+                throw new Error("Invalid JSON from server.");
             }
 
         } catch (error) {
             clearTimeout(timeoutId);
             const isTimeout = error.name === 'AbortError';
-            const errorMsg = isTimeout ? "หมดเวลาเชื่อมต่อ (Timeout)" : error.message;
+            const errorMsg = isTimeout ? "Timeout" : error.message;
             
-            console.warn(`📡 สัญญาณขัดข้อง [${errorMsg}] (ลองรอบที่ ${i + 1}/${maxRetries})`);
+            console.warn(`📡 สัญญาณขัดข้อง [${errorMsg}] (ลองรอบที่ ${i + 1}/${maxRetries + 1})`);
             
-            if (i === maxRetries - 1) {
+            if (i === maxRetries) {
                 console.error("❌ เชื่อมต่อ API ล้มเหลวโดยสมบูรณ์");
                 throw error; 
             }
-            await new Promise(resolve => setTimeout(resolve, delayMs * (i + 1)));
+            // ถอยระยะเวลาเพิ่มขึ้นเรื่อยๆ (1s, 2s) ป้องกัน Server Overload
+            await new Promise(resolve => setTimeout(resolve, delayMs * Math.pow(2, i)));
         }
     }
 }
 
-// 🚀 2. ฟังก์ชันใหม่: เรียก API พร้อมระบบความจำ (Local Cache) เร็วขึ้น 100%
-// เหมาะสำหรับดึง รายชื่อพนักงาน, คลัง iPad, แผนก (ที่ไม่ได้อัปเดตทุกวินาที)
+// 🚀 2. Local Cache อัจฉริยะ (Stale-while-revalidate แบบเจาะจง)
 async function callAPIWithLocalCache(payload, cacheKey, expiryMinutes = 5) {
     const cachedData = localStorage.getItem(cacheKey);
     const cachedTime = localStorage.getItem(cacheKey + "_time");
+    const now = Date.now();
     
-    // ถ้ามีข้อมูลในความจำ และยังไม่หมดอายุ ให้ส่งคืนทันทีโดยไม่ต้องรอเน็ต
     if (cachedData && cachedTime) {
-        const ageInMinutes = (Date.now() - parseInt(cachedTime)) / (1000 * 60);
+        const ageInMinutes = (now - parseInt(cachedTime)) / (1000 * 60);
+        
         if (ageInMinutes < expiryMinutes) {
-            // โหลดข้อมูลแบบ Background เงียบๆ เพื่ออัปเดต Cache ให้ใหม่เสมอ (Stale-while-revalidate)
-            callAPI(payload).then(res => {
-                if (res && res.status === "success") {
-                    localStorage.setItem(cacheKey, JSON.stringify(res));
-                    localStorage.setItem(cacheKey + "_time", Date.now().toString());
-                }
-            }).catch(e => console.log("Background cache update failed"));
-            
+            // โหลด Background เฉพาะเมื่อข้อมูลใกล้หมดอายุ (เกินครึ่งทางของเวลาที่ตั้งไว้)
+            // ช่วยประหยัด Data อินเทอร์เน็ตของผู้ใช้ และไม่ยิง API พร่ำเพรื่อ
+            if (ageInMinutes > (expiryMinutes / 2)) {
+                callAPI(payload).then(res => {
+                    if (res && (res.status === "success" || res.success)) {
+                        localStorage.setItem(cacheKey, JSON.stringify(res));
+                        localStorage.setItem(cacheKey + "_time", Date.now().toString());
+                    }
+                }).catch(() => console.log("Background cache update failed"));
+            }
             return JSON.parse(cachedData);
         }
     }
     
     // ถ้าไม่มีข้อมูล หรือหมดอายุแล้ว ให้ดึงจาก Server ใหม่
     const result = await callAPI(payload);
-    if (result && result.status === "success") {
+    if (result && (result.status === "success" || result.success)) {
         localStorage.setItem(cacheKey, JSON.stringify(result));
-        localStorage.setItem(cacheKey + "_time", Date.now().toString());
+        localStorage.setItem(cacheKey + "_time", now.toString());
     }
     return result;
 }
 
-// 🚀 3. ฟังก์ชันเคลียร์ Local Cache โดยเฉพาะ (เรียกใช้ตอนเซฟข้อมูลใหม่)
 function clearLocalCache(cacheKey) {
     localStorage.removeItem(cacheKey);
     localStorage.removeItem(cacheKey + "_time");
@@ -155,7 +157,7 @@ function verifyRoleSilently() {
                     window.location.replace(res.role === "Admin" ? "admin.html" : "user.html"); 
                 } 
             }
-        }).catch(e => console.log("Silent role check failed:", e)); 
+        }).catch(e => console.log("Silent role check failed")); 
     }
 }
 
