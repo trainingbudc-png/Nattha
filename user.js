@@ -113,14 +113,13 @@ async function openProfileModal() {
     profileModal.show();
     
     const currentName = localStorage.getItem("userName");
-    
-    // ⚡ แก้ปัญหาดึงข้อมูลไม่ขึ้น: แยก "ชื่อจริง" ออกจาก "วงเล็บ(ชื่อเล่น)" ก่อนส่งไปหาฐานข้อมูล
     let realName = currentName ? currentName.split("(")[0].trim() : "";
     
     try {
+        // 🚀 ใช้ Cache ดึงข้อมูลแผนก เร็วขึ้นมาก
         const [profileRes, deptRes] = await Promise.all([ 
             callAPI({ action: "getUserProfile", name: realName }).catch(()=>null), 
-            isDeptLoaded ? Promise.resolve(null) : callAPI({ action: "getDepartments" }).catch(()=>null) 
+            isDeptLoaded ? Promise.resolve(null) : callAPIWithLocalCache({ action: "getDepartments" }, "DEPT_CACHE", 360).catch(()=>null) 
         ]);
         
         if (deptRes && deptRes.status === "success") { 
@@ -136,16 +135,11 @@ async function openProfileModal() {
             document.getElementById('editProfileLastName').value = nameParts.slice(1).join(" ") || ""; 
             document.getElementById('editProfileNickname').value = profileRes.nickname || ""; 
             
-            // ⚡ ป้องกันปัญหา select option ยังไม่โหลดเสร็จ
-            setTimeout(() => {
-                document.getElementById('editProfileDept').value = profileRes.dept || "";
-            }, 50);
+            setTimeout(() => { document.getElementById('editProfileDept').value = profileRes.dept || ""; }, 50);
             
             let phoneVal = profileRes.phone || ""; 
             phoneVal = phoneVal.replace(/^(Tel\.\s*|="|"|')/g, '').replace(/("|')$/g, '').trim(); 
             document.getElementById('editProfilePhone').value = phoneVal;
-        } else {
-            console.warn("ไม่พบโปรไฟล์:", profileRes);
         }
     } catch (e) { console.error("Error loading profile:", e); }
 }
