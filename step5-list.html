@@ -36,7 +36,7 @@
         .table tbody tr.empty-row td { border: none !important; }
 
         /* =========================================
-           📱 สไตล์ Card สำหรับ Mobile (ปรับใหม่ให้เป็นแอปโปรๆ)
+           📱 สไตล์ Card สำหรับ Mobile
            ========================================= */
         @media (max-width: 768px) {
             .table-card { background: transparent !important; box-shadow: none !important; border: none !important; margin-top: 10px; }
@@ -53,20 +53,17 @@
                 text-align: right; width: 100%; padding: 12px 0; border: none !important; 
             }
             
-            /* 🚨 ดรอปสีหัวข้อฝั่งซ้ายลง เพื่อดันข้อมูลขวาให้เด่น */
             .table tbody td::before { 
                 content: attr(data-label); font-weight: 500; color: #94a3b8; 
                 font-size: 0.95rem; text-align: left; margin-right: 15px; 
                 flex-shrink: 0; padding-top: 2px;
             }
             
-            /* แยกเส้นคั่นใต้ REQ */
             .table tbody td[data-label="เลขรายการ"] { 
                 padding-top: 0; padding-bottom: 16px; border-bottom: 1px dashed #e2e8f0 !important; margin-bottom: 10px; 
             }
             .table tbody td[data-label="เลขรายการ"] .req-id-cell { font-size: 1.25rem; }
             
-            /* 🚨 ปรับกล่องเครื่องที่ส่งคืน (ตกลงมาข้างล่าง) */
             .table tbody td[data-label="เครื่องที่ส่งคืน"] { 
                 flex-direction: column; align-items: flex-start; text-align: left; padding-top: 20px;
             }
@@ -185,13 +182,14 @@
                         
                         let typeArr = [], idsArr = [];
                         
-                        // 🚨 สร้างกล่องสีเทาอ่อนหุ้มตัวเลข ให้ดูเป็นก้อนข้อมูลที่อ่านง่าย
                         if (normalIds.length > 0) { 
-                            typeArr.push(`<div class="value-text mb-1 d-none d-md-block">iPad</div>`); 
+                            // 🚨 เอาคลาสซ่อนออกแล้ว โชว์คำว่า iPad ในมือถือได้ปกติ
+                            typeArr.push(`<div class="value-text mb-1">iPad</div>`); 
                             idsArr.push(`<div class="p-3 rounded-4 mb-3 value-text" style="background-color: #f8fafc; border: 1px solid #e2e8f0; word-break: break-word; line-height: 1.8; letter-spacing: 0.5px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">${normalIds.join(', ')}</div>`); 
                         }
                         if (airIds.length > 0) { 
-                            typeArr.push(`<div class="value-text mb-1 d-none d-md-block">Air+APC</div>`); 
+                            // 🚨 เอาคลาสซ่อนออกแล้ว โชว์คำว่า Air+APC ในมือถือได้ปกติ
+                            typeArr.push(`<div class="value-text mb-1">Air+APC</div>`); 
                             idsArr.push(`<div class="p-3 rounded-4 mb-3 value-text" style="background-color: #f8fafc; border: 1px solid #e2e8f0; word-break: break-word; line-height: 1.8; letter-spacing: 0.5px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">${airIds.join(', ')}</div>`); 
                         }
                         
@@ -204,7 +202,7 @@
                             <td data-label="วันที่และเวลา" class="text-md-center text-muted" style="font-size: 0.9rem;">${dateStr}</td>
                             <td data-label="เจ้าของรายการ" class="text-md-center"><span class="value-text">${ownerName}</span></td>
                             <td data-label="ผู้ส่งคืน" class="text-md-center">${senderHtml}</td>
-                            <td data-label="ประเภท" class="text-md-center d-none d-md-table-cell">${typeHtml}</td>
+                            <td data-label="ประเภท" class="text-md-center">${typeHtml}</td> <!-- 🚨 เอาคลาสซ่อนบนมือถือออกแล้ว -->
                             <td data-label="เครื่องที่ส่งคืน" class="text-md-center">${idsHtml}</td>
                             <td data-label="จัดการ" class="text-md-center px-md-4">
                                 <button class="btn-action-solid" onclick="window.location.href='step5.html?reqId=${item.reqId}'">ดำเนินการ</button>
