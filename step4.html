@@ -129,7 +129,7 @@
                 container.innerHTML = htmlContent;
             } else { container.innerHTML = `<div class="text-danger py-4 text-center">❌ ไม่พบรายการเครื่อง</div>`; }
         } catch (err) { 
-            console.error(err); // ดูใน Console ได้ว่าพังตรงไหน
+            console.error(err); 
             document.getElementById('itemList').innerHTML = `<div class="text-danger py-4 text-center fw-bold">❌ Error: ${err.message}<br><span class="text-muted fw-normal" style="font-size: 0.85rem;">(ลองรีเฟรชหน้าเว็บอีกครั้ง)</span></div>`; 
         }
     }
@@ -164,15 +164,44 @@
         if (!isAllChecked) return Swal.fire({ title: "⚠️ ข้อมูลไม่ครบถ้วน", text: "กรุณาตรวจสอบและติ๊กรายการให้ครบทุกข้อ สำหรับ iPad ที่เลือกครับ!", icon: "warning", confirmButtonColor: "#212529" });
 
         const btn = document.querySelector('.btn-confirm'); const originalText = btn.innerText; 
-        btn.innerText = "⏳ กำลังบันทึก..."; btn.disabled = true;
+        
+        // 🚨 อัปเดตข้อความบนปุ่มให้รู้ว่าระบบกำลังทำงาน ไม่ได้ค้าง
+        btn.innerText = "⏳ กำลังบันทึกและส่งแจ้งเตือน..."; 
+        btn.disabled = true;
 
        try {
             const result = await callAPI({ action: "saveStep4", reqId: reqId, items: items, actorName: currentLoggerName, ownerName: globalOwnerName, userId: localStorage.getItem("userId") });
             if(result.status === "success") {
                 let nextPage = isAdmin ? "admin.html" : "user.html";
-                showNavyAlert("ส่งคืนสำเร็จ!", `หมายเลขรายการ: <b>${reqId}</b><br>ส่งคืนอุปกรณ์จำนวน ${items.length} เครื่องเรียบร้อยแล้ว`, "success", nextPage);
-            } else { Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); btn.innerText = originalText; btn.disabled = false; }
-        } catch (error) { Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อระบบได้", "error"); btn.innerText = originalText; btn.disabled = false; }
+                
+                // 🚨 เปลี่ยนมาใช้ Popup สรุปรายการแบบหน้า Step 2 & 3
+                let detailHtml = `
+                    <div class="text-start p-3 rounded-4 mt-3 shadow-sm border" style="background-color: #f8fafc; font-size: 0.95rem;">
+                        <div class="mb-2"><span class="text-muted fw-bold me-2">🔖 เลขรายการ:</span> <span class="text-dark fw-bold fs-6">${reqId}</span></div>
+                        <div><span class="text-muted fw-bold me-2">📤 ส่งคืนเครื่อง:</span> <span style="color: #1e3a8a;" class="fw-bold fs-6">${items.length} เครื่อง</span></div>
+                    </div>
+                `;
+                
+                Swal.fire({
+                    title: "✅ ยืนยันการส่งคืนสำเร็จ!",
+                    html: detailHtml,
+                    icon: "success",
+                    confirmButtonColor: "#212529",
+                    confirmButtonText: "รับทราบ และกลับหน้าหลัก",
+                    allowOutsideClick: false,
+                    customClass: { popup: 'rounded-4' }
+                }).then(() => {
+                    window.location.href = nextPage;
+                });
+
+            } else { 
+                Swal.fire("❌ เกิดข้อผิดพลาด", result.message, "error"); 
+                btn.innerText = originalText; btn.disabled = false; 
+            }
+        } catch (error) { 
+            Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อระบบได้", "error"); 
+            btn.innerText = originalText; btn.disabled = false; 
+        }
     }
 </script>
 </body>
