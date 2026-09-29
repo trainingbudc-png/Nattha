@@ -25,6 +25,7 @@ function hideLoading() {
 }
 
 // 🚀 1. อัปเกรด callAPI: เร็วและอึดขึ้นด้วย Exponential Backoff (แก้ปัญหาเน็ตสะดุด)
+// ✅ แก้ไข: ปิด maxRetries = 0 ป้องกันระบบส่งข้อมูลซ้ำให้แอดมินตอนเน็ตช้า และเพิ่ม timeoutMs = 60000
 async function callAPI(payload, maxRetries = 0, delayMs = 1000, timeoutMs = 60000) {
     for (let i = 0; i <= maxRetries; i++) {
         const controller = new AbortController();
