@@ -190,13 +190,19 @@
         const btn = document.querySelector('.btn-confirm'); const originalText = btn.innerText; 
         btn.innerText = "⏳ กำลังบันทึกข้อมูล..."; btn.disabled = true;
         
+        // 🟢 เรียกหน้าจอโหลดดิง บล็อกการกดหน้าเว็บซ้ำ
+        showLoading("กำลังบันทึกข้อมูลและส่งแจ้งเตือน LINE...");
+        
         try {
-            const result = await callAPI({ action: "saveStep3", reqId: reqId, items: items, exam: examValue, note: noteValue, actorName: currentLoggerName, ownerName: globalOwnerName, userId: localStorage.getItem("userId") });
+            // 🟢 อัปเดตพารามิเตอร์ callAPI เพื่อปิดการ Auto Retry (maxRetries: 0)
+            const result = await callAPI({ action: "saveStep3", reqId: reqId, items: items, exam: examValue, note: noteValue, actorName: currentLoggerName, ownerName: globalOwnerName, userId: localStorage.getItem("userId") }, 0, 1000, 30000);
+            
+            // 🟢 ปิดหน้าจอโหลดดิงเมื่อทำงานเสร็จ
+            hideLoading();
             
             if(result.status === "success") {
                 let nextPage = isAdmin ? "admin.html" : "user.html";
                 
-                // 🚨 สร้าง Popup แจ้งเตือนแบบ Custom ให้เห็นรายละเอียดสรุปสวยๆ
                 let examDisplay = examValue;
                 if (examValue === "ไม่ได้ใช้สำหรับสอบ") {
                     examDisplay = `<span class="text-danger fw-bold">ไม่ได้ใช้สอบ (${noteValue})</span>`;
@@ -229,6 +235,8 @@
                 btn.innerText = originalText; btn.disabled = false; 
             }
         } catch (error) { 
+            // 🟢 ปิดหน้าจอโหลดดิงเมื่อเกิด Error
+            hideLoading();
             Swal.fire("❌ เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error"); 
             btn.innerText = originalText; btn.disabled = false; 
         }
