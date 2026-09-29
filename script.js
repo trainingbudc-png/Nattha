@@ -25,7 +25,7 @@ function hideLoading() {
 }
 
 // 🚀 1. อัปเกรด callAPI: เร็วและอึดขึ้นด้วย Exponential Backoff (แก้ปัญหาเน็ตสะดุด)
-async function callAPI(payload, maxRetries = 2, delayMs = 1000, timeoutMs = 15000) {
+async function callAPI(payload, maxRetries = 0, delayMs = 1000, timeoutMs = 60000) {
     for (let i = 0; i <= maxRetries; i++) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
