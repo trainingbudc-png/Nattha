@@ -189,7 +189,7 @@
             // 🚀 ใช้ Cache โหลดรายชื่อผู้ใช้ (จำไว้ 60 นาที) และ คลัง iPad (จำไว้ 5 นาที)
             // เร็วกว่าเดิม 100% เพราะไม่ต้องรอ Server ถ้ามีข้อมูลในเครื่องอยู่แล้ว
             const [userRes, invRes] = await Promise.all([
-                callAPIWithLocalCache({ action: "getUserNames" }, "USER_NAMES_CACHE", 60),
+                callAPIWithLocalCache({ action: "getUserNames" }, "USER_NAMES_CACHE", 1)
                 callAPIWithLocalCache({ action: "getInventory" }, "INVENTORY_CACHE", 5)
             ]);
 
