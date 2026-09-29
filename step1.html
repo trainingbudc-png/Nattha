@@ -350,6 +350,9 @@
 
         const btn = document.getElementById("submitBtn");
         btn.innerHTML = "กำลังดำเนินการ... ⏳"; btn.disabled = true;
+        
+        // 🟢 เรียกใช้หน้าจอโหลดดิ้งบล็อกหน้าจอ ป้องกันการกดปุ่มซ้ำ
+        showLoading("กำลังบันทึกข้อมูลและส่งแจ้งเตือน LINE...");
 
         let finalNote = "-";
         if(isEmergency) finalNote = `🚨 [ยืมฉุกเฉิน] เหตุผล: ${emergencyNote}`;
@@ -361,7 +364,12 @@
         };
 
         try {
-            const res = await callAPI(payload);
+            // 🟢 เรียก API โดยปิดโหมดการทำซ้ำอัตโนมัติ (maxRetries = 0) และขยายเวลารอเป็น 30 วินาที
+            const res = await callAPI(payload, 0, 1000, 30000);
+            
+            // 🟢 ปิดหน้าจอโหลดเมื่อสำเร็จ
+            hideLoading();
+            
             if(res && res.status === "success") {
                 clearLocalCache("INVENTORY_CACHE"); // 🚀 ล้างแคชคลัง iPad ทันทีหลังเบิกเสร็จ
                 Swal.fire({ 
@@ -373,6 +381,8 @@
                 btn.innerHTML = "ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
             }
         } catch (err) {
+            // 🟢 ปิดหน้าจอโหลดเมื่อเกิดปัญหา
+            hideLoading();
             Swal.fire("ขัดข้อง", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองอีกครั้ง", "error");
             btn.innerHTML = "ยืนยันการเตรียมเครื่อง"; btn.disabled = false;
         }
